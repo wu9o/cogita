@@ -1,0 +1,21 @@
+import { defineConfig } from '@rslib/core';
+import { pluginPublint } from 'rsbuild-plugin-publint';
+
+export default defineConfig({
+  plugins: [pluginPublint()],
+  lib: [
+    {
+      dts: {
+        bundle: false,
+        distPath: './dist/types',
+      },
+      format: 'esm',
+      syntax: 'es2015',
+      output: {
+        distPath: {
+          root: './dist/es',
+        },
+      },
+    },
+  ],
+});

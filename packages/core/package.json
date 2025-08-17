@@ -1,0 +1,43 @@
+{
+  "name": "@cogita/core",
+  "version": "0.0.1",
+  "description": "Core engine for Cogita, handling configuration, plugins, and themes.",
+  "keywords": ["cogita", "core", "static-site-generator", "blog"],
+  "author": "wu9o <https://github.com/wu9o>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wu9o/cogita.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/wu9o/cogita/issues"
+  },
+  "homepage": "https://github.com/wu9o/cogita/tree/main/packages/core#readme",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/es/index.js"
+    }
+  },
+  "module": "./dist/es/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build -w"
+  },
+  "devDependencies": {
+    "@rslib/core": "0.11.2",
+    "rsbuild-plugin-publint": "^0.3.3",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@rspress/core": "^1.45.1",
+    "find-up": "^7.0.0",
+    "jiti": "^2.5.1",
+    "mlly": "^1.7.4",
+    "@cogita/theme-lucid": "workspace:*"
+  }
+}

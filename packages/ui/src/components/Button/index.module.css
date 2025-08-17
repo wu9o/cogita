@@ -1,0 +1,11 @@
+.cButton {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-weight: 600;
+  border: 1px solid transparent;
+
+  /* Default theme variables */
+  background-color: var(--cogita-primary-color, #007acc);
+  color: var(--cogita-primary-text-color, white);
+}

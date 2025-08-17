@@ -17,7 +17,7 @@ Cogita Ecosystem
 │   ├── @cogita/shared            # Shared utilities & types
 │   └── @cogita/cli               # Command line interface
 ├── Theme Layer
-│   ├── @cogita/theme-blog        # Default blog theme
+│   ├── @cogita/theme-lucid        # Default blog theme
 │   ├── @cogita/theme-minimal     # Minimal theme
 │   ├── @cogita/theme-magazine    # Magazine-style theme
 │   └── @cogita/theme-docs        # Documentation theme
@@ -63,7 +63,7 @@ Cogita Ecosystem
 │       ├── landing-page
 │       └── multi-author-blog
 └── Tooling Layer
-    ├── @cogita/create-cogita-blog    # Project scaffolding
+    ├── @cogita/cli    # Project scaffolding
     ├── @cogita/dev-tools            # Development utilities
     ├── @cogita/build-tools          # Build optimization
     └── @cogita/deploy-tools         # Deployment helpers
@@ -127,13 +127,13 @@ interface CogitaTheme {
   - [ ] Deployment helpers
 
 #### Planned 📋
-- [ ] `@cogita/theme-blog` - Default blog theme
+- [ ] `@cogita/theme-lucid` - Default blog theme
   - [ ] Responsive design
   - [ ] Dark/light mode
   - [ ] Mobile-first approach
   - [ ] Accessibility features
 
-- [ ] `@cogita/create-cogita-blog` - CLI scaffolding tool
+- [ ] `@cogita/cli` - CLI scaffolding tool
   - [ ] Interactive project setup
   - [ ] Template selection
   - [ ] Dependency management

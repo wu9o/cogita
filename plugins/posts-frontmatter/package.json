@@ -1,0 +1,55 @@
+{
+  "name": "@cogita/plugin-posts-frontmatter",
+  "version": "1.0.0",
+  "description": "A Rspress plugin to get all pages frontmatter data with virtual module support.",
+  "keywords": ["rspress", "plugin", "frontmatter", "blog", "posts", "virtual-module"],
+  "author": "Cogita",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wu9o/cogita.git",
+    "directory": "plugins/posts-frontmatter"
+  },
+  "bugs": {
+    "url": "https://github.com/wu9o/cogita/issues"
+  },
+  "homepage": "https://github.com/wu9o/cogita/tree/main/packages/plugin-posts-frontmatter#readme",
+  "sideEffects": ["*.css", "*.less", "*.sass", "*.scss"],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/es/index.js"
+    },
+    "./client": {
+      "types": "./client.d.ts"
+    }
+  },
+  "module": "./dist/es/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": ["dist", "client.d.ts", "README.md", "README.zh-CN.md", "LICENSE"],
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build -w",
+    "reset": "rimraf ./**/node_modules",
+    "prepublishOnly": "npm run build",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "glob": "^11.0.3",
+    "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "@cogita/config": "workspace:*",
+    "@microsoft/api-extractor": "^7.52.10",
+    "@rslib/core": "0.11.2",
+    "@rspress/shared": "^1.11.2",
+    "@types/glob": "^9.0.0",
+    "@types/node": "^18.11.17",
+    "rsbuild-plugin-publint": "^0.3.3",
+    "typescript": "^5.8.2"
+  },
+  "peerDependencies": {
+    "@rspress/core": "^1.45.1"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "@cogita/theme-lucid",
+  "version": "0.0.1",
+  "description": "A lucid, content-focused blog theme for Cogita. (Default Theme)",
+  "keywords": ["cogita", "theme", "blog", "lucid"],
+  "author": "wu9o <https://github.com/wu9o>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wu9o/cogita.git",
+    "directory": "themes/lucid"
+  },
+  "bugs": {
+    "url": "https://github.com/wu9o/cogita/issues"
+  },
+  "homepage": "https://github.com/wu9o/cogita/tree/main/themes/lucid#readme",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types/src/index.d.ts",
+      "import": "./dist/es/index.js",
+      "require": "./dist/es/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/es/index.js",
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build -w"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "@rspress/runtime": "^1.0.0"
+  },
+  "devDependencies": {
+    "@cogita/config": "workspace:*",
+    "@cogita/ui": "workspace:*",
+    "@rslib/core": "^0.11.2",
+    "@rspress/runtime": "^1.45.1",
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "rsbuild-plugin-publint": "^0.3.3",
+    "typescript": "^5.0.4"
+  }
+}
