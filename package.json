@@ -3,13 +3,7 @@
   "version": "1.0.0",
   "description": "A comprehensive, out-of-the-box static blog system based on Rspress",
   "private": true,
-  "keywords": [
-    "rspress",
-    "blog",
-    "static-site",
-    "markdown",
-    "react"
-  ],
+  "keywords": ["rspress", "blog", "static-site", "markdown", "react"],
   "author": "wu9o",
   "license": "MIT",
   "repository": {
@@ -45,14 +39,12 @@
     "lint-staged": "^15.2.10",
     "typescript": "^5.0.4"
   },
-  "packageManager": "pnpm@8.15.0",
+  "packageManager": "pnpm@9.15.0",
   "engines": {
     "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
+    "pnpm": ">=9.0.0"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,md,mdx}": [
-      "biome check --write --no-errors-on-unmatched"
-    ]
+    "*.{js,jsx,ts,tsx,json,md,mdx}": ["biome check --write --no-errors-on-unmatched"]
   }
 }
