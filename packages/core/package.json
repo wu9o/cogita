@@ -1,6 +1,6 @@
 {
   "name": "@cogita/core",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Core engine for Cogita, handling configuration, plugins, and themes.",
   "keywords": ["cogita", "core", "static-site-generator", "blog"],
   "author": "wu9o <https://github.com/wu9o>",
