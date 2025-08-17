@@ -1,0 +1,57 @@
+{
+  "name": "cogita",
+  "version": "1.0.0",
+  "description": "A comprehensive, out-of-the-box static blog system based on Rspress",
+  "private": true,
+  "keywords": [
+    "rspress",
+    "blog",
+    "static-site",
+    "markdown",
+    "react"
+  ],
+  "author": "wu9o",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wu9o/cogita.git"
+  },
+  "scripts": {
+    "dev": "pnpm --filter blog dev",
+    "build": "pnpm run build:packages && pnpm --filter blog build",
+    "build:packages": "pnpm --filter \"@cogita/*\" build",
+    "build:plugin": "pnpm --filter @cogita/plugin-posts-frontmatter build",
+    "deploy": "pnpm run build && pnpm --filter blog deploy",
+    "preview": "pnpm --filter blog preview",
+    "test": "pnpm --filter \"@cogita/*\" test",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "format": "biome format .",
+    "format:fix": "biome format --write .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "clean": "pnpm --filter \"@cogita/*\" clean",
+    "prepare": "husky",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm build:packages && changeset publish"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@changesets/cli": "^2.27.1",
+    "@commitlint/cli": "^19.6.0",
+    "@commitlint/config-conventional": "^19.6.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
+    "typescript": "^5.0.4"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,md,mdx}": [
+      "biome check --write --no-errors-on-unmatched"
+    ]
+  }
+}
