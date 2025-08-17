@@ -25,7 +25,7 @@
 
 ```bash
 # 创建新博客（即将推出）
-npx create-cogita-blog my-blog --template tech-blog
+npx @cogita/cli my-blog --template tech-blog
 
 # 进入目录
 cd my-blog
@@ -54,12 +54,13 @@ pnpm run dev
 ## 📦 包列表
 
 ### 核心包
-- **@cogita/core** - 核心博客系统（即将推出）
-- **@cogita/theme-blog** - 默认博客主题（即将推出）
-- **@cogita/create-cogita-blog** - CLI 脚手架工具（即将推出）
+- **[@cogita/cli](./packages/cli)** - Cogita 框架的命令行界面 (CLI)。
+- **[@cogita/core](./packages/core)** - Cogita 的核心引擎，负责处理配置、插件和主题。
+- **[@cogita/ui](./packages/ui)** - Cogita 生态系统的共享、可主题化 UI 组件。
+- **[@cogita/theme-lucid](./themes/lucid)** - 一个清晰、注重内容的 Cogita 博客主题。(默认主题)
 
 ### 插件
-- **[@cogita/plugin-posts-frontmatter](./packages/plugin-posts-frontmatter)** - 文章 frontmatter 管理 ✅
+- **[@cogita/plugin-posts-frontmatter](./plugins/posts-frontmatter)** - 一个 Rspress 插件，通过虚拟模块支持获取所有页面的 frontmatter 数据。 ✅
 - **@cogita/plugin-blog-list** - 博客列表和分页（计划中）
 - **@cogita/plugin-tags** - 标签系统（计划中）
 - **@cogita/plugin-categories** - 分类系统（计划中）
@@ -109,8 +110,8 @@ pnpm run test
 - [x] 项目架构搭建
 - [x] plugin-posts-frontmatter
 - [ ] @cogita/core 包
-- [ ] @cogita/theme-blog
-- [ ] create-cogita-blog CLI
+- [ ] @cogita/theme-lucid
+- [ ] @cogita/cli
 
 ### 第二阶段：插件生态
 - [ ] 博客列表和分页

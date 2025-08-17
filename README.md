@@ -25,7 +25,7 @@ A comprehensive, out-of-the-box static blog system based on Rspress, designed fo
 
 ```bash
 # Create a new blog (Coming Soon)
-npx create-cogita-blog my-blog --template tech-blog
+npx @cogita/cli my-blog --template tech-blog
 
 # Enter the directory
 cd my-blog
@@ -65,12 +65,13 @@ pnpm run dev
 ## 📦 Packages
 
 ### Core Packages
-- **@cogita/core** - Core blog system (Coming Soon)
-- **@cogita/theme-blog** - Default blog theme (Coming Soon)
-- **@cogita/create-cogita-blog** - CLI scaffolding tool (Coming Soon)
+- **[@cogita/cli](./packages/cli)** - Command Line Interface (CLI) for the Cogita framework.
+- **[@cogita/core](./packages/core)** - Core engine for Cogita, handling configuration, plugins, and themes.
+- **[@cogita/ui](./packages/ui)** - Shared, themeable UI components for the Cogita ecosystem.
+- **[@cogita/theme-lucid](./themes/lucid)** - A lucid, content-focused blog theme for Cogita. (Default Theme)
 
 ### Plugins
-- **[@cogita/plugin-posts-frontmatter](./packages/plugin-posts-frontmatter)** - Post frontmatter management ✅
+- **[@cogita/plugin-posts-frontmatter](./plugins/posts-frontmatter)** - A Rspress plugin to get all pages frontmatter data with virtual module support. ✅
 - **@cogita/plugin-blog-list** - Blog list and pagination (Planned)
 - **@cogita/plugin-tags** - Tag system (Planned)
 - **@cogita/plugin-categories** - Category system (Planned)
@@ -120,8 +121,8 @@ pnpm run test
 - [x] Project architecture setup
 - [x] plugin-posts-frontmatter
 - [ ] @cogita/core package
-- [ ] @cogita/theme-blog
-- [ ] create-cogita-blog CLI
+- [ ] @cogita/theme-lucid
+- [ ] @cogita/cli
 
 ### Phase 2: Plugin Ecosystem
 - [ ] Blog list and pagination

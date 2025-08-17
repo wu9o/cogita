@@ -1,0 +1,28 @@
+/* themes/lucid/src/theme.css */
+:root {
+  /* Button variables */
+  --cogita-primary-color: #1a1a1a;
+  --cogita-primary-text-color: #ffffff;
+
+  /* PostList variables */
+  --cogita-border-color: #eaeaea;
+  --cogita-title-color: #222222;
+  --cogita-text-color: #555555;
+  --cogita-text-color-secondary: #777777;
+}
+
+.theme-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: sans-serif;
+}
+
+.header {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.main-content {
+  margin-top: 2rem;
+}
