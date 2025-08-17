@@ -1,6 +1,6 @@
 {
   "name": "@cogita/cli",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Command Line Interface (CLI) for the Cogita framework.",
   "keywords": ["cogita", "cli", "static-site-generator", "blog"],
   "author": "wu9o <https://github.com/wu9o>",

@@ -1,6 +1,6 @@
 {
   "name": "cogita",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "A comprehensive, out-of-the-box static blog system based on Rspress",
   "private": true,
   "keywords": ["rspress", "blog", "static-site", "markdown", "react"],
