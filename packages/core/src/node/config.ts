@@ -139,6 +139,7 @@ export async function createRspressConfig(
     description: cogitaConfig.site?.description,
     base: cogitaConfig.site?.base,
     themeConfig: cogitaConfig.themeConfig,
+    builderConfig: cogitaConfig.builderConfig,
     plugins: [], // Will be populated next
   };
 
