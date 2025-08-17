@@ -1,9 +1,7 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import matter from 'gray-matter';
-import { PostFrontmatter } from './types';
-
-
+import type { PostFrontmatter } from './types';
 
 /**
  * 读取并解析单个文件的 Frontmatter 信息，并结合文件系统信息进行丰富。
@@ -15,7 +13,7 @@ import { PostFrontmatter } from './types';
 export function getFrontmatterFromFile(
   filePath: string,
   postsDir: string,
-  routePrefix: string = 'posts',
+  routePrefix = 'posts'
 ): PostFrontmatter | null {
   try {
     const fileExt = path.extname(filePath);
@@ -31,7 +29,7 @@ export function getFrontmatterFromFile(
     const routeWithoutExt = relativePath.replace(/\.(mdx?)$/, '');
     const baseRoute = routeWithoutExt.replace(/(^|\/)index$/, '');
     // 使用 path.join 来安全地组合路由，并确保有前导斜杠
-    const route = ('/' + path.join(routePrefix, baseRoute)).replace(/\\/g, '/');
+    const route = `/${path.join(routePrefix, baseRoute)}`.replace(/\\/g, '/');
 
     const title = frontmatter.title || path.basename(filePath, fileExt);
 
