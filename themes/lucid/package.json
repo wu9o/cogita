@@ -1,6 +1,6 @@
 {
   "name": "@cogita/theme-lucid",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A lucid, content-focused blog theme for Cogita. (Default Theme)",
   "keywords": ["cogita", "theme", "blog", "lucid"],
   "author": "wu9o <https://github.com/wu9o>",

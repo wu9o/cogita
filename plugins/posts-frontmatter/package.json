@@ -1,6 +1,6 @@
 {
   "name": "@cogita/plugin-posts-frontmatter",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A Rspress plugin to get all pages frontmatter data with virtual module support.",
   "keywords": ["rspress", "plugin", "frontmatter", "blog", "posts", "virtual-module"],
   "author": "Cogita",

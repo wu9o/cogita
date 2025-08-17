@@ -1,6 +1,6 @@
 {
   "name": "@cogita/ui",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Shared, themeable UI components for the Cogita ecosystem.",
   "keywords": ["cogita", "react", "components", "ui-kit", "blog"],
   "author": "wu9o <https://github.com/wu9o>",
