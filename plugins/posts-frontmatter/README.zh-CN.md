@@ -15,7 +15,27 @@ npm install @cogita/plugin-posts-frontmatter
 
 ## 使用
 
-### 1. 在 rspress.config.ts 中配置插件
+本插件旨在与 Cogita 框架无缝协作，并由需要它的主题（例如 `@cogita/theme-lucid`）自动集成。
+
+对于绝大多数用户来说，**无需手动安装或配置**。只需使用一个兼容的 Cogita 主题，本插件即可开箱即用。
+
+### 工作原理
+
+当在 Cogita 主题中使用时，主题会向 `@cogita/core` 表明此插件是一个依赖项。接着，核心会自动初始化该插件，并向其提供必要的配置以找到你的文章（通常在 `posts/` 目录下）。
+
+然后，插件会扫描所有 Markdown 文件，提取其 frontmatter，并创建一个名为 `virtual-posts-data` 的虚拟模块，该模块导出一个 `allPosts` 数组。主题组件随后可以导入这些数据来渲染文章列表、归档等。
+
+### TypeScript 支持
+
+我们为虚拟模块提供了客户端的类型定义。要启用它们，请将以下引用添加到你项目的 `tsconfig.json` 或 `.d.ts` 文件中：
+
+```typescript
+/// <reference types="@cogita/plugin-posts-frontmatter/client" />
+```
+
+### 高级用法 (手动配置)
+
+如果你希望在一个标准的 Rspress 项目中（在 Cogita 框架之外）使用此插件，你可以手动在 `rspress.config.ts` 中进行配置：
 
 ```typescript
 import { defineConfig } from '@rspress/core';
@@ -23,46 +43,14 @@ import { pluginPostsFrontmatter } from '@cogita/plugin-posts-frontmatter';
 
 export default defineConfig({
   plugins: [
-    pluginPostsFrontmatter({
-      postsDir: '/path/to/your/posts',
+    // 插件函数现在接收完整的配置对象
+    (config) => pluginPostsFrontmatter({
+      ...config,
+      postsDir: '/path/to/your/posts', // 指定文章目录
       routePrefix: 'blog' // 可选，默认为 'posts'
     })
   ]
 });
-```
-
-### 2. 配置 TypeScript 类型支持
-
-在你的项目根目录的 `tsconfig.json` 或 `env.d.ts` 文件中添加类型引用：
-
-```typescript
-/// <reference types="@cogita/plugin-posts-frontmatter/client" />
-```
-
-或者在你的 `env.d.ts` 文件中：
-
-```typescript
-import '@cogita/plugin-posts-frontmatter/client';
-```
-
-### 3. 在组件中使用
-
-```typescript
-import { allPosts } from 'virtual-posts-data';
-
-export function BlogList() {
-  return (
-    <div>
-      {allPosts.map(post => (
-        <div key={post.route}>
-          <h2>{post.title}</h2>
-          <p>{post.description}</p>
-          <p>创建时间: {post.createDate}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
 ```
 
 ## API

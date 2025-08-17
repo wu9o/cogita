@@ -115,29 +115,23 @@ interface CogitaTheme {
 **Goal**: Establish the core architecture and basic functionality
 
 #### Completed ✅
-- [x] Project architecture setup
-- [x] Monorepo structure with pnpm workspace
-- [x] `@cogita/plugin-posts-frontmatter` - Post frontmatter management
+- [x] Project architecture setup & Monorepo structure
+- [x] Implemented the theme-driven plugin system
+- [x] Enabled `themeConfig` customization (Rspress Passthrough)
+- [x] `@cogita/plugin-posts-frontmatter` - Core plugin for blog post handling
+- [x] `@cogita/theme-lucid` - A fully functional default theme
 
 #### In Progress 🔄
 - [ ] `@cogita/core` - Core blog system package
-  - [ ] Blog configuration API
-  - [ ] Plugin system integration
-  - [ ] SEO optimization utilities
-  - [ ] Deployment helpers
+  - [ ] Refine the Plugin API and document it
+  - [ ] Add comprehensive unit and integration tests
+  - [ ] Improve error handling
+- [ ] `@cogita/cli` - CLI scaffolding tool
+  - [ ] Improve CLI feedback
+  - [ ] Write the official documentation website
 
 #### Planned 📋
-- [ ] `@cogita/theme-lucid` - Default blog theme
-  - [ ] Responsive design
-  - [ ] Dark/light mode
-  - [ ] Mobile-first approach
-  - [ ] Accessibility features
-
-- [ ] `@cogita/cli` - CLI scaffolding tool
-  - [ ] Interactive project setup
-  - [ ] Template selection
-  - [ ] Dependency management
-  - [ ] Initial configuration
+- [ ] (The items from Phase 2 are the next major goals)
 
 ### Phase 2: Plugin Ecosystem (Q2 2025) 📦
 

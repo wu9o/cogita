@@ -1,5 +1,4 @@
 import type React from 'react';
-import './theme.css';
 
 // This is now a wrapper layout, so it receives children.
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {

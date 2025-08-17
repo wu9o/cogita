@@ -9,69 +9,83 @@ A comprehensive, out-of-the-box static blog system based on Rspress, designed fo
 
 ## ✨ Features
 
-- 🚀 **Out-of-the-box**: Zero configuration to get started
-- 🎨 **Customizable**: Plugin-based architecture for easy customization
-- 📱 **Responsive**: Mobile-first design with modern UI
-- ⚡ **Fast**: Built on Rspress for optimal performance
-- 🔍 **SEO Friendly**: Built-in SEO optimization
-- 📝 **Markdown**: Full markdown support with extensions
-- 🏷️ **Tags & Categories**: Organize your posts efficiently
-- 🔗 **RSS & Sitemap**: Built-in feed generation
-- 🌙 **Dark Mode**: Automatic dark/light theme switching
+- 🚀 **Out-of-the-box**: True zero-config experience to start your blog in seconds.
+- 🎨 **Theme-driven**: Themes are not just skins; they are self-contained ecosystems that bundle required plugins and functionalities.
+- 🔧 **Extensible**: While Cogita works out-of-the-box, it allows you to tap into the full power of Rspress's configuration for deep customization.
+- ⚡ **Fast**: Built on the high-performance Rspress framework.
+- 📝 **Markdown Centric**: Enjoy a pure Markdown-based writing experience.
+
+## 💡 Core Concepts
+
+Cogita is built upon a "convention over configuration" philosophy, with a unique **theme-driven architecture**.
+
+- **Themes as Ecosystems**: In Cogita, a theme is more than just a visual layer. It's a complete package that can declare its own plugin dependencies. When you choose a theme, Cogita's core automatically understands and registers all the necessary plugins (like post list generation) required for that theme to function. This provides a truly seamless, out-of-the-box experience.
+
+- **Configuration Passthrough**: Cogita provides a simple configuration layer for blogging needs, but it doesn't hide the power of Rspress. You can directly access and modify the underlying Rspress `themeConfig` through your `cogita.config.ts` file, allowing for advanced customization without ejecting.
 
 ## 🚀 Quick Start
 
-### Using CLI (Recommended)
+Setting up a Cogita blog is incredibly simple.
 
-```bash
-# Create a new blog (Coming Soon)
-npx @cogita/cli my-blog --template tech-blog
+1.  **Install Dependencies**:
 
-# Enter the directory
-cd my-blog
+    ```bash
+    # Install Cogita core and your chosen theme
+    pnpm add @cogita/core @cogita/theme-lucid
+    ```
 
-# Start development server
-npm run dev
+2.  **Create `cogita.config.ts`**:
 
-# Deploy to GitHub Pages
-npm run deploy
-```
+    Create a `cogita.config.ts` file in your project root:
 
-### Try the Live Demo
+    ```typescript
+    import { defineConfig } from '@cogita/core';
 
-🌐 **Live Demo**: [https://wu9o.github.io/cogita/](https://wu9o.github.io/cogita/)
+    export default defineConfig({
+      site: {
+        title: 'Cogita, Ergo Sum',
+        description: 'My journey of coding, creating, and thinking.',
+      },
+      theme: 'lucid', // Specify the theme
+      
+      // Directly configure Rspress's theme options
+      themeConfig: {
+        socialLinks: [
+          { 
+            icon: 'github', 
+            mode: 'link', 
+            content: 'https://github.com/your-github' 
+          },
+        ],
+      },
+    });
+    ```
 
-The demo showcases a personal blog built with Cogita, featuring:
-- Responsive design with dark/light mode
-- Blog post management with frontmatter
-- Tag and category organization
-- SEO optimization
-- Fast loading and navigation
+3.  **Create Your First Post**:
 
-### Manual Setup
+    Create a `posts` directory and add your first Markdown file, e.g., `posts/hello-world.md`.
 
-```bash
-# Clone the repository
-git clone https://github.com/wu9o/cogita.git
-cd cogita
+4.  **Run the Dev Server**:
 
-# Install dependencies
-pnpm install
-
-# Start development
-pnpm run dev
-```
+    Add the following script to your `package.json`:
+    ```json
+    "scripts": {
+      "dev": "cogita dev",
+      "build": "cogita build"
+    }
+    ```
+    Then, run `pnpm dev` to see your blog in action!
 
 ## 📦 Packages
 
 ### Core Packages
 - **[@cogita/cli](./packages/cli)** - Command Line Interface (CLI) for the Cogita framework.
-- **[@cogita/core](./packages/core)** - Core engine for Cogita, handling configuration, plugins, and themes.
+- **[@cogita/core](./packages/core)** - The core engine that intelligently orchestrates themes and plugins.
 - **[@cogita/ui](./packages/ui)** - Shared, themeable UI components for the Cogita ecosystem.
 - **[@cogita/theme-lucid](./themes/lucid)** - A lucid, content-focused blog theme for Cogita. (Default Theme)
 
 ### Plugins
-- **[@cogita/plugin-posts-frontmatter](./plugins/posts-frontmatter)** - A Rspress plugin to get all pages frontmatter data with virtual module support. ✅
+- **[@cogita/plugin-posts-frontmatter](./plugins/posts-frontmatter)** - Automatically scans posts, extracts frontmatter, and makes it available to themes. ✅
 - **@cogita/plugin-blog-list** - Blog list and pagination (Planned)
 - **@cogita/plugin-tags** - Tag system (Planned)
 - **@cogita/plugin-categories** - Category system (Planned)
@@ -80,12 +94,6 @@ pnpm run dev
 - **@cogita/plugin-search** - Local search functionality (Planned)
 - **@cogita/plugin-comments** - Comment system integration (Planned)
 - **@cogita/plugin-analytics** - Analytics integration (Planned)
-
-## 🎨 Templates
-
-- **minimal** - Clean and simple design (Planned)
-- **tech-blog** - Technical blog template (Planned)
-- **personal** - Personal blog template (Planned)
 
 ## 📚 Documentation
 
@@ -105,41 +113,34 @@ pnpm install
 # Build all packages
 pnpm run build
 
-# Build specific plugin
-pnpm run build:plugin
-
-# Start blog development
+# Start the example blog for development
 pnpm run dev
-
-# Run tests
-pnpm run test
 ```
 
 ## 🗺️ Roadmap
 
-### Phase 1: Core Foundation (Current)
-- [x] Project architecture setup
-- [x] plugin-posts-frontmatter
-- [ ] @cogita/core package
-- [ ] @cogita/theme-lucid
-- [ ] @cogita/cli
+Our roadmap is focused on enhancing the stability, ecosystem, and user experience of Cogita.
 
-### Phase 2: Plugin Ecosystem
-- [ ] Blog list and pagination
-- [ ] Tags and categories system
-- [ ] RSS feed generation
-- [ ] Sitemap generation
+### Phase 1: Core Foundation (Current)
+- [x] **Core Architecture**: Implemented the theme-driven plugin system.
+- [x] **Rspress Passthrough**: Enabled `themeConfig` customization.
+- [x] **`@cogita/plugin-posts-frontmatter`**: Core plugin for blog post handling.
+- [x] **`@cogita/theme-lucid`**: A fully functional default theme.
+- [ ] Refine the Plugin API and document it.
+- [ ] Add comprehensive unit and integration tests.
+- [ ] Improve error handling and CLI feedback.
+
+### Phase 2: Ecosystem Growth
+- [ ] **Official Plugins**: Develop essential plugins for tags, categories, and pagination.
+- [ ] **More Themes**: Create at least one more official theme with a different style.
+- [ ] **Documentation**: Write the official documentation website.
+- [ ] **Community Templates**: Encourage and showcase community-developed themes and plugins.
 
 ### Phase 3: Advanced Features
-- [ ] Local search functionality
-- [ ] Comment system integration
-- [ ] Analytics integration
-- [ ] Multiple template support
-
-### Phase 4: Ecosystem Growth
-- [ ] Documentation website
-- [ ] Community plugins
-- [ ] Theme marketplace
+- [ ] Full-text search integration.
+- [ ] SEO enhancement plugins (sitemap, structured data).
+- [ ] Comment system integrations (Giscus, etc.).
+- [ ] i18n support for multi-language blogs.
 
 ## 🤝 Contributing
 

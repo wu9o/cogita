@@ -57,7 +57,7 @@ export default defineConfig({
         externals: COMMON_EXTERNALS,
         cssModules: {
           localIdentName: '[local]_[hash:hex:5]',
-          namedExport: true,
+          namedExport: false,
           exportLocalsConvention: 'camelCaseOnly',
         },
         injectStyles: true,
