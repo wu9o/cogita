@@ -1,0 +1,9 @@
+{
+  "name": "@cogita/config",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^22.8.1",
+    "typescript": "^5.8.2"
+  }
+}

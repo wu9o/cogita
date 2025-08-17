@@ -1,0 +1,7 @@
+packages:
+  - 'packages/*'
+  - 'templates/*'
+  - 'examples/*'
+  - 'scripts/*'
+  - 'blog'
+  - 'docs'
