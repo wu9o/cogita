@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { build as cogitaBuild, createServer, loadConfig } from '@cogita/core';
+import { createBuild, createServer } from '@cogita/core';
 import { program } from 'commander';
 
 // Helper to find the package.json
@@ -29,16 +29,16 @@ program
   .command('dev')
   .description('Start the development server')
   .action(async () => {
-    const config = await loadConfig(CWD);
-    await createServer(CWD, config);
+    // const config = await loadCogitaConfig(CWD);
+    await createServer(CWD);
   });
 
 program
   .command('build')
   .description('Build the site for production')
   .action(async () => {
-    const config = await loadConfig(CWD);
-    await cogitaBuild(CWD, config);
+    // const config = await loadConfig(CWD);
+    await createBuild(CWD);
   });
 
 program

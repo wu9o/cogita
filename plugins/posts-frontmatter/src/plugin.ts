@@ -1,10 +1,12 @@
 import type { RspressPlugin } from '@rspress/core';
 import { glob } from 'glob';
-import type { PluginOptions, PostFrontmatter } from './types';
+import type { PostFrontmatter } from './types';
 import { getFrontmatterFromFile } from './utils';
 
-export function pluginPostsFrontmatter(options: PluginOptions): RspressPlugin {
-  const { postsDir, routePrefix = 'posts' } = options;
+export function pluginPostsFrontmatter(config: Record<string, any>): RspressPlugin {
+  const postsDir = config.postsDir || 'posts';
+  const cwd = config.cwd;
+  const routePrefix = config.routePrefix || 'posts';
   // 用于在钩子之间传递数据的文章数据数组
   let allPostsData: PostFrontmatter[] = [];
 
@@ -12,11 +14,18 @@ export function pluginPostsFrontmatter(options: PluginOptions): RspressPlugin {
     name: '@cogita/plugin-posts-frontmatter',
 
     async beforeBuild() {
-      // 1. 使用 glob 扫描指定目录下的所有 .md 和 .mdx 文件
-      const files = await glob(`${postsDir}/**/*.{md,mdx}`);
+      // 配置 glob 选项：获取绝对路径，并指定相对路径的基准目录
+      const options = {
+        absolute: true, // 返回绝对路径
+        cwd, // 相对路径的基准目录（相对于 postsDir）
+        nodir: true, // 只返回文件，不返回目录
+      };
+
+      // 执行 glob 匹配，获取绝对路径列表
+      const absolutePaths = await glob(`${postsDir}/**/*.{md,mdx}`, options);
 
       // 2. 遍历所有文件，提取 frontmatter，并存入 allPostsData
-      allPostsData = files
+      allPostsData = absolutePaths
         .map((file) => getFrontmatterFromFile(file, postsDir, routePrefix))
         .filter(Boolean) as PostFrontmatter[]; // 过滤掉解析失败的 null 值
 
@@ -30,7 +39,8 @@ export function pluginPostsFrontmatter(options: PluginOptions): RspressPlugin {
       // 4. 遍历 allPostsData，为每篇文章添加一个页面路由
       return allPostsData.map((post) => ({
         routePath: post.route,
-        absolutePath: post.filePath,
+        content: '---npageType: homen---',
+        filepath: post.filePath,
       }));
     },
 

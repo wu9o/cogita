@@ -1,3 +1,6 @@
+import { normalizeHrefInRuntime } from '@rspress/runtime';
+// import { Link } from 'react-router-dom';
+import { Link } from '@rspress/theme-default';
 import type React from 'react';
 import type { Post } from '../../types';
 import styles from './index.module.css';
@@ -16,13 +19,14 @@ export interface PostListProps {
 
 const DefaultPostItem: React.FC<{ post: Post }> = ({ post }) => (
   <article key={post.url} className={styles.postItem}>
-    <a href={post.url} className={styles.titleLink}>
+    <Link href={normalizeHrefInRuntime(post.route)}>
       <h2 className={styles.title}>{post.title}</h2>
-    </a>
-    <time dateTime={post.date} className={styles.date}>
-      {new Date(post.date).toLocaleDateString()}
-    </time>
-    {post.excerpt && <p className={styles.excerpt}>{post.excerpt}</p>}
+      <time dateTime={post.updateDate} className={styles.date}>
+        {new Date(post.updateDate).toLocaleDateString()}
+      </time>
+    </Link>
+
+    {/* {post.excerpt && <p className={styles.excerpt}>{post.excerpt}</p>} */}
   </article>
 );
 

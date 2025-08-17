@@ -15,7 +15,27 @@ npm install @cogita/plugin-posts-frontmatter
 
 ## Usage
 
-### 1. Configure the plugin in rspress.config.ts
+This plugin is designed to work seamlessly with the Cogita framework and is automatically integrated by themes that require it, such as `@cogita/theme-lucid`.
+
+For the majority of users, **no manual installation or configuration is needed**. Simply use a compatible Cogita theme, and this plugin will work out-of-the-box.
+
+### How It Works
+
+When used within a Cogita theme, the theme signals to `@cogita/core` that this plugin is a dependency. The core then automatically initializes the plugin, feeding it the necessary configuration to find your posts (typically in the `posts/` directory).
+
+The plugin then scans all Markdown files, extracts their frontmatter, and creates a virtual module named `virtual-posts-data`, which exports an `allPosts` array. Theme components can then import this data to render post lists, archives, etc.
+
+### TypeScript Support
+
+Client-side type definitions for the virtual module are available. To enable them, add the following reference to your project's `tsconfig.json` or a `.d.ts` file:
+
+```typescript
+/// <reference types="@cogita/plugin-posts-frontmatter/client" />
+```
+
+### Advanced Usage (Manual Setup)
+
+If you wish to use this plugin with a standard Rspress project (outside of the Cogita framework), you can configure it manually in your `rspress.config.ts`:
 
 ```typescript
 import { defineConfig } from '@rspress/core';
@@ -23,46 +43,14 @@ import { pluginPostsFrontmatter } from '@cogita/plugin-posts-frontmatter';
 
 export default defineConfig({
   plugins: [
-    pluginPostsFrontmatter({
-      postsDir: '/path/to/your/posts',
+    // The plugin function now accepts the full config object
+    (config) => pluginPostsFrontmatter({
+      ...config,
+      postsDir: '/path/to/your/posts', // Specify the posts directory
       routePrefix: 'blog' // Optional, defaults to 'posts'
     })
   ]
 });
-```
-
-### 2. Setup TypeScript support
-
-Add type reference in your project's `tsconfig.json` or `env.d.ts` file:
-
-```typescript
-/// <reference types="@cogita/plugin-posts-frontmatter/client" />
-```
-
-Or in your `env.d.ts` file:
-
-```typescript
-import '@cogita/plugin-posts-frontmatter/client';
-```
-
-### 3. Use in components
-
-```typescript
-import { allPosts } from 'virtual-posts-data';
-
-export function BlogList() {
-  return (
-    <div>
-      {allPosts.map(post => (
-        <div key={post.route}>
-          <h2>{post.title}</h2>
-          <p>{post.description}</p>
-          <p>Created: {post.createDate}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
 ```
 
 ## API

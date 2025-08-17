@@ -16,7 +16,7 @@ export function getFrontmatterFromFile(
   routePrefix = 'posts'
 ): PostFrontmatter | null {
   try {
-    const fileExt = path.extname(filePath);
+    const fileExt = path.extname(filePath).toLowerCase();
     if (!['.md', '.mdx'].includes(fileExt)) {
       return null;
     }
@@ -36,12 +36,13 @@ export function getFrontmatterFromFile(
     return {
       title: title,
       description: frontmatter.description,
-      filePath: filePath,
+      filePath,
       route: route,
       createDate: frontmatter.date || frontmatter.createDate || stats.birthtime.toISOString(),
       updateDate: frontmatter.updateDate || stats.mtime.toISOString(),
       categories: frontmatter.categories,
       tags: frontmatter.tags,
+      url: '',
     };
   } catch (e) {
     console.error(`从 ${filePath} 读取 frontmatter 时出错:`, e);

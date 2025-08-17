@@ -1,3 +1,10 @@
+import type { CogitaTheme, LayoutProps } from '@cogita/shared';
+import type { UserConfig } from '@rspress/core';
+
+export type { CogitaTheme, LayoutProps };
+
+export type ThemeConfig = UserConfig['themeConfig'];
+
 export interface SiteConfig {
   title?: string;
   description?: string;
@@ -7,6 +14,9 @@ export interface SiteConfig {
 export interface CogitaConfig {
   site?: SiteConfig;
   theme?: string;
-  // plugins: Plugin[]
-  // theme: ThemeConfig
+  /**
+   * Rspress theme config.
+   * @see https://rspress.rs/api/config/config-theme
+   */
+  themeConfig?: ThemeConfig;
 }

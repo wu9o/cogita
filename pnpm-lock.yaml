@@ -31,10 +31,6 @@ importers:
         version: 5.9.2
 
   blog:
-    dependencies:
-      '@cogita/plugin-posts-frontmatter':
-        specifier: workspace:*
-        version: link:../plugins/posts-frontmatter
     devDependencies:
       '@cogita/cli':
         specifier: workspace:*
@@ -64,6 +60,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@cogita/theme-lucid':
         specifier: workspace:*
         version: link:../../themes/lucid
@@ -85,12 +84,53 @@ importers:
         version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(typescript@5.9.2)
       rsbuild-plugin-publint:
         specifier: ^0.3.3
+        version: 0.3.3(@rsbuild/core@1.4.15)
+      typescript:
+        specifier: ^5.0.4
+        version: 5.9.2
+
+  packages/shared:
+    dependencies:
+      '@rspress/core':
+        specifier: ^1.45.1
+        version: 1.45.1(webpack@5.101.2)
+    devDependencies:
+      '@cogita/config':
+        specifier: workspace:*
+        version: link:../../scripts/config
+      '@microsoft/api-extractor':
+        specifier: ^7.52.10
+        version: 7.52.10(@types/node@18.19.123)
+      '@rslib/core':
+        specifier: 0.11.2
+        version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@18.19.123))(typescript@5.9.2)
+      '@types/node':
+        specifier: ^18.11.17
+        version: 18.19.123
+      '@types/react':
+        specifier: ^19.1.9
+        version: 19.1.10
+      react:
+        specifier: ^19.1.1
+        version: 19.1.1
+      rsbuild-plugin-publint:
+        specifier: ^0.3.3
         version: 0.3.3(@rsbuild/core@1.3.22)
       typescript:
         specifier: ^5.0.4
         version: 5.9.2
 
   packages/ui:
+    dependencies:
+      '@rspress/runtime':
+        specifier: ^1.45.1
+        version: 1.45.1
+      '@rspress/theme-default':
+        specifier: ^1.45.1
+        version: 1.45.1
+      react-router-dom:
+        specifier: ^7.8.1
+        version: 7.8.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
     devDependencies:
       '@cogita/config':
         specifier: workspace:*
@@ -182,6 +222,13 @@ importers:
         version: 5.9.2
 
   themes/lucid:
+    dependencies:
+      '@cogita/plugin-posts-frontmatter':
+        specifier: workspace:*
+        version: link:../../plugins/posts-frontmatter
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
     devDependencies:
       '@cogita/config':
         specifier: workspace:*
@@ -189,6 +236,15 @@ importers:
       '@cogita/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@rsbuild/plugin-react':
+        specifier: ~1.3.5
+        version: 1.3.5(@rsbuild/core@1.4.15)
+      '@rsbuild/plugin-sass':
+        specifier: ~1.3.5
+        version: 1.3.5(@rsbuild/core@1.4.15)
+      '@rsbuild/plugin-svgr':
+        specifier: ^1.2.2
+        version: 1.2.2(@rsbuild/core@1.4.15)(typescript@5.9.2)
       '@rslib/core':
         specifier: ^0.11.2
         version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(typescript@5.9.2)
@@ -1570,6 +1626,10 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
+  cookie@1.0.2:
+    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+    engines: {node: '>=18'}
+
   copy-to-clipboard@3.3.3:
     resolution: {integrity: sha512-2KV8NhB5JqC3ky0r9PMCAZKbUHSwtEo4CwCs0KXgruG43gX5PMqDEBbVU4OUzw2MuAWUfsuFmWvEKG5QRfSnJA==}
 
@@ -2888,11 +2948,28 @@ packages:
       react: '>=16.8'
       react-dom: '>=16.8'
 
+  react-router-dom@7.8.1:
+    resolution: {integrity: sha512-NkgBCF3sVgCiAWIlSt89GR2PLaksMpoo3HDCorpRfnCEfdtRPLiuTf+CNXvqZMI5SJLZCLpVCvcZrTdtGW64xQ==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+
   react-router@6.30.1:
     resolution: {integrity: sha512-X1m21aEmxGXqENEPG3T6u0Th7g0aS4ZmoNynhbs+Cn+q+QGTLt+d5IQ2bHAXKzKcxGJjxACpVbnYQSCRcfxHlQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       react: '>=16.8'
+
+  react-router@7.8.1:
+    resolution: {integrity: sha512-5cy/M8DHcG51/KUIka1nfZ2QeylS4PJRs6TT8I4PF5axVsI5JUxp0hC0NZ/AEEj8Vw7xsEoD7L/6FY+zoYaOGA==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
 
   react-syntax-highlighter@15.6.1:
     resolution: {integrity: sha512-OqJ2/vL7lEeV5zTJyG7kmARppUjiB9h9udl4qHQjjgEos66z00Ia0OckwYfRxCSFrW8RJIBnsBwQsHZbVPspqg==}
@@ -3168,6 +3245,9 @@ packages:
 
   serialize-javascript@6.0.2:
     resolution: {integrity: sha512-Saa1xPByTTq2gdeFZYLLo+RFE35NHZkAbqZeWNd3BpzppeVisAqpDjcp8dyf6uIvEqJRd46jemmyA4iFIeVk8g==}
+
+  set-cookie-parser@2.7.1:
+    resolution: {integrity: sha512-IOc8uWeOZgnb3ptbCURJWNjWUPcO3ZnTTdzsurqERrP6nPyv+paC55vJM0LpOlT2ne+Ix+9+CRG1MNLlyZ4GjQ==}
 
   shallowequal@1.1.0:
     resolution: {integrity: sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==}
@@ -4855,7 +4935,7 @@ snapshots:
 
   '@types/conventional-commits-parser@5.0.1':
     dependencies:
-      '@types/node': 22.17.2
+      '@types/node': 24.3.0
 
   '@types/debug@4.1.12':
     dependencies:
@@ -5243,6 +5323,8 @@ snapshots:
       split2: 4.2.0
 
   convert-source-map@2.0.0: {}
+
+  cookie@1.0.2: {}
 
   copy-to-clipboard@3.3.3:
     dependencies:
@@ -6784,10 +6866,24 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       react-router: 6.30.1(react@18.3.1)
 
+  react-router-dom@7.8.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
+    dependencies:
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
+      react-router: 7.8.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+
   react-router@6.30.1(react@18.3.1):
     dependencies:
       '@remix-run/router': 1.23.0
       react: 18.3.1
+
+  react-router@7.8.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
+    dependencies:
+      cookie: 1.0.2
+      react: 19.1.1
+      set-cookie-parser: 2.7.1
+    optionalDependencies:
+      react-dom: 19.1.1(react@19.1.1)
 
   react-syntax-highlighter@15.6.1(react@18.3.1):
     dependencies:
@@ -7097,6 +7193,8 @@ snapshots:
   serialize-javascript@6.0.2:
     dependencies:
       randombytes: 2.1.0
+
+  set-cookie-parser@2.7.1: {}
 
   shallowequal@1.1.0: {}
 

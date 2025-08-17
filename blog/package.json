@@ -7,9 +7,7 @@
     "dev": "cogita dev",
     "preview": "cogita preview"
   },
-  "dependencies": {
-    "@cogita/plugin-posts-frontmatter": "workspace:*"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@cogita/cli": "workspace:*",
     "@cogita/core": "workspace:*"

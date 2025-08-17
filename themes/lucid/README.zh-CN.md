@@ -1,36 +1,18 @@
 # @cogita/theme-lucid
 
-一个为 Cogita 设计的、清晰的、以内容为中心的博客主题。这是新 Cogita 项目的默认主题。
+[English](./README.md)
+
+> 一个为 Cogita 设计的、清晰且注重内容的博客主题。(默认主题)
+
+这是 Cogita 的默认主题，旨在提供清晰、易读且无缝的写作体验。
 
 ## 特性
 
--   干净、极简的设计
--   专注于可读性和排版
--   响应式与移动优先
--   可通过 CSS 自定义属性进行定制
--   使用 `@cogita/ui` 的组件构建
+- **开箱即用的文章列表**: 主页已预先配置好，可直接展示你的最新博客文章列表，无需任何配置。
+- **自动化集成**: 本主题会自动包含并配置 `@cogita/plugin-posts-frontmatter` 插件，该插件负责获取和提供文章数据。作为用户，你无需手动安装或配置它。
+- **简洁且响应式的设计**: 现代化的、移动优先的设计，将你的内容置于中心位置。
+- **可定制**: 尽管主题开箱即用，你仍然可以通过 Cogita 的配置文件来定制其外观和行为。
 
-## 设计哲学
+## 许可证
 
-该主题旨在提供清晰、无障碍的阅读体验，让作者的思想 (`Cogito`) 得以清晰地 (`Lucid`) 呈现。
-
-它既是一个开箱即用的、漂亮的、生产就绪的默认选项，也是一个极佳的定制化起点。
-
-## 使用
-
-该主题已默认被 `@cogita/core` 包含。如果您想显式地安装或配置它：
-
-```bash
-pnpm add @cogita/theme-lucid
-```
-
-然后，在您的 `cogita.config.ts` 中：
-
-```ts
-import { defineConfig } from 'cogita';
-
-export default defineConfig({
-  theme: '@cogita/theme-lucid',
-  // ... 其他配置
-});
-```
+MIT © [wu9o](https://github.com/wu9o)
