@@ -4,7 +4,7 @@ import { Link } from 'rspress/theme';
 // 从插件创建的虚拟模块中导入文章数据
 import { allPosts } from 'virtual-posts-data';
 
-export const HomeLayout = () => {
+const HomeLayout = () => {
   const siteData = usePageData();
 
   return (
@@ -40,3 +40,6 @@ export const HomeLayout = () => {
     </div>
   );
 };
+
+export { HomeLayout };
+export default HomeLayout;

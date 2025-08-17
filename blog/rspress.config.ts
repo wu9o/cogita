@@ -7,10 +7,10 @@ export default defineConfig({
   base: process.env.NODE_ENV === 'production' ? '/cogita/' : '/',
   title: "wu9o's Blog",
   description: 'Personal blog powered by Cogita - A comprehensive blog system based on Rspress',
-  icon: '/favicon.ico',
+  icon: '/rspress-icon.png',
   logo: {
-    light: '/logo-light.png',
-    dark: '/logo-dark.png',
+    light: '/rspress-light-logo.png',
+    dark: '/rspress-dark-logo.png',
   },
   themeConfig: {
     socialLinks: [
