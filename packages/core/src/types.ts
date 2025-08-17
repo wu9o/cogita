@@ -4,6 +4,7 @@ import type { UserConfig } from '@rspress/core';
 export type { CogitaTheme, LayoutProps };
 
 export type ThemeConfig = UserConfig['themeConfig'];
+export type BuilderConfig = UserConfig['builderConfig'];
 
 export interface SiteConfig {
   title?: string;
@@ -19,4 +20,9 @@ export interface CogitaConfig {
    * @see https://rspress.rs/api/config/config-theme
    */
   themeConfig?: ThemeConfig;
+  /**
+   * Rspress builder config.
+   * @see https://rspress.rs/api/config/config-builder
+   */
+  builderConfig?: BuilderConfig;
 }

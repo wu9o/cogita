@@ -5,7 +5,7 @@ export default defineConfig({
     title: 'Cogita, Ergo Sum | 我思，故我在',
     description:
       '在这里，我记录编码、创造与思考的瞬间。Cogita 框架，便是我对“优雅构建”的一次哲学实践。',
-    base: 'cogita',
+    base: '/cogita/',
   },
   themeConfig: {
     socialLinks: [
@@ -20,5 +20,10 @@ export default defineConfig({
         content: 'https://github.com/wu9o',
       },
     ],
+  },
+  builderConfig: {
+    output: {
+      assetPrefix: '/cogita/',
+    },
   },
 });
