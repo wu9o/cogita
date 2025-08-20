@@ -1,22 +1,170 @@
 # @cogita/core
 
-[中文文档](./README.zh-CN.md)
+[![npm version](https://badge.fury.io/js/@cogita%2Fcore.svg)](https://badge.fury.io/js/@cogita%2Fcore)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> The core engine for Cogita that intelligently orchestrates themes and plugins.
+[中文](./README.zh-CN.md) | **English**
 
-This package contains the core logic for the Cogita static site generator. It acts as a powerful layer on top of [Rspress](https://rspress.dev/), simplifying the process of building a blog while retaining the flexibility of the underlying engine.
+> The intelligent core engine that orchestrates Cogita's theme-driven architecture.
+
+## What is it?
+
+`@cogita/core` is the brain of the Cogita framework. It automatically loads themes, manages plugins, and provides a type-safe configuration system that makes building a blog as simple as choosing a theme.
+
+## Key Features
+
+- 🎨 **Theme-Driven**: Themes automatically load their required plugins
+- ⚙️ **Type-Safe Config**: Full TypeScript support with intelligent defaults  
+- 🔧 **Zero Config**: Works out-of-the-box, customizable when needed
+- ⚡ **Rspress Powered**: Built on the fast and modern Rspress foundation
+
+## Quick Start
+
+### Installation
+
+```bash
+pnpm add @cogita/core @cogita/theme-lucid
+```
+
+### Basic Usage
+
+Create `cogita.config.ts`:
+
+```typescript
+import { defineConfig } from '@cogita/core';
+
+export default defineConfig({
+  site: {
+    title: 'My Blog',
+    description: 'A blog built with Cogita',
+  },
+  theme: 'lucid', // Theme handles everything else!
+});
+```
+
+Create your first post in `posts/hello.md`:
+
+```markdown
+---
+title: "Hello Cogita!"
+createDate: "2024-01-01"
+---
+
+# Welcome to my blog!
+```
+
+Start development:
+
+```bash
+pnpm dev
+```
+
+That's it! Your blog is ready at `http://localhost:3000`.
 
 ## How It Works
 
-The core philosophy of `@cogita/core` is "theme-driven architecture".
+1. **Load Config**: Reads your `cogita.config.ts` 
+2. **Load Theme**: Automatically loads the specified theme
+3. **Register Plugins**: Theme declares its plugin dependencies
+4. **Generate Config**: Creates optimized Rspress configuration
+5. **Build/Serve**: Powers your blog with Rspress
 
-1.  **Configuration Loading**: It starts by reading a `cogita.config.ts` file in the user's project, which provides a simple and type-safe way to define the blog's metadata and theme.
+## Configuration
 
-2.  **Theme as an Ecosystem**: The core treats themes as more than just visual skins. When a theme like `@cogita/theme-lucid` is specified, the core loads it and inspects its dependencies.
+### Basic Site Config
 
-3.  **Automatic Plugin Registration**: If the theme declares a dependency on certain plugins (e.g., for generating a post list), the core automatically instantiates and registers these plugins, injecting the final, merged configuration into them. This ensures that themes are self-contained and work out-of-the-box.
+```typescript
+export default defineConfig({
+  site: {
+    title: 'My Blog',           // Site title
+    description: 'My awesome blog',  // Meta description
+    base: '/blog/',             // Base URL (for subpaths)
+  },
+  theme: 'lucid',              // Theme name
+});
+```
 
-4.  **Configuration Passthrough**: While providing a simple setup, the core doesn't hide Rspress's power. It allows users to pass through configurations directly to Rspress's `themeConfig`, enabling advanced customization.
+### Advanced Configuration
+
+```typescript
+export default defineConfig({
+  site: { /* ... */ },
+  theme: 'lucid',
+  
+  // Pass-through to Rspress theme config
+  themeConfig: {
+    nav: [
+      { text: 'Home', link: '/' },
+      { text: 'About', link: '/about' },
+    ],
+    socialLinks: [
+      { icon: 'github', mode: 'link', content: 'https://github.com/you' }
+    ],
+  },
+  
+  // Pass-through to Rspress build config
+  builderConfig: {
+    output: { assetPrefix: 'https://cdn.example.com/' }
+  },
+});
+```
+
+## API Reference
+
+### `defineConfig(config: CogitaConfig)`
+
+Type-safe configuration helper.
+
+### `loadCogitaConfig(root?: string)`
+
+Load configuration from project directory.
+
+### Main Types
+
+```typescript
+interface CogitaConfig {
+  site?: {
+    title?: string;
+    description?: string; 
+    base?: string;
+  };
+  theme?: string;
+  themeConfig?: any;    // Rspress theme config
+  builderConfig?: any;  // Rspress builder config
+}
+```
+
+## Available Themes
+
+- **`lucid`** (default) - Clean, content-focused blog theme
+- More themes coming soon...
+
+## Development Commands
+
+```bash
+# Development
+pnpm dev
+
+# Build 
+pnpm build
+
+# Preview build
+pnpm preview
+```
+
+## Learn More
+
+- 📖 [Complete Documentation](../../docs/README.md)
+- 🔧 [API Reference](../../docs/api-reference.md)
+- 🏗️ [Architecture Guide](../../docs/architecture-design.md)
+- 💡 [Best Practices](../../docs/best-practices.md)
+- 🎨 [Theme Development](../../docs/theme-development.md)
+
+## Related Packages
+
+- [🚀 @cogita/cli](../cli) - Command line interface
+- [🎨 @cogita/ui](../ui) - UI component library
+- [🌟 @cogita/theme-lucid](../../themes/lucid) - Default theme
 
 ## License
 

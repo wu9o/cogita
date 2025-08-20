@@ -1,8 +1,17 @@
 {
   "name": "@cogita/core",
   "version": "0.0.1",
-  "description": "Core engine for Cogita, handling configuration, plugins, and themes.",
-  "keywords": ["cogita", "core", "static-site-generator", "blog"],
+  "description": "The intelligent core engine that orchestrates Cogita's theme-driven architecture.",
+  "keywords": [
+    "cogita",
+    "core",
+    "static-site-generator",
+    "blog",
+    "rspress",
+    "theme-driven",
+    "typescript",
+    "markdown"
+  ],
   "author": "wu9o <https://github.com/wu9o>",
   "license": "MIT",
   "repository": {
@@ -23,7 +32,19 @@
   },
   "module": "./dist/es/index.js",
   "types": "./dist/types/index.d.ts",
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/wu9o"
+  },
   "scripts": {
     "build": "rslib build",
     "dev": "rslib build -w"

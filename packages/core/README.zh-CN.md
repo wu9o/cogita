@@ -1,22 +1,170 @@
 # @cogita/core
 
-[English](./README.md)
+[![npm version](https://badge.fury.io/js/@cogita%2Fcore.svg)](https://badge.fury.io/js/@cogita%2Fcore)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> Cogita 的核心引擎，负责智能地编排主题与插件。
+**中文** | [English](./README.md)
 
-这个包包含了 Cogita 静态站点生成器的核心逻辑。它作为 [Rspress](https://rspress.dev/) 之上的一个强大封装层，简化了构建博客的流程，同时保留了底层引擎的灵活性。
+> 智能编排 Cogita 主题驱动架构的核心引擎
+
+## 这是什么？
+
+`@cogita/core` 是 Cogita 框架的大脑。它自动加载主题、管理插件，并提供类型安全的配置系统，让构建博客就像选择主题一样简单。
+
+## 核心特性
+
+- 🎨 **主题驱动**：主题自动加载所需的插件
+- ⚙️ **类型安全**：完整的 TypeScript 支持和智能默认值
+- 🔧 **零配置**：开箱即用，需要时可自定义
+- ⚡ **Rspress 驱动**：基于快速现代的 Rspress 基础
+
+## 快速开始
+
+### 安装
+
+```bash
+pnpm add @cogita/core @cogita/theme-lucid
+```
+
+### 基础使用
+
+创建 `cogita.config.ts`：
+
+```typescript
+import { defineConfig } from '@cogita/core';
+
+export default defineConfig({
+  site: {
+    title: '我的博客',
+    description: '使用 Cogita 构建的博客',
+  },
+  theme: 'lucid', // 主题处理其他一切！
+});
+```
+
+在 `posts/hello.md` 中创建第一篇文章：
+
+```markdown
+---
+title: "你好，Cogita！"
+createDate: "2024-01-01"
+---
+
+# 欢迎来到我的博客！
+```
+
+启动开发服务器：
+
+```bash
+pnpm dev
+```
+
+就这样！你的博客已经在 `http://localhost:3000` 准备好了。
 
 ## 工作原理
 
-`@cogita/core` 的核心哲学是“主题驱动架构”。
+1. **加载配置**：读取你的 `cogita.config.ts`
+2. **加载主题**：自动加载指定的主题
+3. **注册插件**：主题声明其插件依赖
+4. **生成配置**：创建优化的 Rspress 配置
+5. **构建/服务**：使用 Rspress 为你的博客提供动力
 
-1.  **配置加载**: 核心首先会读取用户项目中的 `cogita.config.ts` 文件，该文件提供了一种简单且类型安全的方式来定义博客的元数据和主题。
+## 配置
 
-2.  **主题即生态**: 核心将主题视为不仅仅是视觉皮肤。当用户指定了像 `@cogita/theme-lucid` 这样的主题时，核心会加载它并检查其依赖关系。
+### 基础站点配置
 
-3.  **插件自动注册**: 如果主题声明了对某些插件的依赖（例如，用于生成文章列表的插件），核心会自动实例化并注册这些插件，并将最终合并后的配置注入其中。这确保了主题是自包含的，并且能够开箱即用。
+```typescript
+export default defineConfig({
+  site: {
+    title: '我的博客',              // 站点标题
+    description: '我的精彩博客',     // 元描述
+    base: '/blog/',               // 基础 URL（子路径）
+  },
+  theme: 'lucid',                // 主题名称
+});
+```
 
-4.  **配置透传**: 在提供简单设置的同时，核心并未隐藏 Rspress 的强大功能。它允许用户将配置直接透传给 Rspress 的 `themeConfig`，从而实现高级定制。
+### 高级配置
+
+```typescript
+export default defineConfig({
+  site: { /* ... */ },
+  theme: 'lucid',
+  
+  // 透传给 Rspress 主题配置
+  themeConfig: {
+    nav: [
+      { text: '首页', link: '/' },
+      { text: '关于', link: '/about' },
+    ],
+    socialLinks: [
+      { icon: 'github', mode: 'link', content: 'https://github.com/you' }
+    ],
+  },
+  
+  // 透传给 Rspress 构建配置
+  builderConfig: {
+    output: { assetPrefix: 'https://cdn.example.com/' }
+  },
+});
+```
+
+## API 参考
+
+### `defineConfig(config: CogitaConfig)`
+
+类型安全的配置助手。
+
+### `loadCogitaConfig(root?: string)`
+
+从项目目录加载配置。
+
+### 主要类型
+
+```typescript
+interface CogitaConfig {
+  site?: {
+    title?: string;
+    description?: string; 
+    base?: string;
+  };
+  theme?: string;
+  themeConfig?: any;    // Rspress 主题配置
+  builderConfig?: any;  // Rspress 构建配置
+}
+```
+
+## 可用主题
+
+- **`lucid`**（默认）- 简洁、专注内容的博客主题
+- 更多主题即将推出...
+
+## 开发命令
+
+```bash
+# 开发
+pnpm dev
+
+# 构建
+pnpm build
+
+# 预览构建结果
+pnpm preview
+```
+
+## 了解更多
+
+- 📖 [完整文档](../../docs/README.md)
+- 🔧 [API 参考](../../docs/api-reference.md)
+- 🏗️ [架构指南](../../docs/architecture-design.md)
+- 💡 [最佳实践](../../docs/best-practices.md)
+- 🎨 [主题开发](../../docs/theme-development.md)
+
+## 相关包
+
+- [🚀 @cogita/cli](../cli) - 命令行界面
+- [🎨 @cogita/ui](../ui) - UI 组件库
+- [🌟 @cogita/theme-lucid](../../themes/lucid) - 默认主题
 
 ## 许可证
 
