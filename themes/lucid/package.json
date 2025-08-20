@@ -1,8 +1,17 @@
 {
   "name": "@cogita/theme-lucid",
   "version": "0.0.1",
-  "description": "A lucid, content-focused blog theme for Cogita. (Default Theme)",
-  "keywords": ["cogita", "theme", "blog", "lucid"],
+  "description": "The default theme for Cogita - A lucid, content-focused blog theme.",
+  "keywords": [
+    "cogita",
+    "theme",
+    "blog",
+    "lucid",
+    "default",
+    "content-focused",
+    "responsive",
+    "typescript"
+  ],
   "author": "wu9o <https://github.com/wu9o>",
   "license": "MIT",
   "repository": {
@@ -24,7 +33,19 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/wu9o"
+  },
   "scripts": {
     "build": "rslib build",
     "dev": "rslib build -w"

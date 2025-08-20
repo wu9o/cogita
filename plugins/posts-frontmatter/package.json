@@ -1,9 +1,18 @@
 {
   "name": "@cogita/plugin-posts-frontmatter",
   "version": "0.0.1",
-  "description": "A Rspress plugin to get all pages frontmatter data with virtual module support.",
-  "keywords": ["rspress", "plugin", "frontmatter", "blog", "posts", "virtual-module"],
-  "author": "Cogita",
+  "description": "Core plugin that automatically scans posts and extracts frontmatter data for Cogita themes.",
+  "keywords": [
+    "cogita",
+    "plugin",
+    "rspress",
+    "frontmatter",
+    "blog",
+    "posts",
+    "virtual-module",
+    "markdown"
+  ],
+  "author": "wu9o <https://github.com/wu9o>",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -13,8 +22,13 @@
   "bugs": {
     "url": "https://github.com/wu9o/cogita/issues"
   },
-  "homepage": "https://github.com/wu9o/cogita/tree/main/packages/plugin-posts-frontmatter#readme",
-  "sideEffects": ["*.css", "*.less", "*.sass", "*.scss"],
+  "homepage": "https://github.com/wu9o/cogita/tree/main/plugins/posts-frontmatter#readme",
+  "sideEffects": [
+    "*.css",
+    "*.less",
+    "*.sass",
+    "*.scss"
+  ],
   "type": "module",
   "exports": {
     ".": {
@@ -27,7 +41,20 @@
   },
   "module": "./dist/es/index.js",
   "types": "./dist/types/index.d.ts",
-  "files": ["dist", "client.d.ts", "README.md", "README.zh-CN.md", "LICENSE"],
+  "files": [
+    "dist",
+    "client.d.ts",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/wu9o"
+  },
   "scripts": {
     "build": "rslib build",
     "dev": "rslib build -w",
