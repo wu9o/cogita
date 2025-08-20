@@ -1,8 +1,17 @@
 {
   "name": "@cogita/cli",
   "version": "0.0.1",
-  "description": "Command Line Interface (CLI) for the Cogita framework.",
-  "keywords": ["cogita", "cli", "static-site-generator", "blog"],
+  "description": "Command line interface for creating and managing Cogita blogs.",
+  "keywords": [
+    "cogita",
+    "cli",
+    "static-site-generator",
+    "blog",
+    "command-line",
+    "generator",
+    "scaffold",
+    "template"
+  ],
   "author": "wu9o <https://github.com/wu9o>",
   "license": "MIT",
   "repository": {
@@ -26,7 +35,20 @@
   },
   "module": "./dist/es/index.js",
   "types": "./dist/types/index.d.ts",
-  "files": ["dist", "bin", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "bin",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/wu9o"
+  },
   "scripts": {
     "build": "rslib build",
     "dev": "rslib build -w"
