@@ -84,7 +84,7 @@ importers:
         version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(typescript@5.9.2)
       rsbuild-plugin-publint:
         specifier: ^0.3.3
-        version: 0.3.3(@rsbuild/core@1.4.15)
+        version: 0.3.3(@rsbuild/core@1.3.22)
       typescript:
         specifier: ^5.0.4
         version: 5.9.2
@@ -115,7 +115,7 @@ importers:
         version: 19.1.1
       rsbuild-plugin-publint:
         specifier: ^0.3.3
-        version: 0.3.3(@rsbuild/core@1.3.22)
+        version: 0.3.3(@rsbuild/core@1.4.15)
       typescript:
         specifier: ^5.0.4
         version: 5.9.2
@@ -212,6 +212,31 @@ importers:
         specifier: ^5.8.2
         version: 5.9.2
 
+  plugins/rss:
+    dependencies:
+      '@cogita/plugin-posts-frontmatter':
+        specifier: workspace:*
+        version: link:../posts-frontmatter
+      '@rspress/core':
+        specifier: ^1.45.1
+        version: 1.45.1(webpack@5.101.2)
+      glob:
+        specifier: ^11.0.0
+        version: 11.0.3
+    devDependencies:
+      '@rslib/core':
+        specifier: 0.11.2
+        version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(typescript@5.9.2)
+      '@types/glob':
+        specifier: ^8.1.0
+        version: 8.1.0
+      rsbuild-plugin-publint:
+        specifier: ^0.3.3
+        version: 0.3.3(@rsbuild/core@1.4.15)
+      typescript:
+        specifier: ^5.0.4
+        version: 5.9.2
+
   scripts/config:
     devDependencies:
       '@types/node':
@@ -226,6 +251,9 @@ importers:
       '@cogita/plugin-posts-frontmatter':
         specifier: workspace:*
         version: link:../../plugins/posts-frontmatter
+      '@cogita/plugin-rss':
+        specifier: workspace:*
+        version: link:../../plugins/rss
       '@cogita/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -1240,6 +1268,9 @@ packages:
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
+  '@types/glob@8.1.0':
+    resolution: {integrity: sha512-IO+MJPVhoqz+28h1qLAcBEH2+xHMK6MTyHJc7MTnnYb6wsoLR29POVGJ7LycmVXIqyy/4/2ShP5sUwTXuOwb/w==}
+
   '@types/glob@9.0.0':
     resolution: {integrity: sha512-00UxlRaIUvYm4R4W9WYkN8/J+kV8fmOQ7okeH6YFtGWFMt3odD45tpG5yA5wnL7HE6lLgjaTW5n14ju2hl2NNA==}
     deprecated: This is a stub types definition. glob provides its own type definitions, so you do not need this installed.
@@ -1258,6 +1289,9 @@ packages:
 
   '@types/mdx@2.0.13':
     resolution: {integrity: sha512-+OWZQfAYyio6YkJb3HLxDrvnx6SWWDbC0zVPfBRzUk0/nqoDyf6dNxQi3eArPe8rJ473nobTMQ/8Zk+LxJ+Yuw==}
+
+  '@types/minimatch@5.1.2':
+    resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
 
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
@@ -4957,6 +4991,11 @@ snapshots:
 
   '@types/estree@1.0.8': {}
 
+  '@types/glob@8.1.0':
+    dependencies:
+      '@types/minimatch': 5.1.2
+      '@types/node': 24.3.0
+
   '@types/glob@9.0.0':
     dependencies:
       glob: 11.0.3
@@ -4976,6 +5015,8 @@ snapshots:
       '@types/unist': 2.0.11
 
   '@types/mdx@2.0.13': {}
+
+  '@types/minimatch@5.1.2': {}
 
   '@types/ms@2.1.0': {}
 
