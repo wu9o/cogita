@@ -16,6 +16,10 @@ export interface CogitaConfig {
   site?: SiteConfig;
   theme?: string;
   /**
+   * RSS feed configuration.
+   */
+  rss?: Record<string, unknown>;
+  /**
    * Rspress theme config.
    * @see https://rspress.rs/api/config/config-theme
    */
