@@ -72,6 +72,7 @@
   },
   "dependencies": {
     "@cogita/plugin-posts-frontmatter": "workspace:*",
+    "@cogita/plugin-rss": "workspace:*",
     "@cogita/shared": "workspace:*"
   }
 }

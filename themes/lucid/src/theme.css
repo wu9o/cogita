@@ -23,6 +23,149 @@
   text-align: center;
 }
 
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-text {
+  flex: 1;
+}
+
+.rss-links {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.rss-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  color: var(--cogita-text-color);
+  text-decoration: none;
+  font-size: 0.875rem;
+  border: 1px solid var(--cogita-border-color);
+  border-radius: 4px;
+  background: #fafafa;
+  transition: all 0.2s ease;
+}
+
+.rss-link:hover {
+  background: var(--cogita-primary-color);
+  color: var(--cogita-primary-text-color);
+  border-color: var(--cogita-primary-color);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 600px) {
+  .header-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .rss-links {
+    justify-content: center;
+  }
+}
+
 .main-content {
   margin-top: 2rem;
+}
+
+/* RSS订阅横幅样式 */
+.rss-subscription-banner {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 1px solid var(--cogita-border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.rss-banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.rss-banner-text h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--cogita-title-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.rss-banner-text p {
+  margin: 0;
+  color: var(--cogita-text-color-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.rss-banner-links {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.rss-banner-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: white;
+  color: var(--cogita-text-color);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid var(--cogita-border-color);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.rss-banner-link:hover {
+  background: var(--cogita-primary-color);
+  color: var(--cogita-primary-text-color);
+  border-color: var(--cogita-primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26, 26, 26, 0.15);
+}
+
+.rss-banner-link.rss-primary {
+  background: var(--cogita-primary-color);
+  color: var(--cogita-primary-text-color);
+  border-color: var(--cogita-primary-color);
+}
+
+.rss-banner-link.rss-primary:hover {
+  background: #333333;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(26, 26, 26, 0.2);
+}
+
+@media (max-width: 600px) {
+  .rss-banner-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+
+  .rss-banner-links {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .rss-banner-link {
+    flex: 1;
+    justify-content: center;
+    min-width: 100px;
+  }
 }
