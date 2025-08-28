@@ -1,0 +1,69 @@
+{
+    "name": "@cogita/plugin-rss",
+    "version": "0.0.1",
+    "description": "RSS, Atom, and JSON Feed generation plugin for Cogita blogs, providing comprehensive subscription support with automatic HTML discovery links.",
+    "keywords": [
+        "cogita",
+        "plugin",
+        "rss",
+        "atom",
+        "json-feed",
+        "subscription",
+        "blog",
+        "static-site-generator",
+        "rspress",
+        "feed-generation"
+    ],
+    "author": "wu9o <https://github.com/wu9o>",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/wu9o/cogita.git",
+        "directory": "plugins/rss"
+    },
+    "bugs": {
+        "url": "https://github.com/wu9o/cogita/issues"
+    },
+    "homepage": "https://github.com/wu9o/cogita/tree/main/plugins/rss#readme",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist",
+        "client.d.ts",
+        "README.md",
+        "README.zh-CN.md",
+        "LICENSE"
+    ],
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "funding": {
+        "type": "github",
+        "url": "https://github.com/sponsors/wu9o"
+    },
+    "scripts": {
+        "build": "rslib build",
+        "dev": "rslib build -w",
+        "clean": "rm -rf dist"
+    },
+    "devDependencies": {
+        "@rslib/core": "0.11.2",
+        "@types/glob": "^8.1.0",
+        "rsbuild-plugin-publint": "^0.3.3",
+        "typescript": "^5.0.4"
+    },
+    "dependencies": {
+        "@rspress/core": "^1.45.1",
+        "glob": "^11.0.0"
+    },
+    "peerDependencies": {
+        "@cogita/plugin-posts-frontmatter": "workspace:*"
+    }
+}
