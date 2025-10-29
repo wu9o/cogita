@@ -167,10 +167,10 @@ feature:        D' → E'（线性历史，无分叉）
 1.  假设需要合并最近的 4 个提交，运行 `git rebase -i HEAD~4`。
 2.  Git 会打开一个编辑器，列出这 4 个提交，每个提交前都有一个 `pick` 命令。
 3.  将第一个提交保留为 `pick`，将其余需要合并的提交前面的 `pick` 改为 `squash` (会保留提交信息) 或 `fixup` (会丢弃提交信息)。
-    ```
-pick 1a2b3c feat: add user profile page
-fixup 4d5e6f fix: typo in title
-fixup 7g8h9i wip: save progress
+    ```bash
+    pick 1a2b3c feat: add user profile page
+    fixup 4d5e6f fix: typo in title
+    fixup 7g8h9i wip: save progress
     ```
 4.  保存并关闭编辑器。Git 会将它们合并成一个，并让你编辑最终的提交信息（如果使用了 `squash`）。
 
