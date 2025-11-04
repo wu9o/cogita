@@ -1,4 +1,4 @@
-# Cogita | 我思，故我在
+# Cogita
 
 [**中文文档**](#) • [English Documentation](./README.en.md)
 
