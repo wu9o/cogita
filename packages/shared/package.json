@@ -2,15 +2,7 @@
   "name": "@cogita/shared",
   "version": "0.0.1",
   "description": "Shared utilities and type definitions for the Cogita ecosystem.",
-  "keywords": [
-    "cogita",
-    "shared",
-    "types",
-    "utilities",
-    "typescript",
-    "theme",
-    "plugin"
-  ],
+  "keywords": ["cogita", "shared", "types", "utilities", "typescript", "theme", "plugin"],
   "author": "wu9o <https://github.com/wu9o>",
   "license": "MIT",
   "repository": {
@@ -31,12 +23,7 @@
   },
   "module": "./dist/es/index.js",
   "types": "./dist/types/index.d.ts",
-  "files": [
-    "dist",
-    "README.md",
-    "README.zh-CN.md",
-    "LICENSE"
-  ],
+  "files": ["dist", "README.md", "README.zh-CN.md", "LICENSE"],
   "engines": {
     "node": ">=18.0.0"
   },

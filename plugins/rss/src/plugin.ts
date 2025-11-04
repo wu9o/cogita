@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
+import type { CogitaPluginConfig } from '@cogita/shared';
 /**
  * RSS插件主体实现
  */
@@ -22,7 +23,7 @@ interface PostFrontmatter {
   url: string;
 }
 
-export function pluginRSS(config: Record<string, any>): RspressPlugin | null {
+export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
   // Enhanced configuration handling - the plugin now handles all validation internally
   const rssConfig = config.rss;
 
@@ -39,17 +40,18 @@ export function pluginRSS(config: Record<string, any>): RspressPlugin | null {
   }
 
   // Create the complete RSS configuration with defaults
-  const finalRssConfig: RSSConfig = {
-    formats: ['rss'],
-    maxItems: 20,
-    language: 'en',
-    feedPath: 'rss.xml',
-    atomPath: 'atom.xml',
-    jsonPath: 'feed.json',
-    includeContent: false,
+  const finalRssConfig = {
+    title: rssConfig.title,
+    description: rssConfig.description,
+    formats: (rssConfig.formats as ('rss' | 'atom' | 'json')[]) || ['rss'],
+    maxItems: (rssConfig.maxItems as number) || 20,
+    language: (rssConfig.language as string) || 'en',
+    feedPath: (rssConfig.feedPath as string) || 'rss.xml',
+    atomPath: (rssConfig.atomPath as string) || 'atom.xml',
+    jsonPath: (rssConfig.jsonPath as string) || 'feed.json',
+    includeContent: (rssConfig.includeContent as boolean) ?? false,
     // Use site URL as fallback
-    link: rssConfig.link || config.site?.url || 'http://localhost:3000',
-    ...rssConfig,
+    link: (rssConfig.link as string) || config.site?.url || 'http://localhost:3000',
   };
 
   let generator: RSSGenerator;
@@ -60,16 +62,18 @@ export function pluginRSS(config: Record<string, any>): RspressPlugin | null {
   return {
     name: '@cogita/plugin-rss',
 
-    async beforeBuild(rspressConfig: any) {
+    async beforeBuild(rspressConfig: unknown) {
       console.log('[RSS Plugin] 开始初始化RSS插件...');
 
       // 获取站点URL配置和输出目录
       const siteUrl = finalRssConfig.link;
-      outputDir = rspressConfig.output?.path || 'doc_build';
+      const rspressConfigObj = rspressConfig as Record<string, unknown>;
+      outputDir =
+        ((rspressConfigObj.output as Record<string, unknown>)?.path as string) || 'doc_build';
 
       try {
         // 初始化RSS生成器
-        generator = new RSSGenerator(finalRssConfig, siteUrl);
+        generator = new RSSGenerator(finalRssConfig as RSSConfig, siteUrl);
 
         // 直接扫描文章文件（与posts-frontmatter插件使用相同的逻辑）
         const postsConfig = config.posts || {};
@@ -179,7 +183,7 @@ export function pluginRSS(config: Record<string, any>): RspressPlugin | null {
  * 插件工厂函数的类型安全包装（保留用于向后兼容）
  */
 export function createRSSPlugin(rssConfig: RSSConfig) {
-  return (config: any) =>
+  return (config: CogitaPluginConfig) =>
     pluginRSS({
       ...config,
       rss: {

@@ -196,7 +196,7 @@ export async function createRspressConfig(
   if (theme?.plugins) {
     for (const factory of theme.plugins) {
       try {
-        const result = factory(fullConfigForPlugins);
+        const result = factory(fullConfigForPlugins as any);
 
         if (result) {
           // Handle both single plugin and array of plugins

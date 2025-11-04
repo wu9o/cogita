@@ -1,12 +1,12 @@
-import type React from "react";
+import type React from 'react';
 
 // RSS订阅链接组件
 const RSSLinks: React.FC = () => {
   // 使用默认的RSS路径，实际的元数据在构建时由RSS插件注入
   const feedMeta: { rssUrl?: string; atomUrl?: string; jsonUrl?: string } = {
-    rssUrl: "/rss.xml",
-    atomUrl: "/atom.xml",
-    jsonUrl: "/feed.json",
+    rssUrl: '/rss.xml',
+    atomUrl: '/atom.xml',
+    jsonUrl: '/feed.json',
   };
 
   return (

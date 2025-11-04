@@ -45,10 +45,14 @@ export class RSSGenerator {
     const fullUrl = `${this.siteUrl}${post.route}`;
 
     // 获取作者信息
-    const author = (post as any)[this.config.customFields.author];
+    const author = (post as unknown as Record<string, unknown>)[
+      this.config.customFields.author
+    ] as string;
 
     // 获取分类信息
-    const categoryField = (post as any)[this.config.customFields.category];
+    const categoryField = (post as unknown as Record<string, unknown>)[
+      this.config.customFields.category
+    ] as string | string[];
     const categories = Array.isArray(categoryField) ? categoryField : post.tags || [];
 
     return {

@@ -1,20 +1,24 @@
+import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import { glob } from 'glob';
 import type { PostFrontmatter } from './types';
 import { getFrontmatterFromFile } from './utils';
 
-export function pluginPostsFrontmatter(config: Record<string, any>): RspressPlugin {
+export function pluginPostsFrontmatter(config: CogitaPluginConfig): RspressPlugin {
   // Enhanced configuration handling with backwards compatibility
   const postsConfig = config.posts || {};
 
   // New structured config (preferred)
   const postsDir =
     postsConfig.dir ||
-    // Fallback to old direct config access
-    config.postsDir ||
+    // Fallback to old direct config access for backwards compatibility
+    ((config as Record<string, unknown>).postsDir as string) ||
     'posts';
 
-  const routePrefix = postsConfig.routePrefix || config.routePrefix || 'posts';
+  const routePrefix =
+    postsConfig.routePrefix ||
+    ((config as Record<string, unknown>).routePrefix as string) ||
+    'posts';
 
   const extensions = postsConfig.extensions || ['md', 'mdx'];
 

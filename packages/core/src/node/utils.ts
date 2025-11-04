@@ -4,7 +4,15 @@ import type { CogitaConfig } from '../types';
 
 const require = createRequire(import.meta.url);
 
-export function transformConfig(root: string, config: CogitaConfig): any {
+interface TransformedConfig {
+  root: string;
+  title?: string;
+  description?: string;
+  base?: string;
+  globalUIComponents: string[];
+}
+
+export function transformConfig(root: string, config: CogitaConfig): TransformedConfig {
   const themePackage = config.theme || '@cogita/theme-lucid';
   // Resolve the theme's main entry point from its exports
   const themeEntryPoint = require.resolve(themePackage);

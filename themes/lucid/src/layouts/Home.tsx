@@ -1,15 +1,15 @@
-import type { LayoutProps } from "@cogita/shared";
-import { PostList } from "@cogita/ui";
-import type React from "react";
-import { allPosts } from "virtual-posts-data";
+import type { LayoutProps } from '@cogita/shared';
+import { PostList } from '@cogita/ui';
+import type React from 'react';
+import { allPosts } from 'virtual-posts-data';
 
 // RSS订阅提示组件
 const RSSSubscriptionBanner: React.FC = () => {
   // 使用默认的RSS路径
   const feedMeta: { rssUrl?: string; atomUrl?: string; jsonUrl?: string } = {
-    rssUrl: "/rss.xml",
-    atomUrl: "/atom.xml",
-    jsonUrl: "/feed.json",
+    rssUrl: '/rss.xml',
+    atomUrl: '/atom.xml',
+    jsonUrl: '/feed.json',
   };
 
   const hasFeeds = feedMeta.rssUrl || feedMeta.atomUrl || feedMeta.jsonUrl;
