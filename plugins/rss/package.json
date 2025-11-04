@@ -1,6 +1,6 @@
 {
   "name": "@cogita/plugin-rss",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "RSS, Atom, and JSON Feed generation plugin for Cogita blogs, providing comprehensive subscription support with automatic HTML discovery links.",
   "keywords": [
     "cogita",
