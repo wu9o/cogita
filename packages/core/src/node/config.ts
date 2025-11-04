@@ -6,7 +6,7 @@ import type { RspressPlugin, UserConfig } from '@rspress/core';
 import { findUp } from 'find-up';
 import jiti from 'jiti';
 import * as mlly from 'mlly';
-import type { CogitaConfig } from '../types';
+import type { CogitaConfig, CogitaFullConfig } from '../types';
 
 const CONFIG_FILES = ['cogita.config.ts', 'cogita.config.js', 'cogita.config.mjs'];
 
@@ -118,6 +118,49 @@ const BUILT_IN_THEMES: {
   lucid: '@cogita/theme-lucid',
 };
 
+/**
+ * Create enhanced configuration object for plugin factories
+ */
+function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullConfig {
+  return {
+    ...cogitaConfig,
+    root,
+    cwd: root,
+    _framework: {
+      version: '0.0.1', // TODO: get from package.json
+      buildTime: new Date().toISOString(),
+    },
+    // Enhanced site config with defaults
+    site: {
+      title: 'Cogita Blog',
+      description: 'A blog powered by Cogita',
+      ...cogitaConfig.site,
+    },
+    // Posts plugin config with defaults
+    posts: {
+      dir: 'posts',
+      routePrefix: 'posts',
+      extensions: ['md', 'mdx'],
+      ...cogitaConfig.posts,
+    },
+    // RSS plugin config with defaults (if enabled)
+    rss: cogitaConfig.rss
+      ? {
+          formats: ['rss'],
+          maxItems: 20,
+          language: 'en',
+          feedPath: 'rss.xml',
+          atomPath: 'atom.xml',
+          jsonPath: 'feed.json',
+          includeContent: false,
+          // Fallback to site URL if not specified
+          link: cogitaConfig.rss.link || cogitaConfig.site?.url,
+          ...cogitaConfig.rss,
+        }
+      : undefined,
+  };
+}
+
 export async function createRspressConfig(
   cogitaConfig: CogitaConfig,
   root: string
@@ -143,22 +186,40 @@ export async function createRspressConfig(
     plugins: [], // Will be populated next
   };
 
-  // 4. Prepare the full config object to pass to plugin factories
-  const fullConfigForPlugins = { ...cogitaConfig, ...baseRspressConfig };
+  // 4. Create enhanced config object for plugin factories
+  const fullConfigForPlugins = createFullConfig(cogitaConfig, root);
 
-  // 5. Instantiate plugins from the theme's plugin factories
-  const themePlugins = theme?.plugins
-    ?.flatMap((factory) => factory(fullConfigForPlugins)) // Handle factories that return an array
-    .filter(Boolean) as RspressPlugin[] | undefined; // Filter out null/undefined
+  // 5. Instantiate plugins from the theme's plugin factories with enhanced error handling
+  const themePlugins: RspressPlugin[] = [];
+  const strict = cogitaConfig.strict !== false; // Default to true
+
+  if (theme?.plugins) {
+    for (const factory of theme.plugins) {
+      try {
+        const result = factory(fullConfigForPlugins);
+
+        if (result) {
+          // Handle both single plugin and array of plugins
+          const plugins = Array.isArray(result) ? result : [result];
+          themePlugins.push(...plugins);
+        }
+      } catch (error) {
+        const errorMessage = `[Cogita] Plugin instantiation failed: ${error}`;
+
+        if (strict) {
+          throw new Error(errorMessage);
+        }
+        console.warn(errorMessage);
+      }
+    }
+  }
 
   // 6. Combine all plugins
   const finalPlugins: RspressPlugin[] = [];
   if (theme) {
     finalPlugins.push(createThemePlugin(theme));
   }
-  if (themePlugins) {
-    finalPlugins.push(...themePlugins);
-  }
+  finalPlugins.push(...themePlugins);
 
   baseRspressConfig.plugins = finalPlugins;
 
