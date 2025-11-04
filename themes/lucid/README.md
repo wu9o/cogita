@@ -3,172 +3,172 @@
 [![npm version](https://badge.fury.io/js/@cogita%2Ftheme-lucid.svg)](https://badge.fury.io/js/@cogita%2Ftheme-lucid)
 [![React](https://img.shields.io/badge/React-18%2B-blue)](https://reactjs.org/)
 
-[中文](./README.zh-CN.md) | **English**
+**中文** | [English](./README.en.md)
 
-> The default theme for Cogita - A lucid, content-focused blog theme.
+> Cogita 的默认主题 - 清晰、专注内容的博客主题
 
-## What is it?
+## 这是什么？
 
-Lucid is Cogita's official default theme, designed with "clarity" as its core principle. It focuses on content readability and user experience with a modern, clean design that gets out of the way and lets your content shine.
+Lucid 是 Cogita 的官方默认主题，以"清晰"为核心设计原则。它专注于内容可读性和用户体验，采用现代、简洁的设计，让设计退居幕后，让您的内容闪闪发光。
 
-## Features
+## 特性
 
-- 🎯 **Content First**: Clean typography and spacing optimized for reading
-- 🌙 **Smart Theming**: Auto light/dark mode with smooth transitions  
-- 📱 **Mobile Ready**: Responsive design that works on all devices
-- ⚡ **Performance**: Fast loading with optimized CSS and JavaScript
-- ♿ **Accessible**: WCAG compliant with keyboard navigation support
+- 🎯 **内容优先**：为阅读优化的清洁排版和间距
+- 🌙 **智能主题**：自动明暗模式切换，过渡平滑
+- 📱 **移动就绪**：在所有设备上都能正常工作的响应式设计
+- ⚡ **高性能**：优化的 CSS 和 JavaScript，快速加载
+- ♿ **无障碍**：符合 WCAG 标准，支持键盘导航
 
-## Quick Start
+## 快速开始
 
-### Installation
+### 安装
 
 ```bash
 pnpm add @cogita/core @cogita/theme-lucid
 ```
 
-### Basic Setup
+### 基础设置
 
-Create `cogita.config.ts`:
+创建 `cogita.config.ts`：
 
 ```typescript
 import { defineConfig } from '@cogita/core';
 
 export default defineConfig({
   site: {
-    title: 'My Lucid Blog',
-    description: 'A blog powered by Cogita Lucid theme',
+    title: '我的 Lucid 博客',
+    description: '由 Cogita Lucid 主题驱动的博客',
   },
   theme: 'lucid',
 });
 ```
 
-Create your first post in `posts/welcome.md`:
+在 `posts/welcome.md` 中创建第一篇文章：
 
 ```markdown
 ---
-title: "Welcome to Lucid"
-description: "Exploring the elegant design of the Lucid theme"
+title: "欢迎使用 Lucid"
+description: "探索 Lucid 主题的优雅设计"
 createDate: "2024-01-01"
-tags: ["cogita", "lucid", "blog"]
+tags: ["cogita", "lucid", "博客"]
 ---
 
-# Welcome to Lucid
+# 欢迎使用 Lucid
 
-Lucid theme provides clean, modern design for your blog...
+Lucid 主题为您的博客提供清洁、现代的设计...
 ```
 
-Start development:
+启动开发：
 
 ```bash
 pnpm dev
 ```
 
-## Configuration
+## 配置
 
-### Basic Theme Config
+### 基础主题配置
 
 ```typescript
 export default defineConfig({
   site: {
-    title: 'My Blog',
-    description: 'A personal blog',
+    title: '我的博客',
+    description: '个人博客',
   },
   theme: 'lucid',
   
   themeConfig: {
-    // Navigation
+    // 导航
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'About', link: '/about' },
-      { text: 'Contact', link: '/contact' },
+      { text: '首页', link: '/' },
+      { text: '关于', link: '/about' },
+      { text: '联系', link: '/contact' },
     ],
     
-    // Social links
+    // 社交链接
     socialLinks: [
       { icon: 'github', mode: 'link', content: 'https://github.com/you' },
       { icon: 'x', mode: 'link', content: 'https://x.com/you' },
       { icon: 'rss', mode: 'link', content: '/rss.xml' },
     ],
     
-    // Footer
+    // 页脚
     footer: {
-      message: '© 2024 My Blog. Built with ❤️ and Cogita',
+      message: '© 2024 我的博客. 用 ❤️ 和 Cogita 构建',
     },
     
-    // Theme mode
+    // 主题模式
     colorMode: 'auto', // 'light' | 'dark' | 'auto'
   },
 });
 ```
 
-### Advanced Navigation
+### 高级导航
 
 ```typescript
 themeConfig: {
   nav: [
-    { text: 'Home', link: '/' },
+    { text: '首页', link: '/' },
     {
-      text: 'Posts',
+      text: '文章',
       items: [
-        { text: 'Tech Articles', link: '/posts/tech' },
-        { text: 'Life Stories', link: '/posts/life' },
+        { text: '技术文章', link: '/posts/tech' },
+        { text: '生活故事', link: '/posts/life' },
       ],
     },
-    { text: 'About', link: '/about' },
+    { text: '关于', link: '/about' },
   ],
 }
 ```
 
-## Theme Features
+## 主题功能
 
-### Automatic Blog Functionality
+### 自动博客功能
 
-- **Post List**: Homepage automatically displays your latest posts
-- **Post Pages**: Individual post pages with optimized reading experience
-- **Pagination**: Automatic pagination for large numbers of posts
-- **Reading Time**: Estimated reading time calculation
+- **文章列表**：首页自动显示最新文章
+- **文章页面**：优化阅读体验的单独文章页面
+- **分页**：大量文章时自动分页
+- **阅读时间**：估算阅读时间计算
 
-### Built-in Plugins
+### 内置插件
 
-Lucid automatically includes:
+Lucid 自动包含：
 
-- `@cogita/plugin-posts-frontmatter` - Extracts post metadata
-- More plugins coming soon...
+- `@cogita/plugin-posts-frontmatter` - 提取文章元数据
+- 更多插件即将推出...
 
-### SEO Optimized
+### SEO 优化
 
-- Automatic meta tag generation
-- Open Graph tags for social sharing
-- Structured data markup
-- Optimized loading performance
+- 自动生成 meta 标签
+- 社交分享的 Open Graph 标签
+- 结构化数据标记
+- 优化的加载性能
 
-## Customization
+## 自定义
 
-### CSS Variables
+### CSS 变量
 
-Override theme colors and spacing:
+覆盖主题颜色和间距：
 
 ```css
 /* styles/custom.css */
 :root {
-  /* Brand colors */
+  /* 品牌颜色 */
   --lucid-primary: #007acc;
   --lucid-primary-hover: #005a99;
   
-  /* Typography */
+  /* 字体 */
   --lucid-font-family: 'Inter', system-ui, sans-serif;
   --lucid-font-size-base: 16px;
   
-  /* Spacing */
+  /* 间距 */
   --lucid-space-unit: 8px;
   
-  /* Layout */
+  /* 布局 */
   --lucid-content-width: 800px;
   --lucid-radius: 6px;
 }
 
-/* Dark mode overrides */
+/* 暗色模式覆盖 */
 [data-theme='dark'] {
   --lucid-primary: #58a6ff;
   --lucid-bg-primary: #0d1117;
@@ -176,7 +176,7 @@ Override theme colors and spacing:
 }
 ```
 
-Import in your config:
+在配置中导入：
 
 ```typescript
 export default defineConfig({
@@ -193,9 +193,9 @@ export default defineConfig({
 });
 ```
 
-### Custom Components
+### 自定义组件
 
-Override theme components by creating custom layouts:
+通过创建自定义布局覆盖主题组件：
 
 ```tsx
 // components/CustomPostItem.tsx
@@ -221,46 +221,46 @@ export const CustomPostItem: React.FC<{ post: Post }> = ({ post }) => (
 );
 ```
 
-## Content Guidelines
+## 内容指南
 
-### Post Frontmatter
+### 文章 Frontmatter
 
 ```yaml
 ---
-title: "Your Post Title"
-description: "Brief description for SEO and social sharing"
+title: "您的文章标题"
+description: "SEO 和社交分享的简要描述"
 createDate: "2024-01-01"
 updateDate: "2024-01-15"
-tags: ["tag1", "tag2"]
-categories: ["category1"]
-author: "Author Name"
+tags: ["标签1", "标签2"]
+categories: ["分类1"]
+author: "作者姓名"
 cover: "./cover.jpg"
 featured: true
 ---
 ```
 
-### Supported Content
+### 支持的内容
 
-- **Markdown**: Standard Markdown with extensions
-- **MDX**: React components in Markdown (planned)
-- **Images**: Automatic optimization and lazy loading
-- **Code**: Syntax highlighting with Prism.js
+- **Markdown**：带扩展的标准 Markdown
+- **MDX**：Markdown 中的 React 组件（计划中）
+- **图片**：自动优化和懒加载
+- **代码**：使用 Prism.js 语法高亮
 
-## Performance
+## 性能
 
-### Optimization Features
+### 优化功能
 
-- **Lazy Loading**: Images and non-critical content
-- **Code Splitting**: Automatic route-based splitting
-- **CSS Optimization**: Critical CSS inlining
-- **Asset Optimization**: Automatic compression and caching
+- **懒加载**：图片和非关键内容
+- **代码分割**：自动基于路由的分割
+- **CSS 优化**：关键 CSS 内联
+- **资源优化**：自动压缩和缓存
 
-### Build Configuration
+### 构建配置
 
 ```typescript
 export default defineConfig({
   builderConfig: {
-    // Performance optimizations
+    // 性能优化
     output: {
       assetPrefix: 'https://cdn.example.com/',
     },
@@ -271,83 +271,83 @@ export default defineConfig({
 });
 ```
 
-## Responsive Design
+## 响应式设计
 
-### Breakpoints
+### 断点
 
-- **Mobile**: < 640px
-- **Tablet**: 640px - 768px  
-- **Desktop**: 768px - 1024px
-- **Large**: > 1024px
+- **移动端**：< 640px
+- **平板**：640px - 768px
+- **桌面**：768px - 1024px
+- **大屏**：> 1024px
 
-### Mobile Optimizations
+### 移动端优化
 
-- Touch-friendly navigation
-- Optimized font sizes
-- Simplified layouts
-- Fast loading on slow connections
+- 触摸友好的导航
+- 优化的字体大小
+- 简化的布局
+- 慢连接下的快速加载
 
-## SEO Features
+## SEO 功能
 
-### Automatic Meta Tags
+### 自动 Meta 标签
 
 ```html
-<meta property="og:title" content="Your Post Title" />
-<meta property="og:description" content="Post description" />
-<meta property="og:image" content="Post cover image" />
+<meta property="og:title" content="您的文章标题" />
+<meta property="og:description" content="文章描述" />
+<meta property="og:image" content="文章封面图" />
 <meta name="twitter:card" content="summary_large_image" />
 ```
 
-### Structured Data
+### 结构化数据
 
-Automatic JSON-LD generation for:
-- Blog posts
-- Author information
-- Organization data
-- Breadcrumb navigation
+自动生成 JSON-LD：
+- 博客文章
+- 作者信息
+- 组织数据
+- 面包屑导航
 
-## Troubleshooting
+## 故障排除
 
-### Common Issues
+### 常见问题
 
-**Theme not loading:**
+**主题未加载：**
 ```bash
-# Check if theme is properly installed
+# 检查主题是否正确安装
 npm list @cogita/theme-lucid
 
-# Verify config
+# 验证配置
 export default defineConfig({
-  theme: 'lucid', // Should be string, not import
+  theme: 'lucid', // 应该是字符串，不是导入
 });
 ```
 
-**Styling issues:**
+**样式问题：**
 ```bash
-# Check CSS import order
-import '@cogita/ui/styles'; // Should come first
-import './custom.css';      // Then custom styles
+# 检查 CSS 导入顺序
+import '@cogita/ui/styles'; // 应该先导入
+import './custom.css';      // 然后是自定义样式
 ```
 
-**Posts not showing:**
+**文章不显示：**
 ```bash
-# Check posts directory structure
+# 检查文章目录结构
 posts/
-  └── your-post.md  # Should have proper frontmatter
+  └── your-post.md  # 应该有正确的 frontmatter
 ```
 
-## Learn More
+## 了解更多
 
-- 📖 [Complete Documentation](../../docs/README.md)
-- 🎨 [Theme Development Guide](../../docs/theme-development.md)
-- 💡 [Best Practices](../../docs/best-practices.md)
-- 🔧 [API Reference](../../docs/api-reference.md)
+- 📖 [完整文档](../../docs/README.md)
+- 🎨 [主题开发指南](../../docs/theme-development.md)
+- 💡 [最佳实践](../../docs/best-practices.md)
+- 🔧 [API 参考](../../docs/api-reference.md)
 
-## Related Packages
+## 相关包
 
-- [🧠 @cogita/core](../../packages/core) - Core blog engine
-- [🚀 @cogita/cli](../../packages/cli) - Command line tools
-- [🎨 @cogita/ui](../../packages/ui) - UI components
+- [🧠 @cogita/core](../../packages/core) - 核心博客引擎
+- [🚀 @cogita/cli](../../packages/cli) - 命令行工具
+- [🎨 @cogita/ui](../../packages/ui) - UI 组件
 
-## License
+## 许可证
 
 MIT © [wu9o](https://github.com/wu9o)
