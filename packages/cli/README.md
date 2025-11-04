@@ -3,184 +3,184 @@
 [![npm version](https://badge.fury.io/js/@cogita%2Fcli.svg)](https://badge.fury.io/js/@cogita%2Fcli)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org/)
 
-[中文](./README.zh-CN.md) | **English**
+**中文** | [English](./README.en.md)
 
-> Command line interface for creating and managing Cogita blogs.
+> 用于创建和管理 Cogita 博客的命令行工具
 
-## What is it?
+## 这是什么？
 
-`@cogita/cli` provides a simple yet powerful set of commands to create, develop, and build Cogita blog projects. Get started in seconds with built-in templates and development tools.
+`@cogita/cli` 提供了一套简单而强大的命令来创建、开发和构建 Cogita 博客项目。通过内置模板和开发工具，几秒钟即可开始。
 
-## Installation
+## 安装
 
-### Global Installation (Recommended)
+### 全局安装（推荐）
 
 ```bash
-# Using pnpm
+# 使用 pnpm
 pnpm add -g @cogita/cli
 
-# Using npm
+# 使用 npm
 npm install -g @cogita/cli
 
-# Using yarn
+# 使用 yarn
 yarn global add @cogita/cli
 ```
 
-### Use without Installation
+### 无需安装直接使用
 
 ```bash
 npx @cogita/cli --help
 ```
 
-## Quick Start
+## 快速开始
 
-### Create a New Blog
+### 创建新博客
 
 ```bash
-# Interactive creation
+# 交互式创建
 cogita create
 
-# Create with name
+# 指定名称创建
 cogita create my-blog
 
-# Create with template
+# 使用模板创建
 cogita create my-blog --template minimal
 ```
 
-### Development
+### 开发
 
 ```bash
-# Start development server
+# 启动开发服务器
 cogita dev
 
-# Custom port and host  
+# 自定义端口和主机
 cogita dev --port 8080 --host 0.0.0.0
 ```
 
-### Build & Deploy
+### 构建和部署
 
 ```bash
-# Build for production
+# 构建生产版本
 cogita build
 
-# Build to custom directory
+# 构建到自定义目录
 cogita build --outDir dist
 
-# Preview build result
+# 预览构建结果
 cogita preview
 ```
 
-## Available Commands
+## 可用命令
 
 ### `cogita create [name]`
 
-Create a new Cogita blog project.
+创建新的 Cogita 博客项目。
 
-**Options:**
-- `-t, --template <name>` - Template to use (default: "basic")  
-- `-p, --package-manager <pm>` - Package manager (npm|yarn|pnpm)
-- `--no-git` - Skip Git initialization
-- `--no-install` - Skip dependency installation
-- `-f, --force` - Overwrite existing directory
+**选项：**
+- `-t, --template <name>` - 使用的模板（默认："basic"）
+- `-p, --package-manager <pm>` - 包管理器（npm|yarn|pnpm）
+- `--no-git` - 跳过 Git 初始化
+- `--no-install` - 跳过依赖安装
+- `-f, --force` - 覆盖现有目录
 
-**Templates:**
-- `basic` - Full-featured blog template (default)
-- `minimal` - Minimal setup with essential features
-- `tech` - Developer-focused template with code highlighting
-- `personal` - Personal blog template with social integration
+**模板：**
+- `basic` - 功能完整的博客模板（默认）
+- `minimal` - 基础功能的最小化设置
+- `tech` - 开发者导向的技术博客模板
+- `personal` - 个人博客模板，集成社交功能
 
 ### `cogita dev`
 
-Start development server with hot reload.
+启动热重载开发服务器。
 
-**Options:**
-- `-p, --port <port>` - Port number (default: 3000)
-- `-h, --host <host>` - Host address (default: "localhost")  
-- `--open` - Open browser automatically (default: true)
-- `--debug` - Enable debug mode
+**选项：**
+- `-p, --port <port>` - 端口号（默认：3000）
+- `-h, --host <host>` - 主机地址（默认："localhost"）
+- `--open` - 自动打开浏览器（默认：true）
+- `--debug` - 启用调试模式
 
 ### `cogita build`
 
-Build static site for production.
+构建生产静态站点。
 
-**Options:**
-- `-o, --outDir <dir>` - Output directory (default: "dist")
-- `--base <base>` - Base path for deployment
-- `--clean` - Clean output directory before build
-- `--analyze` - Analyze build output
+**选项：**
+- `-o, --outDir <dir>` - 输出目录（默认："dist"）
+- `--base <base>` - 部署的基础路径
+- `--clean` - 构建前清理输出目录
+- `--analyze` - 分析构建输出
 
 ### `cogita preview`
 
-Preview the built site locally.
+本地预览构建的站点。
 
-**Options:**
-- `-p, --port <port>` - Port number (default: 4173)
-- `--open` - Open browser automatically
+**选项：**
+- `-p, --port <port>` - 端口号（默认：4173）
+- `--open` - 自动打开浏览器
 
-## Example Workflows
+## 示例工作流程
 
-### Basic Blog Setup
+### 基础博客设置
 
 ```bash
-# Create and start developing
+# 创建并开始开发
 cogita create my-blog
 cd my-blog
 cogita dev
 ```
 
-### Deploy to GitHub Pages
+### 部署到 GitHub Pages
 
 ```bash
-# Build with correct base path
+# 使用正确的基础路径构建
 cogita build --base /my-blog/
 
-# The built files are ready for GitHub Pages
+# 构建文件已准备好部署到 GitHub Pages
 ```
 
-### Custom Development
+### 自定义开发
 
 ```bash
-# Use different port and enable debug
+# 使用不同端口并启用调试
 cogita dev --port 8080 --debug
 
-# Build and analyze output
+# 构建并分析输出
 cogita build --analyze
 ```
 
-## Project Templates
+## 项目模板
 
-### Basic Template
-Full-featured blog with:
-- Lucid theme pre-configured
-- Example posts and pages
-- Social links setup
-- SEO optimizations
+### 基础模板
+功能完整的博客包含：
+- 预配置的 Lucid 主题
+- 示例文章和页面
+- 社交链接设置
+- SEO 优化
 
-### Minimal Template  
-Lightweight setup with:
-- Essential configuration only
-- Single example post
-- Clean starting point
+### 最小模板
+轻量级设置包含：
+- 仅必要配置
+- 单个示例文章
+- 干净的起点
 
-### Tech Template
-Developer-oriented with:
-- Code syntax highlighting
-- Technical blog layout
-- GitHub integration
-- Developer-friendly defaults
+### 技术模板
+开发者导向包含：
+- 代码语法高亮
+- 技术博客布局
+- GitHub 集成
+- 开发者友好默认值
 
-### Personal Template
-Personal branding focus:
-- Social media integration
-- About page template
-- Portfolio sections
-- Personal blog styling
+### 个人模板
+个人品牌专注：
+- 社交媒体集成
+- 关于页面模板
+- 作品集部分
+- 个人博客样式
 
-## Configuration
+## 配置
 
-### CLI Configuration
+### CLI 配置
 
-Create `.cogitarc.json` in your project:
+在项目中创建 `.cogitarc.json`：
 
 ```json
 {
@@ -193,7 +193,7 @@ Create `.cogitarc.json` in your project:
 }
 ```
 
-### Environment Variables
+### 环境变量
 
 ```bash
 export COGITA_PACKAGE_MANAGER=pnpm
@@ -201,51 +201,51 @@ export COGITA_DEFAULT_TEMPLATE=minimal
 export COGITA_DEBUG=true
 ```
 
-## Troubleshooting
+## 故障排除
 
-### Port Already in Use
+### 端口被占用
 
 ```bash
-# Use different port
+# 使用不同端口
 cogita dev --port 3001
 
-# Auto-select available port
+# 自动选择可用端口
 cogita dev --port auto
 ```
 
-### Build Issues
+### 构建问题
 
 ```bash
-# Clean build
+# 清理构建
 cogita build --clean
 
-# Debug build
+# 调试构建
 cogita build --debug
 ```
 
-### Template Issues
+### 模板问题
 
 ```bash
-# Force recreate
+# 强制重新创建
 cogita create my-blog --force
 
-# Skip automatic installation
+# 跳过自动安装
 cogita create my-blog --no-install
 ```
 
-## Learn More
+## 了解更多
 
-- 📖 [Complete Documentation](../../docs/README.md)
-- 🧠 [Core Package](../core) - The engine behind CLI
-- 🎨 [UI Components](../ui) - Available components
-- 💡 [Best Practices](../../docs/best-practices.md)
+- 📖 [完整文档](../../docs/README.md)
+- 🧠 [核心包](../core) - CLI 背后的引擎
+- 🎨 [UI 组件](../ui) - 可用组件
+- 💡 [最佳实践](../../docs/best-practices.md)
 
-## Related Packages
+## 相关包
 
-- [🧠 @cogita/core](../core) - Core blog engine
-- [🎨 @cogita/ui](../ui) - UI component library  
-- [🌟 @cogita/theme-lucid](../../themes/lucid) - Default theme
+- [🧠 @cogita/core](../core) - 核心博客引擎
+- [🎨 @cogita/ui](../ui) - UI 组件库
+- [🌟 @cogita/theme-lucid](../../themes/lucid) - 默认主题
 
-## License
+## 许可证
 
 MIT © [wu9o](https://github.com/wu9o)

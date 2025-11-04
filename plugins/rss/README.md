@@ -3,48 +3,48 @@
 [![npm version](https://badge.fury.io/js/@cogita%2Fplugin-rss.svg)](https://badge.fury.io/js/@cogita%2Fplugin-rss)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)](https://www.typescriptlang.org/)
 
-[中文](./README.zh-CN.md) | **English**
+**中文** | [English](./README.en.md)
 
-> RSS, Atom, and JSON Feed generation plugin for Cogita blogs with automatic HTML discovery links.
+> 为Cogita博客生成RSS、Atom和JSON Feed订阅源的插件，自动添加HTML发现链接。
 
-## What is it?
+## 这是什么？
 
-This plugin automatically generates RSS 2.0, Atom, and JSON Feed files from your blog posts and adds discovery links to HTML pages. It's perfect for readers who want to subscribe to your blog updates.
+此插件自动从您的博客文章生成RSS 2.0、Atom和JSON Feed文件，并在HTML页面中添加发现链接。非常适合希望订阅您博客更新的读者。
 
-## Features
+## 功能特性
 
-✅ **Multiple Feed Formats**
-- RSS 2.0 (most widely supported)
-- Atom Feed (modern standard)
-- JSON Feed (developer-friendly)
+✅ **多种订阅格式**
+- RSS 2.0（支持最广泛）
+- Atom Feed（现代标准）
+- JSON Feed（开发者友好）
 
-✅ **SEO Optimized**
-- Automatic HTML `<link>` tag injection
-- Proper MIME types and headers
-- Search engine friendly URLs
+✅ **SEO优化**
+- 自动注入HTML `<link>` 标签
+- 正确的MIME类型和响应头
+- 搜索引擎友好的URL
 
-✅ **Highly Configurable**
-- Custom feed paths and limits
-- Field mapping from frontmatter
-- Content inclusion options
+✅ **高度可配置**
+- 自定义订阅源路径和限制
+- Frontmatter字段映射
+- 内容包含选项
 
-✅ **Zero Configuration**
-- Works out of the box with sensible defaults
-- Automatically detects posts via frontmatter plugin
+✅ **零配置启动**
+- 开箱即用的合理默认设置
+- 通过frontmatter插件自动检测文章
 
-## Installation
+## 安装
 
 ```bash
 pnpm add @cogita/plugin-rss
 ```
 
-> **Note:** This plugin depends on `@cogita/plugin-posts-frontmatter` to access post data.
+> **注意：** 此插件依赖 `@cogita/plugin-posts-frontmatter` 来获取文章数据。
 
-## Quick Start
+## 快速开始
 
-### Automatic Usage (Recommended)
+### 自动使用（推荐）
 
-The plugin will be automatically included by themes that support it:
+支持RSS的主题会自动包含此插件：
 
 ```typescript
 // cogita.config.ts
@@ -52,15 +52,15 @@ import { defineConfig } from '@cogita/core';
 
 export default defineConfig({
   site: {
-    title: 'My Blog',
-    description: 'Sharing my thoughts',
+    title: '我的博客',
+    description: '分享我的想法',
     url: 'https://myblog.com'
   },
-  theme: 'lucid' // Theme will auto-load RSS plugin
+  theme: 'lucid' // 主题会自动加载RSS插件
 });
 ```
 
-### Manual Configuration
+### 手动配置
 
 ```typescript
 // cogita.config.ts
@@ -70,8 +70,8 @@ import { pluginRSS } from '@cogita/plugin-rss';
 export default defineConfig({
   plugins: [
     pluginRSS({
-      title: 'My Blog RSS',
-      description: 'Latest posts from my blog',
+      title: '我的博客RSS',
+      description: '博客最新文章',
       link: 'https://myblog.com',
       formats: ['rss', 'atom', 'json']
     })
@@ -79,57 +79,57 @@ export default defineConfig({
 });
 ```
 
-## Configuration Options
+## 配置选项
 
 ```typescript
 interface RSSConfig {
-  // Required
-  title: string;           // Feed title
-  description: string;     // Feed description  
-  link: string;           // Website URL
+  // 必需配置
+  title: string;           // 订阅源标题
+  description: string;     // 订阅源描述
+  link: string;           // 网站URL
   
-  // Optional
-  language?: string;       // Default: 'zh-CN'
-  copyright?: string;      // Copyright notice
-  managingEditor?: string; // Editor email
-  webMaster?: string;      // Webmaster email
+  // 可选配置
+  language?: string;       // 默认: 'zh-CN'
+  copyright?: string;      // 版权声明
+  managingEditor?: string; // 编辑者邮箱
+  webMaster?: string;      // 网站管理员邮箱
   
-  // Output options
-  formats?: ('rss' | 'atom' | 'json')[]; // Default: ['rss']
-  feedPath?: string;       // Default: 'rss.xml'
-  atomPath?: string;       // Default: 'atom.xml' 
-  jsonPath?: string;       // Default: 'feed.json'
+  // 输出选项
+  formats?: ('rss' | 'atom' | 'json')[]; // 默认: ['rss']
+  feedPath?: string;       // 默认: 'rss.xml'
+  atomPath?: string;       // 默认: 'atom.xml' 
+  jsonPath?: string;       // 默认: 'feed.json'
   
-  // Content options
-  maxItems?: number;       // Default: 20
-  includeContent?: boolean; // Default: false
+  // 内容选项
+  maxItems?: number;       // 默认: 20
+  includeContent?: boolean; // 默认: false
   
-  // Field mapping
+  // 字段映射
   customFields?: {
-    author?: string;       // Frontmatter field name
-    category?: string;     // Frontmatter field name
+    author?: string;       // Frontmatter字段名
+    category?: string;     // Frontmatter字段名
   };
 }
 ```
 
-## Usage Examples
+## 使用示例
 
-### Basic RSS Feed
+### 基础RSS订阅
 
 ```typescript
 pluginRSS({
-  title: 'Tech Blog',
-  description: 'Latest technology articles',
+  title: '技术博客',
+  description: '最新技术文章',
   link: 'https://techblog.com'
 })
 ```
 
-### Multi-format with Custom Paths
+### 多格式自定义路径
 
 ```typescript
 pluginRSS({
-  title: 'My Blog',
-  description: 'Personal blog updates',
+  title: '我的博客',
+  description: '个人博客更新',
   link: 'https://myblog.com',
   formats: ['rss', 'atom', 'json'],
   feedPath: 'feeds/rss.xml',
@@ -139,31 +139,31 @@ pluginRSS({
 })
 ```
 
-### Custom Field Mapping
+### 自定义字段映射
 
 ```typescript
 pluginRSS({
-  title: 'Developer Blog',
-  description: 'Software development insights',
+  title: '开发者博客',
+  description: '软件开发见解',
   link: 'https://devblog.com',
   customFields: {
-    author: 'writer',      // Use 'writer' field from frontmatter
-    category: 'topics'     // Use 'topics' field as categories
+    author: 'writer',      // 使用frontmatter中的'writer'字段
+    category: 'topics'     // 使用'topics'字段作为分类
   }
 })
 ```
 
-## Generated Files
+## 生成的文件
 
-The plugin generates the following files:
+插件会生成以下文件：
 
-- **`/rss.xml`** - RSS 2.0 feed (if enabled)
-- **`/atom.xml`** - Atom feed (if enabled)  
-- **`/feed.json`** - JSON Feed (if enabled)
+- **`/rss.xml`** - RSS 2.0订阅源（如果启用）
+- **`/atom.xml`** - Atom订阅源（如果启用）
+- **`/feed.json`** - JSON订阅源（如果启用）
 
-## HTML Integration
+## HTML集成
 
-The plugin automatically adds discovery links to your HTML:
+插件会自动在HTML中添加发现链接：
 
 ```html
 <head>
@@ -173,27 +173,27 @@ The plugin automatically adds discovery links to your HTML:
 </head>
 ```
 
-## Frontmatter Support
+## Frontmatter支持
 
-The plugin works with standard frontmatter fields:
+插件支持标准的frontmatter字段：
 
 ```yaml
 ---
-title: "My First Post"
-description: "An introduction to my blog"
+title: "我的第一篇文章"
+description: "博客介绍"
 date: "2024-01-15"
-author: "John Doe"
-categories: ["tech", "blog"]
-tags: ["introduction", "welcome"]
+author: "张三"
+categories: ["技术", "博客"]
+tags: ["介绍", "欢迎"]
 ---
 ```
 
-## Virtual Module
+## 虚拟模块
 
-Access feed metadata in your components:
+在组件中访问订阅源元数据：
 
 ```typescript
-// Available in theme components
+// 在主题组件中可用
 import { feedMeta } from 'virtual-rss-meta';
 
 function FeedLinks() {
@@ -207,36 +207,36 @@ function FeedLinks() {
 }
 ```
 
-## TypeScript Support
+## TypeScript支持
 
-Full TypeScript support with exported types:
+完整的TypeScript支持和导出类型：
 
 ```typescript
 import type { RSSConfig, FeedMeta } from '@cogita/plugin-rss';
 ```
 
-## Troubleshooting
+## 故障排除
 
-### No Posts in Feed
+### 订阅源中没有文章
 
-1. Ensure `@cogita/plugin-posts-frontmatter` is loaded first
-2. Check that posts exist in your posts directory
-3. Verify frontmatter format is valid
+1. 确保先加载了 `@cogita/plugin-posts-frontmatter`
+2. 检查posts目录中是否存在文章
+3. 验证frontmatter格式是否正确
 
-### Feed URLs Not Working
+### 订阅源URL无法访问
 
-1. Check that your `link` configuration is correct
-2. Ensure the build completed successfully
-3. Verify feed files exist in output directory
+1. 检查 `link` 配置是否正确
+2. 确保构建成功完成
+3. 验证输出目录中是否存在订阅文件
 
-## Examples
+## 示例
 
-See the [plugin design document](../../docs/plugins/plugin-rss-design.md) for detailed architecture and more examples.
+查看[插件设计文档](../../docs/plugins/plugin-rss-design.md)了解详细架构和更多示例。
 
-## License
+## 许可证
 
-MIT License. See [LICENSE](./LICENSE) for details.
+MIT许可证。详情请查看[LICENSE](./LICENSE)。
 
-## Contributing
+## 贡献
 
-Contributions welcome! Please read our [Contributing Guide](../../CONTRIBUTING.md).
+欢迎贡献！请阅读我们的[贡献指南](../../CONTRIBUTING.md)。

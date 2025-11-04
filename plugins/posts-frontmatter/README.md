@@ -3,48 +3,48 @@
 [![npm version](https://badge.fury.io/js/@cogita%2Fplugin-posts-frontmatter.svg)](https://badge.fury.io/js/@cogita%2Fplugin-posts-frontmatter)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)](https://www.typescriptlang.org/)
 
-[中文](./README.zh-CN.md) | **English**
+**中文** | [English](./README.en.md)
 
-> Core plugin that automatically scans posts and extracts frontmatter data for Cogita themes.
+> 自动扫描文章并为 Cogita 主题提取 frontmatter 数据的核心插件
 
-## What is it?
+## 这是什么？
 
-This plugin automatically scans your `posts/` directory, extracts frontmatter from Markdown files, and makes the data available to themes through a virtual module. It's the foundation for blog post lists, archives, and other content-driven features.
+此插件自动扫描您的 `posts/` 目录，从 Markdown 文件中提取 frontmatter，并通过虚拟模块向主题提供数据。它是博客文章列表、归档和其他内容驱动功能的基础。
 
-## Installation
+## 安装
 
 ```bash
 pnpm add @cogita/plugin-posts-frontmatter
 ```
 
-> **Note:** In the Cogita framework, this plugin is automatically included by themes that need it (like `@cogita/theme-lucid`). Manual installation is typically not required.
+> **注意：** 在 Cogita 框架中，此插件由需要它的主题（如 `@cogita/theme-lucid`）自动包含。通常不需要手动安装。
 
-## How It Works
+## 工作原理
 
-1. **Scans** all `.md` and `.mdx` files in the posts directory
-2. **Extracts** frontmatter metadata from each file
-3. **Generates** routes for each post
-4. **Creates** a virtual module with all posts data
-5. **Provides** data to themes via `virtual-posts-data`
+1. **扫描** posts 目录中的所有 `.md` 和 `.mdx` 文件
+2. **提取** 每个文件的 frontmatter 元数据
+3. **生成** 每篇文章的路由
+4. **创建** 包含所有文章数据的虚拟模块
+5. **提供** 通过 `virtual-posts-data` 向主题提供数据
 
-## Usage
+## 使用方法
 
-### Automatic Usage (Recommended)
+### 自动使用（推荐）
 
-Simply use a compatible Cogita theme:
+简单使用兼容的 Cogita 主题：
 
 ```typescript
 // cogita.config.ts
 import { defineConfig } from '@cogita/core';
 
 export default defineConfig({
-  theme: 'lucid', // Theme automatically loads this plugin
+  theme: 'lucid', // 主题自动加载此插件
 });
 ```
 
-### Manual Configuration (Advanced)
+### 手动配置（高级用法）
 
-For custom setups or Rspress projects:
+用于自定义设置或 Rspress 项目：
 
 ```typescript
 import { defineConfig } from '@rspress/core';
@@ -62,12 +62,12 @@ export default defineConfig({
 });
 ```
 
-## Virtual Module
+## 虚拟模块
 
-The plugin creates `virtual-posts-data` module:
+插件创建 `virtual-posts-data` 模块：
 
 ```tsx
-// Available in theme components
+// 在主题组件中可用
 import { allPosts } from 'virtual-posts-data';
 
 function BlogHome() {
@@ -87,72 +87,72 @@ function BlogHome() {
 }
 ```
 
-## Post Format
+## 文章格式
 
-### Frontmatter Example
+### Frontmatter 示例
 
 ```markdown
 ---
-title: "Your Post Title"
-description: "Brief description for SEO and sharing"
+title: "您的文章标题"
+description: "SEO 和分享用的简要描述"
 createDate: "2024-01-01"
 updateDate: "2024-01-15"
-tags: ["tag1", "tag2"]
-categories: ["category1"]
-author: "Author Name"
+tags: ["标签1", "标签2"]
+categories: ["分类1"]
+author: "作者姓名"
 draft: false
 featured: true
 ---
 
-# Your post content starts here
+# 您的文章内容从这里开始
 
-Write your Markdown content...
+编写您的 Markdown 内容...
 ```
 
-### Supported Fields
+### 支持的字段
 
-| Field | Type | Description | Default |
-|-------|------|-------------|---------|
-| `title` | string | Post title | Filename |
-| `description` | string | Post description | - |
-| `createDate` | string | Creation date (YYYY-MM-DD) | File creation time |
-| `updateDate` | string | Last update date | File modification time |
-| `tags` | string[] | Post tags | - |
-| `categories` | string[] | Post categories | - |
-| `author` | string | Author name | - |
-| `draft` | boolean | Draft status | false |
-| `featured` | boolean | Featured post | false |
+| 字段 | 类型 | 描述 | 默认值 |
+|------|------|------|-------|
+| `title` | string | 文章标题 | 文件名 |
+| `description` | string | 文章描述 | - |
+| `createDate` | string | 创建日期 (YYYY-MM-DD) | 文件创建时间 |
+| `updateDate` | string | 最后更新日期 | 文件修改时间 |
+| `tags` | string[] | 文章标签 | - |
+| `categories` | string[] | 文章分类 | - |
+| `author` | string | 作者姓名 | - |
+| `draft` | boolean | 草稿状态 | false |
+| `featured` | boolean | 推荐文章 | false |
 
-### Date Formats
+### 日期格式
 
-Supports various date formats:
+支持多种日期格式：
 
 ```yaml
-# Recommended
+# 推荐
 createDate: "2024-01-01"
 createDate: "2024-01-01T10:30:00Z"
 
-# Also supported
-date: "2024-01-01"          # Alias for createDate
+# 也支持
+date: "2024-01-01"          # createDate 的别名
 createDate: "Jan 1, 2024"
 createDate: "2024/01/01"
 ```
 
-## Configuration
+## 配置
 
-### Plugin Options
+### 插件选项
 
 ```typescript
 interface PluginConfig {
-  postsDir?: string;        // Posts directory (default: 'posts')
-  routePrefix?: string;     // Route prefix (default: 'posts')
-  cwd?: string;            // Project root directory
-  sortBy?: string;         // Sort field (default: 'createDate')
-  sortOrder?: string;      // Sort order (default: 'desc')
+  postsDir?: string;        // 文章目录（默认：'posts'）
+  routePrefix?: string;     // 路由前缀（默认：'posts'）
+  cwd?: string;            // 项目根目录
+  sortBy?: string;         // 排序字段（默认：'createDate'）
+  sortOrder?: string;      // 排序顺序（默认：'desc'）
 }
 ```
 
-### Directory Structure
+### 目录结构
 
 ```
 posts/
@@ -163,34 +163,34 @@ posts/
     └── react-tips.md    → /posts/tech/react-tips
 ```
 
-## Data Structure
+## 数据结构
 
-### PostFrontmatter Interface
+### PostFrontmatter 接口
 
 ```typescript
 interface PostFrontmatter {
   title: string;
   description?: string;
-  filePath: string;         // Absolute file path
-  route: string;           // Route path (e.g., '/posts/hello-world')
-  url: string;             // Same as route (compatibility)
-  createDate: string;      // ISO date string
-  updateDate: string;      // ISO date string
+  filePath: string;         // 绝对文件路径
+  route: string;           // 路由路径（如：'/posts/hello-world'）
+  url: string;             // 与 route 相同（兼容性）
+  createDate: string;      // ISO 日期字符串
+  updateDate: string;      // ISO 日期字符串
   tags?: string[];
   categories?: string[];
-  [key: string]: any;      // Additional frontmatter fields
+  [key: string]: any;      // 额外的 frontmatter 字段
 }
 ```
 
-## TypeScript Support
+## TypeScript 支持
 
-Add client type definitions:
+添加客户端类型定义：
 
 ```typescript
 /// <reference types="@cogita/plugin-posts-frontmatter/client" />
 ```
 
-Or in `tsconfig.json`:
+或在 `tsconfig.json` 中：
 
 ```json
 {
@@ -200,29 +200,29 @@ Or in `tsconfig.json`:
 }
 ```
 
-## Customization
+## 自定义
 
-### Custom Sort Order
+### 自定义排序顺序
 
 ```typescript
-// Sort by update date
+// 按更新日期排序
 pluginPostsFrontmatter({
   sortBy: 'updateDate',
   sortOrder: 'desc'
 });
 ```
 
-### Filter Posts
+### 过滤文章
 
 ```typescript
-// Custom plugin wrapper
+// 自定义插件包装器
 export const myPostsPlugin = (config) => {
   const plugin = pluginPostsFrontmatter(config);
   const originalBeforeBuild = plugin.beforeBuild;
   
   plugin.beforeBuild = async function() {
     await originalBeforeBuild?.call(this);
-    // Filter out draft posts in production
+    // 在生产环境中过滤掉草稿文章
     if (process.env.NODE_ENV === 'production') {
       allPosts = allPosts.filter(post => !post.draft);
     }
@@ -232,37 +232,37 @@ export const myPostsPlugin = (config) => {
 };
 ```
 
-## Troubleshooting
+## 故障排除
 
-### Posts Not Showing
+### 文章不显示
 
-Check these common issues:
+检查这些常见问题：
 
-1. **File location**: Ensure files are in `posts/` directory
-2. **File extension**: Use `.md` or `.mdx` extensions
-3. **Frontmatter format**: Valid YAML frontmatter
-4. **Draft status**: Check if `draft: true` is set
+1. **文件位置**：确保文件在 `posts/` 目录中
+2. **文件扩展名**：使用 `.md` 或 `.mdx` 扩展名
+3. **Frontmatter 格式**：有效的 YAML frontmatter
+4. **草稿状态**：检查是否设置了 `draft: true`
 
 ```bash
-# Debug: Check posts directory
+# 调试：检查 posts 目录
 ls -la posts/
 
-# Debug: Validate frontmatter
+# 调试：验证 frontmatter
 head -10 posts/your-post.md
 ```
 
-### Route Issues
+### 路由问题
 
-- Avoid special characters in filenames
-- Use kebab-case for best SEO
-- Check for conflicting routes
+- 避免文件名中的特殊字符
+- 使用 kebab-case 获得最佳 SEO
+- 检查冲突的路由
 
-### Performance
+### 性能
 
-For large numbers of posts:
+对于大量文章：
 
 ```typescript
-// Enable caching
+// 启用缓存
 export default defineConfig({
   builderConfig: {
     cache: { type: 'filesystem' }
@@ -270,36 +270,36 @@ export default defineConfig({
 });
 ```
 
-## Development
+## 开发
 
 ```bash
-# Clone repository
+# 克隆仓库
 git clone https://github.com/wu9o/cogita.git
 cd cogita/plugins/posts-frontmatter
 
-# Install dependencies
+# 安装依赖
 pnpm install
 
-# Build plugin
+# 构建插件
 pnpm build
 
-# Run tests
+# 运行测试
 pnpm test
 ```
 
-## Learn More
+## 了解更多
 
-- 📖 [Plugin Development Guide](../../docs/plugin-development.md)
-- 🔧 [API Reference](../../docs/api-reference.md)
-- 💡 [Best Practices](../../docs/best-practices.md)
-- 🏗️ [Architecture Guide](../../docs/architecture-design.md)
+- 📖 [插件开发指南](../../docs/plugin-development.md)
+- 🔧 [API 参考](../../docs/api-reference.md)
+- 💡 [最佳实践](../../docs/best-practices.md)
+- 🏗️ [架构指南](../../docs/architecture-design.md)
 
-## Related Packages
+## 相关包
 
-- [🧠 @cogita/core](../../packages/core) - Core blog engine
-- [🎨 @cogita/theme-lucid](../../themes/lucid) - Default theme that uses this plugin
-- [🎨 @cogita/ui](../../packages/ui) - UI components for displaying posts
+- [🧠 @cogita/core](../../packages/core) - 核心博客引擎
+- [🎨 @cogita/theme-lucid](../../themes/lucid) - 使用此插件的默认主题
+- [🎨 @cogita/ui](../../packages/ui) - 用于显示文章的 UI 组件
 
-## License
+## 许可证
 
 MIT © [wu9o](https://github.com/wu9o)

@@ -3,35 +3,35 @@
 [![npm version](https://badge.fury.io/js/@cogita%2Fui.svg)](https://badge.fury.io/js/@cogita%2Fui)
 [![React](https://img.shields.io/badge/React-18%2B-blue)](https://reactjs.org/)
 
-[中文](./README.zh-CN.md) | **English**
+**中文** | [English](./README.md)
 
-> Shared, themeable UI components for building Cogita themes and plugins.
+> 用于构建 Cogita 主题和插件的共享、可主题化 UI 组件
 
-## What is it?
+## 这是什么？
 
-`@cogita/ui` provides a collection of React components specifically designed for blog and content websites. These components are optimized for readability, accessibility, and theming.
+`@cogita/ui` 提供了专为博客和内容网站设计的 React 组件集合。这些组件针对可读性、无障碍性和主题化进行了优化。
 
-## Installation
+## 安装
 
 ```bash
-# Using pnpm
+# 使用 pnpm
 pnpm add @cogita/ui
 
-# Using npm  
+# 使用 npm  
 npm install @cogita/ui
 
-# Using yarn
+# 使用 yarn
 yarn add @cogita/ui
 ```
 
-**Peer Dependencies:**
+**Peer 依赖：**
 ```bash
 pnpm add react react-dom @rspress/runtime @rspress/theme-default
 ```
 
-## Quick Start
+## 快速开始
 
-### Basic Usage
+### 基础使用
 
 ```tsx
 import { PostList, Button } from '@cogita/ui';
@@ -40,43 +40,43 @@ import type { Post } from '@cogita/ui';
 function BlogHome() {
   const posts: Post[] = [
     {
-      title: 'My First Post',
+      title: '我的第一篇文章',
       route: '/posts/first-post', 
       createDate: '2024-01-01',
       updateDate: '2024-01-01',
-      // ... other fields
+      // ... 其他字段
     }
   ];
 
   return (
     <div>
-      <h1>My Blog</h1>
+      <h1>我的博客</h1>
       <PostList posts={posts} />
-      <Button variant="primary" onClick={() => alert('Hello!')}>
-        Read More
+      <Button variant="primary" onClick={() => alert('你好！')}>
+        阅读更多
       </Button>
     </div>
   );
 }
 ```
 
-### Import Styles
+### 导入样式
 
 ```tsx
-// Import base styles (typically in app entry)
+// 导入基础样式（通常在应用入口）
 import '@cogita/ui/styles';
 
-// Or import specific component styles
+// 或导入特定组件样式
 import '@cogita/ui/components/PostList/style';
 ```
 
-## Components
+## 组件
 
-### Content Components
+### 内容组件
 
 #### `PostList`
 
-Display a list of blog posts with customizable rendering.
+显示博客文章列表，支持自定义渲染。
 
 ```tsx
 import { PostList } from '@cogita/ui';
@@ -92,15 +92,15 @@ import { PostList } from '@cogita/ui';
 />
 ```
 
-**Props:**
-- `posts: Post[]` - Array of post data
-- `renderItem?: (post: Post) => ReactNode` - Custom render function
-- `loading?: boolean` - Show loading state
-- `emptyText?: string` - Text when no posts
+**Props：**
+- `posts: Post[]` - 文章数据数组
+- `renderItem?: (post: Post) => ReactNode` - 自定义渲染函数
+- `loading?: boolean` - 显示加载状态
+- `emptyText?: string` - 无文章时的文本
 
 #### `PostItem`
 
-Individual post item component, used within PostList.
+单个文章项组件，在 PostList 中使用。
 
 ```tsx
 import { PostItem } from '@cogita/ui';
@@ -113,37 +113,37 @@ import { PostItem } from '@cogita/ui';
 />
 ```
 
-### Interactive Components
+### 交互组件
 
 #### `Button`
 
-Versatile button component with multiple variants.
+多功能按钮组件，支持多种变体。
 
 ```tsx
 import { Button } from '@cogita/ui';
 
-// Basic usage
-<Button onClick={handleClick}>Click me</Button>
+// 基础使用
+<Button onClick={handleClick}>点击我</Button>
 
-// Variants
-<Button variant="primary">Primary</Button>
-<Button variant="secondary">Secondary</Button>
-<Button variant="ghost">Ghost</Button>
+// 变体
+<Button variant="primary">主要按钮</Button>
+<Button variant="secondary">次要按钮</Button>
+<Button variant="ghost">幽灵按钮</Button>
 
-// Sizes
-<Button size="small">Small</Button>
-<Button size="large">Large</Button>
+// 尺寸
+<Button size="small">小按钮</Button>
+<Button size="large">大按钮</Button>
 
-// States
-<Button loading>Loading...</Button>
-<Button disabled>Disabled</Button>
+// 状态
+<Button loading>加载中...</Button>
+<Button disabled>禁用</Button>
 ```
 
-### Display Components  
+### 展示组件
 
 #### `TagList`
 
-Display tags with optional click handlers.
+显示标签，支持点击处理。
 
 ```tsx
 import { TagList } from '@cogita/ui';
@@ -154,11 +154,11 @@ import { TagList } from '@cogita/ui';
 />
 ```
 
-## Data Types
+## 数据类型
 
 ### `Post`
 
-Main post data interface.
+主要文章数据接口。
 
 ```tsx
 interface Post {
@@ -175,31 +175,31 @@ interface Post {
 }
 ```
 
-## Theming
+## 主题化
 
-### CSS Variables
+### CSS 变量
 
-Customize appearance using CSS variables:
+使用 CSS 变量自定义外观：
 
 ```css
 :root {
-  /* Colors */
+  /* 颜色 */
   --cogita-primary: #007acc;
   --cogita-text-primary: #333;
   --cogita-bg-primary: #fff;
   
-  /* Spacing */
+  /* 间距 */
   --cogita-space-sm: 8px;
   --cogita-space-md: 16px;
   --cogita-space-lg: 24px;
   
-  /* Typography */
+  /* 字体 */
   --cogita-font-size-base: 16px;
   --cogita-font-family: system-ui, sans-serif;
 }
 ```
 
-### Dark Mode
+### 暗色模式
 
 ```css
 [data-theme='dark'] {
@@ -209,7 +209,7 @@ Customize appearance using CSS variables:
 }
 ```
 
-### Custom Component Styles
+### 自定义组件样式
 
 ```css
 .my-custom-post-list {
@@ -223,9 +223,9 @@ Customize appearance using CSS variables:
 }
 ```
 
-## Usage in Themes
+## 在主题中使用
 
-### Basic Theme Layout
+### 基础主题布局
 
 ```tsx
 // themes/my-theme/src/layouts/Home.tsx
@@ -236,7 +236,7 @@ const HomeLayout: React.FC = () => {
   return (
     <div className="theme-container">
       <header>
-        <h1>My Blog</h1>
+        <h1>我的博客</h1>
       </header>
       <main>
         <PostList posts={allPosts} />
@@ -246,7 +246,7 @@ const HomeLayout: React.FC = () => {
 };
 ```
 
-### Custom Rendering
+### 自定义渲染
 
 ```tsx
 <PostList
@@ -265,22 +265,22 @@ const HomeLayout: React.FC = () => {
 />
 ```
 
-## Performance
+## 性能
 
 ### Tree Shaking
 
-Import only what you need:
+只导入需要的内容：
 
 ```tsx
-// Recommended: Named imports
+// 推荐：按名称导入
 import { PostList } from '@cogita/ui/PostList';
 import { Button } from '@cogita/ui/Button';
 
-// Avoid: Full imports  
+// 避免：完整导入
 import { PostList, Button } from '@cogita/ui';
 ```
 
-### Lazy Loading
+### 懒加载
 
 ```tsx
 import { lazy, Suspense } from 'react';
@@ -289,46 +289,46 @@ const HeavyComponent = lazy(() => import('@cogita/ui/HeavyComponent'));
 
 function MyPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>加载中...</div>}>
       <HeavyComponent />
     </Suspense>
   );
 }
 ```
 
-## Development
+## 开发
 
 ```bash
-# Clone repository
+# 克隆仓库
 git clone https://github.com/wu9o/cogita.git
 cd cogita
 
-# Install dependencies
+# 安装依赖
 pnpm install
 
-# Develop components
+# 开发组件
 pnpm --filter @cogita/ui dev
 
-# Build components
+# 构建组件
 pnpm --filter @cogita/ui build
 
-# Run tests
+# 运行测试
 pnpm --filter @cogita/ui test
 ```
 
-## Learn More
+## 了解更多
 
-- 📖 [Complete Documentation](../../docs/README.md)
-- 🔧 [API Reference](../../docs/api-reference.md)
-- 💡 [Best Practices](../../docs/best-practices.md)
-- 🎨 [Theme Development](../../docs/theme-development.md)
+- 📖 [完整文档](../../docs/README.md)
+- 🔧 [API 参考](../../docs/api-reference.md)
+- 💡 [最佳实践](../../docs/best-practices.md)
+- 🎨 [主题开发](../../docs/theme-development.md)
 
-## Related Packages
+## 相关包
 
-- [🧠 @cogita/core](../core) - Core blog engine  
-- [🚀 @cogita/cli](../cli) - Command line interface
-- [🌟 @cogita/theme-lucid](../../themes/lucid) - Default theme
+- [🧠 @cogita/core](../core) - 核心博客引擎
+- [🚀 @cogita/cli](../cli) - 命令行界面
+- [🌟 @cogita/theme-lucid](../../themes/lucid) - 默认主题
 
-## License
+## 许可证
 
 MIT © [wu9o](https://github.com/wu9o)
