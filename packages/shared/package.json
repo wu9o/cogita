@@ -1,6 +1,6 @@
 {
   "name": "@cogita/shared",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Shared utilities and type definitions for the Cogita ecosystem.",
   "keywords": ["cogita", "shared", "types", "utilities", "typescript", "theme", "plugin"],
   "author": "wu9o <https://github.com/wu9o>",
