@@ -14,8 +14,8 @@ export function getThemeConfig(): CogitaTheme {
     },
     globalStyles: [path.resolve(__dirname, './theme.css')],
     plugins: [
+      // 统一的简洁插件声明 - 配置处理由框架和插件内部负责
       pluginPostsFrontmatter,
-      // RSS插件工厂函数 - 从配置中读取RSS配置，提供默认值
       pluginRSS,
     ],
   };

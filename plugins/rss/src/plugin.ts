@@ -22,7 +22,36 @@ interface PostFrontmatter {
   url: string;
 }
 
-export function pluginRSS(config: RSSConfig): RspressPlugin {
+export function pluginRSS(config: Record<string, any>): RspressPlugin | null {
+  // Enhanced configuration handling - the plugin now handles all validation internally
+  const rssConfig = config.rss;
+
+  // Early return if RSS is not configured
+  if (!rssConfig) {
+    console.log('[RSS Plugin] RSS 配置未找到，跳过 RSS 功能');
+    return null;
+  }
+
+  // Validate required configuration
+  if (!rssConfig.title || !rssConfig.description) {
+    console.warn('[RSS Plugin] RSS 配置缺少必需字段 (title, description)，跳过 RSS 功能');
+    return null;
+  }
+
+  // Create the complete RSS configuration with defaults
+  const finalRssConfig: RSSConfig = {
+    formats: ['rss'],
+    maxItems: 20,
+    language: 'en',
+    feedPath: 'rss.xml',
+    atomPath: 'atom.xml',
+    jsonPath: 'feed.json',
+    includeContent: false,
+    // Use site URL as fallback
+    link: rssConfig.link || config.site?.url || 'http://localhost:3000',
+    ...rssConfig,
+  };
+
   let generator: RSSGenerator;
   let posts: PostFrontmatter[] = [];
   let feedMeta: FeedMeta = {};
@@ -31,26 +60,31 @@ export function pluginRSS(config: RSSConfig): RspressPlugin {
   return {
     name: '@cogita/plugin-rss',
 
-    async beforeBuild(rspressConfig: any, isProd: boolean) {
+    async beforeBuild(rspressConfig: any) {
       console.log('[RSS Plugin] 开始初始化RSS插件...');
 
       // 获取站点URL配置和输出目录
-      const siteUrl = config.link || 'http://localhost:3000';
+      const siteUrl = finalRssConfig.link;
       outputDir = rspressConfig.output?.path || 'doc_build';
 
       try {
         // 初始化RSS生成器
-        generator = new RSSGenerator(config, siteUrl);
+        generator = new RSSGenerator(finalRssConfig, siteUrl);
 
         // 直接扫描文章文件（与posts-frontmatter插件使用相同的逻辑）
-        const postsDir = rspressConfig.postsDir || 'posts';
-        const cwd = rspressConfig.cwd || process.cwd();
-        const routePrefix = rspressConfig.routePrefix || 'posts';
+        const postsConfig = config.posts || {};
+        const postsDir = postsConfig.dir || 'posts';
+        const cwd = config.cwd || process.cwd();
+        const routePrefix = postsConfig.routePrefix || 'posts';
 
         console.log(`[RSS Plugin] 扫描文章目录: ${postsDir}`);
 
         // 执行glob匹配，获取所有markdown文件
-        const absolutePaths = await glob(`${postsDir}/**/*.{md,mdx}`, {
+        const extensions = postsConfig.extensions || ['md', 'mdx'];
+        const extensionPattern =
+          extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0];
+
+        const absolutePaths = await glob(`${postsDir}/**/*.${extensionPattern}`, {
           absolute: true,
           cwd,
           nodir: true,
@@ -142,13 +176,16 @@ export function pluginRSS(config: RSSConfig): RspressPlugin {
 }
 
 /**
- * 插件工厂函数的类型安全包装
+ * 插件工厂函数的类型安全包装（保留用于向后兼容）
  */
-export function createRSSPlugin(config: RSSConfig) {
-  return (rspressConfig: any) =>
+export function createRSSPlugin(rssConfig: RSSConfig) {
+  return (config: any) =>
     pluginRSS({
       ...config,
-      // 可以从rspress配置中获取默认值
-      link: config.link || rspressConfig.root || 'http://localhost:3000',
+      rss: {
+        ...rssConfig,
+        // 可以从config中获取默认值
+        link: rssConfig.link || config.site?.url || 'http://localhost:3000',
+      },
     });
 }
