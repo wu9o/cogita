@@ -23,13 +23,7 @@
     "url": "https://github.com/wu9o/cogita/issues"
   },
   "homepage": "https://github.com/wu9o/cogita/tree/main/packages/ui#readme",
-  "sideEffects": [
-    "*.css",
-    "*.less",
-    "*.sass",
-    "*.scss",
-    "./dist/styles/index.js"
-  ],
+  "sideEffects": ["*.css", "*.less", "*.sass", "*.scss", "./dist/styles/index.js"],
   "type": "module",
   "exports": {
     ".": {
@@ -41,12 +35,7 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist",
-    "README.md",
-    "README.zh-CN.md",
-    "LICENSE"
-  ],
+  "files": ["dist", "README.md", "README.zh-CN.md", "LICENSE"],
   "engines": {
     "node": ">=18.0.0"
   },

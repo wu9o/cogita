@@ -23,12 +23,7 @@
     "url": "https://github.com/wu9o/cogita/issues"
   },
   "homepage": "https://github.com/wu9o/cogita/tree/main/plugins/posts-frontmatter#readme",
-  "sideEffects": [
-    "*.css",
-    "*.less",
-    "*.sass",
-    "*.scss"
-  ],
+  "sideEffects": ["*.css", "*.less", "*.sass", "*.scss"],
   "type": "module",
   "exports": {
     ".": {
@@ -41,13 +36,7 @@
   },
   "module": "./dist/es/index.js",
   "types": "./dist/types/index.d.ts",
-  "files": [
-    "dist",
-    "client.d.ts",
-    "README.md",
-    "README.zh-CN.md",
-    "LICENSE"
-  ],
+  "files": ["dist", "client.d.ts", "README.md", "README.zh-CN.md", "LICENSE"],
   "engines": {
     "node": ">=18.0.0"
   },
@@ -68,6 +57,7 @@
   },
   "devDependencies": {
     "@cogita/config": "workspace:*",
+    "@cogita/shared": "workspace:*",
     "@microsoft/api-extractor": "^7.52.10",
     "@rslib/core": "0.11.2",
     "@rspress/shared": "^1.11.2",

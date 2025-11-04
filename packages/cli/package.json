@@ -35,13 +35,7 @@
   },
   "module": "./dist/es/index.js",
   "types": "./dist/types/index.d.ts",
-  "files": [
-    "dist",
-    "bin",
-    "README.md",
-    "README.zh-CN.md",
-    "LICENSE"
-  ],
+  "files": ["dist", "bin", "README.md", "README.zh-CN.md", "LICENSE"],
   "engines": {
     "node": ">=18.0.0"
   },
