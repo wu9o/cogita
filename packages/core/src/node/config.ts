@@ -87,7 +87,7 @@ async function loadTheme(themeName: string): Promise<CogitaTheme> {
 
 /**
  * 创建主题插件
- * 
+ *
  * 职责：
  * 1. 加载主题的 globalStyles（样式文件）
  * 2. 注册主题的 globalUIComponents（全局组件如 Footer）
@@ -209,6 +209,7 @@ export async function createRspressConfig(
   if (theme?.plugins) {
     for (const factory of theme.plugins) {
       try {
+        // biome-ignore lint/suspicious/noExplicitAny: CogitaPluginConfig 是 Rspress 配置的超集，插件工厂需要接受更丰富的配置
         const result = factory(fullConfigForPlugins as any);
 
         if (result) {
