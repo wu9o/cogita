@@ -1,0 +1,67 @@
+{
+  "name": "@cogita/plugin-tags",
+  "version": "0.0.1",
+  "description": "标签系统插件，为 Cogita 博客提供完整的标签管理、标签页面生成和标签云功能。",
+  "keywords": [
+    "cogita",
+    "plugin",
+    "tags",
+    "blog",
+    "static-site-generator",
+    "rspress",
+    "tag-cloud",
+    "content-organization"
+  ],
+  "author": "wu9o <https://github.com/wu9o>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wu9o/cogita.git",
+    "directory": "plugins/tags"
+  },
+  "bugs": {
+    "url": "https://github.com/wu9o/cogita/issues"
+  },
+  "homepage": "https://github.com/wu9o/cogita/tree/main/plugins/tags#readme",
+  "sideEffects": ["*.css", "*.less", "*.sass", "*.scss"],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "client.d.ts", "README.md", "README.zh-CN.md", "LICENSE"],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/wu9o"
+  },
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build -w",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@cogita/shared": "workspace:*",
+    "@cogita/ui": "workspace:*",
+    "@rslib/core": "0.11.2",
+    "@types/glob": "^8.1.0",
+    "@types/react": "^18.3.12",
+    "react": "^18.3.1",
+    "rsbuild-plugin-publint": "^0.3.3",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@rspress/core": "^1.45.1",
+    "glob": "^11.0.0"
+  },
+  "peerDependencies": {
+    "@cogita/plugin-posts-frontmatter": "workspace:*"
+  }
+}

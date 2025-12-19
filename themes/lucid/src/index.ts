@@ -2,6 +2,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pluginPostsFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { pluginRSS } from '@cogita/plugin-rss';
+import { pluginTags } from '@cogita/plugin-tags';
 import type { CogitaTheme } from '@cogita/shared';
 
 /**
@@ -52,6 +53,7 @@ export function getThemeConfig(): CogitaTheme {
 
       // RSS feed 生成插件
       pluginRSS,
+      pluginTags,
     ],
   };
 }
