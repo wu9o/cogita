@@ -38,6 +38,21 @@ export interface CogitaPluginConfig {
     };
     [key: string]: unknown;
   };
+  tags?: {
+    enabled?: boolean;
+    routePrefix?: string;
+    tagCloud?: {
+      minFontSize?: number;
+      maxFontSize?: number;
+      sortBy?: 'name' | 'count' | 'date';
+      limit?: number;
+    };
+    postsPerPage?: number;
+    generateRss?: boolean;
+    excludeTags?: string[];
+    minPostCount?: number;
+    [key: string]: unknown;
+  };
   _framework?: {
     version: string;
     buildTime: string;

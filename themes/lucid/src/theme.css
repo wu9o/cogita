@@ -1,60 +1,76 @@
 /* themes/lucid/src/theme.css */
 :root {
-  /* Button variables */
+  /* 基础颜色变量 */
   --cogita-primary-color: #1a1a1a;
   --cogita-primary-text-color: #ffffff;
-
-  /* PostList variables */
   --cogita-border-color: #eaeaea;
   --cogita-title-color: #222222;
   --cogita-text-color: #555555;
   --cogita-text-color-secondary: #777777;
+  --cogita-bg-soft: #f8f9fa;
 }
 
+/* 主题容器 */
 .theme-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-family: sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.header {
-  margin-bottom: 3rem;
-  text-align: center;
+/* 网站头部 */
+.site-header {
+  border-bottom: 1px solid var(--cogita-border-color);
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
 }
 
-.header-text {
-  flex: 1;
+.header-text h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--cogita-title-color);
 }
 
-.rss-links {
+.header-text p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--cogita-text-color-secondary);
+}
+
+/* 头部RSS链接 */
+.header-rss-links {
   display: flex;
   gap: 0.5rem;
   align-items: center;
 }
 
-.rss-link {
+.header-rss-link {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.5rem;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
   color: var(--cogita-text-color);
   text-decoration: none;
-  font-size: 0.875rem;
+  font-size: 1rem;
   border: 1px solid var(--cogita-border-color);
-  border-radius: 4px;
-  background: #fafafa;
+  border-radius: 6px;
+  background: white;
   transition: all 0.2s ease;
 }
 
-.rss-link:hover {
+.header-rss-link:hover {
   background: var(--cogita-primary-color);
   color: var(--cogita-primary-text-color);
   border-color: var(--cogita-primary-color);
@@ -62,110 +78,267 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-@media (max-width: 600px) {
-  .header-content {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .rss-links {
-    justify-content: center;
-  }
+/* 内容布局 */
+.content-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 3rem;
+  flex: 1;
 }
 
 .main-content {
-  margin-top: 2rem;
+  min-width: 0;
 }
 
-/* RSS订阅横幅样式 */
-.rss-subscription-banner {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border: 1px solid var(--cogita-border-color);
+/* 首页特定样式 */
+.home-layout .blog-header {
+  margin-bottom: 2rem;
+}
+
+.blog-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--cogita-title-color);
+  margin: 0 0 0.5rem 0;
+}
+
+.blog-subtitle {
+  color: var(--cogita-text-color-secondary);
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+/* 侧边栏样式 */
+.blog-sidebar {
+  height: fit-content;
+  position: sticky;
+  top: 6rem;
+}
+
+.sidebar-section {
+  background: var(--cogita-bg-soft);
   border-radius: 8px;
   padding: 1.5rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
 }
 
-.rss-banner-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
+.sidebar-section:last-child {
+  margin-bottom: 0;
 }
 
-.rss-banner-text h3 {
-  margin: 0 0 0.5rem 0;
-  color: var(--cogita-title-color);
-  font-size: 1.1rem;
+.sidebar-title {
+  font-size: 1rem;
   font-weight: 600;
+  color: var(--cogita-title-color);
+  margin: 0 0 1rem 0;
 }
 
-.rss-banner-text p {
-  margin: 0;
-  color: var(--cogita-text-color-secondary);
-  font-size: 0.9rem;
-  line-height: 1.4;
+/* 查看全部链接 */
+.view-all-tags {
+  margin-top: 1rem;
+  text-align: center;
 }
 
-.rss-banner-links {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.rss-banner-link {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  background: white;
-  color: var(--cogita-text-color);
+.view-all-link {
+  color: var(--cogita-primary-color);
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 500;
-  border: 1px solid var(--cogita-border-color);
-  border-radius: 6px;
-  transition: all 0.2s ease;
-  white-space: nowrap;
 }
 
-.rss-banner-link:hover {
-  background: var(--cogita-primary-color);
-  color: var(--cogita-primary-text-color);
-  border-color: var(--cogita-primary-color);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(26, 26, 26, 0.15);
+.view-all-link:hover {
+  text-decoration: underline;
 }
 
-.rss-banner-link.rss-primary {
-  background: var(--cogita-primary-color);
-  color: var(--cogita-primary-text-color);
-  border-color: var(--cogita-primary-color);
+/* 标签页面样式 */
+.tag-page {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.rss-banner-link.rss-primary:hover {
-  background: #333333;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(26, 26, 26, 0.2);
+.tag-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--cogita-border-color);
 }
 
-@media (max-width: 600px) {
-  .rss-banner-content {
+.breadcrumb {
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.breadcrumb a {
+  color: var(--cogita-primary-color);
+  text-decoration: none;
+}
+
+.breadcrumb .separator {
+  color: var(--cogita-text-color-secondary);
+  margin: 0 0.5rem;
+}
+
+.breadcrumb .current {
+  color: var(--cogita-text-color-secondary);
+}
+
+.tag-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--cogita-title-color);
+  margin: 0 0 0.5rem 0;
+}
+
+.tag-description {
+  color: var(--cogita-text-color-secondary);
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.tag-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 3rem;
+}
+
+.tag-posts {
+  min-width: 0;
+}
+
+.tag-sidebar {
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+}
+
+.related-tags,
+.tag-info {
+  background: var(--cogita-bg-soft);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.related-tags h3,
+.tag-info h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--cogita-title-color);
+  margin: 0 0 1rem 0;
+}
+
+.related-tags-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.related-tag {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  color: var(--cogita-text-color);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.related-tag:hover {
+  background-color: rgba(26, 26, 26, 0.05);
+}
+
+.tag-count {
+  font-size: 0.75rem;
+  color: var(--cogita-text-color-secondary);
+}
+
+.tag-meta {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tag-meta li {
+  padding: 0.25rem 0;
+  font-size: 0.875rem;
+  color: var(--cogita-text-color);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.tag-meta li:last-child {
+  border-bottom: none;
+}
+
+/* 网站底部 */
+.site-footer {
+  border-top: 1px solid var(--cogita-border-color);
+  background: var(--cogita-bg-soft);
+  text-align: center;
+  padding: 2rem;
+  margin-top: 3rem;
+  color: var(--cogita-text-color-secondary);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .content-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 1rem;
+  }
+  
+  .blog-sidebar {
+    order: -1; /* 在移动设备上将侧边栏移到顶部 */
+    position: static;
+  }
+  
+  .tag-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .tag-sidebar {
+    position: static;
+    order: 2;
+  }
+  
+  .header-content {
     flex-direction: column;
+    gap: 1rem;
     text-align: center;
-    gap: 1.5rem;
   }
-
-  .rss-banner-links {
-    justify-content: center;
-    width: 100%;
+  
+  .sidebar-section {
+    margin-bottom: 1rem;
   }
+}
 
-  .rss-banner-link {
-    flex: 1;
-    justify-content: center;
-    min-width: 100px;
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cogita-bg-soft: #1a1a1a;
+    --cogita-border-color: #333333;
+    --cogita-title-color: #ffffff;
+    --cogita-text-color: #cccccc;
+    --cogita-text-color-secondary: #999999;
+  }
+  
+  .site-header {
+    background: #0d1117;
+    border-bottom-color: var(--cogita-border-color);
+  }
+  
+  .header-rss-link {
+    background: #0d1117;
+    border-color: var(--cogita-border-color);
+  }
+  
+  .sidebar-section,
+  .related-tags,
+  .tag-info {
+    background: #161b22;
   }
 }

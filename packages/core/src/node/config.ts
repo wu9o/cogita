@@ -143,6 +143,26 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
       extensions: ['md', 'mdx'],
       ...cogitaConfig.posts,
     },
+    // Tags plugin config with defaults (if enabled)
+    tags: cogitaConfig.tags ? {
+      enabled: true,
+      routePrefix: 'tags',
+      tagCloud: {
+        minFontSize: 12,
+        maxFontSize: 24,
+        minOpacity: 0.5,
+        maxOpacity: 1.0,
+        sortBy: 'count',
+        limit: 50,
+      },
+      postsPerPage: 10,
+      layout: 'tag',
+      generateRss: false,
+      excludeTags: [],
+      minPostCount: 1,
+      tagTransform: (tag: string) => tag,
+      ...cogitaConfig.tags,
+    } : undefined,
     // RSS plugin config with defaults (if enabled)
     rss: cogitaConfig.rss
       ? {

@@ -24,6 +24,22 @@ export default defineConfig({
     maxItems: 50,
   },
 
+  // 标签配置
+  tags: {
+    enabled: true,
+    routePrefix: 'tags',
+    tagCloud: {
+      sortBy: 'count',
+      limit: 30,
+      minFontSize: 14,
+      maxFontSize: 28,
+    },
+    postsPerPage: 12,
+    generateRss: false,
+    excludeTags: ['draft'],
+    minPostCount: 1,
+  },
+
   themeConfig: {
     socialLinks: [
       {

@@ -35,8 +35,60 @@ export interface PostsConfig {
 }
 
 /**
- * RSS plugin configuration
+ * Tags plugin configuration
  */
+export interface TagsConfig {
+  /**
+   * Enable tags functionality
+   * @default true
+   */
+  enabled?: boolean;
+  /**
+   * Route prefix for tag pages
+   * @default 'tags'
+   */
+  routePrefix?: string;
+  /**
+   * Tag cloud configuration
+   */
+  tagCloud?: {
+    minFontSize?: number;
+    maxFontSize?: number;
+    minOpacity?: number;
+    maxOpacity?: number;
+    sortBy?: 'name' | 'count' | 'date';
+    limit?: number;
+  };
+  /**
+   * Posts per page
+   * @default 10
+   */
+  postsPerPage?: number;
+  /**
+   * Page layout
+   * @default 'tag'
+   */
+  layout?: string;
+  /**
+   * Generate RSS for tags
+   * @default false
+   */
+  generateRss?: boolean;
+  /**
+   * Tag name transformation function
+   */
+  tagTransform?: (tag: string) => string;
+  /**
+   * Tags to exclude
+   * @default []
+   */
+  excludeTags?: string[];
+  /**
+   * Minimum post count threshold
+   * @default 1
+   */
+  minPostCount?: number;
+}
 export interface RSSConfig {
   /**
    * Feed title
@@ -114,6 +166,11 @@ export interface CogitaConfig {
    * Posts plugin configuration
    */
   posts?: PostsConfig;
+
+  /**
+   * Tags plugin configuration
+   */
+  tags?: TagsConfig;
 
   /**
    * RSS feed configuration
