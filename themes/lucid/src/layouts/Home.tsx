@@ -5,6 +5,14 @@ import type React from 'react';
 import { allPosts } from 'virtual-posts-data';
 
 /**
+ * 主题自定义配置类型
+ */
+interface ThemeConfig {
+  postsTitle?: string;
+  [key: string]: unknown;
+}
+
+/**
  * 首页布局组件
  *
  * 采用清晰的层级结构：
@@ -26,7 +34,7 @@ const HomeLayout: React.FC<LayoutProps> = () => {
   const siteDescription = config?.description;
 
   // 从 themeConfig 中读取自定义配置（可选）
-  const themeConfig = config?.themeConfig as any;
+  const themeConfig = config?.themeConfig as ThemeConfig | undefined;
   const postsTitle = themeConfig?.postsTitle || '最新文章';
 
   return (
