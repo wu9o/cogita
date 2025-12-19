@@ -4,27 +4,6 @@ import { usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allPosts } from 'virtual-posts-data';
 
-/**
- * 主题自定义配置类型
- */
-interface ThemeConfig {
-  postsTitle?: string;
-  [key: string]: unknown;
-}
-
-/**
- * 首页布局组件
- *
- * 采用清晰的层级结构：
- * 1. Hero 区域（博客标题 + 副标题）
- * 2. 文章列表区域（章节标题 + 文章列表）
- *
- * 所有文本内容从配置中读取，支持完全自定义
- * RSS 订阅入口通过以下方式提供：
- * - 导航栏右上角的社交链接
- * - Hero 区域的内嵌链接
- * - 页脚的订阅链接
- */
 const HomeLayout: React.FC<LayoutProps> = () => {
   // 使用 Rspress 的 usePageData hook 获取页面数据和配置
   const pageData = usePageData();
@@ -39,16 +18,16 @@ const HomeLayout: React.FC<LayoutProps> = () => {
 
   return (
     <div className="home-layout">
-      {/* Hero 区域 - 博客主标题和介绍 */}
-      <section className="hero-section">
-        {!!siteDescription?.length && <h1 className="hero-subtitle c-decs">{siteDescription}</h1>}
-      </section>
-
-      {/* 文章列表区域 */}
-      <section className="posts-section">
-        <h2 className="section-title c-post-title">{postsTitle}</h2>
-        <PostList posts={allPosts} />
-      </section>
+      {/* 简洁的博客头部 */}
+      <header className="blog-header">
+        <h1 className="blog-title">最新文章</h1>
+        <p className="blog-subtitle">记录编码、创造与思考的瞬间</p>
+      </header>
+      
+      {/* 主要内容：文章列表 */}
+      <main className="main-content">
+        <PostList posts={allPosts} showTags={true} />
+      </main>
     </div>
   );
 };
