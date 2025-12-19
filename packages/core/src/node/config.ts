@@ -85,9 +85,22 @@ async function loadTheme(themeName: string): Promise<CogitaTheme> {
   return mod.getThemeConfig();
 }
 
+/**
+ * 创建主题插件
+ * 
+ * 职责：
+ * 1. 加载主题的 globalStyles（样式文件）
+ * 2. 注册主题的 globalUIComponents（全局组件如 Footer）
+ * 3. 注册主题的页面布局（ome 页面）
+ */
 function createThemePlugin(theme: CogitaTheme): RspressPlugin {
   return {
     name: 'cogita-theme-plugin',
+    // 主题样式 - 直接传递给 Rspress
+    globalStyles: theme.globalStyles,
+    // 全局 UI 组件 - 直接传递给 Rspress
+    globalUIComponents: theme.globalUIComponents,
+    // 注册主题的页面布局
     addPages: async () => {
       if (!theme.pageLayouts.home) {
         return [];

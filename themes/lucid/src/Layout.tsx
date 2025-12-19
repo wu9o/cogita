@@ -3,12 +3,11 @@ import type React from 'react';
 /**
  * 主题包装器 Layout
  *
- * 注意：这个 Layout 在 Cogita 当前架构中不会被使用
- * Rspress 会直接使用它的默认 Layout 包裹页面内容
- *
- * RSS 链接应该通过 themeConfig.footer 和 socialLinks 配置
+ * 注意：此 Layout 组件在当前架构中不被使用
+ * Rspress 会使用其默认布局包裹页面内容
+ * 
+ * Footer 通过 globalUIComponents 注册，会自动在所有页面显示
  */
-
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return <>{children}</>;
 };

@@ -208,3 +208,73 @@
 .dark .rss-inline-link:hover {
   color: #f1f5f9;
 }
+
+/* ============================================
+   全局页脚样式
+   ============================================ */
+
+.lucid-footer {
+  margin-top: 5rem;
+  padding: 3rem 1.5rem 2rem;
+  border-top: 1px solid var(--rp-c-divider);
+  background-color: var(--rp-c-bg);
+}
+
+.lucid-footer-container {
+  max-width: 1024px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.lucid-footer-message {
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: var(--rp-c-text-2);
+  line-height: 1.6;
+}
+
+/* Footer message 中的链接样式 */
+.lucid-footer-message a {
+  color: var(--rp-c-brand);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.lucid-footer-message a:hover {
+  color: var(--rp-c-brand-dark);
+  text-decoration: underline;
+}
+
+.lucid-footer-copyright {
+  margin: 0;
+  padding-top: 1rem;
+  font-size: 0.875rem;
+  color: var(--rp-c-text-3);
+}
+
+/* Footer 响应式设计 */
+@media (max-width: 768px) {
+  .lucid-footer {
+    margin-top: 3rem;
+    padding: 2rem 1rem 1.5rem;
+  }
+
+  .lucid-footer-message {
+    font-size: 0.9rem;
+  }
+
+  .lucid-footer-copyright {
+    font-size: 0.8rem;
+  }
+}
+
+/* Footer 暗色模式优化 */
+.dark .lucid-footer {
+  border-top-color: var(--rp-c-divider);
+}
+
+.dark .lucid-footer-message a:hover {
+  color: var(--rp-c-brand-light);
+}
+
