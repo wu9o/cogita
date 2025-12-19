@@ -60,7 +60,7 @@ export interface CogitaTheme {
     home: string;
   };
   // 主题内置能力（不是插件）
-  globalStyles?: string;  // 主题样式文件路径（单个文件）
+  globalStyles?: string; // 主题样式文件路径（单个文件）
   globalUIComponents?: (string | [string, object])[]; // 全局 UI 组件（如 Footer）
   // 主题依赖的功能插件
   plugins?: CogitaPluginFactory[];
