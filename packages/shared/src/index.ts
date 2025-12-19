@@ -3,6 +3,9 @@ import type React from 'react';
 
 export const VIRTUAL_CONTENT_DIR = '.cogita_content';
 
+// Export Rspress types for use in themes and plugins
+export type { RspressPlugin, UserConfig };
+
 // Enhanced config type for plugin factory functions
 export interface CogitaPluginConfig {
   root: string;

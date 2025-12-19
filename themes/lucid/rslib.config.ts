@@ -61,6 +61,8 @@ export default defineConfig({
           exportLocalsConvention: 'camelCaseOnly',
         },
         injectStyles: true,
+        // 复制 CSS 文件到 dist 目录
+        copy: [{ from: './src/theme.css', to: './' }],
       },
     },
   ],

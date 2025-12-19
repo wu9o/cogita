@@ -104,7 +104,7 @@ function createThemePlugin(theme: CogitaTheme): RspressPlugin {
       return [
         {
           routePath: '',
-          content: '---npageType: homen---',
+          content: '---\npageType: home\n---',
           filepath: homeLayoutPath,
         },
       ];

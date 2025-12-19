@@ -1,4 +1,8 @@
 /* themes/lucid/src/theme.css */
+
+/* ============================================
+   主题变量定义
+   ============================================ */
 :root {
   /* Button variables */
   --cogita-primary-color: #1a1a1a;
@@ -9,163 +13,198 @@
   --cogita-title-color: #222222;
   --cogita-text-color: #555555;
   --cogita-text-color-secondary: #777777;
+
+  /* Hero section */
+  --cogita-hero-title-color: #0f172a;
+  --cogita-hero-subtitle-color: #475569;
+  --cogita-hero-description-color: #64748b;
 }
 
-.theme-container {
-  max-width: 800px;
+/* ============================================
+   首页布局
+   ============================================ */
+
+/* 首页容器 - 适配 Rspress 的文档容器 */
+.home-layout {
+  max-width: 900px;
   margin: 0 auto;
-  padding: 2rem;
-  font-family: sans-serif;
+  padding: 0 1rem;
 }
 
-.header {
-  margin-bottom: 3rem;
-  text-align: center;
+/* ============================================
+   Hero 区域（页面主标题）
+   ============================================ */
+
+.hero-section {
+  /* text-align: center;
+  padding: 4rem 2rem 3rem;
+  border-bottom: 1px solid var(--cogita-border-color);
+  margin-bottom: 3rem; */
+}
+/* .c-decs {
+  color: var(--cogita-title-color, #111827);
+  margin-top: 0;
+  margin-bottom: 4.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  transition: color .2s ease-in-out;
+} */
+
+/* .c-post-title {
+  margin-bottom: 1 rem;
+} */
+
+.hero-section .hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--cogita-hero-title-color);
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
 }
 
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.header-text {
-  flex: 1;
-}
-
-.rss-links {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-.rss-link {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.5rem;
-  color: var(--cogita-text-color);
-  text-decoration: none;
-  font-size: 0.875rem;
-  border: 1px solid var(--cogita-border-color);
-  border-radius: 4px;
-  background: #fafafa;
-  transition: all 0.2s ease;
-}
-
-.rss-link:hover {
-  background: var(--cogita-primary-color);
-  color: var(--cogita-primary-text-color);
-  border-color: var(--cogita-primary-color);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-@media (max-width: 600px) {
-  .header-content {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .rss-links {
-    justify-content: center;
-  }
-}
-
-.main-content {
-  margin-top: 2rem;
-}
-
-/* RSS订阅横幅样式 */
-.rss-subscription-banner {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border: 1px solid var(--cogita-border-color);
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.rss-banner-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.rss-banner-text h3 {
-  margin: 0 0 0.5rem 0;
-  color: var(--cogita-title-color);
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.rss-banner-text p {
-  margin: 0;
-  color: var(--cogita-text-color-secondary);
-  font-size: 0.9rem;
+.hero-section .hero-subtitle {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--cogita-hero-subtitle-color);
+  margin: 0 0 1.5rem 0;
   line-height: 1.4;
 }
 
-.rss-banner-links {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  flex-wrap: wrap;
+.hero-description {
+  font-size: 1.125rem;
+  color: var(--cogita-hero-description-color);
+  margin: 0;
+  line-height: 1.6;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.rss-banner-link {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  background: white;
-  color: var(--cogita-text-color);
-  text-decoration: none;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border: 1px solid var(--cogita-border-color);
-  border-radius: 6px;
+.rss-inline-link {
+  color: var(--cogita-primary-color);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
   transition: all 0.2s ease;
-  white-space: nowrap;
 }
 
-.rss-banner-link:hover {
-  background: var(--cogita-primary-color);
-  color: var(--cogita-primary-text-color);
-  border-color: var(--cogita-primary-color);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(26, 26, 26, 0.15);
+.rss-inline-link:hover {
+  color: #4b5563;
+  text-decoration-thickness: 2px;
 }
 
-.rss-banner-link.rss-primary {
-  background: var(--cogita-primary-color);
-  color: var(--cogita-primary-text-color);
-  border-color: var(--cogita-primary-color);
+/* ============================================
+   文章列表区域
+   ============================================ */
+
+.posts-section {
+  margin-bottom: 4rem;
 }
 
-.rss-banner-link.rss-primary:hover {
-  background: #333333;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(26, 26, 26, 0.2);
+.section-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--cogita-title-color);
+  margin: 0 0 2.5rem 0; /* 增加到 2.5rem，提供更多空间 */
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--cogita-border-color);
 }
 
+/* 确保文章列表容器有足够的顶部间距 */
+.posts-section > div:last-child {
+  margin-top: 0.5rem;
+}
+
+/* ============================================
+   响应式设计
+   ============================================ */
+
+/* 平板设备 */
+@media (max-width: 768px) {
+  .home-layout {
+    padding: 0 1rem;
+  }
+
+  .hero-section {
+    padding: 3rem 1.5rem 2.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-section .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-section .hero-subtitle {
+    font-size: 1.25rem;
+  }
+
+  .hero-description {
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .posts-section {
+    margin-bottom: 3rem;
+  }
+}
+
+/* 手机设备 */
 @media (max-width: 600px) {
-  .rss-banner-content {
-    flex-direction: column;
-    text-align: center;
-    gap: 1.5rem;
+  .hero-section {
+    padding: 2rem 1rem 2rem;
+    margin-bottom: 2rem;
   }
 
-  .rss-banner-links {
-    justify-content: center;
-    width: 100%;
+  .hero-section .hero-title {
+    font-size: 2rem;
   }
 
-  .rss-banner-link {
-    flex: 1;
-    justify-content: center;
-    min-width: 100px;
+  .hero-section .hero-subtitle {
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
   }
+
+  .hero-description {
+    font-size: 0.9375rem;
+  }
+
+  .section-title {
+    font-size: 1.375rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .posts-section {
+    margin-bottom: 2rem;
+  }
+}
+
+/* ============================================
+   暗色模式支持
+   ============================================ */
+
+.dark {
+  --cogita-hero-title-color: #f1f5f9;
+  --cogita-hero-subtitle-color: #cbd5e1;
+  --cogita-hero-description-color: #94a3b8;
+}
+
+.dark .hero-section {
+  border-bottom-color: #334155;
+}
+
+.dark .section-title {
+  border-bottom-color: #334155;
+}
+
+.dark .rss-inline-link {
+  color: #e2e8f0;
+}
+
+.dark .rss-inline-link:hover {
+  color: #f1f5f9;
 }
