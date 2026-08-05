@@ -42,8 +42,8 @@
     "url": "https://github.com/sponsors/wu9o"
   },
   "scripts": {
-    "build": "rslib build",
-    "dev": "rslib build -w"
+    "build": "rslib build && cp src/theme.css dist/theme.css",
+    "dev": "cp src/theme.css dist/theme.css && rslib build -w"
   },
   "peerDependencies": {
     "react": "^18.0.0",

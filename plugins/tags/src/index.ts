@@ -12,7 +12,6 @@ export type {
   TagCloudConfig,
   PostReference,
   TagStats,
-  TagPageData,
 } from './types';
 
 // 导出工具函数（高级用法）

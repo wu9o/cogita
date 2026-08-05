@@ -62,11 +62,11 @@
   .postListContainer {
     gap: 1rem;
   }
-  
+
   .postItem {
     padding: 1rem;
   }
-  
+
   .title {
     font-size: 1.25rem;
   }
@@ -78,7 +78,7 @@
     background: var(--rp-c-bg-alt);
     border-color: var(--rp-c-divider-dark);
   }
-  
+
   .postMeta {
     border-top-color: var(--rp-c-divider-dark);
   }

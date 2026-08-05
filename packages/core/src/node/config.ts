@@ -96,11 +96,8 @@ async function loadTheme(themeName: string): Promise<CogitaTheme> {
 function createThemePlugin(theme: CogitaTheme): RspressPlugin {
   return {
     name: 'cogita-theme-plugin',
-    // 主题样式 - 直接传递给 Rspress
-    globalStyles: theme.globalStyles,
-    // 全局 UI 组件 - 直接传递给 Rspress
-    globalUIComponents: theme.globalUIComponents,
-    // 注册主题的页面布局
+    // 注入主题全局样式（theme.css），让首页/tag页等自定义布局样式生效
+    globalStyles: theme.globalStyles?.[0],
     addPages: async () => {
       if (!theme.pageLayouts.home) {
         return [];
@@ -117,7 +114,7 @@ function createThemePlugin(theme: CogitaTheme): RspressPlugin {
       return [
         {
           routePath: '',
-          content: '---\npageType: home\n---',
+          content: '---\npageType: home\nsidebar: false\n---',
           filepath: homeLayoutPath,
         },
       ];
@@ -157,25 +154,25 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
       ...cogitaConfig.posts,
     },
     // Tags plugin config with defaults (if enabled)
-    tags: cogitaConfig.tags ? {
-      enabled: true,
-      routePrefix: 'tags',
-      tagCloud: {
-        minFontSize: 12,
-        maxFontSize: 24,
-        minOpacity: 0.5,
-        maxOpacity: 1.0,
-        sortBy: 'count',
-        limit: 50,
-      },
-      postsPerPage: 10,
-      layout: 'tag',
-      generateRss: false,
-      excludeTags: [],
-      minPostCount: 1,
-      tagTransform: (tag: string) => tag,
-      ...cogitaConfig.tags,
-    } : undefined,
+    tags: cogitaConfig.tags
+      ? {
+          enabled: true,
+          routePrefix: 'tags',
+          tagCloud: {
+            minFontSize: 12,
+            maxFontSize: 24,
+            minOpacity: 0.5,
+            maxOpacity: 1.0,
+            sortBy: 'count',
+            limit: 50,
+          },
+          layout: 'tag',
+          excludeTags: [],
+          minPostCount: 1,
+          tagTransform: (tag: string) => tag,
+          ...cogitaConfig.tags,
+        }
+      : undefined,
     // RSS plugin config with defaults (if enabled)
     rss: cogitaConfig.rss
       ? {
@@ -221,6 +218,20 @@ export async function createRspressConfig(
 
   // 4. Create enhanced config object for plugin factories
   const fullConfigForPlugins = createFullConfig(cogitaConfig, root);
+
+  // 4.1 注入主题布局组件绝对路径，让 tags 等插件能用主题布局作为 addPages 的 filepath
+  if (theme?.pageLayouts) {
+    const packageRoot = await getPackageRoot();
+    const themeUrl = await mlly.resolve(theme.name, { url: packageRoot });
+    const themeDir = path.dirname(fileURLToPath(themeUrl));
+    const themeLayouts: Record<string, string> = {};
+    for (const [key, relPath] of Object.entries(theme.pageLayouts)) {
+      if (relPath) {
+        themeLayouts[key] = path.resolve(themeDir, relPath);
+      }
+    }
+    fullConfigForPlugins.themeLayouts = themeLayouts;
+  }
 
   // 5. Instantiate plugins from the theme's plugin factories with enhanced error handling
   const themePlugins: RspressPlugin[] = [];

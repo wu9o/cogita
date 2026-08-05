@@ -63,6 +63,7 @@ pnpm dev
 - [`@cogita/cli`](./packages/cli) - 命令行工具  
 - [`@cogita/theme-lucid`](./themes/lucid) - 默认主题
 - [`@cogita/plugin-rss`](./plugins/rss) - RSS 订阅插件
+- [`@cogita/plugin-tags`](./plugins/tags) - 标签管理与标签云插件
 
 **完整文档：** [📚 完整中文文档 (当前页面)](#) • [📄 English Documentation](./README.en.md)
 

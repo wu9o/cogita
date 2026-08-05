@@ -50,8 +50,6 @@ export interface CogitaPluginConfig {
       sortBy?: 'name' | 'count' | 'date';
       limit?: number;
     };
-    postsPerPage?: number;
-    generateRss?: boolean;
     excludeTags?: string[];
     minPostCount?: number;
     [key: string]: unknown;
@@ -60,6 +58,11 @@ export interface CogitaPluginConfig {
     version: string;
     buildTime: string;
   };
+  /**
+   * 主题布局组件的绝对路径映射（由 core 框架注入，插件可用其作为 addPages 的 filepath）
+   * 键名对应 CogitaTheme.pageLayouts 的键，如 home / tag / tagIndex
+   */
+  themeLayouts?: Record<string, string>;
   strict?: boolean;
   [key: string]: unknown;
 }
@@ -73,11 +76,14 @@ export interface CogitaTheme {
   name: string;
   pageLayouts: {
     home: string;
+    /** 标签详情页布局（路由 /tags/:slug） */
+    tag?: string;
+    /** 标签索引页布局（路由 /tags） */
+    tagIndex?: string;
+    [key: string]: string | undefined;
   };
-  // 主题内置能力（不是插件）
-  globalStyles?: string; // 主题样式文件路径（单个文件）
-  globalUIComponents?: (string | [string, object])[]; // 全局 UI 组件（如 Footer）
-  // 主题依赖的功能插件
+  globalStyles?: string[];
+  globalUIComponents?: (string | [string, object])[];
   plugins?: CogitaPluginFactory[];
 }
 
@@ -86,4 +92,36 @@ export interface LayoutProps {
   config: UserConfig;
   pageData: Record<string, unknown>;
   children?: React.ReactNode;
+}
+
+/**
+ * 简单的字符串哈希函数（32 位整数）
+ * @param str 输入字符串
+ * @returns 哈希值
+ */
+function hashCode(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+  return hash;
+}
+
+/**
+ * 生成 URL 友好的标签 slug
+ * 支持中文字符（保留 \u4e00-\u9fff），其余非字母数字替换为连字符
+ * 注意：中文 slug 在 URL 中需 encodeURI，部分路由匹配场景可能有兼容性问题
+ * @param tagName 标签名称
+ * @returns URL slug；若结果为空则用哈希兜底（如 tag-12345678）
+ */
+export function generateTagSlug(tagName: string): string {
+  return (
+    tagName
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\u4e00-\u9fff]+/g, '-')
+      .replace(/^-+|-+$/g, '') || `tag-${Math.abs(hashCode(tagName))}`
+  );
 }
