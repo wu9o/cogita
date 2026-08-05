@@ -62,4 +62,7 @@ Thumbs.db
 # Husky
 .husky/_
 
+# Takumi CLI
+.takumi/
+
 AGENTS.md

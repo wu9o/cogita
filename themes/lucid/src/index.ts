@@ -39,7 +39,7 @@ export function getThemeConfig(): CogitaTheme {
     },
 
     // 主题样式（会通过 cogita-theme-plugin 自动加载）
-    globalStyles: path.resolve(__dirname, './theme.css'),
+    globalStyles: [path.resolve(__dirname, './theme.css')],
 
     // 全局 UI 组件（会通过 cogita-theme-plugin 自动注册）
     globalUIComponents: [path.resolve(__dirname, './components/Footer.js')],
