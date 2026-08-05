@@ -60,20 +60,10 @@ export interface TagsConfig {
     limit?: number;
   };
   /**
-   * Posts per page
-   * @default 10
-   */
-  postsPerPage?: number;
-  /**
-   * Page layout
+   * Page layout (reserved for theme layout switching, not yet consumed)
    * @default 'tag'
    */
   layout?: string;
-  /**
-   * Generate RSS for tags
-   * @default false
-   */
-  generateRss?: boolean;
   /**
    * Tag name transformation function
    */
@@ -206,4 +196,9 @@ export interface CogitaFullConfig extends CogitaConfig {
     version: string;
     buildTime: string;
   };
+  /**
+   * 主题布局组件的绝对路径映射（由框架注入）
+   * 插件可用其作为 addPages 的 filepath，让页面用主题 React 组件渲染
+   */
+  themeLayouts?: Record<string, string>;
 }

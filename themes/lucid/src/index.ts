@@ -35,6 +35,7 @@ export function getThemeConfig(): CogitaTheme {
     // 页面布局
     pageLayouts: {
       home: './layouts/Home.js',
+      tag: './layouts/Tag.js',
     },
 
     // 主题样式（会通过 cogita-theme-plugin 自动加载）

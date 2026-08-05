@@ -17,7 +17,8 @@
 ✅ **标签页面生成**
 - 自动生成标签索引页面 (`/tags`)
 - 为每个标签生成专门页面 (`/tags/javascript`)
-- 支持分页和相关标签推荐
+- 基于 React 组件布局渲染（主题提供 `TagPageLayout`）
+- 相关标签推荐
 
 ✅ **标签云可视化**
 - 基于使用频率的视觉权重
@@ -100,11 +101,9 @@ interface TagsConfig {
   };
   
   // 页面配置
-  postsPerPage?: number;    // 每页文章数量，默认 10
   layout?: string;          // 页面布局，默认 'tag'
   
   // 高级配置
-  generateRss?: boolean;    // 是否生成标签RSS，默认 false
   tagTransform?: (tag: string) => string; // 标签名称转换函数
   excludeTags?: string[];   // 排除的标签列表，默认 []
   minPostCount?: number;    // 最小文章数阈值，默认 1
@@ -139,8 +138,6 @@ export default defineConfig({
       minOpacity: 0.6,
       maxOpacity: 1.0,
     },
-    postsPerPage: 15,
-    generateRss: true,
     excludeTags: ['draft', 'private'],
     minPostCount: 2, // 只显示至少有2篇文章的标签
     tagTransform: (tag) => tag.toLowerCase().trim(),
@@ -164,10 +161,12 @@ export default defineConfig({
 
 ## 生成的页面
 
-插件会生成以下页面：
+插件会生成以下页面（通过主题的 `TagPageLayout` React 组件渲染）：
 
-- **`/tags`** - 标签索引页面，包含标签云和完整标签列表
-- **`/tags/{tag-slug}`** - 单个标签页面，显示该标签下的所有文章
+- **`/tags`** - 标签索引页面，包含标签云（TagCloud 组件）
+- **`/tags/{tag-slug}`** - 单个标签页面，显示该标签下的所有文章（PostList）和相关标签（TagList）
+
+> **注意**：标签页面使用 React 组件布局，而非 Markdown 内容。主题需在 `getThemeConfig()` 中声明 `pageLayouts.tag`，指向标签页布局组件（如 `./layouts/Tag.js`）。若主题未声明，插件会跳过页面生成并输出警告。
 
 ## 虚拟模块
 
@@ -178,9 +177,11 @@ export default defineConfig({
 import { 
   allTags, 
   tagMap, 
+  tagsConfig,
+  tagStats,
   getTagBySlug, 
-  getRelatedTags,
-  calculateTagWeight 
+  getPostsByTag,
+  getRelatedTags
 } from 'virtual-tags-data';
 
 function TagCloudComponent() {
