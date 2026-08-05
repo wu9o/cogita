@@ -1,6 +1,7 @@
 // 客户端虚拟模块类型声明
+// 注意：声明必须与 plugin.ts 的 addRuntimeModules 实际导出保持一致
 declare module 'virtual-tags-data' {
-  import type { TagData, TagsConfig } from '@cogita/plugin-tags';
+  import type { TagData, TagsConfig, PostReference } from '@cogita/plugin-tags';
 
   /**
    * 所有标签数据
@@ -18,6 +19,17 @@ declare module 'virtual-tags-data' {
   export const tagsConfig: Required<TagsConfig>;
 
   /**
+   * 标签统计数据
+   */
+  export const tagStats: {
+    totalTags: number;
+    hottest: TagData;
+    newest: TagData;
+    averageTagsPerPost: number;
+    averagePostsPerTag: number;
+  };
+
+  /**
    * 根据 slug 获取标签
    */
   export function getTagBySlug(slug: string): TagData | undefined;
@@ -31,9 +43,4 @@ declare module 'virtual-tags-data' {
    * 获取相关标签
    */
   export function getRelatedTags(currentTag: string, limit?: number): TagData[];
-
-  /**
-   * 计算标签权重（用于标签云）
-   */
-  export function calculateTagWeight(tag: TagData, allTags: TagData[]): number;
 }

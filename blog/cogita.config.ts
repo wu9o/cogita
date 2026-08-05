@@ -33,8 +33,6 @@ export default defineConfig({
       minFontSize: 14,
       maxFontSize: 28,
     },
-    postsPerPage: 12,
-    generateRss: false,
     excludeTags: ['draft'],
     minPostCount: 1,
   },

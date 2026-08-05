@@ -41,12 +41,12 @@ export interface TagCloudProps {
  */
 function calculateTagWeight(tag: TagData, tags: TagData[]): number {
   if (tags.length <= 1) return 1;
-  
-  const minCount = Math.min(...tags.map(t => t.count));
-  const maxCount = Math.max(...tags.map(t => t.count));
-  
+
+  const minCount = Math.min(...tags.map((t) => t.count));
+  const maxCount = Math.max(...tags.map((t) => t.count));
+
   if (minCount === maxCount) return 1;
-  
+
   return (tag.count - minCount) / (maxCount - minCount);
 }
 
@@ -54,11 +54,11 @@ function calculateTagWeight(tag: TagData, tags: TagData[]): number {
  * 标签云组件
  * 用于可视化展示标签的热度和分布
  */
-export const TagCloud: React.FC<TagCloudProps> = ({ 
-  tags, 
+export const TagCloud: React.FC<TagCloudProps> = ({
+  tags,
   config = {},
   className = '',
-  onTagClick
+  onTagClick,
 }) => {
   const {
     minFontSize = 12,
@@ -67,26 +67,26 @@ export const TagCloud: React.FC<TagCloudProps> = ({
     maxOpacity = 1.0,
     limit = 50,
   } = config;
-  
+
   // 限制显示的标签数量
   const displayTags = tags.slice(0, limit);
-  
+
   // 计算标签样式
   const getTagStyle = (tag: TagData) => {
     const weight = calculateTagWeight(tag, tags);
     const fontSize = minFontSize + (maxFontSize - minFontSize) * weight;
     const opacity = minOpacity + (maxOpacity - minOpacity) * weight;
-    
+
     return {
       fontSize: `${fontSize}px`,
       opacity,
     };
   };
-  
+
   const handleTagClick = (tag: TagData) => {
     onTagClick?.(tag);
   };
-  
+
   if (displayTags.length === 0) {
     return (
       <div className={`${styles.tagCloudEmpty} ${className}`}>
@@ -94,7 +94,7 @@ export const TagCloud: React.FC<TagCloudProps> = ({
       </div>
     );
   }
-  
+
   return (
     <div className={`${styles.tagCloud} ${className}`}>
       {displayTags.map((tag) => (
