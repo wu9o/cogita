@@ -4,7 +4,7 @@ import type React from 'react';
 const RSSLinks: React.FC = () => {
   const feedMeta: { rssUrl?: string; atomUrl?: string; jsonUrl?: string } = {
     rssUrl: '/cogita/rss.xml',
-    atomUrl: '/cogita/atom.xml', 
+    atomUrl: '/cogita/atom.xml',
     jsonUrl: '/cogita/feed.json',
   };
 
@@ -60,11 +60,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <RSSLinks />
         </div>
       </header>
-      
-      <main className="main-content">
-        {children}
-      </main>
-      
+
+      <main className="main-content">{children}</main>
+
       <footer className="site-footer">
         <p>Powered by Cogita</p>
       </footer>
