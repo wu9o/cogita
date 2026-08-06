@@ -1,6 +1,6 @@
 {
   "name": "@cogita/cli",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Command line interface for creating and managing Cogita blogs.",
   "keywords": [
     "cogita",
