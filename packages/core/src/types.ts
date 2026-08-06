@@ -79,6 +79,37 @@ export interface TagsConfig {
    */
   minPostCount?: number;
 }
+
+/**
+ * Collections plugin configuration
+ */
+export interface CollectionsConfig {
+  /**
+   * Enable collections functionality
+   * @default true
+   */
+  enabled?: boolean;
+  /**
+   * Route prefix for collection pages
+   * @default 'collections'
+   */
+  routePrefix?: string;
+  /**
+   * Collection metadata overrides (indexed by slug)
+   */
+  metadata?: Record<string, { title?: string; description?: string; cover?: string }>;
+  /**
+   * Collection slugs to exclude
+   * @default []
+   */
+  excludeCollections?: string[];
+  /**
+   * Minimum post count threshold
+   * @default 1
+   */
+  minPostCount?: number;
+}
+
 export interface RSSConfig {
   /**
    * Feed title
@@ -161,6 +192,11 @@ export interface CogitaConfig {
    * Tags plugin configuration
    */
   tags?: TagsConfig;
+
+  /**
+   * Collections plugin configuration
+   */
+  collections?: CollectionsConfig;
 
   /**
    * RSS feed configuration

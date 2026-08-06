@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createBuild, createServer } from '@cogita/core';
+import { createBuild, createPreview, createServer } from '@cogita/core';
 import { program } from 'commander';
 
 // Helper to find the package.json
@@ -44,9 +44,11 @@ program
 program
   .command('preview')
   .description('Preview the production build')
-  .action(() => {
-    console.log('Starting preview server...');
-    // TODO: Implement preview server
+  .option('-p, --port <port>', 'port number', '3030')
+  .action(async (options: { port: string }) => {
+    const port = Number.parseInt(options.port, 10);
+    console.log(`Starting preview server on port ${port}...`);
+    await createPreview(CWD, port);
   });
 
 program.parse(process.argv);

@@ -40,14 +40,9 @@
 | 插件名称 | 功能描述 | 状态 | 设计文档 |
 |---------|----------|------|----------|
 | `@cogita/plugin-posts-frontmatter` | 文章数据提取和路由生成 | ✅ 完成 | [设计文档](./plugin-posts-frontmatter-design.md) |
-
-### 🚧 开发中插件
-
-| 插件名称 | 功能描述 | 状态 | 设计文档 |
-|---------|----------|------|----------|
-| `@cogita/plugin-rss` | RSS/Atom/JSON Feed生成 | 📋 设计完成 | [设计文档](./plugin-rss-design.md) |
-| `@cogita/plugin-blog-list` | 博客列表和分页 | 📝 计划中 | - |
-| `@cogita/plugin-tags` | 标签系统 | 📝 计划中 | - |
+| `@cogita/plugin-rss` | RSS/Atom/JSON Feed 生成 | ✅ 完成 | [设计文档](./plugin-rss-design.md) |
+| `@cogita/plugin-tags` | 标签管理与标签云 | ✅ 完成 | [README](../../plugins/tags/README.md) |
+| `@cogita/plugin-collections` | 合集（系列文章）管理 | ✅ 完成 | [设计文档](./plugin-collections-design.md) |
 
 ### 📝 计划中插件
 
@@ -101,8 +96,8 @@ Cogita 插件系统
 ## 📊 插件开发统计
 
 ### 当前状态
-- **已发布插件**: 1个
-- **开发中插件**: 1个  
+- **已发布插件**: 4个
+- **开发中插件**: 0个  
 - **计划中插件**: 10+个
 - **社区插件**: 0个（期待你的贡献！）
 

@@ -178,6 +178,34 @@ importers:
         specifier: ^5.0.4
         version: 5.9.2
 
+  plugins/collections:
+    dependencies:
+      '@cogita/plugin-posts-frontmatter':
+        specifier: workspace:*
+        version: link:../posts-frontmatter
+      '@rspress/core':
+        specifier: ^1.45.1
+        version: 1.45.1(webpack@5.101.2)
+      glob:
+        specifier: ^11.0.0
+        version: 11.0.3
+    devDependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@rslib/core':
+        specifier: 0.11.2
+        version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(typescript@5.9.2)
+      '@types/glob':
+        specifier: ^8.1.0
+        version: 8.1.0
+      rsbuild-plugin-publint:
+        specifier: ^0.3.3
+        version: 0.3.3(@rsbuild/core@1.4.15)
+      typescript:
+        specifier: ^5.0.4
+        version: 5.9.2
+
   plugins/posts-frontmatter:
     dependencies:
       '@rspress/core':
@@ -294,6 +322,9 @@ importers:
 
   themes/lucid:
     dependencies:
+      '@cogita/plugin-collections':
+        specifier: workspace:*
+        version: link:../../plugins/collections
       '@cogita/plugin-posts-frontmatter':
         specifier: workspace:*
         version: link:../../plugins/posts-frontmatter
@@ -2097,6 +2128,7 @@ packages:
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@11.0.3:

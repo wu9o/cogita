@@ -1,10 +1,22 @@
 import type { LayoutProps } from '@cogita/shared';
 import { PostList, TagCloud } from '@cogita/ui';
+import { usePageData } from '@rspress/runtime';
 import type React from 'react';
+import { allCollections } from 'virtual-collections-data';
 import { allPosts } from 'virtual-posts-data';
 import { allTags, tagsConfig } from 'virtual-tags-data';
 
+/**
+ * 首页布局组件
+ *
+ * 双栏结构：
+ * - 左侧 aside：标签云（TagCloud）+ 合集列表
+ * - 右侧 main：最新文章（PostList）
+ */
 const HomeLayout: React.FC<LayoutProps> = () => {
+  const pageData = usePageData();
+  const base = (pageData?.siteData?.base || '').replace(/\/$/, '');
+
   return (
     <div className="home-layout">
       <div className="home-content">
@@ -13,9 +25,22 @@ const HomeLayout: React.FC<LayoutProps> = () => {
             <h2 className="sidebar-title">标签</h2>
             <TagCloud tags={allTags} config={tagsConfig.tagCloud} />
           </section>
-          <section className="sidebar-section sidebar-placeholder">
+          <section className="sidebar-section">
             <h2 className="sidebar-title">合集</h2>
-            <p className="sidebar-hint">即将推出</p>
+            {allCollections.length === 0 ? (
+              <p className="sidebar-hint">暂无合集</p>
+            ) : (
+              <ul className="sidebar-collections">
+                {allCollections.slice(0, 5).map((collection) => (
+                  <li key={collection.slug}>
+                    <a href={`${base}${collection.route}`} className="sidebar-collection-link">
+                      {collection.title}
+                      <span className="sidebar-collection-count">{collection.count}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
         </aside>
 

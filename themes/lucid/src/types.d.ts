@@ -62,3 +62,51 @@ declare module 'virtual-tags-data' {
   export function getPostsByTag(tagName: string): PostReference[];
   export function getRelatedTags(currentTag: string, limit?: number): TagData[];
 }
+
+declare module 'virtual-collections-data' {
+  interface CollectionPost {
+    title: string;
+    route: string;
+    createDate: string;
+    updateDate: string;
+    description?: string;
+    order: number;
+    collectionTitle?: string;
+  }
+
+  interface CollectionData {
+    slug: string;
+    title: string;
+    description?: string;
+    cover?: string;
+    posts: CollectionPost[];
+    count: number;
+    route: string;
+    createdDate?: string;
+    updatedDate?: string;
+  }
+
+  interface CollectionsConfig {
+    enabled: boolean;
+    routePrefix: string;
+    metadata: Record<string, { title?: string; description?: string; cover?: string }>;
+    excludeCollections: string[];
+    minPostCount: number;
+  }
+
+  interface CollectionStats {
+    totalCollections: number;
+    largest: CollectionData;
+    newest: CollectionData;
+    averagePostsPerCollection: number;
+  }
+
+  export const allCollections: CollectionData[];
+  export const collectionMap: Record<string, CollectionData>;
+  export const collectionsConfig: CollectionsConfig;
+  export const collectionStats: CollectionStats;
+
+  export function getCollectionBySlug(slug: string): CollectionData | undefined;
+  export function getPostsByCollection(slug: string): CollectionPost[];
+  export function getCollectionByPostRoute(route: string): CollectionData | undefined;
+}
