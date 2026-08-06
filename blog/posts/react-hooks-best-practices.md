@@ -3,6 +3,9 @@ title: "React Hooks 最佳实践"
 date: "2025-01-01"
 tags: ["React", "JavaScript", "前端开发", "Hooks"]
 description: "深入探讨 React Hooks 的使用场景和最佳实践"
+collection: "frontend-advanced"
+order: 1
+collectionTitle: "React Hooks 实战指南"
 ---
 
 # React Hooks 最佳实践

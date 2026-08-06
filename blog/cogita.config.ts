@@ -37,6 +37,19 @@ export default defineConfig({
     minPostCount: 1,
   },
 
+  // 合集配置
+  collections: {
+    enabled: true,
+    routePrefix: 'collections',
+    metadata: {
+      'frontend-advanced': {
+        title: '前端进阶系列',
+        description: '从 React Hooks 到 TypeScript 类型系统，系统提升前端能力',
+      },
+    },
+    minPostCount: 1,
+  },
+
   themeConfig: {
     // 页脚配置 - 全局显示 RSS 订阅链接
     footer: {

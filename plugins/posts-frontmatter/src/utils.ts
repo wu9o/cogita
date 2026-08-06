@@ -42,6 +42,9 @@ export function getFrontmatterFromFile(
       updateDate: frontmatter.updateDate || stats.mtime.toISOString(),
       categories: frontmatter.categories,
       tags: frontmatter.tags,
+      collection: frontmatter.collection,
+      order: frontmatter.order,
+      collectionTitle: frontmatter.collectionTitle,
       url: '',
     };
   } catch (e) {

@@ -1,0 +1,59 @@
+{
+  "name": "@cogita/plugin-collections",
+  "version": "0.0.1",
+  "description": "合集插件，为 Cogita 博客提供有序系列文章管理、合集页面生成和导航功能。",
+  "keywords": [
+    "cogita",
+    "plugin",
+    "collections",
+    "series",
+    "blog",
+    "static-site-generator",
+    "rspress",
+    "content-organization"
+  ],
+  "author": "wu9o <https://github.com/wu9o>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wu9o/cogita.git",
+    "directory": "plugins/collections"
+  },
+  "bugs": {
+    "url": "https://github.com/wu9o/cogita/issues"
+  },
+  "homepage": "https://github.com/wu9o/cogita/tree/main/plugins/collections#readme",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "client.d.ts", "README.md", "LICENSE"],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build -w",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@cogita/shared": "workspace:*",
+    "@rslib/core": "0.11.2",
+    "@types/glob": "^8.1.0",
+    "rsbuild-plugin-publint": "^0.3.3",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@rspress/core": "^1.45.1",
+    "glob": "^11.0.0"
+  },
+  "peerDependencies": {
+    "@cogita/plugin-posts-frontmatter": "workspace:*"
+  }
+}

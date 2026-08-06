@@ -334,6 +334,286 @@
   color: var(--cogita-text-color-secondary);
 }
 
+/* ============================================
+   合集页面样式
+   ============================================ */
+.collection-page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.collection-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--cogita-border-color);
+}
+
+.collection-back {
+  display: inline-block;
+  font-size: 0.875rem;
+  color: var(--cogita-text-color-secondary);
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+}
+
+.collection-back:hover {
+  color: var(--cogita-primary-color);
+}
+
+.collection-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--cogita-title-color);
+  margin: 0 0 0.5rem 0;
+}
+
+.collection-description {
+  color: var(--cogita-text-color-secondary);
+  font-size: 1.125rem;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.6;
+}
+
+.collection-meta {
+  font-size: 0.875rem;
+  color: var(--cogita-text-color-secondary);
+  margin: 0;
+}
+
+/* 合集卡片（索引页） */
+.collection-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.collection-card {
+  display: block;
+  padding: 1.5rem;
+  background: var(--cogita-bg-soft);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.collection-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.collection-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--cogita-title-color);
+  margin: 0 0 0.5rem 0;
+}
+
+.collection-card-desc {
+  font-size: 0.875rem;
+  color: var(--cogita-text-color-secondary);
+  margin: 0 0 0.75rem 0;
+  line-height: 1.5;
+}
+
+.collection-card-meta {
+  font-size: 0.75rem;
+  color: var(--cogita-text-color-secondary);
+  margin: 0;
+}
+
+/* 有序文章列表（详情页） */
+.ordered-post-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ordered-post-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--cogita-border-color);
+}
+
+.ordered-post-item:last-child {
+  border-bottom: none;
+}
+
+.post-order {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cogita-bg-soft);
+  border-radius: 50%;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cogita-text-color-secondary);
+}
+
+.post-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.post-link {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--cogita-title-color);
+  text-decoration: none;
+}
+
+.post-link:hover {
+  color: var(--cogita-primary-color);
+}
+
+.post-date {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--cogita-text-color-secondary);
+  margin-top: 0.25rem;
+}
+
+.post-desc {
+  font-size: 0.875rem;
+  color: var(--cogita-text-color-secondary);
+  margin: 0.5rem 0 0 0;
+  line-height: 1.5;
+}
+
+/* 上一篇/下一篇导航 */
+.collection-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--cogita-border-color);
+}
+
+.collection-nav a {
+  font-size: 0.875rem;
+  color: var(--cogita-text-color);
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  background: var(--cogita-bg-soft);
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.collection-nav a:hover {
+  background: var(--cogita-border-color);
+}
+
+.collection-empty {
+  color: var(--cogita-text-color-secondary);
+  font-size: 1rem;
+  padding: 2rem 0;
+}
+
+/* ============================================
+   文章页合集导航样式
+   ============================================ */
+.article-collection-nav {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: var(--cogita-bg-soft);
+  border-radius: 8px;
+}
+
+.collection-nav-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.collection-nav-link {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--cogita-title-color);
+  text-decoration: none;
+}
+
+.collection-nav-link:hover {
+  color: var(--cogita-primary-color);
+}
+
+.collection-nav-progress {
+  font-size: 0.875rem;
+  color: var(--cogita-text-color-secondary);
+}
+
+.collection-nav-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.collection-nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  background: white;
+  border: 1px solid var(--cogita-border-color);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.collection-nav-btn:hover {
+  border-color: var(--cogita-primary-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.collection-nav-btn-placeholder {
+  background: transparent;
+  border: 1px dashed var(--cogita-border-color);
+}
+
+.collection-nav-btn-label {
+  font-size: 0.75rem;
+  color: var(--cogita-text-color-secondary);
+}
+
+.collection-nav-btn-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--cogita-title-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.collection-nav-breadcrumb {
+  font-size: 0.875rem;
+  color: var(--cogita-text-color-secondary);
+}
+
+.collection-nav-breadcrumb a {
+  color: var(--cogita-text-color);
+  text-decoration: none;
+}
+
+.collection-nav-breadcrumb a:hover {
+  color: var(--cogita-primary-color);
+}
+
+.collection-nav-breadcrumb .separator {
+  margin: 0 0.5rem;
+}
+
+/* 打破 .rspress-doc 宽度限制（合集页同首页/标签页） */
+.rspress-doc:has(.collection-page) {
+  max-width: none !important;
+  margin: 0 !important;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .content-layout {
@@ -365,6 +645,11 @@
   .tag-sidebar {
     position: static;
     order: 2;
+  }
+
+  .collection-nav-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
   }
 
   .header-content {
@@ -418,6 +703,19 @@ aside.rspress-sidebar {
   .related-tags,
   .tag-info {
     background: #161b22;
+  }
+
+  .article-collection-nav {
+    background: #161b22;
+  }
+
+  .collection-nav-btn {
+    background: #0d1117;
+    border-color: var(--cogita-border-color);
+  }
+
+  .collection-nav-btn-placeholder {
+    background: transparent;
   }
 }
 
