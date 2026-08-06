@@ -41,11 +41,13 @@ jobs:
 
       - name: Create .npmrc
         run: |
-          cat << EOF > "$HOME/.npmrc"
-            //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          EOF
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > "$HOME/.npmrc"
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Verify .npmrc
+        run: cat "$HOME/.npmrc" | sed 's/_authToken=.*/_authToken=***/'
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
