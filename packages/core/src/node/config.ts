@@ -97,7 +97,9 @@ function createThemePlugin(theme: CogitaTheme): RspressPlugin {
   return {
     name: 'cogita-theme-plugin',
     // 注入主题全局样式（theme.css），让首页/tag页等自定义布局样式生效
-    globalStyles: theme.globalStyles?.[0],
+    globalStyles: theme.globalStyles,
+    // 注册主题的全局 UI 组件（如 Footer、合集导航等），使其在所有页面生效
+    globalUIComponents: theme.globalUIComponents ?? [],
     addPages: async () => {
       if (!theme.pageLayouts.home) {
         return [];

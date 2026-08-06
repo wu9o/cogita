@@ -10,6 +10,12 @@ export interface PostFrontmatter {
   updateDate: string;
   categories?: string[];
   tags?: string[];
+  /** 合集 slug（声明文章归属的合集） */
+  collection?: string;
+  /** 在合集中的排序序号（升序） */
+  order?: number;
+  /** 合集内的自定义标题（可选，覆盖文章原标题） */
+  collectionTitle?: string;
   url: string;
 }
 

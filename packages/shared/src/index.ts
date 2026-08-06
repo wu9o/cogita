@@ -54,6 +54,14 @@ export interface CogitaPluginConfig {
     minPostCount?: number;
     [key: string]: unknown;
   };
+  collections?: {
+    enabled?: boolean;
+    routePrefix?: string;
+    metadata?: Record<string, { title?: string; description?: string; cover?: string }>;
+    excludeCollections?: string[];
+    minPostCount?: number;
+    [key: string]: unknown;
+  };
   _framework?: {
     version: string;
     buildTime: string;
@@ -80,9 +88,13 @@ export interface CogitaTheme {
     tag?: string;
     /** 标签索引页布局（路由 /tags） */
     tagIndex?: string;
+    /** 合集详情页布局（路由 /collections/:slug） */
+    collection?: string;
+    /** 合集索引页布局（路由 /collections） */
+    collectionIndex?: string;
     [key: string]: string | undefined;
   };
-  globalStyles?: string[];
+  globalStyles?: string;
   globalUIComponents?: (string | [string, object])[];
   plugins?: CogitaPluginFactory[];
 }

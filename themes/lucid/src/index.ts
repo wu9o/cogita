@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { pluginCollections } from '@cogita/plugin-collections';
 import { pluginPostsFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { pluginRSS } from '@cogita/plugin-rss';
 import { pluginTags } from '@cogita/plugin-tags';
@@ -36,13 +37,17 @@ export function getThemeConfig(): CogitaTheme {
     pageLayouts: {
       home: './layouts/Home.js',
       tag: './layouts/Tag.js',
+      collection: './layouts/Collection.js',
     },
 
     // 主题样式（会通过 cogita-theme-plugin 自动加载）
-    globalStyles: [path.resolve(__dirname, './theme.css')],
+    globalStyles: path.resolve(__dirname, './theme.css'),
 
     // 全局 UI 组件（会通过 cogita-theme-plugin 自动注册）
-    globalUIComponents: [path.resolve(__dirname, './components/Footer.js')],
+    globalUIComponents: [
+      path.resolve(__dirname, './components/Footer.js'),
+      path.resolve(__dirname, './components/CollectionNav.js'),
+    ],
 
     // ============================================
     // 功能插件（可选、可配置）
@@ -54,7 +59,12 @@ export function getThemeConfig(): CogitaTheme {
 
       // RSS feed 生成插件
       pluginRSS,
+
+      // 标签管理插件
       pluginTags,
+
+      // 合集（系列文章）插件
+      pluginCollections,
     ],
   };
 }
