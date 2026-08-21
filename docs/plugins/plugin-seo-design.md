@@ -1,0 +1,83 @@
+# SEO 插件架构设计
+
+## 目标
+
+`@cogita/plugin-seo` 在构建阶段为首页、文章页和其他已生成路由注入页面级 SEO 元数据，补齐站点地图之后的页面描述和社交分享能力。
+
+第一期不增加客户端运行时组件，不修改文章正文渲染，只生成静态 HTML 的 head 标签。
+
+## 配置
+
+```ts
+export default defineConfig({
+  site: {
+    title: '我的博客',
+    description: '记录技术和思考',
+    url: 'https://example.com/blog/',
+    base: '/blog/',
+  },
+  seo: {
+    enabled: true,
+    defaultImage: '/images/social-card.png',
+    author: '作者名称',
+    twitterCard: 'summary_large_image',
+    twitterSite: '@example',
+    twitterCreator: '@author',
+    includeJsonLd: true,
+  },
+});
+```
+
+没有 `seo` 配置时插件返回 `null`，不会改变已有 HTML。启用后，Rspress 原来的静态 description 由插件替换为页面级 description。
+
+## 文章覆盖字段
+
+文章可以使用嵌套的 `seo` frontmatter 覆盖默认元数据：
+
+```yaml
+seo:
+  title: 自定义分享标题
+  description: 自定义搜索摘要
+  canonical: /posts/custom-canonical
+  image: /images/custom-card.png
+  imageAlt: 分享卡片说明
+  noindex: false
+  author: 作者名称
+```
+
+文章已有的 `title`、`description`、`excerpt`、`image`、`imageAlt`、`author` 字段仍然有效。覆盖优先级为：`seo` 嵌套字段 → 文章普通字段 → 站点级默认值。
+
+## 构建流程
+
+```text
+Cogita 配置
+    ↓
+core 归一化 seo 配置
+    ↓
+SEO 插件 config 钩子扫描文章 frontmatter
+    ↓
+Rspress config.head 按 routePath 注入静态标签
+    ↓
+生成 HTML、Open Graph、Twitter Card 和 JSON-LD
+```
+
+Rspress 1.45 提供了 `config.head` 的路由回调能力，因此插件可以按页面生成标签，不需要修改 HTML 文件，也不依赖运行时虚拟模块。
+
+## 生成内容
+
+文章页包含：
+
+- `description` 和 `robots`
+- `canonical`、`og:url`
+- `og:type`、`og:title`、`og:description`、`og:image`
+- `twitter:card`、`twitter:title`、`twitter:description`、`twitter:image`
+- `author`
+- Article JSON-LD
+
+首页使用 WebSite JSON-LD，其他页面使用站点默认元数据。`site.base` 会参与绝对 URL 计算，外部图片地址不会被重复拼接。
+
+## 架构边界
+
+当前 Rspress 插件生命周期的 `config` 钩子可以直接生成页面 head，SEO 插件暂时独立扫描文章，避免依赖 `beforeBuild` 的执行顺序。随着 posts、tags、collections、rss、images、sitemap、seo 的数量增加，后续应由 core 引入构建期 `ContentIndex`，统一提供文章元数据并消除重复扫描。
+
+搜索功能暂不在 SEO 插件中重复实现：Rspress 已经生成本地搜索索引和搜索入口，未来只需在现有索引上扩展标签、合集和搜索权重。

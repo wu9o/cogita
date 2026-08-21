@@ -213,6 +213,15 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
           ...cogitaConfig.sitemap,
         }
       : undefined,
+    // SEO 只有显式配置时才启用，避免改变现有 HTML 输出
+    seo: cogitaConfig.seo
+      ? {
+          enabled: true,
+          robots: 'index, follow',
+          includeJsonLd: true,
+          ...cogitaConfig.seo,
+        }
+      : undefined,
   };
 }
 

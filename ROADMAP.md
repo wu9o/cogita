@@ -192,11 +192,11 @@ interface CogitaTheme {
   - [ ] 多语言站点地图支持
   - [ ] 图片和视频站点地图
 
-- [ ] `@cogita/plugin-seo` 📋
-  - [ ] 自动 meta 标签生成
-  - [ ] Open Graph 优化
-  - [ ] Twitter Card 集成
-  - [ ] Schema.org 结构化数据
+- [x] `@cogita/plugin-seo` ✅
+  - [x] 页面级 meta 标签生成
+  - [x] canonical 和 Open Graph 优化
+  - [x] Twitter Card 集成
+  - [x] Article/WebSite Schema.org 结构化数据
   - [ ] SEO 审核工具
 
 ### 第三阶段：高级功能 (2025年Q3) 🚀
