@@ -4,6 +4,7 @@ import { pluginCollections } from '@cogita/plugin-collections';
 import { pluginImages } from '@cogita/plugin-images';
 import { pluginPostsFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { pluginRSS } from '@cogita/plugin-rss';
+import { pluginSitemap } from '@cogita/plugin-sitemap';
 import { pluginTags } from '@cogita/plugin-tags';
 import type { CogitaTheme } from '@cogita/shared';
 
@@ -63,6 +64,9 @@ export function getThemeConfig(): CogitaTheme {
 
       // RSS feed 生成插件
       pluginRSS,
+
+      // XML 站点地图生成插件
+      pluginSitemap,
 
       // 标签管理插件
       pluginTags,
