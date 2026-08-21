@@ -1,5 +1,24 @@
 # @cogita/theme-lucid
 
+## 0.5.0
+
+### Minor Changes
+
+- f49bfe4: 新增文章列表插件，支持静态分页、时间归档，并接入 Lucid 主题。
+
+### Patch Changes
+
+- Updated dependencies [f49bfe4]
+  - @cogita/plugin-blog-list@0.2.0
+  - @cogita/plugin-seo@1.1.0
+  - @cogita/plugin-sitemap@1.1.0
+  - @cogita/shared@0.2.0
+  - @cogita/plugin-collections@1.0.0
+  - @cogita/plugin-images@1.0.0
+  - @cogita/plugin-posts-frontmatter@0.1.0
+  - @cogita/plugin-rss@1.0.0
+  - @cogita/plugin-tags@1.0.0
+
 ## 0.4.0
 
 ### Minor Changes
