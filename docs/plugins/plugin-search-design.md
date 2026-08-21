@@ -3,7 +3,7 @@
 **文档版本**：1.0
 **创建日期**：2026 年 8 月 21 日
 **插件名称**：`@cogita/plugin-search`
-**状态**：一期方案完成，待实现
+**状态**：一期已实现，搜索分析事件桥已实现
 
 ## 1. 建设目标
 
@@ -23,9 +23,10 @@ Search 插件为 Cogita 提供可复用的本地文章搜索索引和搜索页�
 1. **新增独立虚拟模块**：使用 `virtual-search-data`，不覆盖 Rspress 的 `virtual-search-index-hash` 或 `virtual-search-hooks`。
 2. **构建期生成，运行时查询**：文章扫描和内容清洗在构建期完成，浏览器只加载可搜索字段。
 3. **搜索页面与搜索组件解耦**：插件提供索引和页面路由，主题决定输入框、结果卡片和交互样式。
-4. **默认控制索引体积**：默认索引标题、摘要、标签和分类；全文内容必须显式开启。
+4. **默认控制索引体积**：默认索引标题、摘要、标签和分类；全文内容需要通过 `includeContent` 开启。
 5. **复用文章数据契约**：索引文档以 `PostFrontmatter` 为基础，不重新定义文章路由规则。
-6. **渐进式增强**：一期支持标题、摘要、标签和分类搜索；全文搜索、结果高亮和高级过滤后续增加。
+6. **渐进式增强**：支持标题、摘要、标签、分类和正文搜索；高级过滤后续增加。
+7. **隐私优先分析**：分析默认关闭，插件只提供事件桥，不主动向第三方服务上传数据。
 
 ## 3. 一期功能范围
 
@@ -37,14 +38,17 @@ Search 插件为 Cogita 提供可复用的本地文章搜索索引和搜索页�
 - Lucid 主题增加搜索页面和结果展示；
 - 支持 `site.base` 子路径部署；
 - SEO 为搜索页生成普通页面级元数据，sitemap 默认不收录无查询结果的搜索入口之外的动态查询地址。
+- Lucid 主题支持标题、摘要和标签中的关键词高亮，且高亮文本使用安全的 React 节点渲染。
+- 开启 `includeContent` 后，正文会进入索引，并在正文命中时生成附近的上下文摘要。
+- 可选派发搜索分析事件，并兼容已有的 `window.dataLayer`。
 
 一期暂不实现：
 
 - 服务端搜索或外部搜索服务；
-- 搜索分析和用户行为上报；
+- 第三方统计服务的具体接入和数据存储；
 - 替换 Rspress 内部搜索弹窗；
 - 搜索结果分页；
-- 复杂布尔表达式和全文高亮。
+- 复杂布尔表达式和全文索引的倒排优化。
 
 ## 4. 配置设计
 
@@ -55,7 +59,7 @@ export default defineConfig({
   search: {
     enabled: true,
     routePrefix: 'search',
-    includeContent: false,
+    includeContent: true,
     maxContentLength: 12_000,
     maxResults: 20,
     minQueryLength: 1,
@@ -65,7 +69,7 @@ export default defineConfig({
       excerpt: true,
       tags: true,
       categories: true,
-      content: false,
+      content: true,
     },
   },
 });
@@ -91,16 +95,24 @@ interface SearchConfig {
   maxResults?: number;
   minQueryLength?: number;
   fields?: SearchFieldsConfig;
+  analytics?: {
+    enabled?: boolean;
+    eventName?: string;
+    includeQuery?: boolean;
+    includeFilters?: boolean;
+  };
 }
 ```
 
 默认行为：
 
 - `title`、`description`、`excerpt`、`tags` 和 `categories` 默认开启；
-- `content` 默认关闭，避免构建产物和客户端加载体积无上限增长；
+- `content` 只有在 `includeContent: true` 时默认开启；也可以通过 `fields.content: false` 显式关闭；
 - `maxContentLength` 至少为 0，全文开启时截断 Markdown 清洗后的纯文本；
 - `maxResults` 默认 20，`minQueryLength` 默认 1；
 - `routePrefix` 默认 `search`，由 core 负责默认值归一化。
+- `analytics.enabled` 默认关闭；启用后事件名称默认是 `cogita:search`。
+- `analytics.includeQuery` 和 `analytics.includeFilters` 默认关闭，避免搜索词和筛选条件在未明确授权时进入分析事件。
 
 ## 5. 数据契约与虚拟模块
 
@@ -170,8 +182,35 @@ Lucid 一期实现：
 - 空查询时展示使用提示或最新文章；
 - 输入后按标题、摘要、标签、分类进行本地匹配；
 - 结果展示标题、摘要、日期和标签；
+- 支持按标签和分类筛选，筛选条件可以在没有关键词时单独生效；
+- 使用 `q`、`tag` 和 `category` URL 参数保存搜索状态，便于复制和分享；
 - 结果链接统一拼接 `siteData.base`；
 - 搜索页不修改 Rspress 默认 `Search Docs` 弹窗，避免接管内部虚拟模块。
+
+### 搜索分析事件
+
+搜索页面在有效关键词或筛选条件稳定 300 毫秒后派发一个 `CustomEvent`。事件名称由 `analytics.eventName` 控制，默认值为 `cogita:search`。事件详情包含：
+
+```ts
+interface SearchAnalyticsDetail {
+  event: string;
+  resultCount: number;
+  queryLength: number;
+  indexHash: string;
+  query?: string;
+  filters?: { tag?: string; category?: string };
+}
+```
+
+当页面已有 `window.dataLayer` 数组时，插件会追加同一份对象，方便接入已有统计管线。Search 插件不会创建网络请求，也不会绑定任何供应商；站点可以自行监听事件：
+
+```ts
+window.addEventListener('cogita:search', (event) => {
+  const detail = (event as CustomEvent).detail;
+  // 在这里转发给站点自己的分析服务
+  console.log(detail);
+});
+```
 
 ## 8. 搜索算法选择
 

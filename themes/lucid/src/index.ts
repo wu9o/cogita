@@ -5,6 +5,7 @@ import { pluginCollections } from '@cogita/plugin-collections';
 import { pluginImages } from '@cogita/plugin-images';
 import { pluginPostsFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { pluginRSS } from '@cogita/plugin-rss';
+import { pluginSearch } from '@cogita/plugin-search';
 import { pluginSEO } from '@cogita/plugin-seo';
 import { pluginSitemap } from '@cogita/plugin-sitemap';
 import { pluginTags } from '@cogita/plugin-tags';
@@ -44,6 +45,7 @@ export function getThemeConfig(): CogitaTheme {
       collection: './layouts/Collection.js',
       blogList: './layouts/BlogList.js',
       archive: './layouts/Archive.js',
+      search: './layouts/Search.js',
     },
 
     // 主题样式（会通过 cogita-theme-plugin 自动加载）
@@ -83,6 +85,9 @@ export function getThemeConfig(): CogitaTheme {
 
       // 文章列表、分页与时间归档插件
       pluginBlogList,
+
+      // 本地文章搜索插件
+      pluginSearch,
     ],
   };
 }

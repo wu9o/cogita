@@ -32,6 +32,8 @@ export interface SitemapConfig {
   includePosts?: boolean;
   /** 是否自动包含文章列表与归档页面。 */
   includeBlogList?: boolean;
+  /** 是否自动包含搜索入口页面。 */
+  includeSearch?: boolean;
   /** 首页和文章默认使用的更新频率。 */
   changefreq?: SitemapChangeFrequency;
   /** 首页和文章默认使用的权重。 */

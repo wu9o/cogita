@@ -33,7 +33,7 @@ Cogita 生态系统
 │   │   ├── @cogita/plugin-rss                ✅
 │   │   ├── @cogita/plugin-sitemap
 │   │   ├── @cogita/plugin-seo
-│   │   └── @cogita/plugin-search
+│   │   └── @cogita/plugin-search             ✅
 │   ├── 用户体验
 │   │   ├── @cogita/plugin-comments
 │   │   ├── @cogita/plugin-reading-time
@@ -205,13 +205,14 @@ interface CogitaTheme {
 
 #### 增强用户体验
 
-- [ ] `@cogita/plugin-search` 🔄
-  - [ ] 基于 Fuse.js 的本地搜索
-  - [ ] 实时搜索建议
-  - [ ] 全文内容索引
-  - [ ] 搜索结果高亮
-  - [ ] 高级搜索过滤器
-  - [ ] 搜索分析
+- [x] `@cogita/plugin-search` ✅
+  - [x] 构建期生成本地搜索索引
+  - [x] 搜索页面和实时关键词匹配
+  - [x] 标题、摘要、标签和分类搜索
+  - [x] 搜索结果关键词高亮
+  - [x] 全文内容索引
+  - [x] 高级搜索过滤器（标签、分类和 URL 状态）
+  - [x] 搜索分析（隐私优先事件桥与 dataLayer 兼容）
 
 - [ ] `@cogita/plugin-comments` 📋
   - [ ] 多提供商支持（Giscus、Utterances、Disqus）
