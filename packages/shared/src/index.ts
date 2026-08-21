@@ -35,6 +35,7 @@ export interface CogitaPluginConfig {
     includeHome?: boolean;
     includePosts?: boolean;
     includeBlogList?: boolean;
+    includeSearch?: boolean;
     changefreq?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
     priority?: number;
     customUrls?: Array<{
@@ -115,6 +116,29 @@ export interface CogitaPluginConfig {
     generateArchives?: boolean;
     archivePrefix?: string;
     archiveGranularity?: 'year' | 'month';
+    [key: string]: unknown;
+  };
+  search?: {
+    enabled?: boolean;
+    routePrefix?: string;
+    includeContent?: boolean;
+    maxContentLength?: number;
+    maxResults?: number;
+    minQueryLength?: number;
+    fields?: {
+      title?: boolean;
+      description?: boolean;
+      excerpt?: boolean;
+      tags?: boolean;
+      categories?: boolean;
+      content?: boolean;
+    };
+    analytics?: {
+      enabled?: boolean;
+      eventName?: string;
+      includeQuery?: boolean;
+      includeFilters?: boolean;
+    };
     [key: string]: unknown;
   };
   _framework?: {
@@ -208,6 +232,8 @@ export interface CogitaTheme {
     blogList?: string;
     /** 文章归档页布局（路由 /archives/:key） */
     archive?: string;
+    /** 搜索页布局（路由 /search） */
+    search?: string;
     [key: string]: string | undefined;
   };
   globalStyles?: string;

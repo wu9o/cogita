@@ -51,13 +51,13 @@
 | `@cogita/plugin-images` | 公共图片、文章封面和图片元数据 | 🚧 二期开发中 | [设计文档](./plugin-images-design.md) |
 | `@cogita/plugin-sitemap` | XML 站点地图生成 | ✅ 完成 | [设计文档](./plugin-sitemap-design.md) |
 | `@cogita/plugin-seo` | 页面级 SEO 元数据和结构化数据 | ✅ 完成 | [设计文档](./plugin-seo-design.md) |
+| `@cogita/plugin-search` | 本地文章搜索索引、筛选和分析事件 | ✅ 一期完成 | [设计文档](./plugin-search-design.md) |
 
 ### 📝 计划中插件
 
 | 插件名称 | 功能描述 | 优先级 | 预计时间 |
 |---------|----------|-------|---------|
 | `@cogita/plugin-blog-list` | 文章列表、分页和归档 | ✅ 已实现一期 | 后续增加筛选 |
-| `@cogita/plugin-search` | 本地搜索功能 | 🔥 高 | Q2 2025 |
 | `@cogita/plugin-comments` | 评论系统集成 | 🔸 中 | Q3 2025 |
 
 ## 🏗️ 插件架构概览

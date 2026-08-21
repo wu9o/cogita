@@ -127,7 +127,29 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
           return [normalizeRoute(route), meta] as const;
         })
       );
-      const pageMetaByRoute = new Map([...postsByRoute, ...blogListMeta]);
+      const searchRoute =
+        config.search?.enabled !== false && config.search
+          ? `/${(config.search.routePrefix || 'search').replace(/^\/+|\/+$/g, '')}`
+          : undefined;
+      const searchMeta = searchRoute
+        ? new Map([
+            [
+              normalizeRoute(searchRoute),
+              {
+                title: `搜索文章 - ${siteTitle}`,
+                description: siteDescription,
+                canonical: siteRoot ? resolveSiteUrl(siteRoot, searchRoute) : undefined,
+                image: defaultImage,
+                imageAlt: finalConfig.defaultImageAlt,
+                type: 'WebSite' as const,
+                robots: finalConfig.robots,
+                twitterCard:
+                  finalConfig.twitterCard || (defaultImage ? 'summary_large_image' : 'summary'),
+              },
+            ],
+          ])
+        : new Map();
+      const pageMetaByRoute = new Map([...postsByRoute, ...blogListMeta, ...searchMeta]);
 
       if (finalConfig.audit?.enabled) {
         auditReport = createSEOAuditReport(
@@ -135,6 +157,7 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
             { route: '/', meta: homeMeta },
             ...Array.from(postsByRoute.entries()).map(([route, meta]) => ({ route, meta })),
             ...Array.from(blogListMeta.entries()).map(([route, meta]) => ({ route, meta })),
+            ...Array.from(searchMeta.entries()).map(([route, meta]) => ({ route, meta })),
           ],
           finalConfig.audit
         );

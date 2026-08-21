@@ -189,6 +189,34 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
           ...cogitaConfig.blogList,
         }
       : undefined,
+    // 搜索只有显式配置时才启用，避免改变已有站点输出
+    search: cogitaConfig.search
+      ? {
+          enabled: true,
+          routePrefix: 'search',
+          includeContent: false,
+          maxContentLength: 12_000,
+          maxResults: 20,
+          minQueryLength: 1,
+          ...cogitaConfig.search,
+          fields: {
+            title: true,
+            description: true,
+            excerpt: true,
+            tags: true,
+            categories: true,
+            content: false,
+            ...cogitaConfig.search.fields,
+          },
+          analytics: {
+            enabled: false,
+            eventName: 'cogita:search',
+            includeQuery: false,
+            includeFilters: false,
+            ...cogitaConfig.search.analytics,
+          },
+        }
+      : undefined,
     // RSS plugin config with defaults (if enabled)
     rss: cogitaConfig.rss
       ? {
@@ -222,6 +250,7 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
           includeHome: true,
           includePosts: true,
           includeBlogList: true,
+          includeSearch: true,
           changefreq: 'weekly' as const,
           priority: 0.7,
           failOnMissingSiteUrl: cogitaConfig.strict !== false,
