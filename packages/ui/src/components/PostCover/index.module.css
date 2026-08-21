@@ -1,0 +1,21 @@
+.postCover {
+  margin: 0 0 1.25rem;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--cogita-border-color, #f0f0f0);
+}
+
+.postCoverImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 18rem;
+  object-fit: cover;
+}
+
+.postCoverCaption {
+  padding: 0.5rem 0.75rem;
+  color: var(--cogita-text-color-secondary, #777777);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}

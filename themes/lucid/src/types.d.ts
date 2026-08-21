@@ -8,11 +8,44 @@ declare module 'virtual-posts-data' {
     updateDate: string;
     description?: string;
     tags?: string[];
+    image?: string;
+    imageAlt?: string;
+    imageCaption?: string;
+    imageWidth?: number;
+    imageHeight?: number;
     url: string;
     filePath: string; // 添加缺失的字段
   }
 
   export const allPosts: Post[];
+}
+
+declare module 'virtual-images-data' {
+  interface ImageData {
+    src: string;
+    relativePath?: string;
+    name?: string;
+    extension?: string;
+    width?: number;
+    height?: number;
+    alt?: string;
+    caption?: string;
+    source: 'public' | 'external';
+    postRoute?: string;
+  }
+
+  interface ImageUsage {
+    src: string;
+    count: number;
+    postRoutes: string[];
+  }
+
+  export const allImages: ImageData[];
+  export const postCovers: Record<string, ImageData>;
+  export const imageUsage: Record<string, ImageUsage>;
+  export function getImageBySrc(src: string): ImageData | undefined;
+  export function getPostCover(route: string): ImageData | undefined;
+  export function getUnusedImages(): ImageData[];
 }
 
 declare module 'virtual-tags-data' {

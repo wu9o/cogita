@@ -3,6 +3,7 @@ import { normalizeHrefInRuntime } from '@rspress/runtime';
 import { Link } from '@rspress/theme-default';
 import type React from 'react';
 import type { Post } from '../../types';
+import { PostCover } from '../PostCover';
 import { TagList } from '../TagList';
 import styles from './index.module.css';
 
@@ -20,13 +21,25 @@ export interface PostListProps {
    * Whether to show tags in post items
    */
   showTags?: boolean;
+  /** 是否在文章卡片中显示封面。 */
+  showCover?: boolean;
 }
 
-const DefaultPostItem: React.FC<{ post: Post; showTags?: boolean }> = ({
+const DefaultPostItem: React.FC<{ post: Post; showTags?: boolean; showCover?: boolean }> = ({
   post,
   showTags = true,
+  showCover = false,
 }) => (
   <article key={post.url} className={styles.postItem}>
+    {showCover && post.image && (
+      <PostCover
+        src={post.image}
+        alt={post.imageAlt || post.title}
+        caption={post.imageCaption}
+        width={post.imageWidth}
+        height={post.imageHeight}
+      />
+    )}
     <Link href={normalizeHrefInRuntime(post.route)}>
       <h2 className={styles.title}>{post.title}</h2>
       <time dateTime={post.updateDate} className={styles.date}>
@@ -44,14 +57,19 @@ const DefaultPostItem: React.FC<{ post: Post; showTags?: boolean }> = ({
   </article>
 );
 
-export const PostList: React.FC<PostListProps> = ({ posts, renderItem, showTags = true }) => {
+export const PostList: React.FC<PostListProps> = ({
+  posts,
+  renderItem,
+  showTags = true,
+  showCover = false,
+}) => {
   return (
     <div className={styles.postListContainer}>
       {posts.map((post) =>
         renderItem ? (
           renderItem(post)
         ) : (
-          <DefaultPostItem key={post.url} post={post} showTags={showTags} />
+          <DefaultPostItem key={post.url} post={post} showTags={showTags} showCover={showCover} />
         )
       )}
     </div>

@@ -5,6 +5,8 @@ export type { CogitaTheme, LayoutProps };
 
 export type ThemeConfig = UserConfig['themeConfig'];
 export type BuilderConfig = UserConfig['builderConfig'];
+export type MarkdownConfig = UserConfig['markdown'];
+export type MediumZoomConfig = UserConfig['mediumZoom'];
 
 export interface SiteConfig {
   title?: string;
@@ -179,6 +181,24 @@ export interface RSSConfig {
   };
 }
 
+/**
+ * 图片插件配置。
+ */
+export interface ImagesConfig {
+  /** 是否启用图片元数据扫描。 */
+  enabled?: boolean;
+  /** 公共图片目录，相对于项目根目录。 */
+  dir?: string;
+  /** 扫描的图片扩展名，不含点号。 */
+  extensions?: string[];
+  /** 是否读取图片尺寸。 */
+  readDimensions?: boolean;
+  /** 找不到文章封面时是否让构建失败。 */
+  failOnMissing?: boolean;
+  /** 是否警告文章封面缺少明确的替代文本。 */
+  warnOnMissingAlt?: boolean;
+}
+
 export interface CogitaConfig {
   site?: SiteConfig;
   theme?: string;
@@ -202,6 +222,15 @@ export interface CogitaConfig {
    * RSS feed configuration
    */
   rss?: RSSConfig;
+
+  /** 图片公共资源与文章封面配置。 */
+  images?: ImagesConfig;
+
+  /** Rspress Markdown 配置。 */
+  markdown?: MarkdownConfig;
+
+  /** Rspress 原生图片放大配置。 */
+  mediumZoom?: MediumZoomConfig;
 
   /**
    * Rspress theme config

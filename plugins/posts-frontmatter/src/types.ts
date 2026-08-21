@@ -16,6 +16,12 @@ export interface PostFrontmatter {
   order?: number;
   /** 合集内的自定义标题（可选，覆盖文章原标题） */
   collectionTitle?: string;
+  /** 文章封面路径或外部图片地址 */
+  image?: string;
+  /** 文章封面替代文本 */
+  imageAlt?: string;
+  /** 文章封面说明文字 */
+  imageCaption?: string;
   url: string;
 }
 
