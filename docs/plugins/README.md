@@ -12,6 +12,8 @@
 - **[图片插件设计](./plugin-images-design.md)** - 图片资源、封面和元数据插件的实现方案
 - **[站点地图插件设计](./plugin-sitemap-design.md)** - XML 站点地图生成插件的实现方案
 - **[SEO 插件设计](./plugin-seo-design.md)** - 页面级元数据和结构化数据插件的实现方案
+- **[Blog List 插件设计](./plugin-blog-list-design.md)** - 文章列表、分页和归档插件的实现方案
+- **[Search 插件设计](./plugin-search-design.md)** - 本地文章搜索索引和搜索页面的实现方案
 
 ### 📝 计划中文档
 
@@ -54,6 +56,7 @@
 
 | 插件名称 | 功能描述 | 优先级 | 预计时间 |
 |---------|----------|-------|---------|
+| `@cogita/plugin-blog-list` | 文章列表、分页和归档 | ✅ 已实现一期 | 后续增加筛选 |
 | `@cogita/plugin-search` | 本地搜索功能 | 🔥 高 | Q2 2025 |
 | `@cogita/plugin-comments` | 评论系统集成 | 🔸 中 | Q3 2025 |
 

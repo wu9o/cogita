@@ -30,6 +30,8 @@ export interface SitemapConfig {
   includeHome?: boolean;
   /** 是否包含文章页面。 */
   includePosts?: boolean;
+  /** 是否自动包含文章列表与归档页面。 */
+  includeBlogList?: boolean;
   /** 首页和文章默认使用的更新频率。 */
   changefreq?: SitemapChangeFrequency;
   /** 首页和文章默认使用的权重。 */
@@ -51,5 +53,6 @@ export interface SitemapEntry {
 /** 用于生成站点地图的文章最小数据结构。 */
 export interface SitemapPost {
   route: string;
+  createDate?: string;
   updateDate?: string;
 }

@@ -91,6 +91,18 @@ export default defineConfig({
     minPostCount: 1,
   },
 
+  // 文章列表与时间归档
+  blogList: {
+    enabled: true,
+    routePrefix: 'archive',
+    pageSize: 5,
+    sortBy: 'createDate',
+    order: 'desc',
+    generateArchives: true,
+    archivePrefix: 'archives',
+    archiveGranularity: 'year',
+  },
+
   themeConfig: {
     // 页脚配置 - 全局显示 RSS 订阅链接
     footer: {

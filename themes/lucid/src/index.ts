@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { pluginBlogList } from '@cogita/plugin-blog-list';
 import { pluginCollections } from '@cogita/plugin-collections';
 import { pluginImages } from '@cogita/plugin-images';
 import { pluginPostsFrontmatter } from '@cogita/plugin-posts-frontmatter';
@@ -41,6 +42,8 @@ export function getThemeConfig(): CogitaTheme {
       home: './layouts/Home.js',
       tag: './layouts/Tag.js',
       collection: './layouts/Collection.js',
+      blogList: './layouts/BlogList.js',
+      archive: './layouts/Archive.js',
     },
 
     // 主题样式（会通过 cogita-theme-plugin 自动加载）
@@ -77,6 +80,9 @@ export function getThemeConfig(): CogitaTheme {
 
       // 合集（系列文章）插件
       pluginCollections,
+
+      // 文章列表、分页与时间归档插件
+      pluginBlogList,
     ],
   };
 }

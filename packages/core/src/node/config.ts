@@ -175,6 +175,20 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
           ...cogitaConfig.tags,
         }
       : undefined,
+    // 文章列表只有显式配置时才启用，避免改变已有首页输出
+    blogList: cogitaConfig.blogList
+      ? {
+          enabled: true,
+          routePrefix: 'archive',
+          pageSize: 10,
+          sortBy: 'createDate' as const,
+          order: 'desc' as const,
+          generateArchives: true,
+          archivePrefix: 'archives',
+          archiveGranularity: 'year' as const,
+          ...cogitaConfig.blogList,
+        }
+      : undefined,
     // RSS plugin config with defaults (if enabled)
     rss: cogitaConfig.rss
       ? {
@@ -207,6 +221,7 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
           path: 'sitemap.xml',
           includeHome: true,
           includePosts: true,
+          includeBlogList: true,
           changefreq: 'weekly' as const,
           priority: 0.7,
           failOnMissingSiteUrl: cogitaConfig.strict !== false,
