@@ -4,6 +4,8 @@
 export interface PostFrontmatter {
   title: string;
   description?: string;
+  excerpt?: string;
+  author?: string;
   filePath: string;
   route: string;
   createDate: string;
@@ -22,7 +24,20 @@ export interface PostFrontmatter {
   imageAlt?: string;
   /** 文章封面说明文字 */
   imageCaption?: string;
+  /** 文章级 SEO 覆盖字段。 */
+  seo?: PostSEO;
   url: string;
+}
+
+/** 文章 frontmatter 中的 SEO 覆盖字段。 */
+export interface PostSEO {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  image?: string;
+  imageAlt?: string;
+  noindex?: boolean;
+  author?: string;
 }
 
 /**

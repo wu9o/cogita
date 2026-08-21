@@ -49,6 +49,16 @@ export default defineConfig({
     priority: 0.7,
   },
 
+  seo: {
+    enabled: true,
+    defaultImage: '/images/cogita-architecture.svg',
+    author: 'wu9o',
+    twitterCard: 'summary_large_image',
+    twitterSite: '@wu9ors',
+    twitterCreator: '@wu9ors',
+    includeJsonLd: true,
+  },
+
   // 标签配置
   tags: {
     enabled: true,

@@ -308,6 +308,37 @@ importers:
         specifier: ^5.0.4
         version: 5.9.2
 
+  plugins/seo:
+    dependencies:
+      '@rspress/core':
+        specifier: ^1.45.1
+        version: 1.45.1(webpack@5.101.2)
+      glob:
+        specifier: ^11.0.0
+        version: 11.0.3
+    devDependencies:
+      '@cogita/plugin-posts-frontmatter':
+        specifier: workspace:*
+        version: link:../posts-frontmatter
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@rslib/core':
+        specifier: 0.11.2
+        version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@18.19.123))(typescript@5.9.2)
+      '@rspress/shared':
+        specifier: ^1.45.1
+        version: 1.45.1
+      '@types/node':
+        specifier: ^18.11.17
+        version: 18.19.123
+      rsbuild-plugin-publint:
+        specifier: ^0.3.3
+        version: 0.3.3(@rsbuild/core@1.4.15)
+      typescript:
+        specifier: ^5.0.4
+        version: 5.9.2
+
   plugins/sitemap:
     dependencies:
       '@rspress/core':
@@ -396,6 +427,9 @@ importers:
       '@cogita/plugin-rss':
         specifier: workspace:*
         version: link:../../plugins/rss
+      '@cogita/plugin-seo':
+        specifier: workspace:*
+        version: link:../../plugins/seo
       '@cogita/plugin-sitemap':
         specifier: workspace:*
         version: link:../../plugins/sitemap

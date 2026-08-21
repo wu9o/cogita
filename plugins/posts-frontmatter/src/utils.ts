@@ -36,6 +36,8 @@ export function getFrontmatterFromFile(
     return {
       title: title,
       description: frontmatter.description,
+      excerpt: frontmatter.excerpt,
+      author: frontmatter.author,
       filePath,
       route: route,
       createDate: frontmatter.date || frontmatter.createDate || stats.birthtime.toISOString(),
@@ -48,6 +50,18 @@ export function getFrontmatterFromFile(
       image: frontmatter.image,
       imageAlt: frontmatter.imageAlt,
       imageCaption: frontmatter.imageCaption,
+      seo:
+        frontmatter.seo && typeof frontmatter.seo === 'object'
+          ? {
+              title: frontmatter.seo.title,
+              description: frontmatter.seo.description,
+              canonical: frontmatter.seo.canonical,
+              image: frontmatter.seo.image,
+              imageAlt: frontmatter.seo.imageAlt,
+              noindex: frontmatter.seo.noindex,
+              author: frontmatter.seo.author,
+            }
+          : undefined,
       url: '',
     };
   } catch (e) {

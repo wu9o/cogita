@@ -44,6 +44,17 @@ export interface CogitaPluginConfig {
     }>;
     failOnMissingSiteUrl?: boolean;
   };
+  seo?: {
+    enabled?: boolean;
+    defaultImage?: string;
+    defaultDescription?: string;
+    author?: string;
+    robots?: string;
+    twitterCard?: 'summary' | 'summary_large_image' | 'app' | 'player';
+    twitterSite?: string;
+    twitterCreator?: string;
+    includeJsonLd?: boolean;
+  };
   markdown?: UserConfig['markdown'];
   mediumZoom?: UserConfig['mediumZoom'];
   rss?: {
