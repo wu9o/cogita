@@ -1,7 +1,9 @@
 import type { LayoutProps } from '@cogita/shared';
 import { PostList, TagCloud } from '@cogita/ui';
+import { normalizeHrefInRuntime } from '@rspress/runtime';
 import { usePageData } from '@rspress/runtime';
 import type React from 'react';
+import { blogListConfig } from 'virtual-blog-list-data';
 import { allCollections } from 'virtual-collections-data';
 import { postCovers } from 'virtual-images-data';
 import { allPosts } from 'virtual-posts-data';
@@ -60,8 +62,13 @@ const HomeLayout: React.FC<LayoutProps> = () => {
 
         <main className="main-content">
           <header className="blog-header">
-            <h1 className="blog-title">最新文章</h1>
-            <p className="blog-subtitle">记录编码、创造与思考的瞬间</p>
+            <div>
+              <h1 className="blog-title">最新文章</h1>
+              <p className="blog-subtitle">记录编码、创造与思考的瞬间</p>
+            </div>
+            <a href={normalizeHrefInRuntime(`${base}/${blogListConfig.routePrefix}`)}>
+              查看全部文章 →
+            </a>
           </header>
           <PostList posts={postsWithCovers} showTags={true} showCover={true} />
         </main>

@@ -129,7 +129,17 @@
 }
 
 .home-layout .blog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 2rem;
+}
+
+.home-layout .blog-header > a {
+  color: var(--cogita-primary-color);
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 /* 首页双栏布局：侧边栏 + 主内容 */
@@ -226,6 +236,83 @@
 
 .view-all-link:hover {
   text-decoration: underline;
+}
+
+/* 文章列表与归档页面 */
+.blog-list-page,
+.archive-page {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.blog-list-header,
+.archive-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--cogita-border-color);
+}
+
+.blog-list-header a,
+.archive-header a {
+  color: var(--cogita-primary-color);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.blog-list-eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--cogita-text-color-secondary);
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.blog-list-title {
+  margin: 0 0 0.5rem;
+  color: var(--cogita-title-color);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.blog-list-meta,
+.blog-list-empty {
+  margin: 0;
+  color: var(--cogita-text-color-secondary);
+}
+
+.blog-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--cogita-border-color);
+}
+
+.blog-pagination a,
+.archive-index a {
+  color: var(--cogita-primary-color);
+  text-decoration: none;
+}
+
+.blog-pagination-disabled {
+  color: var(--cogita-text-color-tertiary, var(--cogita-text-color-secondary));
+}
+
+.archive-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.archive-index-active {
+  font-weight: 700;
 }
 
 /* 标签页面样式 */
@@ -660,6 +747,10 @@
     order: 2;
   }
 
+  .home-layout .blog-header {
+    flex-direction: column;
+  }
+
   .tag-layout {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -684,6 +775,20 @@
   .sidebar-section {
     margin-bottom: 1rem;
   }
+
+  .blog-list-header,
+  .archive-header {
+    flex-direction: column;
+  }
+
+  .blog-list-title {
+    font-size: 1.625rem;
+  }
+
+  .blog-pagination {
+    gap: 0.75rem;
+    font-size: 0.875rem;
+  }
 }
 
 /* 隐藏 Rspress 默认文档侧边栏（blog 项目不使用 doc 侧边栏）*/
@@ -697,7 +802,9 @@ aside.rspress-sidebar {
 
 /* 自定义布局页面（首页、标签页）打破 Rspress .rspress-doc 默认 992px 宽度限制 */
 .rspress-doc:has(.home-layout),
-.rspress-doc:has(.tag-page) {
+.rspress-doc:has(.tag-page),
+.rspress-doc:has(.blog-list-page),
+.rspress-doc:has(.archive-page) {
   max-width: none !important;
   margin: 0 !important;
 }

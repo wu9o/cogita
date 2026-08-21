@@ -231,6 +231,8 @@ export interface SitemapConfig {
   includeHome?: boolean;
   /** 是否包含文章页面。 */
   includePosts?: boolean;
+  /** 是否自动包含文章列表与归档页面。 */
+  includeBlogList?: boolean;
   /** 首页和文章默认使用的更新频率。 */
   changefreq?: SitemapChangeFrequency;
   /** 首页和文章默认使用的权重。 */
@@ -279,6 +281,35 @@ export interface SEOConfig {
   };
 }
 
+/** 文章列表支持的排序字段。 */
+export type BlogListSortBy = 'createDate' | 'updateDate' | 'title';
+
+/** 文章列表的排序方向。 */
+export type BlogListOrder = 'asc' | 'desc';
+
+/** 归档时间粒度。 */
+export type BlogListArchiveGranularity = 'year' | 'month';
+
+/** 文章列表与归档插件配置。 */
+export interface BlogListConfig {
+  /** 是否启用文章列表功能。 */
+  enabled?: boolean;
+  /** 文章列表路由前缀。 */
+  routePrefix?: string;
+  /** 每页文章数量。 */
+  pageSize?: number;
+  /** 列表排序字段。 */
+  sortBy?: BlogListSortBy;
+  /** 列表排序方向。 */
+  order?: BlogListOrder;
+  /** 是否生成归档页面。 */
+  generateArchives?: boolean;
+  /** 归档页面路由前缀。 */
+  archivePrefix?: string;
+  /** 归档时间粒度。 */
+  archiveGranularity?: BlogListArchiveGranularity;
+}
+
 export interface CogitaConfig {
   site?: SiteConfig;
   theme?: string;
@@ -297,6 +328,9 @@ export interface CogitaConfig {
    * Collections plugin configuration
    */
   collections?: CollectionsConfig;
+
+  /** 文章列表与归档配置。 */
+  blogList?: BlogListConfig;
 
   /**
    * RSS feed configuration

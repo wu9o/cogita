@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
-import type { CogitaPluginConfig, RspressPlugin } from '@cogita/shared';
+import { type CogitaPluginConfig, type RspressPlugin, getBlogListRoutes } from '@cogita/shared';
 import { glob } from 'glob';
 import type { SitemapConfig, SitemapEntry, SitemapPost } from './types';
 import {
@@ -16,11 +16,15 @@ import {
 } from './utils';
 
 const DEFAULT_CONFIG: Required<
-  Pick<SitemapConfig, 'path' | 'includeHome' | 'includePosts' | 'changefreq' | 'priority'>
+  Pick<
+    SitemapConfig,
+    'path' | 'includeHome' | 'includePosts' | 'includeBlogList' | 'changefreq' | 'priority'
+  >
 > = {
   path: 'sitemap.xml',
   includeHome: true,
   includePosts: true,
+  includeBlogList: true,
   changefreq: 'weekly',
   priority: 0.7,
 };
@@ -48,6 +52,7 @@ async function collectPosts(config: CogitaPluginConfig): Promise<SitemapPost[]> 
     .filter((post): post is NonNullable<typeof post> => Boolean(post))
     .map((post) => ({
       route: post.route,
+      createDate: post.createDate,
       updateDate: post.updateDate,
     }));
 }
@@ -106,10 +111,22 @@ export function pluginSitemap(config: CogitaPluginConfig): RspressPlugin | null 
         });
       }
 
+      const posts =
+        finalConfig.includePosts || finalConfig.includeBlogList ? await collectPosts(config) : [];
+
       if (finalConfig.includePosts) {
-        const posts = await collectPosts(config);
         sitemapEntries.push(
           ...createPostEntries(siteRoot, posts, finalConfig.changefreq, finalConfig.priority)
+        );
+      }
+
+      if (finalConfig.includeBlogList && config.blogList?.enabled !== false) {
+        sitemapEntries.push(
+          ...getBlogListRoutes(posts, config.blogList).map((route) => ({
+            loc: resolveSitemapUrl(siteRoot, route),
+            changefreq: finalConfig.changefreq,
+            priority: normalizePriority(finalConfig.priority),
+          }))
         );
       }
 
