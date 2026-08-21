@@ -1,0 +1,51 @@
+{
+  "name": "@cogita/plugin-sitemap",
+  "version": "0.0.1",
+  "description": "构建期生成 XML 站点地图的 Cogita 插件。",
+  "keywords": ["cogita", "plugin", "sitemap", "seo", "rspress"],
+  "author": "wu9o <https://github.com/wu9o>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wu9o/cogita.git",
+    "directory": "plugins/sitemap"
+  },
+  "bugs": {
+    "url": "https://github.com/wu9o/cogita/issues"
+  },
+  "homepage": "https://github.com/wu9o/cogita/tree/main/plugins/sitemap#readme",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "README.md", "LICENSE"],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build -w",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@rspress/core": "^1.45.1",
+    "glob": "^11.0.0"
+  },
+  "devDependencies": {
+    "@cogita/plugin-posts-frontmatter": "workspace:*",
+    "@cogita/shared": "workspace:*",
+    "@rslib/core": "0.11.2",
+    "@types/node": "^18.11.17",
+    "rsbuild-plugin-publint": "^0.3.3",
+    "typescript": "^5.0.4"
+  },
+  "peerDependencies": {
+    "@cogita/plugin-posts-frontmatter": "workspace:*"
+  }
+}

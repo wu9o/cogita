@@ -70,6 +70,7 @@
     "@cogita/plugin-images": "workspace:*",
     "@cogita/plugin-posts-frontmatter": "workspace:*",
     "@cogita/plugin-rss": "workspace:*",
+    "@cogita/plugin-sitemap": "workspace:*",
     "@cogita/plugin-tags": "workspace:*",
     "@cogita/shared": "workspace:*"
   }

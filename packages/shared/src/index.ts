@@ -29,6 +29,21 @@ export interface CogitaPluginConfig {
     failOnMissing?: boolean;
     warnOnMissingAlt?: boolean;
   };
+  sitemap?: {
+    enabled?: boolean;
+    path?: string;
+    includeHome?: boolean;
+    includePosts?: boolean;
+    changefreq?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+    priority?: number;
+    customUrls?: Array<{
+      path: string;
+      lastmod?: string;
+      changefreq?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+      priority?: number;
+    }>;
+    failOnMissingSiteUrl?: boolean;
+  };
   markdown?: UserConfig['markdown'];
   mediumZoom?: UserConfig['mediumZoom'];
   rss?: {
