@@ -19,11 +19,17 @@ export default defineConfig({
   seo: {
     enabled: true,
     defaultImage: '/images/social-card.png',
+    defaultImageAlt: '站点默认分享图片',
     author: '作者名称',
     twitterCard: 'summary_large_image',
     twitterSite: '@example',
     twitterCreator: '@author',
     includeJsonLd: true,
+    audit: {
+      enabled: true,
+      reportPath: 'seo-report.json',
+      failOnError: false,
+    },
   },
 });
 ```
@@ -62,6 +68,17 @@ Rspress config.head 按 routePath 注入静态标签
 ```
 
 Rspress 1.45 提供了 `config.head` 的路由回调能力，因此插件可以按页面生成标签，不需要修改 HTML 文件，也不依赖运行时虚拟模块。
+
+## SEO 审核流程
+
+审核工具复用插件在 `config` 钩子中收集的文章元数据，构造首页和文章页的审核页面集合，检查以下规则：
+
+- 标题、描述和 canonical 必须存在；
+- 描述过短时输出警告，默认阈值为 50 个字符；
+- 分享图片存在时必须有 `imageAlt`；
+- 文章建议配置作者信息。
+
+审核默认只输出报告，不阻断构建。设置 `audit.failOnError: true` 后，缺少标题、描述或 canonical 会让构建失败。设置 `audit.reportPath` 后，报告会以 JSON 写入构建输出目录，便于 CI 或后续工具继续处理。
 
 ## 生成内容
 

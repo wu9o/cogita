@@ -52,11 +52,16 @@ export default defineConfig({
   seo: {
     enabled: true,
     defaultImage: '/images/cogita-architecture.svg',
+    defaultImageAlt: 'Cogita 主题驱动架构示意图',
     author: 'wu9o',
     twitterCard: 'summary_large_image',
     twitterSite: '@wu9ors',
     twitterCreator: '@wu9ors',
     includeJsonLd: true,
+    audit: {
+      enabled: true,
+      reportPath: 'seo-report.json',
+    },
   },
 
   // 标签配置

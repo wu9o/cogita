@@ -47,6 +47,7 @@ export interface CogitaPluginConfig {
   seo?: {
     enabled?: boolean;
     defaultImage?: string;
+    defaultImageAlt?: string;
     defaultDescription?: string;
     author?: string;
     robots?: string;
@@ -54,6 +55,12 @@ export interface CogitaPluginConfig {
     twitterSite?: string;
     twitterCreator?: string;
     includeJsonLd?: boolean;
+    audit?: {
+      enabled?: boolean;
+      failOnError?: boolean;
+      reportPath?: string;
+      minDescriptionLength?: number;
+    };
   };
   markdown?: UserConfig['markdown'];
   mediumZoom?: UserConfig['mediumZoom'];
