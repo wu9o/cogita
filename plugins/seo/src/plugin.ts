@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
-import type { CogitaPluginConfig, RspressPlugin } from '@cogita/shared';
+import { type CogitaPluginConfig, type RspressPlugin, getBlogListRoutes } from '@cogita/shared';
 import type { RouteMeta } from '@rspress/shared';
 import { glob } from 'glob';
 import { createSEOAuditReport, formatSEOAuditReport } from './audit';
@@ -100,12 +100,41 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
         robots: finalConfig.robots,
         twitterCard: finalConfig.twitterCard || (defaultImage ? 'summary_large_image' : 'summary'),
       };
+      const blogListRoutes =
+        config.blogList?.enabled !== false ? getBlogListRoutes(posts, config.blogList) : [];
+      const blogListMeta = new Map(
+        blogListRoutes.map((route) => {
+          const isListPage = route === `/${config.blogList?.routePrefix || 'archive'}`;
+          const isArchivePage = route.startsWith(
+            `/${config.blogList?.archivePrefix || 'archives'}`
+          );
+          const title = isListPage
+            ? `全部文章 - ${siteTitle}`
+            : isArchivePage
+              ? `时间归档 - ${siteTitle}`
+              : `文章列表 - ${siteTitle}`;
+          const meta: SEOPageMeta = {
+            title,
+            description: siteDescription,
+            canonical: siteRoot ? resolveSiteUrl(siteRoot, route) : undefined,
+            image: defaultImage,
+            imageAlt: finalConfig.defaultImageAlt,
+            type: 'WebSite',
+            robots: finalConfig.robots,
+            twitterCard:
+              finalConfig.twitterCard || (defaultImage ? 'summary_large_image' : 'summary'),
+          };
+          return [normalizeRoute(route), meta] as const;
+        })
+      );
+      const pageMetaByRoute = new Map([...postsByRoute, ...blogListMeta]);
 
       if (finalConfig.audit?.enabled) {
         auditReport = createSEOAuditReport(
           [
             { route: '/', meta: homeMeta },
             ...Array.from(postsByRoute.entries()).map(([route, meta]) => ({ route, meta })),
+            ...Array.from(blogListMeta.entries()).map(([route, meta]) => ({ route, meta })),
           ],
           finalConfig.audit
         );
@@ -131,12 +160,12 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
         ...(rspressConfig.head ?? []),
         (route: RouteMeta) => {
           const routeKey = normalizeRoute(route.routePath, config.site?.base);
-          const postMeta = postsByRoute.get(routeKey);
+          const pageMeta = pageMetaByRoute.get(routeKey);
           const isHome = isHomeRoute(route, config.site?.base);
           const canonical =
-            postMeta?.canonical || (siteRoot ? resolveSiteUrl(siteRoot, routeKey) : undefined);
-          const meta: SEOPageMeta = postMeta
-            ? { ...postMeta, canonical }
+            pageMeta?.canonical || (siteRoot ? resolveSiteUrl(siteRoot, routeKey) : undefined);
+          const meta: SEOPageMeta = pageMeta
+            ? { ...pageMeta, canonical }
             : isHome
               ? homeMeta
               : {
