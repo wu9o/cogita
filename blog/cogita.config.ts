@@ -40,6 +40,15 @@ export default defineConfig({
     maxItems: 50,
   },
 
+  sitemap: {
+    enabled: true,
+    path: 'sitemap.xml',
+    includeHome: true,
+    includePosts: true,
+    changefreq: 'weekly',
+    priority: 0.7,
+  },
+
   // 标签配置
   tags: {
     enabled: true,

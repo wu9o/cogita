@@ -200,6 +200,19 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
       warnOnMissingAlt: false,
       ...cogitaConfig.images,
     },
+    // 站点地图只有显式配置时才启用，保持默认构建不产生额外文件
+    sitemap: cogitaConfig.sitemap
+      ? {
+          enabled: true,
+          path: 'sitemap.xml',
+          includeHome: true,
+          includePosts: true,
+          changefreq: 'weekly' as const,
+          priority: 0.7,
+          failOnMissingSiteUrl: cogitaConfig.strict !== false,
+          ...cogitaConfig.sitemap,
+        }
+      : undefined,
   };
 }
 

@@ -184,10 +184,11 @@ interface CogitaTheme {
 
 #### SEO 与发现插件
 
-- [ ] `@cogita/plugin-sitemap` 📋
-  - [ ] XML 站点地图生成
-  - [ ] 自动 URL 发现
-  - [ ] 自定义优先级设置
+- [x] `@cogita/plugin-sitemap` ✅
+  - [x] XML 站点地图生成
+  - [x] 自动发现首页和文章 URL
+  - [x] 自定义优先级和更新频率
+  - [x] 自定义站点地址
   - [ ] 多语言站点地图支持
   - [ ] 图片和视频站点地图
 

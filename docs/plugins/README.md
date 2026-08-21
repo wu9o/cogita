@@ -10,6 +10,7 @@
 - **[Posts Frontmatter插件设计](./plugin-posts-frontmatter-design.md)** - 核心数据插件的架构设计
 - **[RSS插件设计](./plugin-rss-design.md)** - RSS订阅插件的架构设计和实现方案
 - **[图片插件设计](./plugin-images-design.md)** - 图片资源、封面和元数据插件的实现方案
+- **[站点地图插件设计](./plugin-sitemap-design.md)** - XML 站点地图生成插件的实现方案
 
 ### 📝 计划中文档
 
@@ -45,12 +46,12 @@
 | `@cogita/plugin-tags` | 标签管理与标签云 | ✅ 完成 | [README](../../plugins/tags/README.md) |
 | `@cogita/plugin-collections` | 合集（系列文章）管理 | ✅ 完成 | [设计文档](./plugin-collections-design.md) |
 | `@cogita/plugin-images` | 公共图片、文章封面和图片元数据 | 🚧 二期开发中 | [设计文档](./plugin-images-design.md) |
+| `@cogita/plugin-sitemap` | XML 站点地图生成 | ✅ 完成 | [设计文档](./plugin-sitemap-design.md) |
 
 ### 📝 计划中插件
 
 | 插件名称 | 功能描述 | 优先级 | 预计时间 |
 |---------|----------|-------|---------|
-| `@cogita/plugin-sitemap` | XML站点地图生成 | 🔥 高 | Q2 2025 |
 | `@cogita/plugin-search` | 本地搜索功能 | 🔥 高 | Q2 2025 |
 | `@cogita/plugin-comments` | 评论系统集成 | 🔸 中 | Q3 2025 |
 | `@cogita/plugin-seo` | SEO优化工具 | 🔸 中 | Q3 2025 |
