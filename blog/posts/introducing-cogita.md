@@ -10,6 +10,9 @@ tags:
   - 开源
 author: "wu9o"
 excerpt: "在 Rspress 的强大功能之上，Cogita 旨在提供一种极致简单、无需配置的博客写作体验。本文将深入探讨 Cogita 的诞生背景、核心架构、使用方法以及未来规划。"
+image: /images/cogita-architecture.svg
+imageAlt: Cogita 主题驱动架构示意图
+imageCaption: Cogita 通过主题声明插件依赖，并将构建数据交给运行时组件。
 ---
 
 ## 背景：为什么需要 Cogita？
@@ -26,6 +29,8 @@ Rspress 是一个性能卓越、功能强大的静态站点生成器 (SSG)。它
 **Cogita** 的诞生就是为了解决这个问题。它的核心目标是：**成为一个基于 Rspress、无需繁琐配置、真正开箱即用的静态博客框架。** 你只需要安装它，选择一个喜欢的主题，然后就可以立即开始写作。
 
 ## 架构设计：Cogita 的内在机制
+
+![Cogita 主题驱动架构示意图](/images/cogita-architecture.svg)
 
 Cogita 的设计哲学是“约定优于配置”，它通过一套精心设计的架构，将博客系统的复杂性封装起来，为用户提供最简洁的接口。
 

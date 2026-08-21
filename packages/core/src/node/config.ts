@@ -190,6 +190,16 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
           ...cogitaConfig.rss,
         }
       : undefined,
+    // 图片插件配置默认启用，确保主题可以安全导入虚拟图片模块
+    images: {
+      enabled: true,
+      dir: 'public/images',
+      extensions: ['png', 'jpg', 'jpeg', 'gif', 'webp', 'avif', 'svg'],
+      readDimensions: true,
+      failOnMissing: cogitaConfig.strict !== false,
+      warnOnMissingAlt: false,
+      ...cogitaConfig.images,
+    },
   };
 }
 
@@ -213,6 +223,8 @@ export async function createRspressConfig(
     title: cogitaConfig.site?.title,
     description: cogitaConfig.site?.description,
     base: cogitaConfig.site?.base,
+    markdown: cogitaConfig.markdown,
+    mediumZoom: cogitaConfig.mediumZoom,
     themeConfig: cogitaConfig.themeConfig,
     builderConfig: cogitaConfig.builderConfig,
     plugins: [], // Will be populated next

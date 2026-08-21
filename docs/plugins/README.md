@@ -9,6 +9,7 @@
 - **[插件开发指南](./plugin-development.md)** - 从零开发Cogita插件的完整教程
 - **[Posts Frontmatter插件设计](./plugin-posts-frontmatter-design.md)** - 核心数据插件的架构设计
 - **[RSS插件设计](./plugin-rss-design.md)** - RSS订阅插件的架构设计和实现方案
+- **[图片插件设计](./plugin-images-design.md)** - 图片资源、封面和元数据插件的实现方案
 
 ### 📝 计划中文档
 
@@ -43,6 +44,7 @@
 | `@cogita/plugin-rss` | RSS/Atom/JSON Feed 生成 | ✅ 完成 | [设计文档](./plugin-rss-design.md) |
 | `@cogita/plugin-tags` | 标签管理与标签云 | ✅ 完成 | [README](../../plugins/tags/README.md) |
 | `@cogita/plugin-collections` | 合集（系列文章）管理 | ✅ 完成 | [设计文档](./plugin-collections-design.md) |
+| `@cogita/plugin-images` | 公共图片、文章封面和图片元数据 | 🚧 二期开发中 | [设计文档](./plugin-images-design.md) |
 
 ### 📝 计划中插件
 

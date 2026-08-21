@@ -3,6 +3,7 @@ import { PostList, TagCloud } from '@cogita/ui';
 import { usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allCollections } from 'virtual-collections-data';
+import { postCovers } from 'virtual-images-data';
 import { allPosts } from 'virtual-posts-data';
 import { allTags, tagsConfig } from 'virtual-tags-data';
 
@@ -16,6 +17,19 @@ import { allTags, tagsConfig } from 'virtual-tags-data';
 const HomeLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
   const base = (pageData?.siteData?.base || '').replace(/\/$/, '');
+  const postsWithCovers = allPosts.map((post) => {
+    const cover = postCovers[post.route];
+    return cover
+      ? {
+          ...post,
+          image: cover.src,
+          imageAlt: cover.alt,
+          imageCaption: cover.caption,
+          imageWidth: cover.width,
+          imageHeight: cover.height,
+        }
+      : post;
+  });
 
   return (
     <div className="home-layout">
@@ -49,7 +63,7 @@ const HomeLayout: React.FC<LayoutProps> = () => {
             <h1 className="blog-title">最新文章</h1>
             <p className="blog-subtitle">记录编码、创造与思考的瞬间</p>
           </header>
-          <PostList posts={allPosts} showTags={true} />
+          <PostList posts={postsWithCovers} showTags={true} showCover={true} />
         </main>
       </div>
     </div>

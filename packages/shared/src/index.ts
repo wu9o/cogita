@@ -21,6 +21,16 @@ export interface CogitaPluginConfig {
     routePrefix?: string;
     extensions?: string[];
   };
+  images?: {
+    enabled?: boolean;
+    dir?: string;
+    extensions?: string[];
+    readDimensions?: boolean;
+    failOnMissing?: boolean;
+    warnOnMissingAlt?: boolean;
+  };
+  markdown?: UserConfig['markdown'];
+  mediumZoom?: UserConfig['mediumZoom'];
   rss?: {
     title?: string;
     description?: string;
@@ -75,7 +85,7 @@ export interface CogitaPluginConfig {
   [key: string]: unknown;
 }
 
-// A plugin factory function that receives the final config and returns a Rspress plugin.
+// 插件工厂函数接收最终配置并返回 Rspress 插件。
 export type CogitaPluginFactory = (
   config: CogitaPluginConfig
 ) => RspressPlugin | RspressPlugin[] | null | undefined;

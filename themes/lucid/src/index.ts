@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pluginCollections } from '@cogita/plugin-collections';
+import { pluginImages } from '@cogita/plugin-images';
 import { pluginPostsFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { pluginRSS } from '@cogita/plugin-rss';
 import { pluginTags } from '@cogita/plugin-tags';
@@ -56,6 +57,9 @@ export function getThemeConfig(): CogitaTheme {
     plugins: [
       // Posts 元数据处理插件
       pluginPostsFrontmatter,
+
+      // 公共图片清单与文章封面元数据插件
+      pluginImages,
 
       // RSS feed 生成插件
       pluginRSS,

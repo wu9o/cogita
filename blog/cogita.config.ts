@@ -15,6 +15,23 @@ export default defineConfig({
     extensions: ['md', 'mdx'],
   },
 
+  images: {
+    enabled: true,
+    dir: 'public/images',
+    readDimensions: true,
+    warnOnMissingAlt: true,
+  },
+
+  markdown: {
+    image: {
+      checkDeadImages: true,
+    },
+  },
+
+  mediumZoom: {
+    selector: '.rspress-doc p > img, .rspress-doc figure:not([class*="postCover"]) > img',
+  },
+
   rss: {
     title: 'Cogita Blog RSS',
     description: '记录编码、创造与思考的瞬间',
