@@ -1,5 +1,12 @@
 # @cogita/plugin-collections
 
+## 1.0.0
+
+### Patch Changes
+
+- Updated dependencies [6c06862]
+  - @cogita/plugin-posts-frontmatter@0.1.0
+
 ## 0.1.1
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # @cogita/theme-lucid
 
+## 0.4.0
+
+### Minor Changes
+
+- 6c06862: 新增页面级 SEO 插件，支持 description、canonical、Open Graph、Twitter Card 和 JSON-LD。
+
+### Patch Changes
+
+- Updated dependencies [6c06862]
+  - @cogita/plugin-posts-frontmatter@0.1.0
+  - @cogita/plugin-seo@1.0.0
+  - @cogita/shared@0.1.0
+  - @cogita/plugin-collections@1.0.0
+  - @cogita/plugin-images@1.0.0
+  - @cogita/plugin-rss@1.0.0
+  - @cogita/plugin-sitemap@1.0.0
+  - @cogita/plugin-tags@1.0.0
+
 ## 0.3.0
 
 ### Minor Changes
