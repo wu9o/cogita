@@ -1,5 +1,16 @@
 # @cogita/core
 
+## 0.3.0
+
+### Minor Changes
+
+- 1836631: 新增 XML 站点地图插件，支持文章 URL、站点 base、lastmod 和自定义地址。
+
+### Patch Changes
+
+- Updated dependencies [1836631]
+  - @cogita/theme-lucid@0.3.0
+
 ## 0.2.1
 
 ### Patch Changes
