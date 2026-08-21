@@ -67,6 +67,7 @@ export function createPostMeta(
   post: PostFrontmatter,
   siteRoot: string | undefined,
   defaultImage?: string,
+  defaultImageAlt?: string,
   defaultAuthor?: string,
   defaultDescription?: string,
   twitterCard?: SEOPageMeta['twitterCard']
@@ -84,7 +85,10 @@ export function createPostMeta(
         ? resolveSiteUrl(siteRoot, post.route)
         : undefined,
     image: imageValue ? resolveSiteUrl(siteRoot, imageValue) : undefined,
-    imageAlt: postSeo?.imageAlt || post.imageAlt,
+    imageAlt:
+      postSeo?.imageAlt ||
+      post.imageAlt ||
+      (imageValue === defaultImage ? defaultImageAlt : undefined),
     author: postSeo?.author || post.author || defaultAuthor,
     type: 'Article',
     robots: postSeo?.noindex ? 'noindex, nofollow' : 'index, follow',

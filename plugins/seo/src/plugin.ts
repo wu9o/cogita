@@ -1,8 +1,10 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import type { CogitaPluginConfig, RspressPlugin } from '@cogita/shared';
 import type { RouteMeta } from '@rspress/shared';
 import { glob } from 'glob';
+import { createSEOAuditReport, formatSEOAuditReport } from './audit';
 import type { SEOConfig, SEOPageMeta } from './types';
 import {
   createPostMeta,
@@ -49,6 +51,8 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
     ...DEFAULT_CONFIG,
     ...seoConfig,
   };
+  let auditReport: ReturnType<typeof createSEOAuditReport> | undefined;
+  let auditOutputFile: string | undefined;
 
   return {
     name: '@cogita/plugin-seo',
@@ -76,6 +80,7 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
             post,
             siteRoot,
             finalConfig.defaultImage,
+            finalConfig.defaultImageAlt,
             finalConfig.author,
             siteDescription,
             finalConfig.twitterCard
@@ -85,6 +90,42 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
       const defaultImage = finalConfig.defaultImage
         ? resolveSiteUrl(siteRoot, finalConfig.defaultImage)
         : undefined;
+      const homeMeta: SEOPageMeta = {
+        title: siteTitle,
+        description: siteDescription,
+        canonical: siteRoot ? resolveSiteUrl(siteRoot, '/') : undefined,
+        image: defaultImage,
+        imageAlt: finalConfig.defaultImageAlt,
+        type: 'WebSite',
+        robots: finalConfig.robots,
+        twitterCard: finalConfig.twitterCard || (defaultImage ? 'summary_large_image' : 'summary'),
+      };
+
+      if (finalConfig.audit?.enabled) {
+        auditReport = createSEOAuditReport(
+          [
+            { route: '/', meta: homeMeta },
+            ...Array.from(postsByRoute.entries()).map(([route, meta]) => ({ route, meta })),
+          ],
+          finalConfig.audit
+        );
+        console.log(formatSEOAuditReport(auditReport));
+
+        if (finalConfig.audit.failOnError && auditReport.errors > 0) {
+          throw new Error(`[SEO Plugin] 审核发现 ${auditReport.errors} 个错误，已根据配置阻断构建`);
+        }
+
+        const rspressConfigObject = rspressConfig as unknown as Record<string, unknown>;
+        const configuredOutput = (rspressConfigObject.output as Record<string, unknown> | undefined)
+          ?.path;
+        const outputDir = path.resolve(
+          config.cwd || process.cwd(),
+          String(configuredOutput || 'doc_build')
+        );
+        if (finalConfig.audit.reportPath) {
+          auditOutputFile = path.resolve(outputDir, finalConfig.audit.reportPath);
+        }
+      }
 
       const head = [
         ...(rspressConfig.head ?? []),
@@ -96,16 +137,19 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
             postMeta?.canonical || (siteRoot ? resolveSiteUrl(siteRoot, routeKey) : undefined);
           const meta: SEOPageMeta = postMeta
             ? { ...postMeta, canonical }
-            : {
-                title: isHome ? siteTitle : route.pageName || siteTitle,
-                description: siteDescription,
-                canonical,
-                image: defaultImage,
-                type: 'WebSite',
-                robots: finalConfig.robots,
-                twitterCard:
-                  finalConfig.twitterCard || (defaultImage ? 'summary_large_image' : 'summary'),
-              };
+            : isHome
+              ? homeMeta
+              : {
+                  title: route.pageName || siteTitle,
+                  description: siteDescription,
+                  canonical,
+                  image: defaultImage,
+                  imageAlt: finalConfig.defaultImageAlt,
+                  type: 'WebSite',
+                  robots: finalConfig.robots,
+                  twitterCard:
+                    finalConfig.twitterCard || (defaultImage ? 'summary_large_image' : 'summary'),
+                };
 
           const rendered = renderSeoHead(meta, finalConfig.includeJsonLd);
           const twitterSite = finalConfig.twitterSite
@@ -124,6 +168,16 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
         description: '',
         head,
       };
+    },
+
+    async afterBuild() {
+      if (!auditReport || !auditOutputFile) {
+        return;
+      }
+
+      fs.mkdirSync(path.dirname(auditOutputFile), { recursive: true });
+      fs.writeFileSync(auditOutputFile, `${JSON.stringify(auditReport, null, 2)}\n`, 'utf8');
+      console.log(`[SEO Plugin] 审核报告已写入: ${auditOutputFile}`);
     },
   };
 }
