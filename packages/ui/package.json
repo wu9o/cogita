@@ -1,6 +1,6 @@
 {
   "name": "@cogita/ui",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Shared, themeable UI components for building Cogita themes and plugins.",
   "keywords": [
     "cogita",
