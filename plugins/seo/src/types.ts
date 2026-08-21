@@ -25,6 +25,8 @@ export interface SEOConfig {
   enabled?: boolean;
   /** 没有文章封面时使用的默认社交分享图片。 */
   defaultImage?: string;
+  /** 默认社交分享图片的替代文本。 */
+  defaultImageAlt?: string;
   /** 没有文章摘要时使用的默认描述。 */
   defaultDescription?: string;
   /** 默认作者名称。 */
@@ -39,6 +41,37 @@ export interface SEOConfig {
   twitterCreator?: string;
   /** 是否生成 JSON-LD 结构化数据。 */
   includeJsonLd?: boolean;
+  /** SEO 审核配置。 */
+  audit?: SEOAuditConfig;
+}
+
+/** SEO 审核工具配置。 */
+export interface SEOAuditConfig {
+  /** 是否启用构建阶段审核。 */
+  enabled?: boolean;
+  /** 发现错误时是否阻断构建。 */
+  failOnError?: boolean;
+  /** 审核报告相对于构建输出目录的路径。 */
+  reportPath?: string;
+  /** 描述少于该长度时输出警告。 */
+  minDescriptionLength?: number;
+}
+
+/** SEO 审核问题。 */
+export interface SEOAuditIssue {
+  severity: 'error' | 'warning';
+  code: string;
+  route: string;
+  message: string;
+}
+
+/** SEO 审核报告。 */
+export interface SEOAuditReport {
+  generatedAt: string;
+  pageCount: number;
+  errors: number;
+  warnings: number;
+  issues: SEOAuditIssue[];
 }
 
 /** SEO 插件内部使用的页面元数据。 */

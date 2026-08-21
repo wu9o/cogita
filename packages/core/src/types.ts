@@ -250,6 +250,8 @@ export interface SEOConfig {
   enabled?: boolean;
   /** 没有文章封面时使用的默认社交分享图片。 */
   defaultImage?: string;
+  /** 默认社交分享图片的替代文本。 */
+  defaultImageAlt?: string;
   /** 没有文章摘要时使用的默认描述。 */
   defaultDescription?: string;
   /** 默认作者名称。 */
@@ -264,6 +266,17 @@ export interface SEOConfig {
   twitterCreator?: string;
   /** 是否生成 JSON-LD 结构化数据。 */
   includeJsonLd?: boolean;
+  /** SEO 审核配置。 */
+  audit?: {
+    /** 是否启用构建阶段审核。 */
+    enabled?: boolean;
+    /** 发现错误时是否阻断构建。 */
+    failOnError?: boolean;
+    /** 相对于构建输出目录的审核报告路径。 */
+    reportPath?: string;
+    /** 描述少于该长度时输出警告。 */
+    minDescriptionLength?: number;
+  };
 }
 
 export interface CogitaConfig {
