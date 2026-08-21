@@ -7,5 +7,10 @@ export interface Post {
   updateDate: string;
   categories?: string[];
   tags?: string[];
+  image?: string;
+  imageAlt?: string;
+  imageCaption?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   url: string;
 }

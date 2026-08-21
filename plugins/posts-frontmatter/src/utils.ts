@@ -45,6 +45,9 @@ export function getFrontmatterFromFile(
       collection: frontmatter.collection,
       order: frontmatter.order,
       collectionTitle: frontmatter.collectionTitle,
+      image: frontmatter.image,
+      imageAlt: frontmatter.imageAlt,
+      imageCaption: frontmatter.imageCaption,
       url: '',
     };
   } catch (e) {

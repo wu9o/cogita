@@ -27,7 +27,8 @@ Cogita 生态系统
 │   │   ├── @cogita/plugin-blog-list
 │   │   ├── @cogita/plugin-tags
 │   │   ├── @cogita/plugin-categories
-│   │   └── @cogita/plugin-archives
+│   │   ├── @cogita/plugin-archives
+│   │   └── @cogita/plugin-images
 │   ├── SEO 与发现
 │   │   ├── @cogita/plugin-rss                ✅
 │   │   ├── @cogita/plugin-sitemap
@@ -168,6 +169,18 @@ interface CogitaTheme {
   - [ ] 面包屑导航
   - [ ] 基于分类的路由
   - [ ] 嵌套分类支持
+
+- [x] `@cogita/plugin-images` 🚧 二期开发中
+  - [x] 图片资源目录约定
+  - [x] 文章封面和图片元数据
+  - [x] 本地图片路径校验
+  - [x] `virtual-images-data` 虚拟模块
+  - [x] Lucid 主题封面展示
+  - [x] 封面缺少 alt 的非阻断警告
+  - [x] 图片封面使用统计与未使用图片查询
+  - [x] 正文图片基础样式与 Rspress medium-zoom 透传
+  - [ ] 正文图片 figure 与说明文字自动化
+  - [ ] 独立图片优化插件
 
 #### SEO 与发现插件
 

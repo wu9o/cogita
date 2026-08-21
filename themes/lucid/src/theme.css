@@ -97,6 +97,29 @@
   min-width: 0;
 }
 
+/* 正文图片统一使用居中、圆角和轻量阴影，保留 Rspress 的放大交互。 */
+.rspress-doc p:has(> img:only-child),
+.rspress-doc figure.cogita-image-figure {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.rspress-doc p:has(> img:only-child) > img,
+.rspress-doc figure.cogita-image-figure > img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(15, 23, 42, 0.12);
+  cursor: zoom-in;
+}
+
+.rspress-doc figure.cogita-image-figure figcaption {
+  margin-top: 0.75rem;
+  color: var(--cogita-text-color-secondary);
+  font-size: 0.875rem;
+}
+
 /* 首页特定样式 */
 .home-layout {
   max-width: 1400px;

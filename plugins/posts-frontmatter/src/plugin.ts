@@ -69,7 +69,7 @@ export function pluginPostsFrontmatter(config: CogitaPluginConfig): RspressPlugi
       // 4. 遍历 allPostsData，为每篇文章添加一个页面路由
       return allPostsData.map((post) => ({
         routePath: post.route,
-        content: '---npageType: homen---',
+        content: '---\npageType: home\n---',
         filepath: post.filePath,
       }));
     },
