@@ -240,13 +240,15 @@
 
 /* 文章列表与归档页面 */
 .blog-list-page,
-.archive-page {
+.archive-page,
+.search-page {
   max-width: 960px;
   margin: 0 auto;
 }
 
 .blog-list-header,
-.archive-header {
+.archive-header,
+.search-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -257,7 +259,8 @@
 }
 
 .blog-list-header a,
-.archive-header a {
+.archive-header a,
+.search-header a {
   color: var(--cogita-primary-color);
   text-decoration: none;
   white-space: nowrap;
@@ -313,6 +316,130 @@
 
 .archive-index-active {
   font-weight: 700;
+}
+
+.search-input-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--cogita-text-color-secondary);
+  font-size: 0.875rem;
+}
+
+.search-input-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.search-input-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.75rem 1rem;
+  color: var(--cogita-text-color);
+  background: var(--cogita-bg-soft);
+  border: 1px solid var(--cogita-border-color);
+  border-radius: 6px;
+  font: inherit;
+}
+
+.search-input-row input:focus {
+  outline: 2px solid var(--cogita-primary-color);
+  outline-offset: 1px;
+}
+
+.search-input-row button {
+  padding: 0.75rem 1rem;
+  color: var(--cogita-primary-color);
+  background: transparent;
+  border: 1px solid var(--cogita-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.search-filter-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  margin: -1rem 0 2rem;
+}
+
+.search-filter-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: var(--cogita-text-color-secondary);
+  font-size: 0.8125rem;
+}
+
+.search-filter-row select {
+  min-width: 10rem;
+  padding: 0.6rem 0.75rem;
+  color: var(--cogita-text-color);
+  background: var(--cogita-bg-soft);
+  border: 1px solid var(--cogita-border-color);
+  border-radius: 6px;
+  font: inherit;
+}
+
+.search-filter-row select:focus {
+  outline: 2px solid var(--cogita-primary-color);
+  outline-offset: 1px;
+}
+
+.search-filter-clear {
+  padding: 0.6rem 0.75rem;
+  color: var(--cogita-primary-color);
+  background: transparent;
+  border: 1px solid var(--cogita-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.search-empty,
+.search-result-count {
+  color: var(--cogita-text-color-secondary);
+}
+
+.search-result-item {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--cogita-border-color);
+}
+
+.search-result-item h2 {
+  margin: 0 0 0.35rem;
+  color: var(--cogita-title-color);
+  font-size: 1.25rem;
+}
+
+.search-result-item a {
+  text-decoration: none;
+}
+
+.search-result-item time {
+  color: var(--cogita-text-color-secondary);
+  font-size: 0.8125rem;
+}
+
+.search-result-item p {
+  margin: 0.75rem 0 0;
+  color: var(--cogita-text-color-secondary);
+  line-height: 1.6;
+}
+
+.search-result-item mark {
+  padding: 0 0.12em;
+  color: var(--cogita-title-color);
+  background: #fff0a8;
+  border-radius: 2px;
+}
+
+.search-result-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  color: var(--cogita-primary-color);
+  font-size: 0.8125rem;
 }
 
 /* 标签页面样式 */
@@ -777,7 +904,8 @@
   }
 
   .blog-list-header,
-  .archive-header {
+  .archive-header,
+  .search-header {
     flex-direction: column;
   }
 
@@ -788,6 +916,20 @@
   .blog-pagination {
     gap: 0.75rem;
     font-size: 0.875rem;
+  }
+
+  .search-input-row {
+    flex-direction: column;
+  }
+
+  .search-filter-row {
+    align-items: stretch;
+    flex-direction: column;
+    margin-top: -1rem;
+  }
+
+  .search-filter-row select {
+    width: 100%;
   }
 }
 
@@ -804,7 +946,8 @@ aside.rspress-sidebar {
 .rspress-doc:has(.home-layout),
 .rspress-doc:has(.tag-page),
 .rspress-doc:has(.blog-list-page),
-.rspress-doc:has(.archive-page) {
+.rspress-doc:has(.archive-page),
+.rspress-doc:has(.search-page) {
   max-width: none !important;
   margin: 0 !important;
 }

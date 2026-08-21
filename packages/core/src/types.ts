@@ -233,6 +233,8 @@ export interface SitemapConfig {
   includePosts?: boolean;
   /** 是否自动包含文章列表与归档页面。 */
   includeBlogList?: boolean;
+  /** 是否自动包含搜索入口页面。 */
+  includeSearch?: boolean;
   /** 首页和文章默认使用的更新频率。 */
   changefreq?: SitemapChangeFrequency;
   /** 首页和文章默认使用的权重。 */
@@ -310,6 +312,54 @@ export interface BlogListConfig {
   archiveGranularity?: BlogListArchiveGranularity;
 }
 
+/** 搜索索引字段配置。 */
+export interface SearchFieldsConfig {
+  /** 是否索引文章标题。 */
+  title?: boolean;
+  /** 是否索引文章描述。 */
+  description?: boolean;
+  /** 是否索引文章摘要。 */
+  excerpt?: boolean;
+  /** 是否索引文章标签。 */
+  tags?: boolean;
+  /** 是否索引文章分类。 */
+  categories?: boolean;
+  /** 是否索引清洗后的正文。 */
+  content?: boolean;
+}
+
+/** 搜索分析配置。 */
+export interface SearchAnalyticsConfig {
+  /** 是否派发搜索分析事件，默认关闭。 */
+  enabled?: boolean;
+  /** 浏览器事件和 dataLayer 事件名称。 */
+  eventName?: string;
+  /** 是否在事件中携带原始搜索词，默认关闭以保护隐私。 */
+  includeQuery?: boolean;
+  /** 是否在事件中携带标签和分类筛选条件，默认关闭。 */
+  includeFilters?: boolean;
+}
+
+/** 本地搜索插件配置。 */
+export interface SearchConfig {
+  /** 是否启用搜索功能。 */
+  enabled?: boolean;
+  /** 搜索页面路由前缀。 */
+  routePrefix?: string;
+  /** 是否读取并索引正文。 */
+  includeContent?: boolean;
+  /** 正文索引的最大字符数。 */
+  maxContentLength?: number;
+  /** 最多展示的搜索结果数量。 */
+  maxResults?: number;
+  /** 触发搜索所需的最小查询长度。 */
+  minQueryLength?: number;
+  /** 搜索字段开关。 */
+  fields?: SearchFieldsConfig;
+  /** 搜索分析事件配置。 */
+  analytics?: SearchAnalyticsConfig;
+}
+
 export interface CogitaConfig {
   site?: SiteConfig;
   theme?: string;
@@ -331,6 +381,9 @@ export interface CogitaConfig {
 
   /** 文章列表与归档配置。 */
   blogList?: BlogListConfig;
+
+  /** 本地搜索配置。 */
+  search?: SearchConfig;
 
   /**
    * RSS feed configuration

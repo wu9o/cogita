@@ -102,6 +102,14 @@ export default defineConfig({
     archivePrefix: 'archives',
     archiveGranularity: 'year',
   },
+  search: {
+    enabled: true,
+    routePrefix: 'search',
+    includeContent: true,
+    maxContentLength: 12_000,
+    maxResults: 20,
+    minQueryLength: 1,
+  },
 
   themeConfig: {
     // 页脚配置 - 全局显示 RSS 订阅链接

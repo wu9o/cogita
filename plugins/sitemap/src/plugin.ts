@@ -18,13 +18,20 @@ import {
 const DEFAULT_CONFIG: Required<
   Pick<
     SitemapConfig,
-    'path' | 'includeHome' | 'includePosts' | 'includeBlogList' | 'changefreq' | 'priority'
+    | 'path'
+    | 'includeHome'
+    | 'includePosts'
+    | 'includeBlogList'
+    | 'includeSearch'
+    | 'changefreq'
+    | 'priority'
   >
 > = {
   path: 'sitemap.xml',
   includeHome: true,
   includePosts: true,
   includeBlogList: true,
+  includeSearch: true,
   changefreq: 'weekly',
   priority: 0.7,
 };
@@ -128,6 +135,15 @@ export function pluginSitemap(config: CogitaPluginConfig): RspressPlugin | null 
             priority: normalizePriority(finalConfig.priority),
           }))
         );
+      }
+
+      if (finalConfig.includeSearch && config.search?.enabled !== false && config.search) {
+        const routePrefix = (config.search.routePrefix || 'search').replace(/^\/+|\/+$/g, '');
+        sitemapEntries.push({
+          loc: resolveSitemapUrl(siteRoot, `/${routePrefix}`),
+          changefreq: finalConfig.changefreq,
+          priority: normalizePriority(finalConfig.priority),
+        });
       }
 
       sitemapEntries.push(...resolveCustomEntries(siteRoot, finalConfig.customUrls));
