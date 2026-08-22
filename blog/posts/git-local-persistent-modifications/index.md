@@ -7,6 +7,9 @@ tags:
   - clean/smudge filter
   - skip-worktree
   - 技巧
+categories:
+  - 工程实践/Git
+  - 版本控制
 author: "wu9o"
 excerpt: "想在本地改 package.json 删掉 postinstall 脚本，又不想把修改推到远端？本文对比四种 Git 机制，找到能同时满足'本地常驻、不推送、上游可同步'的终极方案。"
 ---

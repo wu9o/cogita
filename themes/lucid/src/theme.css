@@ -238,6 +238,33 @@
   text-decoration: underline;
 }
 
+.sidebar-categories {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar-category-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: var(--cogita-text-color);
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.sidebar-category-link:hover {
+  color: var(--cogita-primary-color);
+}
+
+.sidebar-category-count {
+  color: var(--cogita-text-color-secondary);
+  font-size: 0.75rem;
+}
+
 /* 文章列表与归档页面 */
 .blog-list-page,
 .archive-page,
@@ -559,6 +586,117 @@
 
 .tag-meta li:last-child {
   border-bottom: none;
+}
+
+/* ============================================
+   分类页面样式
+   ============================================ */
+.category-page {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.category-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--cogita-border-color);
+}
+
+.category-back,
+.category-breadcrumbs a {
+  color: var(--cogita-primary-color);
+  text-decoration: none;
+}
+
+.category-breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: var(--cogita-text-color-secondary);
+  font-size: 0.875rem;
+}
+
+.category-description {
+  margin: 0 0 0.5rem;
+  color: var(--cogita-text-color-secondary);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+.category-tree {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--cogita-border-color);
+}
+
+.category-tree-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+  color: var(--cogita-title-color);
+  border-bottom: 1px solid var(--cogita-border-color);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.category-tree-item:hover {
+  background: var(--cogita-bg-soft);
+}
+
+.category-count {
+  flex-shrink: 0;
+  color: var(--cogita-text-color-secondary);
+  font-size: 0.8125rem;
+}
+
+.category-children,
+.category-posts {
+  margin-top: 2rem;
+}
+
+.category-children h2,
+.category-posts h2 {
+  margin: 0 0 1rem;
+  color: var(--cogita-title-color);
+  font-size: 1.25rem;
+}
+
+.category-child-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.category-child-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem;
+  color: var(--cogita-title-color);
+  background: var(--cogita-bg-soft);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.category-child-card:hover {
+  border-color: var(--cogita-border-color);
+  transform: translateY(-1px);
+}
+
+.category-empty {
+  color: var(--cogita-text-color-secondary);
+  padding: 2rem 0;
+}
+
+.rspress-doc:has(.category-page) {
+  max-width: none !important;
+  margin: 0 !important;
 }
 
 /* 网站底部 */
