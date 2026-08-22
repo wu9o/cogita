@@ -175,6 +175,19 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
           ...cogitaConfig.tags,
         }
       : undefined,
+    // 分类只有显式配置时才启用，避免改变已有站点输出
+    categories: cogitaConfig.categories
+      ? {
+          enabled: true,
+          routePrefix: 'categories',
+          separator: '/',
+          metadata: {},
+          excludeCategories: [],
+          minPostCount: 1,
+          sortBy: 'name' as const,
+          ...cogitaConfig.categories,
+        }
+      : undefined,
     // 文章列表只有显式配置时才启用，避免改变已有首页输出
     blogList: cogitaConfig.blogList
       ? {
@@ -251,6 +264,7 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
           includePosts: true,
           includeBlogList: true,
           includeSearch: true,
+          includeCategories: true,
           changefreq: 'weekly' as const,
           priority: 0.7,
           failOnMissingSiteUrl: cogitaConfig.strict !== false,

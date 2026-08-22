@@ -36,6 +36,7 @@ export interface CogitaPluginConfig {
     includePosts?: boolean;
     includeBlogList?: boolean;
     includeSearch?: boolean;
+    includeCategories?: boolean;
     changefreq?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
     priority?: number;
     customUrls?: Array<{
@@ -105,6 +106,16 @@ export interface CogitaPluginConfig {
     metadata?: Record<string, { title?: string; description?: string; cover?: string }>;
     excludeCollections?: string[];
     minPostCount?: number;
+    [key: string]: unknown;
+  };
+  categories?: {
+    enabled?: boolean;
+    routePrefix?: string;
+    separator?: string;
+    metadata?: Record<string, { title?: string; description?: string }>;
+    excludeCategories?: string[];
+    minPostCount?: number;
+    sortBy?: 'name' | 'count' | 'date';
     [key: string]: unknown;
   };
   blogList?: {
@@ -234,6 +245,8 @@ export interface CogitaTheme {
     archive?: string;
     /** 搜索页布局（路由 /search） */
     search?: string;
+    /** 分类索引与详情页布局（路由 /categories） */
+    category?: string;
     [key: string]: string | undefined;
   };
   globalStyles?: string;
@@ -278,4 +291,55 @@ export function generateTagSlug(tagName: string): string {
       .replace(/[^\w\u4e00-\u9fff]+/g, '-')
       .replace(/^-+|-+$/g, '') || `tag-${Math.abs(hashCode(tagName))}`
   );
+}
+
+/** 将分类路径拆分、去空并恢复为稳定的层级表示。 */
+export function normalizeCategoryPath(value: string, separator = '/'): string {
+  const normalizedSeparator = separator || '/';
+  return value
+    .split(normalizedSeparator)
+    .map((segment) => segment.trim())
+    .filter(Boolean)
+    .join(normalizedSeparator);
+}
+
+/** 获取分类路径及其所有父级路径，便于生成层级分类树。 */
+export function getCategoryPathVariants(value: string, separator = '/'): string[] {
+  const normalizedPath = normalizeCategoryPath(value, separator);
+  if (!normalizedPath) return [];
+
+  const normalizedSeparator = separator || '/';
+  const segments = normalizedPath.split(normalizedSeparator);
+  return segments.map((_, index) => segments.slice(0, index + 1).join(normalizedSeparator));
+}
+
+/** 生成分类路径对应的 URL slug。 */
+export function generateCategorySlug(value: string, separator = '/'): string {
+  const normalizedPath = normalizeCategoryPath(value, separator);
+  if (!normalizedPath) return '';
+
+  const normalizedSeparator = separator || '/';
+  return normalizedPath.split(normalizedSeparator).map(generateTagSlug).join('/');
+}
+
+/** 根据文章分类字段收集所有分类路由，供 SEO 和 sitemap 复用。 */
+export function getCategoryRoutes(
+  posts: Array<{ categories?: string[] }>,
+  config: { routePrefix?: string; separator?: string } = {}
+): string[] {
+  const routePrefix = (config.routePrefix || 'categories').replace(/^\/+|\/+$/g, '');
+  const separator = config.separator || '/';
+  const paths = new Set<string>();
+
+  for (const post of posts) {
+    for (const category of post.categories || []) {
+      for (const path of getCategoryPathVariants(category, separator)) {
+        paths.add(path);
+      }
+    }
+  }
+
+  return [...paths]
+    .map((path) => `/${routePrefix}/${generateCategorySlug(path, separator)}`)
+    .sort((a, b) => a.localeCompare(b));
 }

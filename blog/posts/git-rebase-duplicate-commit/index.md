@@ -7,6 +7,9 @@ tags:
   - Rebase
   - 版本控制
   - 排障
+categories:
+  - 工程实践/Git
+  - 版本控制
 author: "wu9o"
 excerpt: "一次 git pull --rebase 让若干 commit 全部重新生成了新 hash，其中一个已被修复的 feat commit 以新身份晚于 fix commit 进入主干，在三路合并时覆盖了 fix，bug 悄然复现。本文还原完整推导过程，并给出可复用的自查与预防手册。"
 ---

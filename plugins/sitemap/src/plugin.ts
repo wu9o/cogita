@@ -1,7 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
-import { type CogitaPluginConfig, type RspressPlugin, getBlogListRoutes } from '@cogita/shared';
+import {
+  type CogitaPluginConfig,
+  type RspressPlugin,
+  getBlogListRoutes,
+  getCategoryRoutes,
+} from '@cogita/shared';
 import { glob } from 'glob';
 import type { SitemapConfig, SitemapEntry, SitemapPost } from './types';
 import {
@@ -23,6 +28,7 @@ const DEFAULT_CONFIG: Required<
     | 'includePosts'
     | 'includeBlogList'
     | 'includeSearch'
+    | 'includeCategories'
     | 'changefreq'
     | 'priority'
   >
@@ -32,6 +38,7 @@ const DEFAULT_CONFIG: Required<
   includePosts: true,
   includeBlogList: true,
   includeSearch: true,
+  includeCategories: true,
   changefreq: 'weekly',
   priority: 0.7,
 };
@@ -61,6 +68,7 @@ async function collectPosts(config: CogitaPluginConfig): Promise<SitemapPost[]> 
       route: post.route,
       createDate: post.createDate,
       updateDate: post.updateDate,
+      categories: post.categories,
     }));
 }
 
@@ -144,6 +152,29 @@ export function pluginSitemap(config: CogitaPluginConfig): RspressPlugin | null 
           changefreq: finalConfig.changefreq,
           priority: normalizePriority(finalConfig.priority),
         });
+      }
+
+      if (
+        finalConfig.includeCategories &&
+        config.categories?.enabled !== false &&
+        config.categories
+      ) {
+        const categoryPrefix = (config.categories.routePrefix || 'categories').replace(
+          /^\/+|\/+$/g,
+          ''
+        );
+        sitemapEntries.push({
+          loc: resolveSitemapUrl(siteRoot, `/${categoryPrefix}`),
+          changefreq: finalConfig.changefreq,
+          priority: normalizePriority(finalConfig.priority),
+        });
+        sitemapEntries.push(
+          ...getCategoryRoutes(posts, config.categories).map((route) => ({
+            loc: resolveSitemapUrl(siteRoot, route),
+            changefreq: finalConfig.changefreq,
+            priority: normalizePriority(finalConfig.priority),
+          }))
+        );
       }
 
       sitemapEntries.push(...resolveCustomEntries(siteRoot, finalConfig.customUrls));

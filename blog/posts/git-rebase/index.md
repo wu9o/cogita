@@ -6,6 +6,9 @@ tags:
   - Git
   - Rebase
   - 版本控制
+categories:
+  - 工程实践/Git
+  - 版本控制
 author: "wu9o"
 excerpt: "git rebase 是 Git 中用于重新调整分支基准的命令，其核心作用是将一个分支的提交历史“嫁接”到另一个分支的基础上，形成线性的提交链。与 git merge 保留分支分叉历史不同，rebase 会改写提交历史，让分支开发轨迹更简洁直观。"
 ---

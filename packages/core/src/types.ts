@@ -112,6 +112,32 @@ export interface CollectionsConfig {
   minPostCount?: number;
 }
 
+/** 分类元数据覆盖。 */
+export interface CategoryMetadata {
+  /** 分类页面标题。 */
+  title?: string;
+  /** 分类页面描述。 */
+  description?: string;
+}
+
+/** 分类插件配置。 */
+export interface CategoriesConfig {
+  /** 是否启用分类功能。 */
+  enabled?: boolean;
+  /** 分类页面路由前缀。 */
+  routePrefix?: string;
+  /** 层级分类分隔符，默认使用 `/`。 */
+  separator?: string;
+  /** 分类元数据覆盖，键为分类路径。 */
+  metadata?: Record<string, CategoryMetadata>;
+  /** 要排除的分类路径。 */
+  excludeCategories?: string[];
+  /** 分类至少需要包含的文章数量。 */
+  minPostCount?: number;
+  /** 分类索引页排序方式。 */
+  sortBy?: 'name' | 'count' | 'date';
+}
+
 export interface RSSConfig {
   /**
    * Feed title
@@ -235,6 +261,8 @@ export interface SitemapConfig {
   includeBlogList?: boolean;
   /** 是否自动包含搜索入口页面。 */
   includeSearch?: boolean;
+  /** 是否自动包含分类页面。 */
+  includeCategories?: boolean;
   /** 首页和文章默认使用的更新频率。 */
   changefreq?: SitemapChangeFrequency;
   /** 首页和文章默认使用的权重。 */
@@ -378,6 +406,9 @@ export interface CogitaConfig {
    * Collections plugin configuration
    */
   collections?: CollectionsConfig;
+
+  /** 分类与层级分类配置。 */
+  categories?: CategoriesConfig;
 
   /** 文章列表与归档配置。 */
   blogList?: BlogListConfig;

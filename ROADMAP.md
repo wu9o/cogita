@@ -163,12 +163,12 @@ interface CogitaTheme {
   - [x] 基于标签的相关文章
   - [x] 标签导航系统（首页侧边栏 + 标签索引页）
 
-- [ ] `@cogita/plugin-categories` 📋
-  - [ ] 层级分类系统
-  - [ ] 带子导航的分类页面
-  - [ ] 面包屑导航
-  - [ ] 基于分类的路由
-  - [ ] 嵌套分类支持
+- [x] `@cogita/plugin-categories` ✅ 一期已实现
+  - [x] 层级分类系统
+  - [x] 带子导航的分类页面
+  - [x] 面包屑导航
+  - [x] 基于分类的路由
+  - [x] 嵌套分类支持
 
 - [x] `@cogita/plugin-images` 🚧 二期开发中
   - [x] 图片资源目录约定

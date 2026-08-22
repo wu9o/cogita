@@ -1,7 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
-import { type CogitaPluginConfig, type RspressPlugin, getBlogListRoutes } from '@cogita/shared';
+import {
+  type CogitaPluginConfig,
+  type RspressPlugin,
+  getBlogListRoutes,
+  getCategoryRoutes,
+} from '@cogita/shared';
 import type { RouteMeta } from '@rspress/shared';
 import { glob } from 'glob';
 import { createSEOAuditReport, formatSEOAuditReport } from './audit';
@@ -149,7 +154,35 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
             ],
           ])
         : new Map();
-      const pageMetaByRoute = new Map([...postsByRoute, ...blogListMeta, ...searchMeta]);
+      const categoryRoutes =
+        config.categories?.enabled !== false && config.categories
+          ? [
+              `/${(config.categories.routePrefix || 'categories').replace(/^\/+|\/+$/g, '')}`,
+              ...getCategoryRoutes(posts, config.categories),
+            ]
+          : [];
+      const categoryMeta = new Map(
+        categoryRoutes.map((route) => [
+          normalizeRoute(route),
+          {
+            title: `文章分类 - ${siteTitle}`,
+            description: siteDescription,
+            canonical: siteRoot ? resolveSiteUrl(siteRoot, route) : undefined,
+            image: defaultImage,
+            imageAlt: finalConfig.defaultImageAlt,
+            type: 'WebSite' as const,
+            robots: finalConfig.robots,
+            twitterCard:
+              finalConfig.twitterCard || (defaultImage ? 'summary_large_image' : 'summary'),
+          },
+        ])
+      );
+      const pageMetaByRoute = new Map([
+        ...postsByRoute,
+        ...blogListMeta,
+        ...searchMeta,
+        ...categoryMeta,
+      ]);
 
       if (finalConfig.audit?.enabled) {
         auditReport = createSEOAuditReport(
@@ -158,6 +191,7 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
             ...Array.from(postsByRoute.entries()).map(([route, meta]) => ({ route, meta })),
             ...Array.from(blogListMeta.entries()).map(([route, meta]) => ({ route, meta })),
             ...Array.from(searchMeta.entries()).map(([route, meta]) => ({ route, meta })),
+            ...Array.from(categoryMeta.entries()).map(([route, meta]) => ({ route, meta })),
           ],
           finalConfig.audit
         );

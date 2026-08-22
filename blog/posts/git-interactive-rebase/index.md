@@ -7,6 +7,9 @@ tags:
   - Rebase
   - 版本控制
   - 技巧
+categories:
+  - 工程实践/Git
+  - 版本控制
 author: "wu9o"
 excerpt: "Rebase 解冲突时手快把冲突标记一起提交了？普通 rebase 只会原样搬运这个错误。本文用 Interactive Rebase 的 edit 模式，带你时光倒流回到那个 commit，修好它，再继续前进。"
 ---
