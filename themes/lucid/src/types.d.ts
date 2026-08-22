@@ -144,6 +144,61 @@ declare module 'virtual-collections-data' {
   export function getCollectionByPostRoute(route: string): CollectionData | undefined;
 }
 
+declare module 'virtual-categories-data' {
+  interface CategoryPostReference {
+    title: string;
+    route: string;
+    createDate: string;
+    updateDate: string;
+    description?: string;
+    tags?: string[];
+    categories?: string[];
+  }
+
+  interface CategoryData {
+    name: string;
+    title: string;
+    path: string;
+    slug: string;
+    parentPath?: string;
+    depth: number;
+    description?: string;
+    posts: CategoryPostReference[];
+    count: number;
+    children: string[];
+    route: string;
+    createdDate?: string;
+    updatedDate?: string;
+  }
+
+  interface CategoriesConfig {
+    enabled: boolean;
+    routePrefix: string;
+    separator: string;
+    metadata: Record<string, { title?: string; description?: string }>;
+    excludeCategories: string[];
+    minPostCount: number;
+    sortBy: 'name' | 'count' | 'date';
+  }
+
+  interface CategoryStats {
+    totalCategories: number;
+    rootCategories: number;
+    largest?: CategoryData;
+    newest?: CategoryData;
+    averagePostsPerCategory: number;
+  }
+
+  export const allCategories: CategoryData[];
+  export const categoryMap: Record<string, CategoryData>;
+  export const categoriesConfig: CategoriesConfig;
+  export const categoryStats: CategoryStats;
+  export function getCategoryByPath(path: string): CategoryData | undefined;
+  export function getCategoryBySlug(slug: string): CategoryData | undefined;
+  export function getPostsByCategory(path: string): CategoryPostReference[];
+  export function getCategoryBreadcrumbs(path: string): CategoryData[];
+}
+
 declare module 'virtual-blog-list-data' {
   interface BlogListPost {
     title: string;

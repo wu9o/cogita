@@ -8,6 +8,9 @@ tags:
   - 静态站点生成器
   - 博客框架
   - 开源
+categories:
+  - Cogita/框架
+  - 开源
 author: "wu9o"
 excerpt: "在 Rspress 的强大功能之上，Cogita 旨在提供一种极致简单、无需配置的博客写作体验。本文将深入探讨 Cogita 的诞生背景、核心架构、使用方法以及未来规划。"
 image: /images/cogita-architecture.svg

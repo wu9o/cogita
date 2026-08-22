@@ -4,6 +4,7 @@ import { normalizeHrefInRuntime } from '@rspress/runtime';
 import { usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { blogListConfig } from 'virtual-blog-list-data';
+import { allCategories, categoriesConfig } from 'virtual-categories-data';
 import { allCollections } from 'virtual-collections-data';
 import { postCovers } from 'virtual-images-data';
 import { allPosts } from 'virtual-posts-data';
@@ -13,7 +14,7 @@ import { allTags, tagsConfig } from 'virtual-tags-data';
  * 首页布局组件
  *
  * 双栏结构：
- * - 左侧 aside：标签云（TagCloud）+ 合集列表
+ * - 左侧 aside：标签云（TagCloud）+ 分类列表 + 合集列表
  * - 右侧 main：最新文章（PostList）
  */
 const HomeLayout: React.FC<LayoutProps> = () => {
@@ -40,6 +41,39 @@ const HomeLayout: React.FC<LayoutProps> = () => {
           <section className="sidebar-section">
             <h2 className="sidebar-title">标签</h2>
             <TagCloud tags={allTags} config={tagsConfig.tagCloud} />
+          </section>
+          <section className="sidebar-section">
+            <h2 className="sidebar-title">分类</h2>
+            {allCategories.length === 0 ? (
+              <p className="sidebar-hint">暂无分类</p>
+            ) : (
+              <>
+                <ul className="sidebar-categories">
+                  {allCategories
+                    .filter((category) => category.depth === 0)
+                    .slice(0, 6)
+                    .map((category) => (
+                      <li key={category.path}>
+                        <a
+                          href={normalizeHrefInRuntime(`${base}${category.route}`)}
+                          className="sidebar-category-link"
+                        >
+                          <span>{category.title}</span>
+                          <span className="sidebar-category-count">{category.count}</span>
+                        </a>
+                      </li>
+                    ))}
+                </ul>
+                <div className="view-all-tags">
+                  <a
+                    href={normalizeHrefInRuntime(`${base}/${categoriesConfig.routePrefix}`)}
+                    className="view-all-link"
+                  >
+                    全部分类 →
+                  </a>
+                </div>
+              </>
+            )}
           </section>
           <section className="sidebar-section">
             <h2 className="sidebar-title">合集</h2>

@@ -34,6 +34,8 @@ export interface SitemapConfig {
   includeBlogList?: boolean;
   /** 是否自动包含搜索入口页面。 */
   includeSearch?: boolean;
+  /** 是否自动包含分类页面。 */
+  includeCategories?: boolean;
   /** 首页和文章默认使用的更新频率。 */
   changefreq?: SitemapChangeFrequency;
   /** 首页和文章默认使用的权重。 */
@@ -57,4 +59,5 @@ export interface SitemapPost {
   route: string;
   createDate?: string;
   updateDate?: string;
+  categories?: string[];
 }

@@ -78,6 +78,24 @@ export default defineConfig({
     minPostCount: 1,
   },
 
+  // 文章分类与层级分类
+  categories: {
+    enabled: true,
+    routePrefix: 'categories',
+    separator: '/',
+    metadata: {
+      前端: {
+        title: '前端开发',
+        description: '前端工程实践与技术探索',
+      },
+      '工程实践/Git': {
+        title: 'Git',
+        description: '版本控制与协作实践',
+      },
+    },
+    sortBy: 'name',
+  },
+
   // 合集配置
   collections: {
     enabled: true,
