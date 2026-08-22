@@ -1,5 +1,17 @@
 # @cogita/core
 
+## 0.7.0
+
+### Minor Changes
+
+- 59cfe60: 新增文章分类插件，支持扁平与层级分类、分类页面、子分类导航、面包屑、SEO 和 sitemap 集成。
+
+### Patch Changes
+
+- Updated dependencies [59cfe60]
+  - @cogita/shared@0.4.0
+  - @cogita/theme-lucid@0.7.0
+
 ## 0.6.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @cogita/shared
 
+## 0.4.0
+
+### Minor Changes
+
+- 59cfe60: 新增文章分类插件，支持扁平与层级分类、分类页面、子分类导航、面包屑、SEO 和 sitemap 集成。
+
 ## 0.3.0
 
 ### Minor Changes
