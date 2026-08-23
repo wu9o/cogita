@@ -1,5 +1,11 @@
 # @cogita/shared
 
+## 0.5.0
+
+### Minor Changes
+
+- d58cf44: 新增阅读进度与预计阅读时间插件，并接入 Lucid 主题。
+
 ## 0.4.0
 
 ### Minor Changes
