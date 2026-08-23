@@ -277,6 +277,53 @@
   backdrop-filter: blur(8px);
 }
 
+/* 代码块复制按钮 */
+.cogita-code-block {
+  position: relative;
+}
+
+.cogita-code-copy {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  z-index: 1;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--cogita-border-color) 80%, transparent);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--rp-c-bg, #ffffff) 88%, transparent);
+  color: var(--cogita-text-color-secondary);
+  font: inherit;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms ease, color 120ms ease, background 120ms ease;
+}
+
+.cogita-code-block:hover .cogita-code-copy,
+.cogita-code-copy:focus-visible {
+  opacity: 1;
+}
+
+.cogita-code-copy:hover {
+  background: var(--rp-c-bg, #ffffff);
+  color: var(--cogita-primary-color);
+}
+
+.cogita-code-copy[data-copy-state="copied"] {
+  color: var(--cogita-primary-color);
+}
+
+.cogita-code-copy[data-copy-state="error"] {
+  color: var(--cogita-primary-color);
+}
+
+@media (hover: none) {
+  .cogita-code-copy {
+    opacity: 1;
+  }
+}
+
 .cogita-comments {
   max-width: min(100%, 992px);
   margin: 3rem auto 0;

@@ -197,6 +197,17 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
       includeCode: false,
       ...cogitaConfig.readingProgress,
     },
+    // 代码复制默认启用，确保技术文章开箱即用
+    codeCopy: {
+      enabled: true,
+      selector: '.rspress-doc pre',
+      buttonLabel: '复制代码',
+      languageLabel: '复制 {language} 代码',
+      copiedLabel: '已复制',
+      errorLabel: '复制失败',
+      resetDelay: 2000,
+      ...cogitaConfig.codeCopy,
+    },
     // 评论默认关闭，但始终提供虚拟模块，保证主题可以安全消费配置
     comments: {
       enabled: false,
