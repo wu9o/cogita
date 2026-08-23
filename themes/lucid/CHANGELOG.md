@@ -1,5 +1,27 @@
 # @cogita/theme-lucid
 
+## 0.8.0
+
+### Minor Changes
+
+- d58cf44: 新增阅读进度与预计阅读时间插件，并接入 Lucid 主题。
+
+### Patch Changes
+
+- Updated dependencies [d58cf44]
+  - @cogita/plugin-reading-progress@0.2.0
+  - @cogita/shared@0.5.0
+  - @cogita/plugin-blog-list@0.2.0
+  - @cogita/plugin-categories@0.2.0
+  - @cogita/plugin-collections@1.0.0
+  - @cogita/plugin-images@1.0.0
+  - @cogita/plugin-posts-frontmatter@0.1.0
+  - @cogita/plugin-rss@1.0.0
+  - @cogita/plugin-search@0.2.0
+  - @cogita/plugin-seo@1.3.0
+  - @cogita/plugin-sitemap@1.3.0
+  - @cogita/plugin-tags@1.0.0
+
 ## 0.7.0
 
 ### Minor Changes
