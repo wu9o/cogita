@@ -126,6 +126,16 @@ export interface CogitaPluginConfig {
     includeCode?: boolean;
     [key: string]: unknown;
   };
+  codeCopy?: {
+    enabled?: boolean;
+    selector?: string;
+    buttonLabel?: string;
+    languageLabel?: string;
+    copiedLabel?: string;
+    errorLabel?: string;
+    resetDelay?: number;
+    [key: string]: unknown;
+  };
   comments?: {
     enabled?: boolean;
     provider?: 'giscus' | 'utterances';
