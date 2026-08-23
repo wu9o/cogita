@@ -71,6 +71,20 @@ declare module 'virtual-reading-progress-data' {
   export function getReadingStats(route: string): ReadingStats | undefined;
 }
 
+declare module 'virtual-code-copy-data' {
+  interface CodeCopyConfig {
+    enabled: boolean;
+    selector: string;
+    buttonLabel: string;
+    languageLabel: string;
+    copiedLabel: string;
+    errorLabel: string;
+    resetDelay: number;
+  }
+
+  export const codeCopyConfig: CodeCopyConfig;
+}
+
 declare module 'virtual-comments-data' {
   interface GiscusConfig {
     repo: string;
