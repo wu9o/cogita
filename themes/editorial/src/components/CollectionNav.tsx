@@ -1,0 +1,35 @@
+import { usePageData } from '@rspress/runtime';
+import { getCollectionByPostRoute } from 'virtual-collections-data';
+import { getBase, getCurrentRoute } from '../utils';
+
+/** 在合集文章底部提供系列信息和前后文章导航。 */
+export default function CollectionNav() {
+  const pageData = usePageData();
+  const base = getBase(pageData);
+  const route = getCurrentRoute(base).replace(/^\//, '');
+  const collection = getCollectionByPostRoute(route);
+  if (!collection) return null;
+
+  const currentIndex = collection.posts.findIndex((post) => post.route === route);
+  if (currentIndex < 0) return null;
+
+  const previous = collection.posts[currentIndex - 1];
+  const next = collection.posts[currentIndex + 1];
+
+  return (
+    <section className="editorial-collection-nav" aria-label="合集导航">
+      <div>
+        <a href={`${base}${collection.route}`} className="editorial-collection-name">
+          {collection.title}
+        </a>
+        <span>
+          第 {currentIndex + 1} / {collection.count} 篇
+        </span>
+      </div>
+      <nav className="editorial-collection-links">
+        {previous ? <a href={`${base}${previous.route}`}>← {previous.title}</a> : <span />}
+        {next ? <a href={`${base}${next.route}`}>{next.title} →</a> : <span />}
+      </nav>
+    </section>
+  );
+}
