@@ -175,7 +175,14 @@ interface CogitaTheme {
   - [x] 文章顶部阅读进度条
   - [x] 实时阅读百分比
   - [ ] 目录联动
-  - [ ] 阅读位置记忆
+      - [ ] 阅读位置记忆
+
+- [ ] `@cogita/plugin-code-copy` 🚧 一期开发中
+  - [x] 代码块复制按钮
+  - [x] Clipboard API 与原生复制回退
+  - [x] 成功、失败和可访问状态反馈
+  - [x] 语言级复制提示
+  - [ ] 代码行选择复制
 
 - [x] `@cogita/plugin-images` 🚧 二期开发中
   - [x] 图片资源目录约定
@@ -221,7 +228,7 @@ interface CogitaTheme {
   - [x] 高级搜索过滤器（标签、分类和 URL 状态）
   - [x] 搜索分析（隐私优先事件桥与 dataLayer 兼容）
 
-- [ ] `@cogita/plugin-comments` 📋
+- [x] `@cogita/plugin-comments` ✅ 一期完成
   - [x] 多提供商支持（Giscus、Utterances）
   - [x] 文章页按需加载评论脚本
   - [x] 评论配置校验与安全降级

@@ -105,6 +105,17 @@ export default defineConfig({
     includeCode: false,
   },
 
+  // 为文章代码块提供一键复制
+  codeCopy: {
+    enabled: true,
+    selector: '.rspress-doc pre',
+    buttonLabel: '复制代码',
+    languageLabel: '复制 {language} 代码',
+    copiedLabel: '已复制',
+    errorLabel: '复制失败',
+    resetDelay: 2000,
+  },
+
   // 使用 GitHub Discussions 保存文章评论
   comments: {
     enabled: true,
