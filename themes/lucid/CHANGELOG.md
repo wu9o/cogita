@@ -1,5 +1,29 @@
 # @cogita/theme-lucid
 
+## 0.10.0
+
+### Minor Changes
+
+- addea65: 新增代码复制插件，为文章代码块提供可访问的复制按钮和剪贴板回退能力。
+
+### Patch Changes
+
+- Updated dependencies [addea65]
+  - @cogita/plugin-code-copy@0.2.0
+  - @cogita/shared@0.7.0
+  - @cogita/plugin-blog-list@0.2.0
+  - @cogita/plugin-categories@0.2.0
+  - @cogita/plugin-collections@1.0.0
+  - @cogita/plugin-comments@0.2.0
+  - @cogita/plugin-images@1.0.0
+  - @cogita/plugin-posts-frontmatter@0.1.0
+  - @cogita/plugin-reading-progress@0.2.0
+  - @cogita/plugin-rss@1.0.0
+  - @cogita/plugin-search@0.2.0
+  - @cogita/plugin-seo@1.3.0
+  - @cogita/plugin-sitemap@1.3.0
+  - @cogita/plugin-tags@1.0.0
+
 ## 0.9.0
 
 ### Minor Changes
