@@ -68,6 +68,7 @@
   "dependencies": {
     "@cogita/plugin-blog-list": "workspace:*",
     "@cogita/plugin-categories": "workspace:*",
+    "@cogita/plugin-comments": "workspace:*",
     "@cogita/plugin-collections": "workspace:*",
     "@cogita/plugin-images": "workspace:*",
     "@cogita/plugin-posts-frontmatter": "workspace:*",

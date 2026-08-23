@@ -71,6 +71,43 @@ declare module 'virtual-reading-progress-data' {
   export function getReadingStats(route: string): ReadingStats | undefined;
 }
 
+declare module 'virtual-comments-data' {
+  interface GiscusConfig {
+    repo: string;
+    repoId: string;
+    category: string;
+    categoryId: string;
+    mapping: 'pathname' | 'url' | 'title' | 'og:title' | 'specific';
+    term: string;
+    strict: boolean;
+    reactionsEnabled: boolean;
+    emitMetadata: boolean;
+    inputPosition: 'top' | 'bottom';
+    theme: string;
+    lang: string;
+    loading: 'lazy' | 'eager';
+  }
+
+  interface UtterancesConfig {
+    repo: string;
+    issueTerm: 'pathname' | 'url' | 'title' | 'og:title' | 'specific';
+    term: string;
+    label: string;
+    theme: string;
+  }
+
+  interface CommentsConfig {
+    enabled: boolean;
+    provider: 'giscus' | 'utterances';
+    title: string;
+    giscus: GiscusConfig;
+    utterances: UtterancesConfig;
+    postRoutes: string[];
+  }
+
+  export const commentsConfig: CommentsConfig;
+}
+
 declare module 'virtual-tags-data' {
   interface PostReference {
     title: string;

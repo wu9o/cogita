@@ -222,7 +222,10 @@ interface CogitaTheme {
   - [x] 搜索分析（隐私优先事件桥与 dataLayer 兼容）
 
 - [ ] `@cogita/plugin-comments` 📋
-  - [ ] 多提供商支持（Giscus、Utterances、Disqus）
+  - [x] 多提供商支持（Giscus、Utterances）
+  - [x] 文章页按需加载评论脚本
+  - [x] 评论配置校验与安全降级
+  - [ ] Disqus 适配（需要单独评估费用与隐私）
   - [ ] 评论嵌套和回复
   - [ ] 管理仪表板
   - [ ] 社交登录集成
