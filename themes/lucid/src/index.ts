@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { pluginBlogList } from '@cogita/plugin-blog-list';
 import { pluginCategories } from '@cogita/plugin-categories';
 import { pluginCollections } from '@cogita/plugin-collections';
+import { pluginComments } from '@cogita/plugin-comments';
 import { pluginImages } from '@cogita/plugin-images';
 import { pluginPostsFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { pluginReadingProgress } from '@cogita/plugin-reading-progress';
@@ -59,6 +60,7 @@ export function getThemeConfig(): CogitaTheme {
       path.resolve(__dirname, './components/Footer.js'),
       path.resolve(__dirname, './components/CollectionNav.js'),
       path.resolve(__dirname, './components/ReadingProgress.js'),
+      path.resolve(__dirname, './components/Comments.js'),
     ],
 
     // ============================================
@@ -89,6 +91,9 @@ export function getThemeConfig(): CogitaTheme {
 
       // 文章分类插件
       pluginCategories,
+
+      // Giscus / Utterances 评论插件
+      pluginComments,
 
       // 文章列表、分页与时间归档插件
       pluginBlogList,

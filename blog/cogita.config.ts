@@ -105,6 +105,27 @@ export default defineConfig({
     includeCode: false,
   },
 
+  // 使用 GitHub Discussions 保存文章评论
+  comments: {
+    enabled: true,
+    provider: 'giscus',
+    title: '评论',
+    giscus: {
+      repo: 'wu9o/cogita-comments',
+      repoId: 'R_kgDOUBWpKg',
+      category: 'General',
+      categoryId: 'DIC_kwDOUBWpKs4DEALB',
+      mapping: 'pathname',
+      strict: false,
+      reactionsEnabled: true,
+      emitMetadata: false,
+      inputPosition: 'bottom',
+      theme: 'preferred_color_scheme',
+      lang: 'zh-CN',
+      loading: 'lazy',
+    },
+  },
+
   // 合集配置
   collections: {
     enabled: true,

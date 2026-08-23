@@ -277,6 +277,34 @@
   backdrop-filter: blur(8px);
 }
 
+.cogita-comments {
+  max-width: min(100%, 992px);
+  margin: 3rem auto 0;
+  padding: 2rem 0 1rem;
+  border-top: 1px solid var(--cogita-border-color);
+}
+
+.cogita-comments-title {
+  margin: 0 0 1.25rem;
+  color: var(--cogita-text-color);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.cogita-comments-container {
+  min-height: 180px;
+}
+
+.cogita-comments-status {
+  margin: 0 0 1rem;
+  color: var(--cogita-text-color-secondary);
+  font-size: 0.875rem;
+}
+
+.cogita-comments-status-error {
+  color: var(--cogita-primary-color);
+}
+
 .sidebar-categories {
   display: grid;
   gap: 0.5rem;

@@ -126,6 +126,34 @@ export interface CogitaPluginConfig {
     includeCode?: boolean;
     [key: string]: unknown;
   };
+  comments?: {
+    enabled?: boolean;
+    provider?: 'giscus' | 'utterances';
+    title?: string;
+    giscus?: {
+      repo?: string;
+      repoId?: string;
+      category?: string;
+      categoryId?: string;
+      mapping?: 'pathname' | 'url' | 'title' | 'og:title' | 'specific';
+      term?: string;
+      strict?: boolean;
+      reactionsEnabled?: boolean;
+      emitMetadata?: boolean;
+      inputPosition?: 'top' | 'bottom';
+      theme?: string;
+      lang?: string;
+      loading?: 'lazy' | 'eager';
+    };
+    utterances?: {
+      repo?: string;
+      issueTerm?: 'pathname' | 'url' | 'title' | 'og:title' | 'specific';
+      term?: string;
+      label?: string;
+      theme?: string;
+    };
+    [key: string]: unknown;
+  };
   blogList?: {
     enabled?: boolean;
     routePrefix?: string;
