@@ -1,5 +1,28 @@
 # @cogita/theme-lucid
 
+## 0.9.0
+
+### Minor Changes
+
+- f02ba04: 新增可选评论插件，支持在文章页接入 Giscus 或 Utterances。
+
+### Patch Changes
+
+- Updated dependencies [f02ba04]
+  - @cogita/plugin-comments@0.2.0
+  - @cogita/shared@0.6.0
+  - @cogita/plugin-blog-list@0.2.0
+  - @cogita/plugin-categories@0.2.0
+  - @cogita/plugin-collections@1.0.0
+  - @cogita/plugin-images@1.0.0
+  - @cogita/plugin-posts-frontmatter@0.1.0
+  - @cogita/plugin-reading-progress@0.2.0
+  - @cogita/plugin-rss@1.0.0
+  - @cogita/plugin-search@0.2.0
+  - @cogita/plugin-seo@1.3.0
+  - @cogita/plugin-sitemap@1.3.0
+  - @cogita/plugin-tags@1.0.0
+
 ## 0.8.0
 
 ### Minor Changes

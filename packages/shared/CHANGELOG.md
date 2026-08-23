@@ -1,5 +1,11 @@
 # @cogita/shared
 
+## 0.6.0
+
+### Minor Changes
+
+- f02ba04: 新增可选评论插件，支持在文章页接入 Giscus 或 Utterances。
+
 ## 0.5.0
 
 ### Minor Changes
