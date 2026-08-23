@@ -48,6 +48,29 @@ declare module 'virtual-images-data' {
   export function getUnusedImages(): ImageData[];
 }
 
+declare module 'virtual-reading-progress-data' {
+  interface ReadingProgressConfig {
+    enabled: boolean;
+    showBar: boolean;
+    showReadingTime: boolean;
+    wordsPerMinute: number;
+    includeCode: boolean;
+  }
+
+  interface ReadingStats {
+    title: string;
+    route: string;
+    wordCount: number;
+    readingTimeMinutes: number;
+    createDate: string;
+    updateDate: string;
+  }
+
+  export const readingProgressConfig: ReadingProgressConfig;
+  export const readingStatsByRoute: Record<string, ReadingStats>;
+  export function getReadingStats(route: string): ReadingStats | undefined;
+}
+
 declare module 'virtual-tags-data' {
   interface PostReference {
     title: string;

@@ -5,6 +5,7 @@ import { pluginCategories } from '@cogita/plugin-categories';
 import { pluginCollections } from '@cogita/plugin-collections';
 import { pluginImages } from '@cogita/plugin-images';
 import { pluginPostsFrontmatter } from '@cogita/plugin-posts-frontmatter';
+import { pluginReadingProgress } from '@cogita/plugin-reading-progress';
 import { pluginRSS } from '@cogita/plugin-rss';
 import { pluginSearch } from '@cogita/plugin-search';
 import { pluginSEO } from '@cogita/plugin-seo';
@@ -57,6 +58,7 @@ export function getThemeConfig(): CogitaTheme {
     globalUIComponents: [
       path.resolve(__dirname, './components/Footer.js'),
       path.resolve(__dirname, './components/CollectionNav.js'),
+      path.resolve(__dirname, './components/ReadingProgress.js'),
     ],
 
     // ============================================
@@ -93,6 +95,9 @@ export function getThemeConfig(): CogitaTheme {
 
       // 本地文章搜索插件
       pluginSearch,
+
+      // 阅读进度与预计阅读时间插件
+      pluginReadingProgress,
     ],
   };
 }

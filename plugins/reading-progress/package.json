@@ -1,0 +1,51 @@
+{
+  "name": "@cogita/plugin-reading-progress",
+  "version": "0.1.0",
+  "description": "为 Cogita 文章页生成阅读进度与预计阅读时间数据。",
+  "keywords": ["cogita", "plugin", "reading-progress", "reading-time", "rspress"],
+  "author": "wu9o <https://wu9o.github.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wu9o/cogita.git",
+    "directory": "plugins/reading-progress"
+  },
+  "bugs": {
+    "url": "https://github.com/wu9o/cogita/issues"
+  },
+  "homepage": "https://github.com/wu9o/cogita/tree/main/plugins/reading-progress#readme",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "client.d.ts", "README.md", "LICENSE"],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build -w",
+    "clean": "rm -rf dist",
+    "test": "pnpm build && node --test tests/*.test.mjs"
+  },
+  "devDependencies": {
+    "@cogita/shared": "workspace:*",
+    "@rslib/core": "0.11.2",
+    "@types/glob": "^9.0.0",
+    "rsbuild-plugin-publint": "^0.3.3",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@rspress/core": "^1.45.1",
+    "glob": "^11.0.3"
+  },
+  "peerDependencies": {
+    "@cogita/plugin-posts-frontmatter": "workspace:*"
+  }
+}
