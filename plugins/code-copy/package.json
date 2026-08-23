@@ -1,6 +1,6 @@
 {
   "name": "@cogita/plugin-code-copy",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "为 Cogita 文章代码块提供可访问的复制按钮。",
   "keywords": ["cogita", "plugin", "code-copy", "clipboard", "rspress"],
   "author": "wu9o <https://github.com/wu9o>",
