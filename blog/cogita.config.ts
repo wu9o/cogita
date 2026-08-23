@@ -96,6 +96,15 @@ export default defineConfig({
     sortBy: 'name',
   },
 
+  // 阅读进度与预计阅读时间
+  readingProgress: {
+    enabled: true,
+    showBar: true,
+    showReadingTime: true,
+    wordsPerMinute: 300,
+    includeCode: false,
+  },
+
   // 合集配置
   collections: {
     enabled: true,

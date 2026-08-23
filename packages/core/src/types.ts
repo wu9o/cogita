@@ -138,6 +138,20 @@ export interface CategoriesConfig {
   sortBy?: 'name' | 'count' | 'date';
 }
 
+/** 阅读进度与预计阅读时间配置。 */
+export interface ReadingProgressConfig {
+  /** 是否启用阅读增强。 */
+  enabled?: boolean;
+  /** 是否显示文章顶部的阅读进度条。 */
+  showBar?: boolean;
+  /** 是否显示预计阅读时间和实时进度。 */
+  showReadingTime?: boolean;
+  /** 每分钟阅读单位数，中文按字符、英文按单词估算。 */
+  wordsPerMinute?: number;
+  /** 是否把代码块纳入阅读时间计算。 */
+  includeCode?: boolean;
+}
+
 export interface RSSConfig {
   /**
    * Feed title
@@ -409,6 +423,9 @@ export interface CogitaConfig {
 
   /** 分类与层级分类配置。 */
   categories?: CategoriesConfig;
+
+  /** 阅读进度与预计阅读时间配置。 */
+  readingProgress?: ReadingProgressConfig;
 
   /** 文章列表与归档配置。 */
   blogList?: BlogListConfig;

@@ -188,6 +188,15 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
           ...cogitaConfig.categories,
         }
       : undefined,
+    // 阅读进度默认启用，确保主题可以安全消费阅读统计虚拟模块
+    readingProgress: {
+      enabled: true,
+      showBar: true,
+      showReadingTime: true,
+      wordsPerMinute: 300,
+      includeCode: false,
+      ...cogitaConfig.readingProgress,
+    },
     // 文章列表只有显式配置时才启用，避免改变已有首页输出
     blogList: cogitaConfig.blogList
       ? {

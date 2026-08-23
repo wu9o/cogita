@@ -71,6 +71,7 @@
     "@cogita/plugin-collections": "workspace:*",
     "@cogita/plugin-images": "workspace:*",
     "@cogita/plugin-posts-frontmatter": "workspace:*",
+    "@cogita/plugin-reading-progress": "workspace:*",
     "@cogita/plugin-search": "workspace:*",
     "@cogita/plugin-rss": "workspace:*",
     "@cogita/plugin-seo": "workspace:*",

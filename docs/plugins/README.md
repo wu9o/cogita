@@ -15,6 +15,7 @@
 - **[Blog List 插件设计](./plugin-blog-list-design.md)** - 文章列表、分页和归档插件的实现方案
 - **[Search 插件设计](./plugin-search-design.md)** - 本地文章搜索索引和搜索页面的实现方案
 - **[Categories 插件设计](./plugin-categories-design.md)** - 扁平与层级文章分类页面的实现方案
+- **[Reading Progress 插件设计](./plugin-reading-progress-design.md)** - 阅读进度与预计阅读时间的实现方案
 
 ### 📝 计划中文档
 
@@ -54,6 +55,7 @@
 | `@cogita/plugin-seo` | 页面级 SEO 元数据和结构化数据 | ✅ 完成 | [设计文档](./plugin-seo-design.md) |
 | `@cogita/plugin-search` | 本地文章搜索索引、筛选和分析事件 | ✅ 一期完成 | [设计文档](./plugin-search-design.md) |
 | `@cogita/plugin-categories` | 扁平与层级文章分类、分类页面和面包屑 | ✅ 一期完成 | [设计文档](./plugin-categories-design.md) |
+| `@cogita/plugin-reading-progress` | 阅读进度条与预计阅读时间 | 🚧 一期开发中 | [设计文档](./plugin-reading-progress-design.md) |
 
 ### 📝 计划中插件
 

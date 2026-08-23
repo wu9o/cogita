@@ -118,6 +118,14 @@ export interface CogitaPluginConfig {
     sortBy?: 'name' | 'count' | 'date';
     [key: string]: unknown;
   };
+  readingProgress?: {
+    enabled?: boolean;
+    showBar?: boolean;
+    showReadingTime?: boolean;
+    wordsPerMinute?: number;
+    includeCode?: boolean;
+    [key: string]: unknown;
+  };
   blogList?: {
     enabled?: boolean;
     routePrefix?: string;

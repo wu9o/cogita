@@ -170,6 +170,13 @@ interface CogitaTheme {
   - [x] 基于分类的路由
   - [x] 嵌套分类支持
 
+- [x] `@cogita/plugin-reading-progress` ✅ 一期已实现
+  - [x] 构建期阅读时间估算
+  - [x] 文章顶部阅读进度条
+  - [x] 实时阅读百分比
+  - [ ] 目录联动
+  - [ ] 阅读位置记忆
+
 - [x] `@cogita/plugin-images` 🚧 二期开发中
   - [x] 图片资源目录约定
   - [x] 文章封面和图片元数据
