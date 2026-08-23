@@ -54,6 +54,7 @@
     "find-up": "^7.0.0",
     "jiti": "^2.5.1",
     "mlly": "^1.7.4",
+    "@cogita/theme-editorial": "workspace:*",
     "@cogita/theme-lucid": "workspace:*",
     "@cogita/shared": "workspace:*"
   }

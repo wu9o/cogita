@@ -8,6 +8,9 @@ export default defineConfig({
     url: 'https://wu9o.github.io/cogita/',
   },
 
+  // 示例博客使用 Editorial 主题展示新主题包的默认效果
+  theme: 'editorial',
+
   // 使用新的结构化配置
   posts: {
     dir: 'posts',
@@ -171,6 +174,14 @@ export default defineConfig({
   },
 
   themeConfig: {
+    editorial: {
+      heroEyebrow: 'Cogita · Journal',
+      heroCopy: '一个内容优先的技术博客，记录构建、调试和持续思考的过程。',
+      relatedPosts: {
+        enabled: true,
+        limit: 3,
+      },
+    },
     // 页脚配置 - 全局显示 RSS 订阅链接
     footer: {
       message: `
