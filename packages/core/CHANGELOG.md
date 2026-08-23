@@ -1,5 +1,17 @@
 # @cogita/core
 
+## 0.9.0
+
+### Minor Changes
+
+- f02ba04: 新增可选评论插件，支持在文章页接入 Giscus 或 Utterances。
+
+### Patch Changes
+
+- Updated dependencies [f02ba04]
+  - @cogita/shared@0.6.0
+  - @cogita/theme-lucid@0.9.0
+
 ## 0.8.0
 
 ### Minor Changes
