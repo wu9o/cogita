@@ -152,6 +152,40 @@ export interface ReadingProgressConfig {
   includeCode?: boolean;
 }
 
+/** 评论插件配置。 */
+export interface CommentsConfig {
+  /** 是否启用评论，默认关闭。 */
+  enabled?: boolean;
+  /** 评论服务提供商。 */
+  provider?: 'giscus' | 'utterances';
+  /** 文章评论区标题。 */
+  title?: string;
+  /** Giscus 配置。 */
+  giscus?: {
+    repo?: string;
+    repoId?: string;
+    category?: string;
+    categoryId?: string;
+    mapping?: 'pathname' | 'url' | 'title' | 'og:title' | 'specific';
+    term?: string;
+    strict?: boolean;
+    reactionsEnabled?: boolean;
+    emitMetadata?: boolean;
+    inputPosition?: 'top' | 'bottom';
+    theme?: string;
+    lang?: string;
+    loading?: 'lazy' | 'eager';
+  };
+  /** Utterances 配置。 */
+  utterances?: {
+    repo?: string;
+    issueTerm?: 'pathname' | 'url' | 'title' | 'og:title' | 'specific';
+    term?: string;
+    label?: string;
+    theme?: string;
+  };
+}
+
 export interface RSSConfig {
   /**
    * Feed title
@@ -426,6 +460,9 @@ export interface CogitaConfig {
 
   /** 阅读进度与预计阅读时间配置。 */
   readingProgress?: ReadingProgressConfig;
+
+  /** 评论配置。 */
+  comments?: CommentsConfig;
 
   /** 文章列表与归档配置。 */
   blogList?: BlogListConfig;

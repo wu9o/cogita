@@ -197,6 +197,36 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
       includeCode: false,
       ...cogitaConfig.readingProgress,
     },
+    // 评论默认关闭，但始终提供虚拟模块，保证主题可以安全消费配置
+    comments: {
+      enabled: false,
+      provider: 'giscus' as const,
+      title: '评论',
+      ...cogitaConfig.comments,
+      giscus: {
+        repo: '',
+        repoId: '',
+        category: '',
+        categoryId: '',
+        mapping: 'pathname' as const,
+        strict: false,
+        reactionsEnabled: true,
+        emitMetadata: false,
+        inputPosition: 'bottom' as const,
+        theme: 'preferred_color_scheme',
+        lang: 'zh-CN',
+        loading: 'lazy' as const,
+        ...cogitaConfig.comments?.giscus,
+      },
+      utterances: {
+        repo: '',
+        issueTerm: 'pathname' as const,
+        term: '',
+        label: '',
+        theme: 'github-light',
+        ...cogitaConfig.comments?.utterances,
+      },
+    },
     // 文章列表只有显式配置时才启用，避免改变已有首页输出
     blogList: cogitaConfig.blogList
       ? {
