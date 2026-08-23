@@ -7,6 +7,7 @@ import { findUp } from 'find-up';
 import jiti from 'jiti';
 import * as mlly from 'mlly';
 import type { CogitaConfig, CogitaFullConfig } from '../types';
+import { resolveThemePackage } from './theme';
 
 const CONFIG_FILES = ['cogita.config.ts', 'cogita.config.js', 'cogita.config.mjs'];
 
@@ -123,12 +124,6 @@ function createThemePlugin(theme: CogitaTheme): RspressPlugin {
     },
   };
 }
-
-const BUILT_IN_THEMES: {
-  [key: string]: string;
-} = {
-  lucid: '@cogita/theme-lucid',
-};
 
 /**
  * Create enhanced configuration object for plugin factories
@@ -338,9 +333,7 @@ export async function createRspressConfig(
   root: string
 ): Promise<UserConfig> {
   // 1. Default to 'lucid' alias if no theme is specified
-  const themeAlias = cogitaConfig.theme || 'lucid';
-  // 2. Resolve alias to full package name, or use the value as-is for custom themes
-  const themeName = BUILT_IN_THEMES[themeAlias] || themeAlias;
+  const themeName = resolveThemePackage(cogitaConfig);
 
   let theme: CogitaTheme | null = null;
   if (themeName) {
