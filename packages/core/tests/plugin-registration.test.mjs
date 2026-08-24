@@ -98,4 +98,46 @@ describe('插件注册契约', () => {
       }
     );
   });
+
+  it('应根据插件实例声明校验主题布局，而不是依赖核心插件清单', async () => {
+    const pluginWithLayoutRequirement = () => ({
+      name: 'layout-contract-plugin',
+      cogita: {
+        requiredLayouts: [{ layout: 'missing-layout', label: '自定义页面' }],
+      },
+    });
+
+    await assert.rejects(
+      createRspressConfig(
+        { plugins: [pluginWithLayoutRequirement] },
+        '/tmp/cogita-plugin-registration-test'
+      ),
+      /缺少主题布局：自定义页面/
+    );
+  });
+
+  it('布局需求可以根据最终插件配置决定是否启用', async () => {
+    const pluginWithConditionalRequirement = () => ({
+      name: 'conditional-layout-contract-plugin',
+      cogita: {
+        requiredLayouts: [
+          {
+            layout: 'missing-layout',
+            label: '仅在启用时需要的页面',
+            when: (config) => config.search?.enabled === true,
+          },
+        ],
+      },
+    });
+
+    const rspressConfig = await createRspressConfig(
+      { plugins: [pluginWithConditionalRequirement] },
+      '/tmp/cogita-plugin-registration-test'
+    );
+
+    assert.equal(
+      rspressConfig.plugins.some(({ name }) => name === 'conditional-layout-contract-plugin'),
+      true
+    );
+  });
 });
