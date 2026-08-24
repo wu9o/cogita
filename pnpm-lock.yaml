@@ -38,6 +38,9 @@ importers:
       '@cogita/core':
         specifier: workspace:*
         version: link:../packages/core
+      '@cogita/theme-editorial':
+        specifier: workspace:*
+        version: link:../themes/editorial
 
   packages/cli:
     dependencies:
@@ -63,9 +66,6 @@ importers:
       '@cogita/shared':
         specifier: workspace:*
         version: link:../shared
-      '@cogita/theme-editorial':
-        specifier: workspace:*
-        version: link:../../themes/editorial
       '@cogita/theme-lucid':
         specifier: workspace:*
         version: link:../../themes/lucid

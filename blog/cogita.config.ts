@@ -11,7 +11,7 @@ export default defineConfig({
   },
 
   // 示例博客使用 Editorial 主题展示新主题包的默认效果
-  theme: 'editorial',
+  theme: '@cogita/theme-editorial',
 
   // 使用新的结构化配置
   posts: {

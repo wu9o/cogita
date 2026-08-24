@@ -52,7 +52,6 @@
   },
   "dependencies": {
     "@cogita/shared": "workspace:*",
-    "@cogita/theme-editorial": "workspace:*",
     "@cogita/theme-lucid": "workspace:*",
     "@rspress/core": "^1.45.1",
     "chokidar": "^4.0.3",
