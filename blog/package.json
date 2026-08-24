@@ -10,6 +10,7 @@
   "dependencies": {},
   "devDependencies": {
     "@cogita/cli": "workspace:*",
-    "@cogita/core": "workspace:*"
+    "@cogita/core": "workspace:*",
+    "@cogita/theme-editorial": "workspace:*"
   }
 }

@@ -156,10 +156,9 @@ export async function loadCogitaConfig(root: string): Promise<CogitaConfig> {
 ### 主题解析机制
 
 ```typescript
-async function loadTheme(themeName: string): Promise<CogitaTheme> {
-  // 1. 解析主题包路径
-  const packageRoot = await getPackageRoot();
-  const url = await mlly.resolve(themeName, { url: packageRoot });
+async function loadTheme(themeName: string, projectRoot: string): Promise<LoadedTheme> {
+  // 1. 优先从消费方项目解析主题包
+  const url = await mlly.resolve(themeName, { url: projectRoot });
   
   // 2. 动态导入主题模块
   const _require = jiti(fileURLToPath(import.meta.url));
@@ -170,10 +169,15 @@ async function loadTheme(themeName: string): Promise<CogitaTheme> {
     throw new Error(`Theme '${themeName}' invalid interface`);
   }
   
-  // 4. 获取主题配置
-  return mod.getThemeConfig();
+  // 4. 返回主题配置和主题包目录，后续布局均从同一目录解析
+  return {
+    config: mod.getThemeConfig(),
+    directory: path.dirname(fileURLToPath(url)),
+  };
 }
 ```
+
+主题包属于站点项目的运行时依赖。Core 只保留旧版别名的兼容解析，不应随着每一个新主题增加自身依赖；站点应直接安装并声明自己使用的 `@cogita/theme-*` 包。
 
 ## 🎨 主题系统
 
