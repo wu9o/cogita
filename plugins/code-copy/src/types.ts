@@ -6,6 +6,8 @@ export interface CodeCopyConfig {
   selector?: string;
   /** 未复制时按钮的可访问名称。 */
   buttonLabel?: string;
+  /** 选中代码后按钮的可访问名称。 */
+  selectionLabel?: string;
   /** 包含语言名称的按钮提示，支持 `{language}` 占位符。 */
   languageLabel?: string;
   /** 复制成功后的按钮文案。 */
@@ -21,6 +23,7 @@ export interface ResolvedCodeCopyConfig {
   enabled: boolean;
   selector: string;
   buttonLabel: string;
+  selectionLabel: string;
   languageLabel: string;
   copiedLabel: string;
   errorLabel: string;

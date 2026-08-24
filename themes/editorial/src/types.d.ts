@@ -55,6 +55,7 @@ declare module 'virtual-code-copy-data' {
     enabled: boolean;
     selector: string;
     buttonLabel: string;
+    selectionLabel: string;
     languageLabel: string;
     copiedLabel: string;
     errorLabel: string;

@@ -244,6 +244,7 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
       enabled: true,
       selector: '.rspress-doc pre',
       buttonLabel: '复制代码',
+      selectionLabel: '复制选中代码',
       languageLabel: '复制 {language} 代码',
       copiedLabel: '已复制',
       errorLabel: '复制失败',

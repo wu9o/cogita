@@ -35,4 +35,12 @@ describe('代码复制插件', () => {
       '复制 {language}'
     );
   });
+
+  it('应提供选中代码的默认提示', () => {
+    assert.equal(resolveCodeCopyConfig({}).selectionLabel, '复制选中代码');
+    assert.equal(
+      resolveCodeCopyConfig({ selectionLabel: '复制选中部分' }).selectionLabel,
+      '复制选中部分'
+    );
+  });
 });
