@@ -27,6 +27,19 @@ export default defineConfig({
     warnOnMissingAlt: true,
   },
 
+  // 内容质量诊断默认只报告，不阻断示例博客构建
+  contentCheck: {
+    enabled: true,
+    reportPath: 'content-report.json',
+    failOnError: false,
+    requiredFields: ['title', 'date'],
+    checkImages: true,
+    checkImageAlt: true,
+    checkRoutes: true,
+    checkEmptyContent: true,
+    checkLinks: true,
+  },
+
   markdown: {
     image: {
       checkDeadImages: true,

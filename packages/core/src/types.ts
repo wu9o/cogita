@@ -1,7 +1,13 @@
-import type { CogitaBuildContext, CogitaTheme, ContentIndex, LayoutProps } from '@cogita/shared';
+import type {
+  CogitaBuildContext,
+  CogitaTheme,
+  ContentCheckConfig,
+  ContentIndex,
+  LayoutProps,
+} from '@cogita/shared';
 import type { UserConfig } from '@rspress/core';
 
-export type { CogitaTheme, LayoutProps };
+export type { CogitaTheme, ContentCheckConfig, LayoutProps };
 
 export type ThemeConfig = UserConfig['themeConfig'];
 export type BuilderConfig = UserConfig['builderConfig'];
@@ -506,6 +512,9 @@ export interface CogitaConfig {
 
   /** 图片公共资源与文章封面配置。 */
   images?: ImagesConfig;
+
+  /** 内容质量与构建诊断配置。 */
+  contentCheck?: ContentCheckConfig;
 
   /** XML 站点地图配置。 */
   sitemap?: SitemapConfig;

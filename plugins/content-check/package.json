@@ -1,0 +1,53 @@
+{
+  "name": "@cogita/plugin-content-check",
+  "version": "0.1.0",
+  "description": "Cogita 内容质量与构建诊断插件。",
+  "keywords": ["cogita", "plugin", "content", "quality", "diagnostics", "validation"],
+  "author": "wu9o <https://github.com/wu9o>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wu9o/cogita.git",
+    "directory": "plugins/content-check"
+  },
+  "bugs": {
+    "url": "https://github.com/wu9o/cogita/issues"
+  },
+  "homepage": "https://github.com/wu9o/cogita/tree/main/plugins/content-check#readme",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "README.md", "LICENSE"],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build -w",
+    "clean": "rm -rf dist",
+    "test": "pnpm build && node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@cogita/plugin-posts-frontmatter": "workspace:*",
+    "@rspress/core": "^1.45.1",
+    "glob": "^11.0.0",
+    "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "@cogita/shared": "workspace:*",
+    "@rslib/core": "0.11.2",
+    "@types/node": "^18.11.17",
+    "rsbuild-plugin-publint": "^0.3.3",
+    "typescript": "^5.0.4"
+  },
+  "peerDependencies": {
+    "@cogita/plugin-posts-frontmatter": "workspace:*"
+  }
+}
