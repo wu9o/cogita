@@ -1,5 +1,5 @@
-import { normalizeHrefInRuntime, normalizeImagePath } from '@rspress/runtime';
-import { type EditorialPost, formatDate } from '../utils';
+import { normalizeHrefInRuntime, normalizeImagePath, usePageData } from '@rspress/runtime';
+import { type EditorialPost, formatDate, getBase } from '../utils';
 
 interface PostCardProps {
   post: EditorialPost;
@@ -20,14 +20,13 @@ function PostTags({ tags = [] }: { tags?: string[] }) {
 
 /** 统一渲染 Editorial 主题中的主推文章和普通文章卡片。 */
 export function PostCard({ post, featured = false }: PostCardProps) {
+  const base = getBase(usePageData());
+  const postHref = normalizeHrefInRuntime(`${base}${post.route}`);
+
   return (
     <article className={`editorial-post-card${featured ? ' editorial-post-card-featured' : ''}`}>
       {post.image && (
-        <a
-          className="editorial-post-card-cover"
-          href={normalizeHrefInRuntime(post.route)}
-          aria-label={`阅读：${post.title}`}
-        >
+        <a className="editorial-post-card-cover" href={postHref} aria-label={`阅读：${post.title}`}>
           <img
             src={normalizeImagePath(post.image)}
             alt={post.imageAlt || post.title}
@@ -43,7 +42,7 @@ export function PostCard({ post, featured = false }: PostCardProps) {
           {post.categories?.[0] && <span>{post.categories[0]}</span>}
         </div>
         <h2 className="editorial-post-card-title">
-          <a href={normalizeHrefInRuntime(post.route)}>{post.title}</a>
+          <a href={postHref}>{post.title}</a>
         </h2>
         {post.description && <p className="editorial-post-card-description">{post.description}</p>}
         <PostTags tags={post.tags} />

@@ -2,15 +2,7 @@ import { usePageData } from '@rspress/runtime';
 import { useEffect, useRef, useState } from 'react';
 import type React from 'react';
 import { commentsConfig } from 'virtual-comments-data';
-
-function getCurrentRoute(pathname: string, base: string): string {
-  const withoutBase = base && pathname.startsWith(base) ? pathname.slice(base.length) : pathname;
-  const route = decodeURIComponent(withoutBase)
-    .replace(/^\/+|\/+$/g, '')
-    .replace(/\.html$/, '');
-
-  return route ? `/${route}` : '/';
-}
+import { getBase, getCurrentRoute } from '../utils';
 
 function getGiscusAttributes() {
   const config = commentsConfig.giscus;
@@ -78,7 +70,7 @@ const Comments: React.FC = () => {
   const pageData = usePageData();
   const containerRef = useRef<HTMLDivElement>(null);
   const [scriptState, setScriptState] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
-  const base = (pageData?.siteData?.base || '').replace(/\/$/, '');
+  const base = getBase(pageData);
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
   const route = getCurrentRoute(pathname, base);
   const isPostRoute = commentsConfig.postRoutes.includes(route);

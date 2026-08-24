@@ -4,12 +4,10 @@ import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allArchives, blogListConfig, getArchive } from 'virtual-blog-list-data';
 import { postCovers } from 'virtual-images-data';
+import { getBase, getCurrentRoute } from '../utils';
 
 function getArchiveKey(pathname: string, base: string): string {
-  const withoutBase = pathname.startsWith(base) ? pathname.slice(base.length) : pathname;
-  const route = decodeURIComponent(withoutBase)
-    .replace(/^\/+|\/+$/g, '')
-    .replace(/\.html$/, '');
+  const route = getCurrentRoute(pathname, base).replace(/^\/+/, '');
   return route.startsWith(`${blogListConfig.archivePrefix}/`)
     ? route.slice(`${blogListConfig.archivePrefix}/`.length)
     : '';
@@ -34,7 +32,7 @@ function addPostCovers(posts: (typeof allArchives)[number]['posts']) {
 /** 时间归档布局，展示对应年份或月份的文章。 */
 const ArchiveLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
-  const base = (pageData?.siteData?.base || '').replace(/\/$/, '');
+  const base = getBase(pageData);
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
   const key = getArchiveKey(pathname, base);
   const archive = getArchive(key);

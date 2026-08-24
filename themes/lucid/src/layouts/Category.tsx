@@ -10,15 +10,12 @@ import {
   getCategoryBreadcrumbs,
   getCategoryBySlug,
 } from 'virtual-categories-data';
+import { getBase, getCurrentRoute } from '../utils';
 
 function getCategorySlug(pathname: string, base: string): string {
-  const withoutBase = pathname.startsWith(base) ? pathname.slice(base.length) : pathname;
-  const route = decodeURIComponent(withoutBase)
-    .replace(/^\/+|\/+$/g, '')
-    .replace(/\.html$/, '');
-  return route.startsWith(`${categoriesConfig.routePrefix}/`)
-    ? route.slice(`${categoriesConfig.routePrefix}/`.length)
-    : '';
+  const route = getCurrentRoute(pathname, base).replace(/^\/+/, '');
+  const categoryPrefix = categoriesConfig.routePrefix.replace(/^\/+|\/+$/g, '');
+  return route.startsWith(`${categoryPrefix}/`) ? route.slice(`${categoryPrefix}/`.length) : '';
 }
 
 function toPostListPosts(posts: (typeof allCategories)[number]['posts']) {
@@ -28,7 +25,7 @@ function toPostListPosts(posts: (typeof allCategories)[number]['posts']) {
 /** 分类页面布局，统一处理分类索引、详情、子分类和面包屑。 */
 const CategoryLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
-  const base = (pageData?.siteData?.base || '').replace(/\/$/, '');
+  const base = getBase(pageData);
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
   const slug = getCategorySlug(pathname, base);
   const categoriesHref = normalizeHrefInRuntime(`${base}/${categoriesConfig.routePrefix}`);

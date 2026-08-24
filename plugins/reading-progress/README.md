@@ -10,6 +10,8 @@ export default defineConfig({
     enabled: true,
     showBar: true,
     showReadingTime: true,
+    showTocProgress: true,
+    rememberPosition: true,
     wordsPerMinute: 300,
     includeCode: false,
   },
@@ -17,5 +19,7 @@ export default defineConfig({
 ```
 
 插件通过 `virtual-reading-progress-data` 暴露最终配置和按文章路由索引的阅读统计。主题负责决定进度条、阅读时间和目录联动的视觉呈现，插件本身不依赖具体主题。
+
+`showTocProgress` 控制目录当前章节高亮；`rememberPosition` 开启后，主题会按文章路由在浏览器本地记忆滚动位置，并在再次打开文章时恢复。位置数据只保存在当前浏览器的 `localStorage` 中，不会上传。
 
 将 `enabled` 设为 `false` 后，插件不会扫描文章，主题也不会渲染阅读增强 UI，但仍会提供关闭状态的空运行时模块，保证主题安全构建。

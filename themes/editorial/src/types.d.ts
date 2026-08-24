@@ -38,6 +38,8 @@ declare module 'virtual-reading-progress-data' {
     enabled: boolean;
     showBar: boolean;
     showReadingTime: boolean;
+    showTocProgress: boolean;
+    rememberPosition: boolean;
   }
 
   interface ReadingStats {
@@ -118,6 +120,7 @@ declare module 'virtual-collections-data' {
   }
 
   export const allCollections: CollectionData[];
+  export const collectionsConfig: { routePrefix: string };
   export function getCollectionBySlug(slug: string): CollectionData | undefined;
   export function getCollectionByPostRoute(route: string): CollectionData | undefined;
 }
