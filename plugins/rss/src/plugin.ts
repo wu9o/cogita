@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
-import { getCogitaBuildContext } from '@cogita/shared';
+import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 /**
  * RSS插件主体实现
@@ -13,12 +13,13 @@ import { RSSGenerator } from './generator';
 import type { FeedMeta, RSSConfig, RSSPost } from './types';
 
 export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
+  const logger = getCogitaLogger(config);
   // Enhanced configuration handling - the plugin now handles all validation internally
   const rssConfig = config.rss;
 
   // Early return if RSS is not configured
   if (!rssConfig) {
-    console.log('[RSS Plugin] RSS 配置未找到，跳过 RSS 功能');
+    logger.info('[RSS Plugin] RSS 配置未找到，跳过 RSS 功能');
     return null;
   }
 
@@ -26,7 +27,7 @@ export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
 
   // Validate required configuration
   if (!rssConfig.title || !rssConfig.description) {
-    console.warn('[RSS Plugin] RSS 配置缺少必需字段 (title, description)，跳过 RSS 功能');
+    logger.warn('[RSS Plugin] RSS 配置缺少必需字段 (title, description)，跳过 RSS 功能');
     return null;
   }
 
@@ -54,7 +55,7 @@ export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
     name: '@cogita/plugin-rss',
 
     async beforeBuild(rspressConfig: unknown) {
-      console.log('[RSS Plugin] 开始初始化RSS插件...');
+      logger.info('[RSS Plugin] 开始初始化RSS插件...');
 
       // 获取站点URL配置和输出目录
       const siteUrl = finalRssConfig.link;
@@ -80,12 +81,12 @@ export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
             );
           } else {
             if (finalRssConfig.includeContent) {
-              console.warn('[RSS Plugin] 当前内容索引不支持正文缓存，Feed 将只输出摘要');
+              logger.warn('[RSS Plugin] 当前内容索引不支持正文缓存，Feed 将只输出摘要');
             }
             posts = indexedPosts;
           }
         } else {
-          console.warn('[RSS Plugin] 未找到共享内容索引，RSS 将使用兼容扫描路径');
+          logger.warn('[RSS Plugin] 未找到共享内容索引，RSS 将使用兼容扫描路径');
           const postsConfig = config.posts || {};
           const postsDir = postsConfig.dir || 'posts';
           const cwd = buildContext.cwd || process.cwd();
@@ -102,28 +103,28 @@ export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
           posts = absolutePaths
             .map((filePath: string) => {
               try {
-                return getFrontmatterFromFile(filePath, postsDir, routePrefix);
+                return getFrontmatterFromFile(filePath, postsDir, routePrefix, logger);
               } catch (error) {
-                console.warn(`[RSS Plugin] 跳过文件 ${filePath}:`, error);
+                logger.warn(`[RSS Plugin] 跳过文件 ${filePath}:`, error);
                 return null;
               }
             })
             .filter((post): post is PostFrontmatter => post !== null);
           if (finalRssConfig.includeContent) {
-            console.warn('[RSS Plugin] 未使用共享内容索引，Feed 将只输出摘要');
+            logger.warn('[RSS Plugin] 未使用共享内容索引，Feed 将只输出摘要');
           }
         }
 
         // 按创建日期降序排序
         posts.sort((a, b) => new Date(b.createDate).getTime() - new Date(a.createDate).getTime());
 
-        console.log(`[RSS Plugin] 成功处理 ${posts.length} 篇文章`);
+        logger.info(`[RSS Plugin] 成功处理 ${posts.length} 篇文章`);
 
         // 生成feed元数据
         feedMeta = generator.generateFeedMeta();
-        console.log('[RSS Plugin] Feed元数据生成完成:', Object.keys(feedMeta));
+        logger.info('[RSS Plugin] Feed元数据生成完成:', Object.keys(feedMeta));
       } catch (error) {
-        console.error('[RSS Plugin] 初始化失败:', error);
+        logger.error('[RSS Plugin] 初始化失败:', error);
         // 不抛出错误，让构建继续，但RSS功能将不可用
         posts = [];
         feedMeta = {};
@@ -132,12 +133,12 @@ export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
 
     async afterBuild() {
       if (posts.length === 0) {
-        console.warn('[RSS Plugin] 没有找到文章，跳过RSS文件生成');
+        logger.warn('[RSS Plugin] 没有找到文章，跳过RSS文件生成');
         return;
       }
 
       if (!generator) {
-        console.error('[RSS Plugin] 生成器未初始化');
+        logger.error('[RSS Plugin] 生成器未初始化');
         return;
       }
 
@@ -149,7 +150,7 @@ export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
           const rssContent = generator.generateRSS(posts);
           const rssPath = path.join(outputDir, generator.getConfig().feedPath);
           fs.writeFileSync(rssPath, rssContent, 'utf-8');
-          console.log(`[RSS Plugin] RSS 2.0 feed 已写入: ${rssPath}`);
+          logger.info(`[RSS Plugin] RSS 2.0 feed 已写入: ${rssPath}`);
         }
 
         // 生成Atom文件
@@ -157,7 +158,7 @@ export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
           const atomContent = generator.generateAtom(posts);
           const atomPath = path.join(outputDir, generator.getConfig().atomPath);
           fs.writeFileSync(atomPath, atomContent, 'utf-8');
-          console.log(`[RSS Plugin] Atom feed 已写入: ${atomPath}`);
+          logger.info(`[RSS Plugin] Atom feed 已写入: ${atomPath}`);
         }
 
         // 生成JSON Feed文件
@@ -165,12 +166,12 @@ export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
           const jsonContent = generator.generateJSON(posts);
           const jsonPath = path.join(outputDir, generator.getConfig().jsonPath);
           fs.writeFileSync(jsonPath, jsonContent, 'utf-8');
-          console.log(`[RSS Plugin] JSON feed 已写入: ${jsonPath}`);
+          logger.info(`[RSS Plugin] JSON feed 已写入: ${jsonPath}`);
         }
 
-        console.log('[RSS Plugin] 所有RSS文件生成完成');
+        logger.info('[RSS Plugin] 所有RSS文件生成完成');
       } catch (error) {
-        console.error('[RSS Plugin] 生成RSS文件时出错:', error);
+        logger.error('[RSS Plugin] 生成RSS文件时出错:', error);
       }
     },
 

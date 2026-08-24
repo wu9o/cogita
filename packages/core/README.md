@@ -129,10 +129,25 @@ interface CogitaConfig {
     base?: string;
   };
   theme?: string;
+  plugins?: CogitaPluginFactory[]; // 站点额外注册的插件
   themeConfig?: any;    // Rspress 主题配置
   builderConfig?: any;  // Rspress 构建配置
 }
 ```
+
+站点插件会在主题插件之后按数组顺序加载：
+
+```typescript
+import { defineConfig } from '@cogita/core';
+import { pluginExample } from './plugins/example';
+
+export default defineConfig({
+  theme: 'lucid',
+  plugins: [pluginExample],
+});
+```
+
+插件实例的 `name` 必须唯一；默认严格模式下重复名称会阻断构建。插件开发时应通过 `getCogitaBuildContext` 和 `getCogitaLogger` 使用共享内容索引及构建日志。
 
 ## 可用主题
 

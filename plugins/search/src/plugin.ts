@@ -1,4 +1,4 @@
-import { getCogitaBuildContext } from '@cogita/shared';
+import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import type { SearchDocument } from './types';
@@ -6,10 +6,11 @@ import { createSearchIndexHash, extractSearchDocuments, resolveSearchConfig } fr
 
 /** 创建本地文章搜索插件。 */
 export function pluginSearch(config: CogitaPluginConfig): RspressPlugin | null {
+  const logger = getCogitaLogger(config);
   const searchConfig = config.search;
 
   if (!searchConfig || searchConfig.enabled === false) {
-    console.log('[Search Plugin] 搜索配置未启用，跳过搜索功能');
+    logger.info('[Search Plugin] 搜索配置未启用，跳过搜索功能');
     return null;
   }
 
@@ -30,16 +31,17 @@ export function pluginSearch(config: CogitaPluginConfig): RspressPlugin | null {
         postsConfig.routePrefix || 'posts',
         postsConfig.extensions || ['md', 'mdx'],
         finalConfig,
-        buildContext.contentIndex
+        buildContext.contentIndex,
+        logger
       );
       indexHash = createSearchIndexHash(documents);
-      console.log(`[Search Plugin] 已生成 ${documents.length} 个搜索文档`);
+      logger.info(`[Search Plugin] 已生成 ${documents.length} 个搜索文档`);
     },
 
     addPages() {
       const searchLayout = buildContext.themeLayouts?.search;
       if (!searchLayout) {
-        console.warn('[Search Plugin] 主题未提供 pageLayouts.search，跳过搜索页面生成');
+        logger.warn('[Search Plugin] 主题未提供 pageLayouts.search，跳过搜索页面生成');
         return [];
       }
 

@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { getCogitaBuildContext } from '@cogita/shared';
-import type { CogitaPluginConfig } from '@cogita/shared';
+import { createCogitaLogger, getCogitaBuildContext } from '@cogita/shared';
+import type { CogitaLogger, CogitaPluginConfig } from '@cogita/shared';
 import { imageSize } from 'image-size';
 import type { ImageData, ResolvedImage, ResolvedImagesConfig } from './types';
 
@@ -57,7 +57,10 @@ export function toRuntimeImage(
 /**
  * 读取常见图片尺寸。尺寸读取失败不会阻止图片本身被使用。
  */
-export function readImageDimensions(filePath: string): Pick<ImageData, 'width' | 'height'> {
+export function readImageDimensions(
+  filePath: string,
+  logger: CogitaLogger = createCogitaLogger()
+): Pick<ImageData, 'width' | 'height'> {
   try {
     const dimensions = imageSize(fs.readFileSync(filePath));
     return {
@@ -65,7 +68,7 @@ export function readImageDimensions(filePath: string): Pick<ImageData, 'width' |
       height: typeof dimensions.height === 'number' ? dimensions.height : undefined,
     };
   } catch (error) {
-    console.warn(`[Images Plugin] 无法读取图片尺寸 ${filePath}:`, error);
+    logger.warn(`[Images Plugin] 无法读取图片尺寸 ${filePath}:`, error);
     return {};
   }
 }

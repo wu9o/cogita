@@ -1,6 +1,7 @@
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
-import type { ContentIndex } from '@cogita/shared';
+import { createCogitaLogger } from '@cogita/shared';
+import type { CogitaLogger, ContentIndex } from '@cogita/shared';
 import { glob } from 'glob';
 import type {
   CollectionData,
@@ -21,7 +22,8 @@ export async function extractCollectionsFromPosts(
   postsDir: string,
   cwd: string,
   routePrefix = 'posts',
-  contentIndex?: ContentIndex
+  contentIndex?: ContentIndex,
+  logger: CogitaLogger = createCogitaLogger()
 ): Promise<PostFrontmatter[]> {
   if (contentIndex) {
     return (await contentIndex.getPosts()).map((post) => ({
@@ -41,9 +43,9 @@ export async function extractCollectionsFromPosts(
   return absolutePaths
     .map((filePath) => {
       try {
-        return getFrontmatterFromFile(filePath, postsDir, routePrefix);
+        return getFrontmatterFromFile(filePath, postsDir, routePrefix, logger);
       } catch (error) {
-        console.warn(`[Collections Plugin] 跳过文件 ${filePath}:`, error);
+        logger.warn(`[Collections Plugin] 跳过文件 ${filePath}:`, error);
         return null;
       }
     })
@@ -58,11 +60,12 @@ export async function extractCollectionsFromPosts(
  */
 export function processCollectionsFromPosts(
   postsData: PostFrontmatter[],
-  config: Required<CollectionsConfig>
+  config: Required<CollectionsConfig>,
+  logger: CogitaLogger = createCogitaLogger()
 ): { collectionsData: CollectionData[]; collectionsMap: Map<string, CollectionData> } {
   const collectionsMap = new Map<string, CollectionData>();
 
-  console.log(`[Collections Plugin] 开始处理 ${postsData.length} 篇文章的合集数据`);
+  logger.info(`[Collections Plugin] 开始处理 ${postsData.length} 篇文章的合集数据`);
 
   // 遍历所有文章，按 collection 字段分组
   for (const post of postsData) {
@@ -138,7 +141,7 @@ export function processCollectionsFromPosts(
   // 转换为数组，按文章数量降序排列
   const collectionsData = Array.from(collectionsMap.values()).sort((a, b) => b.count - a.count);
 
-  console.log(`[Collections Plugin] 处理完成，共 ${collectionsData.length} 个合集`);
+  logger.info(`[Collections Plugin] 处理完成，共 ${collectionsData.length} 个合集`);
 
   return { collectionsData, collectionsMap };
 }

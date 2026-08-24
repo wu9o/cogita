@@ -1,5 +1,6 @@
 import type {
   CogitaBuildContext,
+  CogitaPluginFactory,
   CogitaTheme,
   ContentCheckConfig,
   ContentIndex,
@@ -7,7 +8,7 @@ import type {
 } from '@cogita/shared';
 import type { UserConfig } from '@rspress/core';
 
-export type { CogitaTheme, ContentCheckConfig, LayoutProps };
+export type { CogitaPluginFactory, CogitaTheme, ContentCheckConfig, LayoutProps };
 
 export type ThemeConfig = UserConfig['themeConfig'];
 export type BuilderConfig = UserConfig['builderConfig'];
@@ -471,6 +472,9 @@ export interface SearchConfig {
 export interface CogitaConfig {
   site?: SiteConfig;
   theme?: string;
+
+  /** 用户额外注册的插件工厂，按数组顺序在主题插件之后加载。 */
+  plugins?: CogitaPluginFactory[];
 
   /**
    * Posts plugin configuration
