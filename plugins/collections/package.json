@@ -1,6 +1,6 @@
 {
   "name": "@cogita/plugin-collections",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "合集插件，为 Cogita 博客提供有序系列文章管理、合集页面生成和导航功能。",
   "keywords": [
     "cogita",
