@@ -321,6 +321,37 @@ importers:
         specifier: ^5.0.4
         version: 5.9.2
 
+  plugins/content-check:
+    dependencies:
+      '@cogita/plugin-posts-frontmatter':
+        specifier: workspace:*
+        version: link:../posts-frontmatter
+      '@rspress/core':
+        specifier: ^1.45.1
+        version: 1.45.1(webpack@5.101.2)
+      glob:
+        specifier: ^11.0.0
+        version: 11.0.3
+      gray-matter:
+        specifier: ^4.0.3
+        version: 4.0.3
+    devDependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@rslib/core':
+        specifier: 0.11.2
+        version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@18.19.123))(typescript@5.9.2)
+      '@types/node':
+        specifier: ^18.11.17
+        version: 18.19.123
+      rsbuild-plugin-publint:
+        specifier: ^0.3.3
+        version: 0.3.3(@rsbuild/core@1.4.15)
+      typescript:
+        specifier: ^5.0.4
+        version: 5.9.2
+
   plugins/images:
     dependencies:
       '@rspress/core':
@@ -601,6 +632,9 @@ importers:
       '@cogita/plugin-comments':
         specifier: workspace:*
         version: link:../../plugins/comments
+      '@cogita/plugin-content-check':
+        specifier: workspace:*
+        version: link:../../plugins/content-check
       '@cogita/plugin-images':
         specifier: workspace:*
         version: link:../../plugins/images
@@ -686,6 +720,9 @@ importers:
       '@cogita/plugin-comments':
         specifier: workspace:*
         version: link:../../plugins/comments
+      '@cogita/plugin-content-check':
+        specifier: workspace:*
+        version: link:../../plugins/content-check
       '@cogita/plugin-images':
         specifier: workspace:*
         version: link:../../plugins/images
