@@ -55,6 +55,7 @@ Thumbs.db
 
 # Local development
 *.local
+.cogita_content/
 
 # Biome
 .biome/

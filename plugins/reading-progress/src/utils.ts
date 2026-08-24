@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
+import type { ContentIndex } from '@cogita/shared';
 import { glob } from 'glob';
 import type { ReadingProgressConfig, ReadingStats, ResolvedReadingProgressConfig } from './types';
 
@@ -72,8 +73,28 @@ export async function extractReadingStats(
   cwd: string,
   routePrefix: string,
   extensions: string[],
-  config: ResolvedReadingProgressConfig
+  config: ResolvedReadingProgressConfig,
+  contentIndex?: ContentIndex
 ): Promise<ReadingStats[]> {
+  if (contentIndex) {
+    const posts = await contentIndex.getPosts();
+    return posts
+      .map((post) => {
+        try {
+          return createReadingStats(
+            { ...post, url: post.url || post.route },
+            fs.readFileSync(post.filePath, 'utf8'),
+            config
+          );
+        } catch (error) {
+          console.warn(`[Reading Progress Plugin] 读取文章正文失败：${post.filePath}`, error);
+          return null;
+        }
+      })
+      .filter((stats): stats is ReadingStats => stats !== null)
+      .sort((left, right) => left.route.localeCompare(right.route));
+  }
+
   const normalizedExtensions = extensions.length > 0 ? extensions : ['md', 'mdx'];
   const extensionPattern =
     normalizedExtensions.length > 1

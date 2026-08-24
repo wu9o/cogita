@@ -1,3 +1,4 @@
+import { getCogitaBuildContext } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import type { SearchDocument } from './types';
@@ -12,6 +13,8 @@ export function pluginSearch(config: CogitaPluginConfig): RspressPlugin | null {
     return null;
   }
 
+  const buildContext = getCogitaBuildContext(config);
+
   const finalConfig = resolveSearchConfig(searchConfig);
   let documents: SearchDocument[] = [];
   let indexHash = '';
@@ -23,17 +26,18 @@ export function pluginSearch(config: CogitaPluginConfig): RspressPlugin | null {
       const postsConfig = config.posts || {};
       documents = await extractSearchDocuments(
         postsConfig.dir || 'posts',
-        config.cwd || process.cwd(),
+        buildContext.cwd || process.cwd(),
         postsConfig.routePrefix || 'posts',
         postsConfig.extensions || ['md', 'mdx'],
-        finalConfig
+        finalConfig,
+        buildContext.contentIndex
       );
       indexHash = createSearchIndexHash(documents);
       console.log(`[Search Plugin] 已生成 ${documents.length} 个搜索文档`);
     },
 
     addPages() {
-      const searchLayout = config.themeLayouts?.search;
+      const searchLayout = buildContext.themeLayouts?.search;
       if (!searchLayout) {
         console.warn('[Search Plugin] 主题未提供 pageLayouts.search，跳过搜索页面生成');
         return [];

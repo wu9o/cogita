@@ -172,6 +172,17 @@ declare module 'virtual-blog-list-data' {
     posts: BlogPost[];
     previous?: string;
     next?: string;
+    filter?: BlogListFilter;
+  }
+
+  interface BlogListFilter {
+    key: string;
+    kind: 'tag' | 'category';
+    value: string;
+    label: string;
+    slug: string;
+    count: number;
+    route: string;
   }
 
   interface ArchiveData {
@@ -183,12 +194,15 @@ declare module 'virtual-blog-list-data' {
   }
 
   export const allBlogListPages: BlogPage[];
+  export const allBlogListFilters: BlogListFilter[];
   export const allArchives: ArchiveData[];
   export const blogListConfig: {
     routePrefix: string;
     archivePrefix: string;
   };
   export function getArchive(key: string): ArchiveData | undefined;
+  export function getBlogListPage(page: number, filterKey?: string): BlogPage | undefined;
+  export function getBlogListFilter(key: string): BlogListFilter | undefined;
 }
 
 declare module 'virtual-search-data' {

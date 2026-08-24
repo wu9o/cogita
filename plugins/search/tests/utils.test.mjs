@@ -1,6 +1,11 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { cleanMarkdownContent, createSearchIndexHash, resolveSearchConfig } from '../dist/utils.js';
+import {
+  cleanMarkdownContent,
+  createSearchIndexHash,
+  extractSearchDocuments,
+  resolveSearchConfig,
+} from '../dist/utils.js';
 
 describe('搜索索引工具函数', () => {
   it('应规范化搜索配置并保留默认字段', () => {
@@ -64,5 +69,34 @@ describe('搜索索引工具函数', () => {
       createSearchIndexHash(documents),
       createSearchIndexHash([{ ...documents[0], title: 'Changed' }])
     );
+  });
+
+  it('有共享内容索引时应直接使用索引元数据', async () => {
+    const documents = await extractSearchDocuments(
+      'missing-posts',
+      process.cwd(),
+      'posts',
+      ['md'],
+      resolveSearchConfig(),
+      {
+        getPosts: async () => [
+          {
+            title: '索引文章',
+            description: '来自索引',
+            filePath: '/missing-posts/index.md',
+            route: '/posts/indexed',
+            createDate: '2026-08-24',
+            updateDate: '2026-08-24',
+            url: '/posts/indexed',
+          },
+        ],
+      }
+    );
+
+    assert.deepEqual(
+      documents.map((document) => document.route),
+      ['/posts/indexed']
+    );
+    assert.equal(documents[0].description, '来自索引');
   });
 });

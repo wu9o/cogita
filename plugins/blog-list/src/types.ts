@@ -3,6 +3,7 @@ import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 export type BlogListSortBy = 'createDate' | 'updateDate' | 'title';
 export type BlogListOrder = 'asc' | 'desc';
 export type BlogListArchiveGranularity = 'year' | 'month';
+export type BlogListFilterKind = 'tag' | 'category';
 
 /** 文章列表插件配置。 */
 export interface BlogListConfig {
@@ -16,6 +17,17 @@ export interface BlogListConfig {
   archiveGranularity?: BlogListArchiveGranularity;
 }
 
+/** 文章列表的标签或分类筛选项。 */
+export interface BlogListFilter {
+  key: string;
+  kind: BlogListFilterKind;
+  value: string;
+  label: string;
+  slug: string;
+  count: number;
+  route: string;
+}
+
 /** 单个静态文章列表页的数据。 */
 export interface BlogListPage {
   page: number;
@@ -24,6 +36,7 @@ export interface BlogListPage {
   route: string;
   previous?: string;
   next?: string;
+  filter?: BlogListFilter;
 }
 
 /** 单个时间归档页的数据。 */

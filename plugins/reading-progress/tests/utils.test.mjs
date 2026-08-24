@@ -1,9 +1,13 @@
 import assert from 'node:assert/strict';
+import { rm, writeFile } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 import { describe, it } from 'node:test';
 import {
   cleanMarkdownForReading,
   countReadingWords,
   createReadingStats,
+  extractReadingStats,
   resolveReadingProgressConfig,
 } from '../dist/utils.js';
 
@@ -72,5 +76,37 @@ describe('阅读进度工具函数', () => {
     assert.equal(countReadingWords('中文中文 hello world'), 6);
     assert.equal(stats.wordCount, 6);
     assert.equal(stats.readingTimeMinutes, 1);
+  });
+
+  it('有共享内容索引时应复用文章元数据并只读取正文', async () => {
+    const filePath = path.join(os.tmpdir(), `cogita-reading-${Date.now()}.md`);
+    await writeFile(filePath, 'hello', 'utf8');
+
+    try {
+      const stats = await extractReadingStats(
+        'missing-posts',
+        process.cwd(),
+        'posts',
+        ['md'],
+        resolveReadingProgressConfig({ wordsPerMinute: 10 }),
+        {
+          getPosts: async () => [
+            {
+              title: '索引文章',
+              filePath,
+              route: '/posts/indexed',
+              createDate: '2026-08-24',
+              updateDate: '2026-08-24',
+              url: '/posts/indexed',
+            },
+          ],
+        }
+      );
+
+      assert.equal(stats[0].route, '/posts/indexed');
+      assert.equal(stats[0].wordCount, 1);
+    } finally {
+      await rm(filePath, { force: true });
+    }
   });
 });

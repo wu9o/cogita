@@ -1,11 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import {
   type CogitaPluginConfig,
   type RspressPlugin,
-  getBlogListRoutes,
+  getBlogListRouteEntries,
   getCategoryRoutes,
+  getCogitaBuildContext,
 } from '@cogita/shared';
 import type { RouteMeta } from '@rspress/shared';
 import { glob } from 'glob';
@@ -26,9 +28,17 @@ const DEFAULT_CONFIG: Required<Pick<SEOConfig, 'robots' | 'includeJsonLd'>> = {
   includeJsonLd: true,
 };
 
-async function collectPosts(config: CogitaPluginConfig) {
+async function collectPosts(config: CogitaPluginConfig): Promise<PostFrontmatter[]> {
+  const buildContext = getCogitaBuildContext(config);
+  if (buildContext.contentIndex) {
+    return (await buildContext.contentIndex.getPosts()).map((post) => ({
+      ...post,
+      url: post.url || post.route,
+    }));
+  }
+
   const postsConfig = config.posts ?? {};
-  const cwd = config.cwd || process.cwd();
+  const cwd = buildContext.cwd || process.cwd();
   const postsDir = postsConfig.dir || 'posts';
   const absolutePostsDir = path.resolve(cwd, postsDir);
   const routePrefix = postsConfig.routePrefix || 'posts';
@@ -52,167 +62,195 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
     return null;
   }
 
+  const buildContext = getCogitaBuildContext(config);
+
   const finalConfig = {
     ...DEFAULT_CONFIG,
     ...seoConfig,
   };
   let auditReport: ReturnType<typeof createSEOAuditReport> | undefined;
   let auditOutputFile: string | undefined;
+  let pageMetaByRoute = new Map<string, SEOPageMeta>();
+  let homeMeta: SEOPageMeta = {
+    title: config.site?.title || 'Cogita Blog',
+    description: config.site?.description || 'A blog powered by Cogita',
+    type: 'WebSite',
+    robots: finalConfig.robots,
+    twitterCard: finalConfig.twitterCard || 'summary',
+  };
+  let siteTitle = config.site?.title || 'Cogita Blog';
+  let siteDescription = config.site?.description || 'A blog powered by Cogita';
+  let siteRoot = createSiteRoot(config.site?.url, config.site?.base);
+  let defaultImage: string | undefined;
+
+  /** 在构建期生成页面元数据，确保索引失效后不会继续使用旧文章快照。 */
+  async function rebuildMetadata(rspressConfig: unknown) {
+    let posts = [] as Awaited<ReturnType<typeof collectPosts>>;
+    try {
+      posts = await collectPosts(config);
+    } catch (error) {
+      const message = `[SEO Plugin] 扫描文章失败: ${error instanceof Error ? error.message : String(error)}`;
+      if (buildContext.strict !== false) {
+        throw new Error(message);
+      }
+      console.warn(`${message}，将只生成站点级元数据`);
+    }
+
+    siteTitle = config.site?.title || 'Cogita Blog';
+    siteDescription =
+      finalConfig.defaultDescription || config.site?.description || 'A blog powered by Cogita';
+    siteRoot = createSiteRoot(config.site?.url, config.site?.base);
+    defaultImage = finalConfig.defaultImage
+      ? resolveSiteUrl(siteRoot, finalConfig.defaultImage)
+      : undefined;
+
+    const postsByRoute = new Map(
+      posts.map((post) => [
+        normalizeRoute(post.route),
+        createPostMeta(
+          post,
+          siteRoot,
+          finalConfig.defaultImage,
+          finalConfig.defaultImageAlt,
+          finalConfig.author,
+          siteDescription,
+          finalConfig.twitterCard
+        ),
+      ])
+    );
+    homeMeta = {
+      title: siteTitle,
+      description: siteDescription,
+      canonical: siteRoot ? resolveSiteUrl(siteRoot, '/') : undefined,
+      image: defaultImage,
+      imageAlt: finalConfig.defaultImageAlt,
+      type: 'WebSite',
+      robots: finalConfig.robots,
+      twitterCard: finalConfig.twitterCard || (defaultImage ? 'summary_large_image' : 'summary'),
+    };
+    const blogListRoutes =
+      config.blogList?.enabled !== false && buildContext.themeLayouts?.blogList
+        ? getBlogListRouteEntries(posts, {
+            ...config.blogList,
+            categorySeparator: config.categories?.separator,
+          })
+            .filter(
+              (entry) => entry.kind !== 'archive' || Boolean(buildContext.themeLayouts?.archive)
+            )
+            .map((entry) => entry.route)
+        : [];
+    const blogListMeta = new Map(
+      blogListRoutes.map((route) => {
+        const isListPage = route === `/${config.blogList?.routePrefix || 'archive'}`;
+        const isArchivePage = route.startsWith(`/${config.blogList?.archivePrefix || 'archives'}`);
+        const title = isListPage
+          ? `全部文章 - ${siteTitle}`
+          : isArchivePage
+            ? `时间归档 - ${siteTitle}`
+            : `文章列表 - ${siteTitle}`;
+        const meta: SEOPageMeta = {
+          title,
+          description: siteDescription,
+          canonical: siteRoot ? resolveSiteUrl(siteRoot, route) : undefined,
+          image: defaultImage,
+          imageAlt: finalConfig.defaultImageAlt,
+          type: 'WebSite',
+          robots: finalConfig.robots,
+          twitterCard:
+            finalConfig.twitterCard || (defaultImage ? 'summary_large_image' : 'summary'),
+        };
+        return [normalizeRoute(route), meta] as const;
+      })
+    );
+    const searchRoute =
+      config.search?.enabled !== false && config.search && buildContext.themeLayouts?.search
+        ? `/${(config.search.routePrefix || 'search').replace(/^\/+|\/+$/g, '')}`
+        : undefined;
+    const searchMeta = searchRoute
+      ? new Map([
+          [
+            normalizeRoute(searchRoute),
+            {
+              title: `搜索文章 - ${siteTitle}`,
+              description: siteDescription,
+              canonical: siteRoot ? resolveSiteUrl(siteRoot, searchRoute) : undefined,
+              image: defaultImage,
+              imageAlt: finalConfig.defaultImageAlt,
+              type: 'WebSite' as const,
+              robots: finalConfig.robots,
+              twitterCard:
+                finalConfig.twitterCard || (defaultImage ? 'summary_large_image' : 'summary'),
+            },
+          ],
+        ])
+      : new Map();
+    const categoryRoutes =
+      config.categories?.enabled !== false &&
+      config.categories &&
+      buildContext.themeLayouts?.category
+        ? [
+            `/${(config.categories.routePrefix || 'categories').replace(/^\/+|\/+$/g, '')}`,
+            ...getCategoryRoutes(posts, config.categories),
+          ]
+        : [];
+    const categoryMeta = new Map(
+      categoryRoutes.map((route) => [
+        normalizeRoute(route),
+        {
+          title: `文章分类 - ${siteTitle}`,
+          description: siteDescription,
+          canonical: siteRoot ? resolveSiteUrl(siteRoot, route) : undefined,
+          image: defaultImage,
+          imageAlt: finalConfig.defaultImageAlt,
+          type: 'WebSite' as const,
+          robots: finalConfig.robots,
+          twitterCard:
+            finalConfig.twitterCard || (defaultImage ? 'summary_large_image' : 'summary'),
+        },
+      ])
+    );
+    pageMetaByRoute = new Map([...postsByRoute, ...blogListMeta, ...searchMeta, ...categoryMeta]);
+
+    auditReport = undefined;
+    auditOutputFile = undefined;
+    if (finalConfig.audit?.enabled) {
+      auditReport = createSEOAuditReport(
+        [
+          { route: '/', meta: homeMeta },
+          ...Array.from(postsByRoute.entries()).map(([route, meta]) => ({ route, meta })),
+          ...Array.from(blogListMeta.entries()).map(([route, meta]) => ({ route, meta })),
+          ...Array.from(searchMeta.entries()).map(([route, meta]) => ({ route, meta })),
+          ...Array.from(categoryMeta.entries()).map(([route, meta]) => ({ route, meta })),
+        ],
+        finalConfig.audit
+      );
+      console.log(formatSEOAuditReport(auditReport));
+
+      if (finalConfig.audit.failOnError && auditReport.errors > 0) {
+        throw new Error(`[SEO Plugin] 审核发现 ${auditReport.errors} 个错误，已根据配置阻断构建`);
+      }
+
+      const rspressConfigObject = rspressConfig as Record<string, unknown>;
+      const configuredOutput = (rspressConfigObject.output as Record<string, unknown> | undefined)
+        ?.path;
+      const outputDir = path.resolve(
+        buildContext.cwd || process.cwd(),
+        String(configuredOutput || 'doc_build')
+      );
+      if (finalConfig.audit.reportPath) {
+        auditOutputFile = path.resolve(outputDir, finalConfig.audit.reportPath);
+      }
+    }
+  }
 
   return {
     name: '@cogita/plugin-seo',
 
-    async config(rspressConfig) {
-      let posts = [] as Awaited<ReturnType<typeof collectPosts>>;
-      try {
-        posts = await collectPosts(config);
-      } catch (error) {
-        const message = `[SEO Plugin] 扫描文章失败: ${error instanceof Error ? error.message : String(error)}`;
-        if (config.strict !== false) {
-          throw new Error(message);
-        }
-        console.warn(`${message}，将只生成站点级元数据`);
-      }
+    async beforeBuild(rspressConfig: unknown) {
+      await rebuildMetadata(rspressConfig);
+    },
 
-      const siteTitle = config.site?.title || 'Cogita Blog';
-      const siteDescription =
-        finalConfig.defaultDescription || config.site?.description || 'A blog powered by Cogita';
-      const siteRoot = createSiteRoot(config.site?.url, config.site?.base);
-      const postsByRoute = new Map(
-        posts.map((post) => [
-          normalizeRoute(post.route),
-          createPostMeta(
-            post,
-            siteRoot,
-            finalConfig.defaultImage,
-            finalConfig.defaultImageAlt,
-            finalConfig.author,
-            siteDescription,
-            finalConfig.twitterCard
-          ),
-        ])
-      );
-      const defaultImage = finalConfig.defaultImage
-        ? resolveSiteUrl(siteRoot, finalConfig.defaultImage)
-        : undefined;
-      const homeMeta: SEOPageMeta = {
-        title: siteTitle,
-        description: siteDescription,
-        canonical: siteRoot ? resolveSiteUrl(siteRoot, '/') : undefined,
-        image: defaultImage,
-        imageAlt: finalConfig.defaultImageAlt,
-        type: 'WebSite',
-        robots: finalConfig.robots,
-        twitterCard: finalConfig.twitterCard || (defaultImage ? 'summary_large_image' : 'summary'),
-      };
-      const blogListRoutes =
-        config.blogList?.enabled !== false ? getBlogListRoutes(posts, config.blogList) : [];
-      const blogListMeta = new Map(
-        blogListRoutes.map((route) => {
-          const isListPage = route === `/${config.blogList?.routePrefix || 'archive'}`;
-          const isArchivePage = route.startsWith(
-            `/${config.blogList?.archivePrefix || 'archives'}`
-          );
-          const title = isListPage
-            ? `全部文章 - ${siteTitle}`
-            : isArchivePage
-              ? `时间归档 - ${siteTitle}`
-              : `文章列表 - ${siteTitle}`;
-          const meta: SEOPageMeta = {
-            title,
-            description: siteDescription,
-            canonical: siteRoot ? resolveSiteUrl(siteRoot, route) : undefined,
-            image: defaultImage,
-            imageAlt: finalConfig.defaultImageAlt,
-            type: 'WebSite',
-            robots: finalConfig.robots,
-            twitterCard:
-              finalConfig.twitterCard || (defaultImage ? 'summary_large_image' : 'summary'),
-          };
-          return [normalizeRoute(route), meta] as const;
-        })
-      );
-      const searchRoute =
-        config.search?.enabled !== false && config.search
-          ? `/${(config.search.routePrefix || 'search').replace(/^\/+|\/+$/g, '')}`
-          : undefined;
-      const searchMeta = searchRoute
-        ? new Map([
-            [
-              normalizeRoute(searchRoute),
-              {
-                title: `搜索文章 - ${siteTitle}`,
-                description: siteDescription,
-                canonical: siteRoot ? resolveSiteUrl(siteRoot, searchRoute) : undefined,
-                image: defaultImage,
-                imageAlt: finalConfig.defaultImageAlt,
-                type: 'WebSite' as const,
-                robots: finalConfig.robots,
-                twitterCard:
-                  finalConfig.twitterCard || (defaultImage ? 'summary_large_image' : 'summary'),
-              },
-            ],
-          ])
-        : new Map();
-      const categoryRoutes =
-        config.categories?.enabled !== false && config.categories
-          ? [
-              `/${(config.categories.routePrefix || 'categories').replace(/^\/+|\/+$/g, '')}`,
-              ...getCategoryRoutes(posts, config.categories),
-            ]
-          : [];
-      const categoryMeta = new Map(
-        categoryRoutes.map((route) => [
-          normalizeRoute(route),
-          {
-            title: `文章分类 - ${siteTitle}`,
-            description: siteDescription,
-            canonical: siteRoot ? resolveSiteUrl(siteRoot, route) : undefined,
-            image: defaultImage,
-            imageAlt: finalConfig.defaultImageAlt,
-            type: 'WebSite' as const,
-            robots: finalConfig.robots,
-            twitterCard:
-              finalConfig.twitterCard || (defaultImage ? 'summary_large_image' : 'summary'),
-          },
-        ])
-      );
-      const pageMetaByRoute = new Map([
-        ...postsByRoute,
-        ...blogListMeta,
-        ...searchMeta,
-        ...categoryMeta,
-      ]);
-
-      if (finalConfig.audit?.enabled) {
-        auditReport = createSEOAuditReport(
-          [
-            { route: '/', meta: homeMeta },
-            ...Array.from(postsByRoute.entries()).map(([route, meta]) => ({ route, meta })),
-            ...Array.from(blogListMeta.entries()).map(([route, meta]) => ({ route, meta })),
-            ...Array.from(searchMeta.entries()).map(([route, meta]) => ({ route, meta })),
-            ...Array.from(categoryMeta.entries()).map(([route, meta]) => ({ route, meta })),
-          ],
-          finalConfig.audit
-        );
-        console.log(formatSEOAuditReport(auditReport));
-
-        if (finalConfig.audit.failOnError && auditReport.errors > 0) {
-          throw new Error(`[SEO Plugin] 审核发现 ${auditReport.errors} 个错误，已根据配置阻断构建`);
-        }
-
-        const rspressConfigObject = rspressConfig as unknown as Record<string, unknown>;
-        const configuredOutput = (rspressConfigObject.output as Record<string, unknown> | undefined)
-          ?.path;
-        const outputDir = path.resolve(
-          config.cwd || process.cwd(),
-          String(configuredOutput || 'doc_build')
-        );
-        if (finalConfig.audit.reportPath) {
-          auditOutputFile = path.resolve(outputDir, finalConfig.audit.reportPath);
-        }
-      }
-
+    config(rspressConfig) {
       const head = [
         ...(rspressConfig.head ?? []),
         (route: RouteMeta) => {

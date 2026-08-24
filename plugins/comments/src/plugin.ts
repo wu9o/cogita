@@ -1,3 +1,4 @@
+import { getCogitaBuildContext } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import { extractCommentPostRoutes, resolveCommentsConfig, validateCommentsConfig } from './utils';
@@ -8,6 +9,8 @@ export function pluginComments(config: CogitaPluginConfig): RspressPlugin | null
     console.log('[Comments Plugin] 未找到评论配置，跳过评论功能');
     return null;
   }
+
+  const buildContext = getCogitaBuildContext(config);
 
   let finalConfig = resolveCommentsConfig(config.comments);
   let configError = validateCommentsConfig(finalConfig);
@@ -24,9 +27,10 @@ export function pluginComments(config: CogitaPluginConfig): RspressPlugin | null
       const postsConfig = config.posts || {};
       const postRoutes = await extractCommentPostRoutes(
         postsConfig.dir || 'posts',
-        config.cwd || process.cwd(),
+        buildContext.cwd || process.cwd(),
         postsConfig.routePrefix || 'posts',
-        postsConfig.extensions || ['md', 'mdx']
+        postsConfig.extensions || ['md', 'mdx'],
+        buildContext.contentIndex
       );
       finalConfig = resolveCommentsConfig(config.comments, postRoutes);
       configError = validateCommentsConfig(finalConfig);

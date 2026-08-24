@@ -6,7 +6,6 @@ interface EnhancedCodeBlock {
   button: HTMLButtonElement;
   pre: HTMLElement;
   onClick: () => void;
-  resetTimer?: number;
 }
 
 interface EnhancedNativeCopyButton {
@@ -16,7 +15,38 @@ interface EnhancedNativeCopyButton {
   ariaLabel: string | null;
   copyState: string | null;
   onClick: (event: MouseEvent) => void;
-  resetTimer?: number;
+}
+
+interface CopyToastController {
+  show(message: string, state: 'success' | 'error'): void;
+  destroy(): void;
+}
+
+/** 创建页面级复制提示，避免让代码按钮自身堆叠成功状态。 */
+function createCopyToast(): CopyToastController {
+  const toast = document.createElement('div');
+  let hideTimer: number | undefined;
+
+  toast.className = 'cogita-copy-toast';
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
+  document.body.appendChild(toast);
+
+  return {
+    show(message, state) {
+      if (hideTimer) window.clearTimeout(hideTimer);
+      toast.textContent = message;
+      toast.dataset.state = state;
+      toast.dataset.visible = 'true';
+      hideTimer = window.setTimeout(() => {
+        toast.dataset.visible = 'false';
+      }, codeCopyConfig.resetDelay);
+    },
+    destroy() {
+      if (hideTimer) window.clearTimeout(hideTimer);
+      toast.remove();
+    },
+  };
 }
 
 /** 使用浏览器剪贴板 API 复制文本，并在不支持时回退到原生命令。 */
@@ -96,23 +126,15 @@ function removeEnhancedBlock(pre: HTMLElement, enhancedBlocks: EnhancedCodeBlock
 
   const [enhancedBlock] = enhancedBlocks.splice(enhancedIndex, 1);
   enhancedBlock.button.removeEventListener('click', enhancedBlock.onClick);
-  if (enhancedBlock.resetTimer) window.clearTimeout(enhancedBlock.resetTimer);
   enhancedBlock.button.remove();
   pre.classList.remove('cogita-code-block');
 }
 
-/** 更新 Rspress 原生按钮的可访问提示和复制状态。 */
-function setNativeCopyState(
-  enhancedButton: EnhancedNativeCopyButton,
-  label: string,
-  state: 'idle' | 'copied' | 'error'
-): void {
+/** 更新 Rspress 原生按钮的可访问提示，但不改变按钮的视觉状态。 */
+function setNativeCopyLabel(enhancedButton: EnhancedNativeCopyButton, label: string): void {
   if (enhancedButton.button.title !== label) enhancedButton.button.title = label;
   if (enhancedButton.button.getAttribute('aria-label') !== label) {
     enhancedButton.button.setAttribute('aria-label', label);
-  }
-  if (enhancedButton.button.dataset.copyState !== state) {
-    enhancedButton.button.dataset.copyState = state;
   }
 }
 
@@ -120,7 +142,8 @@ function setNativeCopyState(
 function enhanceCodeBlocks(
   root: ParentNode,
   enhancedBlocks: EnhancedCodeBlock[],
-  nativeCopyButtons: EnhancedNativeCopyButton[]
+  nativeCopyButtons: EnhancedNativeCopyButton[],
+  toast: CopyToastController
 ): void {
   const selectedElements = Array.from(root.querySelectorAll<HTMLElement>(codeCopyConfig.selector));
   const codeBlocks = new Set<HTMLElement>();
@@ -150,28 +173,20 @@ function enhanceCodeBlocks(
         } as EnhancedNativeCopyButton;
 
         enhancedButton.onClick = (event) => {
-          const selectedText = getSelectedCodeText(pre);
-          if (!selectedText) return;
-
           event.preventDefault();
           event.stopImmediatePropagation();
           void (async () => {
             try {
-              await copyText(selectedText);
-              setNativeCopyState(enhancedButton, codeCopyConfig.copiedLabel, 'copied');
+              await copyText(getSelectedCodeText(pre) || getCodeText(pre));
+              toast.show(codeCopyConfig.copiedLabel, 'success');
             } catch {
-              setNativeCopyState(enhancedButton, codeCopyConfig.errorLabel, 'error');
+              toast.show(codeCopyConfig.errorLabel, 'error');
             }
-
-            if (enhancedButton.resetTimer) window.clearTimeout(enhancedButton.resetTimer);
-            enhancedButton.resetTimer = window.setTimeout(() => {
-              setNativeCopyState(enhancedButton, getIdleCopyLabel(pre), 'idle');
-            }, codeCopyConfig.resetDelay);
           })();
         };
 
         nativeCopyButton.addEventListener('click', enhancedButton.onClick, true);
-        setNativeCopyState(enhancedButton, getIdleCopyLabel(pre), 'idle');
+        setNativeCopyLabel(enhancedButton, getIdleCopyLabel(pre));
         nativeCopyButtons.push(enhancedButton);
       }
       continue;
@@ -184,7 +199,6 @@ function enhanceCodeBlocks(
     button.className = 'cogita-code-copy';
     button.textContent = getIdleCopyLabel(pre);
     button.setAttribute('aria-label', getIdleCopyLabel(pre));
-    button.dataset.copyState = 'idle';
     pre.classList.add('cogita-code-block');
     pre.appendChild(button);
 
@@ -194,22 +208,10 @@ function enhanceCodeBlocks(
       onClick: async () => {
         try {
           await copyText(getSelectedCodeText(pre) || getCodeText(pre));
-          button.textContent = codeCopyConfig.copiedLabel;
-          button.setAttribute('aria-label', codeCopyConfig.copiedLabel);
-          button.dataset.copyState = 'copied';
+          toast.show(codeCopyConfig.copiedLabel, 'success');
         } catch {
-          button.textContent = codeCopyConfig.errorLabel;
-          button.setAttribute('aria-label', codeCopyConfig.errorLabel);
-          button.dataset.copyState = 'error';
+          toast.show(codeCopyConfig.errorLabel, 'error');
         }
-
-        if (enhancedBlock.resetTimer) window.clearTimeout(enhancedBlock.resetTimer);
-        enhancedBlock.resetTimer = window.setTimeout(() => {
-          const label = getIdleCopyLabel(pre);
-          button.textContent = label;
-          button.setAttribute('aria-label', label);
-          button.dataset.copyState = 'idle';
-        }, codeCopyConfig.resetDelay);
       },
     };
 
@@ -225,9 +227,9 @@ const CodeCopy: React.FC = () => {
 
     const enhancedBlocks: EnhancedCodeBlock[] = [];
     const nativeCopyButtons: EnhancedNativeCopyButton[] = [];
+    const toast = createCopyToast();
     const updateButtonLabels = () => {
       for (const block of enhancedBlocks) {
-        if (block.button.dataset.copyState !== 'idle') continue;
         const label = getIdleCopyLabel(block.pre);
         if (block.button.textContent !== label) block.button.textContent = label;
         if (block.button.getAttribute('aria-label') !== label) {
@@ -235,11 +237,10 @@ const CodeCopy: React.FC = () => {
         }
       }
       for (const block of nativeCopyButtons) {
-        if (block.button.dataset.copyState !== 'idle') continue;
-        setNativeCopyState(block, getIdleCopyLabel(block.pre), 'idle');
+        setNativeCopyLabel(block, getIdleCopyLabel(block.pre));
       }
     };
-    const enhance = () => enhanceCodeBlocks(document, enhancedBlocks, nativeCopyButtons);
+    const enhance = () => enhanceCodeBlocks(document, enhancedBlocks, nativeCopyButtons, toast);
     const observer = new MutationObserver(enhance);
 
     enhance();
@@ -249,22 +250,13 @@ const CodeCopy: React.FC = () => {
     return () => {
       observer.disconnect();
       document.removeEventListener('selectionchange', updateButtonLabels);
-      for (const { button, pre, onClick, resetTimer } of enhancedBlocks) {
+      for (const { button, pre, onClick } of enhancedBlocks) {
         button.removeEventListener('click', onClick);
-        if (resetTimer) window.clearTimeout(resetTimer);
         button.remove();
         pre.classList.remove('cogita-code-block');
       }
-      for (const {
-        button,
-        title,
-        ariaLabel,
-        copyState,
-        onClick,
-        resetTimer,
-      } of nativeCopyButtons) {
+      for (const { button, title, ariaLabel, copyState, onClick } of nativeCopyButtons) {
         button.removeEventListener('click', onClick, true);
-        if (resetTimer) window.clearTimeout(resetTimer);
         if (title === null) button.removeAttribute('title');
         else button.title = title;
         if (ariaLabel === null) button.removeAttribute('aria-label');
@@ -272,6 +264,7 @@ const CodeCopy: React.FC = () => {
         if (copyState === null) delete button.dataset.copyState;
         else button.dataset.copyState = copyState;
       }
+      toast.destroy();
     };
   }, []);
 

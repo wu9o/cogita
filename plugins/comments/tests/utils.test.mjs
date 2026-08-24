@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { resolveCommentsConfig, validateCommentsConfig } from '../dist/utils.js';
+import {
+  extractCommentPostRoutes,
+  resolveCommentsConfig,
+  validateCommentsConfig,
+} from '../dist/utils.js';
 
 describe('评论插件工具函数', () => {
   it('默认应关闭评论并保留安全的提供商配置', () => {
@@ -30,5 +34,22 @@ describe('评论插件工具函数', () => {
 
     assert.equal(validateCommentsConfig(config), null);
     assert.deepEqual(config.postRoutes, []);
+  });
+
+  it('有共享内容索引时应直接使用文章路由', async () => {
+    const routes = await extractCommentPostRoutes('missing-posts', process.cwd(), 'posts', ['md'], {
+      getPosts: async () => [
+        {
+          title: '索引文章',
+          filePath: '/missing-posts/index.md',
+          route: '/posts/indexed',
+          createDate: '2026-08-24',
+          updateDate: '2026-08-24',
+          url: '/posts/indexed',
+        },
+      ],
+    });
+
+    assert.deepEqual(routes, ['/posts/indexed']);
   });
 });

@@ -1,8 +1,15 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { buildArchives, paginatePosts, resolveBlogListConfig, sortPosts } from '../dist/utils.js';
+import {
+  buildArchives,
+  buildFilters,
+  filterPosts,
+  paginatePosts,
+  resolveBlogListConfig,
+  sortPosts,
+} from '../dist/utils.js';
 
-function createPost(title, createDate, updateDate = createDate) {
+function createPost(title, createDate, updateDate = createDate, metadata = {}) {
   return {
     title,
     description: `${title} description`,
@@ -11,6 +18,7 @@ function createPost(title, createDate, updateDate = createDate) {
     createDate,
     updateDate,
     url: `/posts/${title}`,
+    ...metadata,
   };
 }
 
@@ -85,5 +93,80 @@ describe('文章列表工具函数', () => {
       result.archives.map((archive) => archive.key),
       ['2026-02', '2026-01']
     );
+  });
+
+  it('应生成标签和层级分类筛选项并统计文章数', () => {
+    const posts = [
+      createPost('git', '2026-01-01', '2026-01-01', {
+        tags: ['Git', '技巧'],
+        categories: ['工程实践/Git'],
+      }),
+      createPost('frontend', '2025-01-01', '2025-01-01', {
+        tags: ['git'],
+        categories: ['工程实践/前端'],
+      }),
+    ];
+    const filters = buildFilters(posts, resolveBlogListConfig({ routePrefix: 'archive' }));
+
+    assert.deepEqual(
+      filters.find((filter) => filter.key === 'tag:git'),
+      {
+        key: 'tag:git',
+        kind: 'tag',
+        value: 'Git',
+        label: 'Git',
+        slug: 'git',
+        count: 2,
+        route: '/archive/tag/git',
+      }
+    );
+    assert.equal(filters.find((filter) => filter.value === '工程实践')?.count, 2);
+    assert.equal(
+      filters.find((filter) => filter.value === '工程实践/Git')?.route,
+      '/archive/category/工程实践/git'
+    );
+  });
+
+  it('应按标签和分类筛选文章，父分类包含子分类文章', () => {
+    const posts = [
+      createPost('git', '2026-01-01', '2026-01-01', {
+        tags: ['Git'],
+        categories: ['工程实践/Git'],
+      }),
+      createPost('frontend', '2025-01-01', '2025-01-01', {
+        tags: ['前端'],
+        categories: ['工程实践/前端'],
+      }),
+    ];
+    const config = resolveBlogListConfig();
+    const filters = buildFilters(posts, config);
+    const tagFilter = filters.find((filter) => filter.key === 'tag:git');
+    const categoryFilter = filters.find((filter) => filter.value === '工程实践');
+
+    assert.ok(tagFilter);
+    assert.ok(categoryFilter);
+    assert.deepEqual(
+      filterPosts(posts, tagFilter).map((post) => post.title),
+      ['git']
+    );
+    assert.deepEqual(
+      filterPosts(posts, categoryFilter).map((post) => post.title),
+      ['git', 'frontend']
+    );
+  });
+
+  it('应为筛选列表生成独立分页路由', () => {
+    const posts = [createPost('one', '2026-01-01'), createPost('two', '2025-01-01')];
+    const [filter] = buildFilters(
+      posts.map((post) => ({ ...post, tags: ['Git'] })),
+      resolveBlogListConfig()
+    );
+    const pages = paginatePosts(posts, resolveBlogListConfig({ pageSize: 1 }), filter);
+
+    assert.equal(pages.length, 2);
+    assert.equal(pages[0].route, '/archive/tag/git');
+    assert.equal(pages[0].next, '/archive/tag/git/page/2');
+    assert.equal(pages[1].previous, '/archive/tag/git');
+    assert.equal(pages[1].filter?.key, 'tag:git');
   });
 });

@@ -1,8 +1,7 @@
 /**
  * RSS生成器核心类
  */
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
-import type { FeedMeta, JSONFeed, RSSConfig, RSSItem, RequiredRSSConfig } from './types';
+import type { FeedMeta, JSONFeed, RSSConfig, RSSItem, RSSPost, RequiredRSSConfig } from './types';
 
 export class RSSGenerator {
   private config: RequiredRSSConfig;
@@ -41,7 +40,7 @@ export class RSSGenerator {
   /**
    * 将Post数据转换为RSS项目
    */
-  private convertPostToRSSItem(post: PostFrontmatter): RSSItem {
+  private convertPostToRSSItem(post: RSSPost): RSSItem {
     const fullUrl = `${this.siteUrl}${post.route}`;
 
     // 获取作者信息
@@ -63,14 +62,19 @@ export class RSSGenerator {
       pubDate: new Date(post.createDate).toUTCString(),
       author: author || undefined,
       category: categories.length > 0 ? categories : undefined,
-      content: this.config.includeContent ? undefined : undefined, // 后续支持完整内容
+      content: this.config.includeContent ? post.content : undefined,
     };
+  }
+
+  /** 将任意文本安全地包装为 CDATA，避免正文中的结束标记破坏 XML。 */
+  private toCdata(value: string): string {
+    return `<![CDATA[${value.replace(/\]\]>/g, ']]]]><![CDATA[>')}]]>`;
   }
 
   /**
    * 生成RSS 2.0 XML
    */
-  generateRSS(posts: PostFrontmatter[]): string {
+  generateRSS(posts: RSSPost[]): string {
     const items = posts
       .slice(0, this.config.maxItems)
       .map((post) => this.convertPostToRSSItem(post));
@@ -79,13 +83,14 @@ export class RSSGenerator {
       .map(
         (item) => `
     <item>
-      <title><![CDATA[${item.title}]]></title>
-      <description><![CDATA[${item.description}]]></description>
+      <title>${this.toCdata(item.title)}</title>
+      <description>${this.toCdata(item.description)}</description>
       <link>${item.link}</link>
       <guid isPermaLink="true">${item.guid}</guid>
       <pubDate>${item.pubDate}</pubDate>
       ${item.author ? `<author>${item.author}</author>` : ''}
-      ${item.category?.map((cat) => `<category><![CDATA[${cat}]]></category>`).join('') || ''}
+      ${item.category?.map((cat) => `<category>${this.toCdata(cat)}</category>`).join('') || ''}
+      ${item.content ? `<content:encoded>${this.toCdata(item.content)}</content:encoded>` : ''}
     </item>`
       )
       .join('');
@@ -110,7 +115,7 @@ export class RSSGenerator {
   /**
    * 生成Atom XML
    */
-  generateAtom(posts: PostFrontmatter[]): string {
+  generateAtom(posts: RSSPost[]): string {
     const items = posts
       .slice(0, this.config.maxItems)
       .map((post) => this.convertPostToRSSItem(post));
@@ -125,6 +130,7 @@ export class RSSGenerator {
     <updated>${new Date(item.pubDate).toISOString()}</updated>
     <summary type="html"><![CDATA[${item.description}]]></summary>
     ${item.author ? `<author><name>${item.author}</name></author>` : ''}
+    ${item.content ? `<content type="text/markdown">${this.toCdata(item.content)}</content>` : ''}
   </entry>`
       )
       .join('');
@@ -145,7 +151,7 @@ export class RSSGenerator {
   /**
    * 生成JSON Feed
    */
-  generateJSON(posts: PostFrontmatter[]): string {
+  generateJSON(posts: RSSPost[]): string {
     const items = posts
       .slice(0, this.config.maxItems)
       .map((post) => this.convertPostToRSSItem(post));
@@ -161,7 +167,8 @@ export class RSSGenerator {
         .map((item) => ({
           id: item.guid,
           title: item.title,
-          content_html: item.description,
+          content_html: item.content ? undefined : item.description,
+          content_text: item.content,
           url: item.link,
           date_published: new Date(item.pubDate).toISOString(),
           author: item.author ? { name: item.author } : undefined,

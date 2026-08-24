@@ -1,11 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import {
   type CogitaPluginConfig,
   type RspressPlugin,
-  getBlogListRoutes,
+  getBlogListRouteEntries,
   getCategoryRoutes,
+  getCogitaBuildContext,
 } from '@cogita/shared';
 import { glob } from 'glob';
 import type { SitemapConfig, SitemapEntry, SitemapPost } from './types';
@@ -49,8 +51,18 @@ function getPostGlob(postsDir: string, extensions: string[]): string {
 }
 
 async function collectPosts(config: CogitaPluginConfig): Promise<SitemapPost[]> {
+  const buildContext = getCogitaBuildContext(config);
+  if (buildContext.contentIndex) {
+    return (await buildContext.contentIndex.getPosts()).map((post) => ({
+      route: post.route,
+      createDate: post.createDate,
+      updateDate: post.updateDate,
+      categories: post.categories,
+    }));
+  }
+
   const postsConfig = config.posts ?? {};
-  const cwd = config.cwd || process.cwd();
+  const cwd = buildContext.cwd || process.cwd();
   const postsDir = postsConfig.dir || 'posts';
   const absolutePostsDir = path.resolve(cwd, postsDir);
   const routePrefix = postsConfig.routePrefix || 'posts';
@@ -63,7 +75,7 @@ async function collectPosts(config: CogitaPluginConfig): Promise<SitemapPost[]> 
 
   return absolutePaths
     .map((filePath) => getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix))
-    .filter((post): post is NonNullable<typeof post> => Boolean(post))
+    .filter((post): post is PostFrontmatter => Boolean(post))
     .map((post) => ({
       route: post.route,
       createDate: post.createDate,
@@ -91,6 +103,8 @@ export function pluginSitemap(config: CogitaPluginConfig): RspressPlugin | null 
     return null;
   }
 
+  const buildContext = getCogitaBuildContext(config);
+
   const finalConfig = {
     ...DEFAULT_CONFIG,
     ...sitemapConfig,
@@ -105,7 +119,7 @@ export function pluginSitemap(config: CogitaPluginConfig): RspressPlugin | null 
       const siteUrl = config.site?.url;
       if (!siteUrl) {
         const message = '[Sitemap Plugin] 缺少 site.url，无法生成站点地图';
-        const shouldFail = finalConfig.failOnMissingSiteUrl ?? config.strict !== false;
+        const shouldFail = finalConfig.failOnMissingSiteUrl ?? buildContext.strict !== false;
         if (shouldFail) {
           throw new Error(message);
         }
@@ -135,17 +149,33 @@ export function pluginSitemap(config: CogitaPluginConfig): RspressPlugin | null 
         );
       }
 
-      if (finalConfig.includeBlogList && config.blogList?.enabled !== false) {
+      if (
+        finalConfig.includeBlogList &&
+        config.blogList?.enabled !== false &&
+        buildContext.themeLayouts?.blogList
+      ) {
         sitemapEntries.push(
-          ...getBlogListRoutes(posts, config.blogList).map((route) => ({
-            loc: resolveSitemapUrl(siteRoot, route),
-            changefreq: finalConfig.changefreq,
-            priority: normalizePriority(finalConfig.priority),
-          }))
+          ...getBlogListRouteEntries(posts, {
+            ...config.blogList,
+            categorySeparator: config.categories?.separator,
+          })
+            .filter(
+              (entry) => entry.kind !== 'archive' || Boolean(buildContext.themeLayouts?.archive)
+            )
+            .map((entry) => ({
+              loc: resolveSitemapUrl(siteRoot, entry.route),
+              changefreq: finalConfig.changefreq,
+              priority: normalizePriority(finalConfig.priority),
+            }))
         );
       }
 
-      if (finalConfig.includeSearch && config.search?.enabled !== false && config.search) {
+      if (
+        finalConfig.includeSearch &&
+        config.search?.enabled !== false &&
+        config.search &&
+        buildContext.themeLayouts?.search
+      ) {
         const routePrefix = (config.search.routePrefix || 'search').replace(/^\/+|\/+$/g, '');
         sitemapEntries.push({
           loc: resolveSitemapUrl(siteRoot, `/${routePrefix}`),
@@ -157,7 +187,8 @@ export function pluginSitemap(config: CogitaPluginConfig): RspressPlugin | null 
       if (
         finalConfig.includeCategories &&
         config.categories?.enabled !== false &&
-        config.categories
+        config.categories &&
+        buildContext.themeLayouts?.category
       ) {
         const categoryPrefix = (config.categories.routePrefix || 'categories').replace(
           /^\/+|\/+$/g,
@@ -184,7 +215,7 @@ export function pluginSitemap(config: CogitaPluginConfig): RspressPlugin | null 
       const configuredOutput = (rspressConfigObject.output as Record<string, unknown> | undefined)
         ?.path;
       const outputDir = path.resolve(
-        config.cwd || process.cwd(),
+        buildContext.cwd || process.cwd(),
         String(configuredOutput || 'doc_build')
       );
       outputFile = path.join(outputDir, normalizeOutputPath(finalConfig.path));

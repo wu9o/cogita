@@ -1,3 +1,4 @@
+import { getCogitaBuildContext } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import type { CategoriesConfig, CategoryData, CategoryStats } from './types';
@@ -15,6 +16,8 @@ export function pluginCategories(config: CogitaPluginConfig): RspressPlugin | nu
     return null;
   }
 
+  const buildContext = getCogitaBuildContext(config);
+
   const finalConfig = resolveCategoriesConfig(config.categories as CategoriesConfig);
   let allCategories: CategoryData[] = [];
   let categoryMap = new Map<string, CategoryData>();
@@ -31,9 +34,10 @@ export function pluginCategories(config: CogitaPluginConfig): RspressPlugin | nu
       const postsConfig = config.posts || {};
       const posts = await extractCategoriesFromPosts(
         postsConfig.dir || 'posts',
-        config.cwd || process.cwd(),
+        buildContext.cwd || process.cwd(),
         postsConfig.routePrefix || 'posts',
-        postsConfig.extensions || ['md', 'mdx']
+        postsConfig.extensions || ['md', 'mdx'],
+        buildContext.contentIndex
       );
       const processed = processCategoriesFromPosts(posts, finalConfig);
       allCategories = processed.categoriesData;
@@ -45,7 +49,7 @@ export function pluginCategories(config: CogitaPluginConfig): RspressPlugin | nu
     },
 
     addPages() {
-      const categoryLayout = config.themeLayouts?.category;
+      const categoryLayout = buildContext.themeLayouts?.category;
       if (!categoryLayout) {
         console.warn('[Categories Plugin] 主题未提供 pageLayouts.category，跳过分类页面生成');
         return [];

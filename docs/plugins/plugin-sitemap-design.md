@@ -42,7 +42,7 @@ Rspress 构建 HTML
 afterBuild：写入 doc_build/sitemap.xml
 ```
 
-文章扫描暂时复用 `@cogita/plugin-posts-frontmatter` 的纯函数和路由约定。由于 Rspress 插件的 `beforeBuild` 生命周期并行执行，站点地图不读取 `virtual-posts-data`，避免隐式依赖另一个插件的执行顺序。
+站点地图优先读取 core 注入的 `ContentIndex`，并复用共享的文章列表路由契约。由于 Rspress 插件的 `beforeBuild` 生命周期并行执行，站点地图不读取 `virtual-posts-data`，避免隐式依赖另一个插件的执行顺序。没有共享索引时仍保留独立扫描兜底。
 
 ## URL 规则
 
@@ -62,4 +62,4 @@ afterBuild：写入 doc_build/sitemap.xml
 
 ## 后续演进
 
-第一期不包含图片站点地图、多语言索引和 sitemap index。后续 SEO 插件可以复用站点地图的规范化 URL 工具；当 core 引入 `ContentIndex` 后，站点地图应直接读取统一文章索引，消除与 tags、collections、rss、images 的重复扫描。
+第一期不包含图片站点地图、多语言索引和 sitemap index。后续 SEO 插件可以复用站点地图的规范化 URL 工具；路由是否写入站点地图还会受主题布局能力约束，避免生成主题实际没有页面的 404 地址。

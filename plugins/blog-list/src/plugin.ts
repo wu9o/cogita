@@ -1,9 +1,12 @@
+import { getCogitaBuildContext } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
-import type { BlogArchive, BlogListPage } from './types';
+import type { BlogArchive, BlogListFilter, BlogListPage } from './types';
 import {
   buildArchives,
+  buildFilters,
   extractPosts,
+  filterPosts,
   paginatePosts,
   resolveBlogListConfig,
   sortPosts,
@@ -18,9 +21,12 @@ export function pluginBlogList(config: CogitaPluginConfig): RspressPlugin | null
     return null;
   }
 
+  const buildContext = getCogitaBuildContext(config);
+
   const finalConfig = resolveBlogListConfig(blogListConfig);
   let pages: BlogListPage[] = [];
   let archives: BlogArchive[] = [];
+  let filters: BlogListFilter[] = [];
 
   return {
     name: '@cogita/plugin-blog-list',
@@ -29,14 +35,21 @@ export function pluginBlogList(config: CogitaPluginConfig): RspressPlugin | null
       const postsConfig = config.posts || {};
       const posts = await extractPosts(
         postsConfig.dir || 'posts',
-        config.cwd || process.cwd(),
+        buildContext.cwd || process.cwd(),
         postsConfig.routePrefix || 'posts',
         postsConfig.extensions || ['md', 'mdx'],
-        config.contentIndex
+        buildContext.contentIndex
       );
       const sortedPosts = sortPosts(posts, finalConfig);
 
-      pages = paginatePosts(sortedPosts, finalConfig);
+      const categorySeparator = config.categories?.separator || '/';
+      filters = buildFilters(sortedPosts, finalConfig, categorySeparator);
+      pages = [
+        ...paginatePosts(sortedPosts, finalConfig),
+        ...filters.flatMap((filter) =>
+          paginatePosts(filterPosts(sortedPosts, filter, categorySeparator), finalConfig, filter)
+        ),
+      ];
       if (finalConfig.generateArchives) {
         const archiveResult = buildArchives(sortedPosts, finalConfig);
         archives = archiveResult.archives;
@@ -50,13 +63,13 @@ export function pluginBlogList(config: CogitaPluginConfig): RspressPlugin | null
       }
 
       console.log(
-        `[Blog List Plugin] 已生成 ${pages.length} 个列表页和 ${archives.length > 0 ? archives.length + 1 : 0} 个归档页`
+        `[Blog List Plugin] 已生成 ${pages.length} 个列表页、${filters.length} 个筛选项和 ${archives.length > 0 ? archives.length + 1 : 0} 个归档页`
       );
     },
 
     addPages() {
-      const listLayout = config.themeLayouts?.blogList;
-      const archiveLayout = config.themeLayouts?.archive;
+      const listLayout = buildContext.themeLayouts?.blogList;
+      const archiveLayout = buildContext.themeLayouts?.archive;
       const result = [];
 
       if (listLayout) {
@@ -100,10 +113,15 @@ export function pluginBlogList(config: CogitaPluginConfig): RspressPlugin | null
         'virtual-blog-list-data': `
           export const blogListConfig = ${JSON.stringify(finalConfig)};
           export const allBlogListPages = ${JSON.stringify(pages)};
+          export const allBlogListFilters = ${JSON.stringify(filters)};
           export const allArchives = ${JSON.stringify(archives)};
 
-          export function getBlogListPage(page) {
-            return allBlogListPages.find(item => item.page === page);
+          export function getBlogListPage(page, filterKey = 'all') {
+            return allBlogListPages.find(item => item.page === page && (item.filter?.key || 'all') === filterKey);
+          }
+
+          export function getBlogListFilter(key) {
+            return allBlogListFilters.find(item => item.key === key);
           }
 
           export function getArchive(key) {

@@ -2,6 +2,7 @@ import { cp, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
+import { getCogitaBuildContext } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import { glob } from 'glob';
@@ -88,6 +89,14 @@ function getPostCover(
 }
 
 async function scanPostFrontmatter(config: CogitaPluginConfig): Promise<PostFrontmatter[]> {
+  const buildContext = getCogitaBuildContext(config);
+  if (buildContext.contentIndex) {
+    return (await buildContext.contentIndex.getPosts()).map((post) => ({
+      ...post,
+      url: post.url || post.route,
+    }));
+  }
+
   const postsConfig = config.posts ?? {};
   const postsDir = postsConfig.dir || 'posts';
   const routePrefix = postsConfig.routePrefix || 'posts';
@@ -95,7 +104,7 @@ async function scanPostFrontmatter(config: CogitaPluginConfig): Promise<PostFron
   const extensionPattern = extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0];
   const files = await glob(`${postsDir}/**/*.${extensionPattern}`, {
     absolute: true,
-    cwd: config.cwd,
+    cwd: buildContext.cwd,
     nodir: true,
   });
 
@@ -120,6 +129,7 @@ async function copyPublicImages(
 }
 
 export function pluginImages(config: CogitaPluginConfig): RspressPlugin {
+  const buildContext = getCogitaBuildContext(config);
   const imageConfig = normalizeImagesConfig(config);
   let allImages: ImageData[] = [];
   let postCovers: Record<string, ImageData> = {};
@@ -137,7 +147,7 @@ export function pluginImages(config: CogitaPluginConfig): RspressPlugin {
         return;
       }
 
-      const scannedImages = await scanPublicImages(config.root, imageConfig);
+      const scannedImages = await scanPublicImages(buildContext.root, imageConfig);
       allImages = scannedImages.map((image) => toRuntimeImage(image));
       const imageBySrc = new Map(
         scannedImages.map((image) => [normalizeImageSrc(stripImageSuffix(image.src)), image])
@@ -192,7 +202,7 @@ export function pluginImages(config: CogitaPluginConfig): RspressPlugin {
       if (!imageConfig.enabled || !isProd || allImages.length === 0) {
         return;
       }
-      await copyPublicImages(config.root, imageConfig.dir, rspressConfig);
+      await copyPublicImages(buildContext.root, imageConfig.dir, rspressConfig);
     },
 
     addRuntimeModules() {
