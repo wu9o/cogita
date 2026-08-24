@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
+import type { ContentIndex } from '@cogita/shared';
 import { glob } from 'glob';
 import type {
   ResolvedSearchAnalyticsConfig,
@@ -101,8 +102,16 @@ export async function extractSearchDocuments(
   cwd: string,
   routePrefix: string,
   extensions: string[],
-  config: ResolvedSearchConfig
+  config: ResolvedSearchConfig,
+  contentIndex?: ContentIndex
 ): Promise<SearchDocument[]> {
+  if (contentIndex) {
+    const posts = await contentIndex.getPosts();
+    return posts
+      .map((post) => toSearchDocument({ ...post, url: post.url || post.route }, config))
+      .sort((a, b) => a.route.localeCompare(b.route));
+  }
+
   const normalizedExtensions = extensions.length > 0 ? extensions : ['md', 'mdx'];
   const extensionPattern =
     normalizedExtensions.length > 1

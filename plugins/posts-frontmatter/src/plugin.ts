@@ -1,3 +1,4 @@
+import { getCogitaBuildContext } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import { glob } from 'glob';
@@ -23,7 +24,8 @@ export function pluginPostsFrontmatter(config: CogitaPluginConfig): RspressPlugi
   const extensions = postsConfig.extensions || ['md', 'mdx'];
 
   // Use enhanced cwd from framework
-  const cwd = config.cwd || process.cwd();
+  const buildContext = getCogitaBuildContext(config);
+  const cwd = buildContext.cwd || process.cwd();
 
   // 用于在钩子之间传递数据的文章数据数组
   let allPostsData: PostFrontmatter[] = [];
@@ -32,8 +34,8 @@ export function pluginPostsFrontmatter(config: CogitaPluginConfig): RspressPlugi
     name: '@cogita/plugin-posts-frontmatter',
 
     async beforeBuild() {
-      if (config.contentIndex) {
-        allPostsData = (await config.contentIndex.getPosts()).map((post) => ({ ...post }));
+      if (buildContext.contentIndex) {
+        allPostsData = (await buildContext.contentIndex.getPosts()).map((post) => ({ ...post }));
         console.log(`[Posts Plugin] 使用共享内容索引，已处理 ${allPostsData.length} 篇文章`);
         return;
       }

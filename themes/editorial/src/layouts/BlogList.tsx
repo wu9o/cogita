@@ -1,14 +1,22 @@
 import type { LayoutProps } from '@cogita/shared';
 import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
-import { allBlogListPages, blogListConfig } from 'virtual-blog-list-data';
+import { allBlogListFilters, blogListConfig, getBlogListPage } from 'virtual-blog-list-data';
 import { PostCardList } from '../components/PostCard';
 import { addPostCovers, getBase, getCurrentRoute } from '../utils';
 
 function getPageNumber(pathname: string, base: string): number {
   const route = getCurrentRoute(base, pathname).replace(/^\/+/, '');
-  const match = route.match(new RegExp(`^${blogListConfig.routePrefix}/page/(\\d+)$`));
+  const match = route.match(/\/page\/(\d+)$/);
   return match ? Number(match[1]) : 1;
+}
+
+function getFilterKey(pathname: string, base: string): string {
+  const route = getCurrentRoute(base, pathname);
+  const filter = allBlogListFilters.find(
+    (item) => route === item.route || route.startsWith(`${item.route}/page/`)
+  );
+  return filter?.key || 'all';
 }
 
 /** 全部文章分页页面，使用 Editorial 主题统一的文章列表。 */
@@ -19,7 +27,11 @@ const BlogListLayout: React.FC<LayoutProps> = () => {
     typeof window === 'undefined' ? '' : window.location.pathname,
     base
   );
-  const page = allBlogListPages.find((item) => item.page === pageNumber) || allBlogListPages[0];
+  const filterKey = getFilterKey(
+    typeof window === 'undefined' ? '' : window.location.pathname,
+    base
+  );
+  const page = getBlogListPage(pageNumber, filterKey) || getBlogListPage(1, 'all');
 
   if (!page) return <p className="editorial-empty">暂无文章。</p>;
 
@@ -27,12 +39,35 @@ const BlogListLayout: React.FC<LayoutProps> = () => {
     <div className="editorial-index-page">
       <header className="editorial-page-header">
         <p className="editorial-eyebrow">Archive</p>
-        <h1>全部文章</h1>
+        <h1>
+          {page.filter
+            ? `${page.filter.kind === 'tag' ? '标签' : '分类'}：${page.filter.label}`
+            : '全部文章'}
+        </h1>
         <p>
-          第 {page.page} / {page.totalPages} 页
+          {page.filter ? `${page.filter.count} 篇文章 · ` : ''}第 {page.page} / {page.totalPages} 页
         </p>
         <a href={normalizeHrefInRuntime(`${base}/`)}>返回首页</a>
       </header>
+
+      <nav className="editorial-filter-nav" aria-label="文章筛选">
+        <a
+          href={normalizeHrefInRuntime(`${base}/${blogListConfig.routePrefix}`)}
+          className={!page.filter ? 'is-active' : undefined}
+        >
+          全部
+        </a>
+        {allBlogListFilters.map((filter) => (
+          <a
+            key={filter.key}
+            href={normalizeHrefInRuntime(`${base}${filter.route}`)}
+            className={page.filter?.key === filter.key ? 'is-active' : undefined}
+          >
+            {filter.kind === 'tag' ? '#' : ''}
+            {filter.label} ({filter.count})
+          </a>
+        ))}
+      </nav>
 
       {page.posts.length > 0 ? (
         <PostCardList posts={addPostCovers(page.posts)} />

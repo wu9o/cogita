@@ -7,6 +7,7 @@ Cogita 的文章列表、静态分页和时间归档插件。
 - 构建期生成 `/archive` 文章列表页；
 - 支持按创建时间、更新时间或标题排序；
 - 支持静态分页；
+- 支持标签和层级分类筛选页及筛选分页；
 - 支持按年或按月生成归档页面；
 - 通过 `virtual-blog-list-data` 向主题提供列表数据；
 - 兼容 `site.base` 子路径部署和现有文章封面元数据。
@@ -36,11 +37,17 @@ export default defineConfig({
 pnpm --filter @cogita/plugin-blog-list test
 ```
 
-测试覆盖配置规范化、稳定排序、分页边界、年度归档、月度归档和非法日期统计。
+测试覆盖配置规范化、稳定排序、分页边界、标签/分类筛选、年度归档、月度归档和非法日期统计。
 
 ## 虚拟模块
 
-插件提供 `virtual-blog-list-data`，包含 `allBlogListPages`、`allArchives` 和对应的查询函数。主题可以使用这些数据实现自定义列表布局，而不需要重新扫描文章目录。
+插件提供 `virtual-blog-list-data`，包含 `allBlogListPages`、`allBlogListFilters`、`allArchives` 和对应的查询函数。筛选列表使用以下静态路由：
+
+- `/archive`、`/archive/page/2`：全部文章列表；
+- `/archive/tag/:slug`、`/archive/tag/:slug/page/2`：标签列表；
+- `/archive/category/:slug`、`/archive/category/:slug/page/2`：分类列表。
+
+主题可以使用这些数据实现自定义列表布局，而不需要重新扫描文章目录。
 
 ## 架构边界
 

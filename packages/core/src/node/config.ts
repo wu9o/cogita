@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { copyFile, mkdir } from 'node:fs/promises';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { CogitaTheme } from '@cogita/shared';
+import type { CogitaPluginConfig, CogitaTheme } from '@cogita/shared';
 import type { RspressPlugin, UserConfig } from '@rspress/core';
 import { findUp } from 'find-up';
 import jiti from 'jiti';
@@ -171,6 +171,38 @@ function createThemePlugin(theme: CogitaTheme): RspressPlugin {
   };
 }
 
+/** 校验已启用功能对应的主题布局，避免构建成功但页面静默变成 404。 */
+function validateThemeLayouts(config: CogitaFullConfig, theme: CogitaTheme, strict: boolean) {
+  const requiredLayouts: Array<[boolean, keyof CogitaTheme['pageLayouts'], string]> = [
+    [Boolean(config.tags && config.tags.enabled !== false), 'tag', '标签'],
+    [Boolean(config.collections && config.collections.enabled !== false), 'collection', '合集'],
+    [Boolean(config.categories && config.categories.enabled !== false), 'category', '分类'],
+    [Boolean(config.blogList && config.blogList.enabled !== false), 'blogList', '文章列表'],
+    [
+      Boolean(
+        config.blogList && config.blogList.enabled !== false && config.blogList.generateArchives
+      ),
+      'archive',
+      '归档',
+    ],
+    [Boolean(config.search && config.search.enabled !== false), 'search', '搜索'],
+  ];
+  const missing = requiredLayouts
+    .filter(([enabled, layout]) => enabled && !theme.pageLayouts[layout])
+    .map(([, , label]) => label);
+
+  if (missing.length === 0) {
+    return;
+  }
+
+  const message = `[Cogita] 已启用的功能缺少主题布局：${missing.join('、')}`;
+  if (strict) {
+    throw new Error(`${message}。请在主题的 pageLayouts 中补齐对应布局，或关闭相关功能。`);
+  }
+
+  console.warn(`${message}，非严格模式下将跳过缺失页面。`);
+}
+
 /**
  * Create enhanced configuration object for plugin factories
  */
@@ -181,15 +213,24 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
     extensions: ['md', 'mdx'],
     ...cogitaConfig.posts,
   };
+  const contentIndex = createContentIndex(root, posts);
+  const framework = {
+    version: '0.0.1', // TODO: get from package.json
+    buildTime: new Date().toISOString(),
+  };
 
-  return {
+  const fullConfig: CogitaFullConfig = {
     ...cogitaConfig,
     root,
     cwd: root,
-    contentIndex: createContentIndex(root, posts),
-    _framework: {
-      version: '0.0.1', // TODO: get from package.json
-      buildTime: new Date().toISOString(),
+    contentIndex,
+    _framework: framework,
+    buildContext: {
+      root,
+      cwd: root,
+      contentIndex,
+      strict: cogitaConfig.strict,
+      framework,
     },
     // Enhanced site config with defaults
     site: {
@@ -378,6 +419,8 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
         }
       : undefined,
   };
+
+  return fullConfig;
 }
 
 export async function createRspressConfig(
@@ -421,17 +464,21 @@ export async function createRspressConfig(
       }
     }
     fullConfigForPlugins.themeLayouts = themeLayouts;
+    fullConfigForPlugins.buildContext.themeLayouts = themeLayouts;
+  }
+  if (theme) {
+    validateThemeLayouts(fullConfigForPlugins, theme, cogitaConfig.strict !== false);
   }
 
   // 5. Instantiate plugins from the theme's plugin factories with enhanced error handling
   const themePlugins: RspressPlugin[] = [];
   const strict = cogitaConfig.strict !== false; // Default to true
+  const pluginConfig: CogitaPluginConfig = fullConfigForPlugins;
 
   if (theme?.plugins) {
     for (const factory of theme.plugins) {
       try {
-        // biome-ignore lint/suspicious/noExplicitAny: CogitaPluginConfig 是 Rspress 配置的超集，插件工厂需要接受更丰富的配置
-        const result = factory(fullConfigForPlugins as any);
+        const result = factory(pluginConfig);
 
         if (result) {
           // Handle both single plugin and array of plugins
@@ -451,6 +498,12 @@ export async function createRspressConfig(
 
   // 6. Combine all plugins
   const finalPlugins: RspressPlugin[] = [];
+  finalPlugins.push({
+    name: 'cogita-content-index',
+    beforeBuild() {
+      fullConfigForPlugins.buildContext.contentIndex?.invalidate?.();
+    },
+  });
   if (theme) {
     finalPlugins.push(createThemePlugin(theme));
   }

@@ -1,8 +1,20 @@
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
+import {
+  generateCategorySlug,
+  generateTagSlug,
+  getCategoryPathVariants,
+  normalizeCategoryPath,
+} from '@cogita/shared';
 import type { ContentIndex } from '@cogita/shared';
 import { glob } from 'glob';
-import type { BlogArchive, BlogListConfig, BlogListPage, ResolvedBlogListConfig } from './types';
+import type {
+  BlogArchive,
+  BlogListConfig,
+  BlogListFilter,
+  BlogListPage,
+  ResolvedBlogListConfig,
+} from './types';
 
 /** 将路由前缀规范化为不带斜杠的形式。 */
 export function normalizeRoutePrefix(prefix: string | undefined, fallback: string): string {
@@ -24,6 +36,94 @@ export function resolveBlogListConfig(config?: BlogListConfig): ResolvedBlogList
     archivePrefix: normalizeRoutePrefix(config?.archivePrefix, 'archives'),
     archiveGranularity: config?.archiveGranularity ?? 'year',
   };
+}
+
+function getFilterRoute(config: ResolvedBlogListConfig, filter: BlogListFilter): string {
+  return `/${config.routePrefix}/${filter.kind}/${filter.slug}`;
+}
+
+function getPageRoute(
+  config: ResolvedBlogListConfig,
+  page: number,
+  filter?: BlogListFilter
+): string {
+  const prefix = filter?.route || `/${normalizeRoutePrefix(config.routePrefix, 'archive')}`;
+  return page === 1 ? prefix : `${prefix}/page/${page}`;
+}
+
+/** 生成标签和分类筛选项，并统计每个筛选项包含的文章数。 */
+export function buildFilters(
+  posts: PostFrontmatter[],
+  config: ResolvedBlogListConfig,
+  categorySeparator = '/'
+): BlogListFilter[] {
+  const filters = new Map<string, BlogListFilter>();
+
+  const addFilter = (kind: BlogListFilter['kind'], value: string, count: number) => {
+    const normalizedValue = value.trim();
+    if (!normalizedValue) return;
+
+    const slug =
+      kind === 'tag'
+        ? generateTagSlug(normalizedValue)
+        : generateCategorySlug(normalizedValue, categorySeparator);
+    const key = `${kind}:${slug}`;
+    const current = filters.get(key);
+    if (current) {
+      current.count += count;
+      return;
+    }
+
+    const filter: BlogListFilter = {
+      key,
+      kind,
+      value: normalizedValue,
+      label: normalizedValue,
+      slug,
+      count,
+      route: '',
+    };
+    filter.route = getFilterRoute(config, filter);
+    filters.set(key, filter);
+  };
+
+  for (const post of posts) {
+    const postTags = new Set((post.tags || []).map((tag) => tag.trim()).filter(Boolean));
+    for (const tag of postTags) addFilter('tag', tag, 1);
+
+    const postCategories = new Set<string>();
+    for (const category of post.categories || []) {
+      for (const categoryPath of getCategoryPathVariants(category, categorySeparator)) {
+        postCategories.add(normalizeCategoryPath(categoryPath, categorySeparator));
+      }
+    }
+    for (const category of postCategories) addFilter('category', category, 1);
+  }
+
+  return Array.from(filters.values()).sort((left, right) => {
+    if (left.kind !== right.kind) return left.kind === 'tag' ? -1 : 1;
+    if (left.count !== right.count) return right.count - left.count;
+    return left.label.localeCompare(right.label, 'zh-CN');
+  });
+}
+
+/** 按筛选项过滤文章，分类筛选会包含其子分类文章。 */
+export function filterPosts(
+  posts: PostFrontmatter[],
+  filter: BlogListFilter,
+  categorySeparator = '/'
+): PostFrontmatter[] {
+  return posts.filter((post) => {
+    if (filter.kind === 'tag') {
+      return (post.tags || []).some((tag) => generateTagSlug(tag.trim()) === filter.slug);
+    }
+
+    return (post.categories || []).some((category) =>
+      getCategoryPathVariants(category, categorySeparator).some(
+        (categoryPath) => generateCategorySlug(categoryPath, categorySeparator) === filter.slug
+      )
+    );
+  });
 }
 
 /** 扫描并解析文章，保持与 posts-frontmatter 相同的路由规则。 */
@@ -96,28 +196,26 @@ export function sortPosts(
     .map(({ post }) => post);
 }
 
-function getPageRoute(routePrefix: string, page: number): string {
-  return page === 1 ? `/${routePrefix}` : `/${routePrefix}/page/${page}`;
-}
-
 /** 将文章拆分为静态分页数据。 */
 export function paginatePosts(
   posts: PostFrontmatter[],
-  config: ResolvedBlogListConfig
+  config: ResolvedBlogListConfig,
+  filter?: BlogListFilter
 ): BlogListPage[] {
   const totalPages = Math.max(1, Math.ceil(posts.length / config.pageSize));
   const pages: BlogListPage[] = [];
 
   for (let page = 1; page <= totalPages; page += 1) {
     const start = (page - 1) * config.pageSize;
-    const route = getPageRoute(config.routePrefix, page);
+    const route = getPageRoute(config, page, filter);
     pages.push({
       page,
       totalPages,
       posts: posts.slice(start, start + config.pageSize),
       route,
-      previous: page > 1 ? getPageRoute(config.routePrefix, page - 1) : undefined,
-      next: page < totalPages ? getPageRoute(config.routePrefix, page + 1) : undefined,
+      previous: page > 1 ? getPageRoute(config, page - 1, filter) : undefined,
+      next: page < totalPages ? getPageRoute(config, page + 1, filter) : undefined,
+      filter,
     });
   }
 

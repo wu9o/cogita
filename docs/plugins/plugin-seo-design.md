@@ -95,6 +95,6 @@ Rspress 1.45 提供了 `config.head` 的路由回调能力，因此插件可以�
 
 ## 架构边界
 
-当前 Rspress 插件生命周期的 `config` 钩子可以直接生成页面 head，SEO 插件暂时独立扫描文章，避免依赖 `beforeBuild` 的执行顺序。随着 posts、tags、collections、rss、images、sitemap、seo 的数量增加，后续应由 core 引入构建期 `ContentIndex`，统一提供文章元数据并消除重复扫描。
+SEO 插件通过 `config` 钩子注册页面 head，通过 `beforeBuild` 使用 core 提供的 `ContentIndex` 生成页面元数据；这样索引失效发生在 SEO 重新读取文章之前，不依赖 posts 插件的执行顺序。旧版 core 或插件单独使用时仍保留独立扫描兜底。
 
 搜索功能暂不在 SEO 插件中重复实现：Rspress 已经生成本地搜索索引和搜索入口，未来只需在现有索引上扩展标签、合集和搜索权重。

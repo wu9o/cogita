@@ -1,4 +1,4 @@
-import type { CogitaTheme, ContentIndex, LayoutProps } from '@cogita/shared';
+import type { CogitaBuildContext, CogitaTheme, ContentIndex, LayoutProps } from '@cogita/shared';
 import type { UserConfig } from '@rspress/core';
 
 export type { CogitaTheme, LayoutProps };
@@ -536,6 +536,8 @@ export interface CogitaConfig {
    * @default true
    */
   strict?: boolean;
+  /** 保留第三方插件的顶层命名空间，同时让核心配置可直接传入插件工厂。 */
+  [key: string]: unknown;
 }
 
 /**
@@ -546,6 +548,8 @@ export interface CogitaFullConfig extends CogitaConfig {
   cwd: string;
   /** 由 core 创建并供构建期插件共享的文章索引。 */
   contentIndex: ContentIndex;
+  /** 构建期能力的统一上下文，供插件和框架内部共享。 */
+  buildContext: CogitaBuildContext;
   _framework: {
     version: string;
     buildTime: string;

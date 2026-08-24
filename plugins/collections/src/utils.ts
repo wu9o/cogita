@@ -1,5 +1,6 @@
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
+import type { ContentIndex } from '@cogita/shared';
 import { glob } from 'glob';
 import type {
   CollectionData,
@@ -19,8 +20,16 @@ import type {
 export async function extractCollectionsFromPosts(
   postsDir: string,
   cwd: string,
-  routePrefix = 'posts'
+  routePrefix = 'posts',
+  contentIndex?: ContentIndex
 ): Promise<PostFrontmatter[]> {
+  if (contentIndex) {
+    return (await contentIndex.getPosts()).map((post) => ({
+      ...post,
+      url: post.url || post.route,
+    }));
+  }
+
   const options = {
     absolute: true,
     cwd,

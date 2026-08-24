@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
+import type { ContentIndex } from '@cogita/shared';
 import { glob } from 'glob';
 import type {
   CommentsConfig,
@@ -92,8 +93,13 @@ export async function extractCommentPostRoutes(
   postsDir: string,
   cwd: string,
   routePrefix: string,
-  extensions: string[]
+  extensions: string[],
+  contentIndex?: ContentIndex
 ): Promise<string[]> {
+  if (contentIndex) {
+    return (await contentIndex.getPosts()).map((post) => post.route).sort();
+  }
+
   const normalizedExtensions = extensions.length > 0 ? extensions : ['md', 'mdx'];
   const extensionPattern =
     normalizedExtensions.length > 1

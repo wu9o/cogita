@@ -62,7 +62,7 @@ export function getFrontmatterFromFile(
               author: frontmatter.seo.author,
             }
           : undefined,
-      url: '',
+      url: route,
     };
   } catch (e) {
     console.error(`从 ${filePath} 读取 frontmatter 时出错:`, e);

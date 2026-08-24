@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { getCogitaBuildContext } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import { imageSize } from 'image-size';
 import type { ImageData, ResolvedImage, ResolvedImagesConfig } from './types';
@@ -8,6 +9,7 @@ const DEFAULT_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'avif', 'svg'];
 
 /** 统一图片插件配置，避免插件直接依赖未归一化的用户输入。 */
 export function normalizeImagesConfig(config: CogitaPluginConfig): ResolvedImagesConfig {
+  const buildContext = getCogitaBuildContext(config);
   const configured = config.images ?? {};
   const extensions = configured.extensions?.length ? configured.extensions : DEFAULT_EXTENSIONS;
 
@@ -16,7 +18,7 @@ export function normalizeImagesConfig(config: CogitaPluginConfig): ResolvedImage
     dir: configured.dir || 'public/images',
     extensions: extensions.map((extension) => extension.replace(/^\./, '').toLowerCase()),
     readDimensions: configured.readDimensions !== false,
-    failOnMissing: configured.failOnMissing ?? config.strict !== false,
+    failOnMissing: configured.failOnMissing ?? buildContext.strict !== false,
     warnOnMissingAlt: configured.warnOnMissingAlt === true,
   };
 }

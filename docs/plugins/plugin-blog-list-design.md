@@ -3,7 +3,7 @@
 **文档版本**：1.0
 **创建日期**：2026 年 8 月 21 日
 **插件名称**：`@cogita/plugin-blog-list`
-**状态**：第一期已实现，后续筛选能力待建设
+**状态**：第一、二期已实现，后续自定义列表能力待建设
 
 ## 1. 建设目标
 
@@ -24,7 +24,7 @@ Blog List 是 Cogita 的文章列表与归档能力插件，负责把文章数�
 2. **保持现有插件工厂模式**：配置缺失或明确禁用时返回 `null`，不影响已有站点构建。
 3. **复用文章数据契约**：优先沿用 `PostFrontmatter` 和 `Post`，不再定义一套不兼容的文章模型。
 4. **静态优先**：分页和归档在构建期生成，避免依赖客户端路由和运行时查询参数。
-5. **渐进式增强**：第一期只实现列表、分页和按年归档；标签、分类过滤和搜索索引作为后续扩展。
+5. **渐进式增强**：列表、分页、标签/分类筛选和归档先在构建期落地，搜索索引和更丰富的交互作为后续扩展。
 6. **部署路径安全**：所有主题内生成的链接都必须基于 `site.base`，兼容 `/cogita/` 这类子路径部署。
 
 ## 3. 功能范围
@@ -42,11 +42,12 @@ Blog List 是 Cogita 的文章列表与归档能力插件，负责把文章数�
 
 ### 第二期：内容筛选能力
 
-- 标签筛选静态页；
-- 分类筛选静态页；
+- 标签筛选静态页及筛选分页；
+- 分类筛选静态页及层级分类分页；
 - 月度归档；
-- 自定义列表页面和过滤器；
-- 分页导航组件和列表空状态组件沉淀到 `@cogita/ui`。
+- 主题提供统一的筛选导航和当前筛选状态。
+
+第二期已实现的筛选路由为 `/archive/tag/:slug` 和 `/archive/category/:slug`，后续分页沿用 `/page/:page` 后缀。分类父级会聚合其子分类文章，避免层级分类下出现空的父级入口。
 
 ### 暂不纳入
 
@@ -103,7 +104,7 @@ posts/*.md
     ↓
 PostFrontmatter
     ↓
-blog-list 规范化、排序、分页、分组
+ContentIndex → blog-list 规范化、排序、筛选、分页、分组
     ↓
 virtual-blog-list-data
     ↓
@@ -135,8 +136,10 @@ interface BlogArchive {
 declare module 'virtual-blog-list-data' {
   export const blogListConfig: BlogListConfig;
   export const allBlogListPages: BlogListPage[];
+  export const allBlogListFilters: BlogListFilter[];
   export const allArchives: BlogArchive[];
-  export function getBlogListPage(page: number): BlogListPage | undefined;
+  export function getBlogListPage(page: number, filterKey?: string): BlogListPage | undefined;
+  export function getBlogListFilter(key: string): BlogListFilter | undefined;
   export function getArchive(key: string): BlogArchive | undefined;
 }
 ```
@@ -191,14 +194,14 @@ plugins/blog-list/
 
 ## 8. 现有架构问题与处理策略
 
-当前 tags、collections、images、sitemap 和 seo 都可能重复读取文章 frontmatter。原因是 Rspress 插件之间目前没有公开的构建上下文或共享数据服务，运行时虚拟模块也不能直接作为另一个插件的构建期输入。
+ContentIndex 已经覆盖文章列表、标签、分类、合集、搜索、RSS、SEO、站点地图、图片、阅读进度和评论插件。需要读取正文的搜索与阅读统计仍然按文件路径单独读取正文，但不再重复解析 frontmatter。
 
-本插件第一期采用以下策略：
+本插件当前采用以下策略：
 
-1. 复用 `@cogita/plugin-posts-frontmatter` 暴露的解析工具和同一套路由规则；
-2. 不依赖某个插件先执行 `beforeBuild` 后再读取其内存变量；
-3. 把排序、分页和归档算法写成纯函数，便于测试和未来迁移；
-4. 记录后续架构任务：在 core 中增加一次扫描、多插件共享的 `ContentBuildContext`，逐步消除重复扫描。
+1. 通过 core 注入的 `ContentIndex` 获取文章元数据，标签、分类、合集和列表插件共享同一次扫描；
+2. 保留 `@cogita/plugin-posts-frontmatter` 的独立解析兜底，不依赖插件执行顺序；
+3. 把排序、筛选、分页和归档算法写成纯函数，便于测试和未来迁移；
+4. core 在重新进入构建期插件钩子前使内容索引失效；正文共享缓存仍作为后续优化项。
 
 这能保证当前主题体系可以立即落地，同时不把“插件执行顺序”变成隐式契约。
 
@@ -206,7 +209,7 @@ plugins/blog-list/
 
 ### 实施顺序
 
-1. 增加 `BlogListConfig`、`BlogListPage` 和 `BlogArchive` 类型；
+1. 增加 `BlogListConfig`、`BlogListPage`、`BlogListFilter` 和 `BlogArchive` 类型；
 2. 创建插件包、构建配置、README 和虚拟模块声明；
 3. 实现纯函数：排序、分页、日期分组、路由生成；
 4. 接入 core 默认配置和 Lucid 主题插件列表；

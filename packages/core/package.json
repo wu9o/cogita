@@ -51,14 +51,15 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@rspress/core": "^1.45.1",
-    "glob": "^11.0.3",
-    "gray-matter": "^4.0.3",
-    "find-up": "^7.0.0",
-    "jiti": "^2.5.1",
-    "mlly": "^1.7.4",
+    "@cogita/shared": "workspace:*",
     "@cogita/theme-editorial": "workspace:*",
     "@cogita/theme-lucid": "workspace:*",
-    "@cogita/shared": "workspace:*"
+    "@rspress/core": "^1.45.1",
+    "chokidar": "^4.0.3",
+    "find-up": "^7.0.0",
+    "glob": "^11.0.3",
+    "gray-matter": "^4.0.3",
+    "jiti": "^2.5.1",
+    "mlly": "^1.7.4"
   }
 }
