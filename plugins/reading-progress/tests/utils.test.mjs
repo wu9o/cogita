@@ -23,6 +23,8 @@ describe('阅读进度工具函数', () => {
     assert.equal(config.enabled, true);
     assert.equal(config.showBar, true);
     assert.equal(config.showReadingTime, true);
+    assert.equal(config.showTocProgress, true);
+    assert.equal(config.rememberPosition, false);
     assert.equal(config.wordsPerMinute, 1);
     assert.equal(config.includeCode, false);
   });
@@ -33,6 +35,16 @@ describe('阅读进度工具函数', () => {
     assert.equal(config.enabled, false);
     assert.equal(config.showBar, true);
     assert.equal(config.showReadingTime, true);
+  });
+
+  it('应保留目录联动，并只在显式配置时开启阅读位置记忆', () => {
+    const config = resolveReadingProgressConfig({
+      showTocProgress: false,
+      rememberPosition: true,
+    });
+
+    assert.equal(config.showTocProgress, false);
+    assert.equal(config.rememberPosition, true);
   });
 
   it('应移除 frontmatter、代码块和 Markdown 标记', () => {

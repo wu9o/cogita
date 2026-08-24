@@ -53,6 +53,8 @@ declare module 'virtual-reading-progress-data' {
     enabled: boolean;
     showBar: boolean;
     showReadingTime: boolean;
+    showTocProgress: boolean;
+    rememberPosition: boolean;
     wordsPerMinute: number;
     includeCode: boolean;
   }

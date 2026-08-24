@@ -9,6 +9,7 @@ import { allCollections } from 'virtual-collections-data';
 import { postCovers } from 'virtual-images-data';
 import { allPosts } from 'virtual-posts-data';
 import { allTags, tagsConfig } from 'virtual-tags-data';
+import { getBase } from '../utils';
 
 /**
  * 首页布局组件
@@ -19,7 +20,7 @@ import { allTags, tagsConfig } from 'virtual-tags-data';
  */
 const HomeLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
-  const base = (pageData?.siteData?.base || '').replace(/\/$/, '');
+  const base = getBase(pageData);
   const postsWithCovers = allPosts.map((post) => {
     const cover = postCovers[post.route];
     return cover
@@ -83,7 +84,10 @@ const HomeLayout: React.FC<LayoutProps> = () => {
               <ul className="sidebar-collections">
                 {allCollections.slice(0, 5).map((collection) => (
                   <li key={collection.slug}>
-                    <a href={`${base}${collection.route}`} className="sidebar-collection-link">
+                    <a
+                      href={normalizeHrefInRuntime(`${base}${collection.route}`)}
+                      className="sidebar-collection-link"
+                    >
                       {collection.title}
                       <span className="sidebar-collection-count">{collection.count}</span>
                     </a>

@@ -7,6 +7,7 @@ import {
   type EditorialPost,
   addPostCovers,
   formatDate,
+  getBase,
   getCurrentRoute,
   getEditorialConfig,
 } from '../utils';
@@ -93,7 +94,7 @@ function RelatedPosts({ posts }: { posts: EditorialPost[] }) {
 /** 为 Rspress 文章详情页补充主题化元信息和相关推荐区域。 */
 export default function ArticleChrome() {
   const pageData = usePageData();
-  const route = getCurrentRoute((pageData?.siteData?.base || '').replace(/\/$/, ''));
+  const route = getCurrentRoute(getBase(pageData));
   const config = getEditorialConfig(pageData);
   const posts = useMemo(() => addPostCovers(allPosts), []);
   const currentPost = posts.find((post) => post.route === route);

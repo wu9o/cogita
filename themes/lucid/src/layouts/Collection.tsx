@@ -1,7 +1,8 @@
 import type { LayoutProps } from '@cogita/shared';
-import { usePageData } from '@rspress/runtime';
+import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
-import { allCollections, getCollectionBySlug } from 'virtual-collections-data';
+import { allCollections, collectionsConfig, getCollectionBySlug } from 'virtual-collections-data';
+import { formatDate, getBase, getCurrentRoute } from '../utils';
 
 /**
  * 合集页面布局（索引页 + 详情页共用）
@@ -11,16 +12,15 @@ import { allCollections, getCollectionBySlug } from 'virtual-collections-data';
  */
 const CollectionPageLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
-  const base = (pageData?.siteData?.base || '').replace(/\/$/, '');
-  const collectionsHref = `${base}/collections`;
+  const base = getBase(pageData);
+  const collectionPrefix = collectionsConfig.routePrefix.replace(/^\/+|\/+$/g, '');
+  const collectionsHref = normalizeHrefInRuntime(`${base}/${collectionPrefix}`);
 
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  const rawSlug =
-    pathname
-      .split('/collections/')[1]
-      ?.replace(/\.html$/, '')
-      .replace(/\/$/, '') || '';
-  const slug = decodeURIComponent(rawSlug);
+  const route = getCurrentRoute(pathname, base).replace(/^\/+/, '');
+  const slug = route.startsWith(`${collectionPrefix}/`)
+    ? route.slice(`${collectionPrefix}/`.length)
+    : '';
 
   // 索引页：无 slug，展示所有合集
   if (!slug) {
@@ -38,7 +38,7 @@ const CollectionPageLayout: React.FC<LayoutProps> = () => {
               {allCollections.map((collection) => (
                 <a
                   key={collection.slug}
-                  href={`${base}${collection.route}`}
+                  href={normalizeHrefInRuntime(`${base}${collection.route}`)}
                   className="collection-card"
                 >
                   <h3 className="collection-card-title">{collection.title}</h3>
@@ -47,8 +47,7 @@ const CollectionPageLayout: React.FC<LayoutProps> = () => {
                   )}
                   <p className="collection-card-meta">
                     {collection.count} 篇文章
-                    {collection.updatedDate &&
-                      ` · 更新于 ${new Date(collection.updatedDate).toLocaleDateString('zh-CN')}`}
+                    {collection.updatedDate && ` · 更新于 ${formatDate(collection.updatedDate)}`}
                   </p>
                 </a>
               ))}
@@ -84,8 +83,7 @@ const CollectionPageLayout: React.FC<LayoutProps> = () => {
           <p className="collection-description">{collection.description}</p>
         )}
         <p className="collection-meta">
-          {collection.count} 篇文章 · 创建于{' '}
-          {new Date(collection.createdDate || '').toLocaleDateString('zh-CN')}
+          {collection.count} 篇文章 · 创建于 {formatDate(collection.createdDate)}
         </p>
       </header>
 
@@ -95,12 +93,10 @@ const CollectionPageLayout: React.FC<LayoutProps> = () => {
             <li key={post.route} className="ordered-post-item">
               <span className="post-order">{index + 1}</span>
               <div className="post-info">
-                <a href={`${base}${post.route}`} className="post-link">
+                <a href={normalizeHrefInRuntime(`${base}${post.route}`)} className="post-link">
                   {post.collectionTitle || post.title}
                 </a>
-                <time className="post-date">
-                  {new Date(post.createDate).toLocaleDateString('zh-CN')}
-                </time>
+                <time className="post-date">{formatDate(post.createDate)}</time>
                 {post.description && <p className="post-desc">{post.description}</p>}
               </div>
             </li>

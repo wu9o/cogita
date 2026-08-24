@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { VIRTUAL_CONTENT_DIR } from '@cogita/shared';
 import { dev } from '@rspress/core';
-import { createRspressConfig, loadCogitaConfig } from './config';
+import { createRspressConfig, loadCogitaConfig, prepareSiteIcon } from './config';
 
 export async function createServer(root: string = process.cwd()): Promise<void> {
   const cogitaConfig = await loadCogitaConfig(root);
@@ -13,6 +13,7 @@ export async function createServer(root: string = process.cwd()): Promise<void> 
   // Rspress's file-based routing from conflicting with our dynamic pages.
   const docDirectory = path.join(root, VIRTUAL_CONTENT_DIR);
 
+  await prepareSiteIcon(root, docDirectory, cogitaConfig.site?.icon);
   await dev({
     appDirectory,
     docDirectory,

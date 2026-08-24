@@ -1,3 +1,4 @@
+import { formatSiteDate, getRouteFromPathname, normalizeSiteBase } from '@cogita/shared';
 import { normalizeHrefInRuntime } from '@rspress/runtime';
 import { postCovers } from 'virtual-images-data';
 
@@ -37,7 +38,7 @@ interface EditorialPageData {
 }
 
 export function getBase(pageData: { siteData?: { base?: string } } | undefined): string {
-  return (pageData?.siteData?.base || '').replace(/\/$/, '');
+  return normalizeSiteBase(pageData?.siteData?.base);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -74,24 +75,13 @@ export function getRuntimeHref(base: string, route: string): string {
 }
 
 export function formatDate(date: string | undefined): string {
-  if (!date) return '未标注日期';
-  const parsed = new Date(date);
-  return Number.isNaN(parsed.getTime()) ? date : parsed.toLocaleDateString('zh-CN');
+  return formatSiteDate(date);
 }
 
-export function getCurrentRoute(base: string): string {
-  if (typeof window === 'undefined') return '/';
-
-  const withoutBase =
-    base && window.location.pathname.startsWith(base)
-      ? window.location.pathname.slice(base.length)
-      : window.location.pathname;
-
-  const route = decodeURIComponent(withoutBase)
-    .replace(/^\/+|\/+$/g, '')
-    .replace(/\.html$/, '');
-
-  return route ? `/${route}` : '/';
+export function getCurrentRoute(base: string, pathname?: string): string {
+  const currentPathname =
+    pathname ?? (typeof window === 'undefined' ? '' : window.location.pathname);
+  return getRouteFromPathname(currentPathname, base);
 }
 
 export function addPostCovers<T extends EditorialPost>(posts: T[]): T[] {

@@ -103,6 +103,8 @@ interface SiteConfig {
   title?: string;
   /** 网站描述 */
   description?: string;
+  /** 网站图标路径，相对于站点根目录 */
+  icon?: string;
   /** 网站基础路径，部署到子路径时使用 */
   base?: string;
 }
@@ -113,6 +115,7 @@ interface SiteConfig {
 const siteConfig: SiteConfig = {
   title: 'Cogita Blog',
   description: '基于 Cogita 构建的博客',
+  icon: '/favicon.svg',
   base: '/blog/',  // 部署到 example.com/blog/
 };
 ```

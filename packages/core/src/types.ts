@@ -11,6 +11,8 @@ export type MediumZoomConfig = UserConfig['mediumZoom'];
 export interface SiteConfig {
   title?: string;
   description?: string;
+  /** 网站图标路径，相对于站点根目录。 */
+  icon?: string;
   base?: string;
   url?: string;
 }
@@ -146,6 +148,10 @@ export interface ReadingProgressConfig {
   showBar?: boolean;
   /** 是否显示预计阅读时间和实时进度。 */
   showReadingTime?: boolean;
+  /** 是否根据滚动位置高亮目录当前章节。 */
+  showTocProgress?: boolean;
+  /** 是否记忆并恢复文章的上次阅读位置。 */
+  rememberPosition?: boolean;
   /** 每分钟阅读单位数，中文按字符、英文按单词估算。 */
   wordsPerMinute?: number;
   /** 是否把代码块纳入阅读时间计算。 */

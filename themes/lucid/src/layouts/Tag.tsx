@@ -1,8 +1,9 @@
 import type { LayoutProps } from '@cogita/shared';
 import { PostList, TagCloud, TagList } from '@cogita/ui';
-import { usePageData } from '@rspress/runtime';
+import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allTags, getRelatedTags, tagsConfig } from 'virtual-tags-data';
+import { formatDate, getBase, getCurrentRoute } from '../utils';
 
 /**
  * 标签页面布局（索引页 + 详情页共用）
@@ -17,18 +18,13 @@ import { allTags, getRelatedTags, tagsConfig } from 'virtual-tags-data';
  */
 const TagPageLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
-  // base 形如 '/cogita/'，去掉尾斜杠便于拼接
-  const base = (pageData?.siteData?.base || '').replace(/\/$/, '');
-  const tagsHref = `${base}/tags`;
+  const base = getBase(pageData);
+  const tagsHref = normalizeHrefInRuntime(`${base}/tags`);
 
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  // pathname 形如 /cogita/tags/版本控制.html（中文被 encodeURI 成 %XX），需 decodeURIComponent
-  const rawSlug =
-    pathname
-      .split('/tags/')[1]
-      ?.replace(/\.html$/, '')
-      .replace(/\/$/, '') || '';
-  const slug = decodeURIComponent(rawSlug);
+  const route = getCurrentRoute(pathname, base).replace(/^\/+/, '');
+  const tagPrefix = tagsConfig.routePrefix.replace(/^\/+|\/+$/g, '');
+  const slug = route.startsWith(`${tagPrefix}/`) ? route.slice(`${tagPrefix}/`.length) : '';
 
   // 索引页：无 slug，展示标签云
   if (!slug) {
@@ -71,8 +67,7 @@ const TagPageLayout: React.FC<LayoutProps> = () => {
         </a>
         <h1 className="tag-title">#{tag.name}</h1>
         <p className="tag-meta">
-          {tag.count} 篇文章 · 最近更新{' '}
-          {new Date(tag.posts[0]?.createDate).toLocaleDateString('zh-CN')}
+          {tag.count} 篇文章 · 最近更新 {formatDate(tag.posts[0]?.createDate)}
         </p>
       </header>
 

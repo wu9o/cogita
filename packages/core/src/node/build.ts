@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { VIRTUAL_CONTENT_DIR } from '@cogita/shared';
 import { build } from '@rspress/core';
-import { createRspressConfig, loadCogitaConfig } from './config';
+import { createRspressConfig, loadCogitaConfig, prepareSiteIcon } from './config';
 
 export async function createBuild(root: string) {
   const cogitaConfig = await loadCogitaConfig(root);
@@ -10,6 +10,7 @@ export async function createBuild(root: string) {
   const appDirectory = root;
   const docDirectory = path.join(root, VIRTUAL_CONTENT_DIR);
 
+  await prepareSiteIcon(root, docDirectory, cogitaConfig.site?.icon);
   await build({
     appDirectory,
     docDirectory,

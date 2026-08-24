@@ -1,4 +1,4 @@
-import { usePageData } from '@rspress/runtime';
+import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import { getCollectionByPostRoute } from 'virtual-collections-data';
 import { getBase, getCurrentRoute } from '../utils';
 
@@ -19,7 +19,10 @@ export default function CollectionNav() {
   return (
     <section className="editorial-collection-nav" aria-label="合集导航">
       <div>
-        <a href={`${base}${collection.route}`} className="editorial-collection-name">
+        <a
+          href={normalizeHrefInRuntime(`${base}${collection.route}`)}
+          className="editorial-collection-name"
+        >
           {collection.title}
         </a>
         <span>
@@ -27,8 +30,16 @@ export default function CollectionNav() {
         </span>
       </div>
       <nav className="editorial-collection-links">
-        {previous ? <a href={`${base}${previous.route}`}>← {previous.title}</a> : <span />}
-        {next ? <a href={`${base}${next.route}`}>{next.title} →</a> : <span />}
+        {previous ? (
+          <a href={normalizeHrefInRuntime(`${base}${previous.route}`)}>← {previous.title}</a>
+        ) : (
+          <span />
+        )}
+        {next ? (
+          <a href={normalizeHrefInRuntime(`${base}${next.route}`)}>{next.title} →</a>
+        ) : (
+          <span />
+        )}
       </nav>
     </section>
   );
