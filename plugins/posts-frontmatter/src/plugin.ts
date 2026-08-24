@@ -32,6 +32,12 @@ export function pluginPostsFrontmatter(config: CogitaPluginConfig): RspressPlugi
     name: '@cogita/plugin-posts-frontmatter',
 
     async beforeBuild() {
+      if (config.contentIndex) {
+        allPostsData = (await config.contentIndex.getPosts()).map((post) => ({ ...post }));
+        console.log(`[Posts Plugin] 使用共享内容索引，已处理 ${allPostsData.length} 篇文章`);
+        return;
+      }
+
       // 配置 glob 选项：获取绝对路径，并指定相对路径的基准目录
       const options = {
         absolute: true, // 返回绝对路径

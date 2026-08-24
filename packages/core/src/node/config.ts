@@ -7,7 +7,8 @@ import type { RspressPlugin, UserConfig } from '@rspress/core';
 import { findUp } from 'find-up';
 import jiti from 'jiti';
 import * as mlly from 'mlly';
-import type { CogitaConfig, CogitaFullConfig } from '../types';
+import type { CogitaConfig, CogitaFullConfig, PostsConfig } from '../types';
+import { createContentIndex } from './content-index';
 import { resolveThemePackage } from './theme';
 
 const CONFIG_FILES = ['cogita.config.ts', 'cogita.config.js', 'cogita.config.mjs'];
@@ -174,10 +175,18 @@ function createThemePlugin(theme: CogitaTheme): RspressPlugin {
  * Create enhanced configuration object for plugin factories
  */
 function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullConfig {
+  const posts: Required<Pick<PostsConfig, 'dir' | 'routePrefix' | 'extensions'>> = {
+    dir: 'posts',
+    routePrefix: 'posts',
+    extensions: ['md', 'mdx'],
+    ...cogitaConfig.posts,
+  };
+
   return {
     ...cogitaConfig,
     root,
     cwd: root,
+    contentIndex: createContentIndex(root, posts),
     _framework: {
       version: '0.0.1', // TODO: get from package.json
       buildTime: new Date().toISOString(),
@@ -189,12 +198,7 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
       ...cogitaConfig.site,
     },
     // Posts plugin config with defaults
-    posts: {
-      dir: 'posts',
-      routePrefix: 'posts',
-      extensions: ['md', 'mdx'],
-      ...cogitaConfig.posts,
-    },
+    posts,
     // Tags plugin config with defaults (if enabled)
     tags: cogitaConfig.tags
       ? {

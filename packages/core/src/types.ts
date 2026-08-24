@@ -1,4 +1,4 @@
-import type { CogitaTheme, LayoutProps } from '@cogita/shared';
+import type { CogitaTheme, ContentIndex, LayoutProps } from '@cogita/shared';
 import type { UserConfig } from '@rspress/core';
 
 export type { CogitaTheme, LayoutProps };
@@ -544,6 +544,8 @@ export interface CogitaConfig {
 export interface CogitaFullConfig extends CogitaConfig {
   root: string;
   cwd: string;
+  /** 由 core 创建并供构建期插件共享的文章索引。 */
+  contentIndex: ContentIndex;
   _framework: {
     version: string;
     buildTime: string;
