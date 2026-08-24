@@ -13,6 +13,7 @@
   "scripts": {
     "dev": "pnpm --filter blog dev",
     "build": "pnpm run build:packages && pnpm --filter blog build",
+    "build:docs": "pnpm run build:packages && pnpm --filter docs-site build",
     "build:packages": "pnpm --filter \"@cogita/*\" build",
     "build:plugin": "pnpm --filter @cogita/plugin-posts-frontmatter build",
     "deploy": "pnpm run build && pnpm --filter blog deploy",

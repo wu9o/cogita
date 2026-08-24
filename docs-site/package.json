@@ -1,0 +1,16 @@
+{
+  "name": "docs-site",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cogita build",
+    "dev": "cogita dev",
+    "preview": "cogita preview"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@cogita/cli": "workspace:*",
+    "@cogita/core": "workspace:*",
+    "@cogita/theme-docs": "workspace:*"
+  }
+}

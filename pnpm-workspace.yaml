@@ -1,6 +1,7 @@
 packages:
   - 'packages/*'
   - 'blog'
+  - 'docs-site'
   - 'plugins/*'
   - 'themes/*'
   - 'scripts/config'
