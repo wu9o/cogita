@@ -43,7 +43,27 @@ export default defineConfig({
 
 核心注册器会在运行时再次校验工厂返回值：插件必须提供非空的 `name` 字段。严格模式下无效返回值或工厂异常会阻断构建，并保留原始异常作为 `cause`；非严格模式下会记录警告并跳过当前插件，避免破坏其他已注册插件。
 
-主题的 `home` 布局是必需契约；启用某个功能插件时，其对应布局也必须声明且指向实际存在的文件。core 会在插件实例化前校验这些路径，避免构建完成后才暴露首页或功能页 404。
+主题的 `home` 布局是必需契约；需要生成主题页面的插件可以在返回的插件实例中声明布局需求。core 会在所有插件实例化后统一校验这些声明，避免构建完成后才暴露首页或功能页 404。布局需求不再由 core 维护插件名称清单，因此第三方插件可以自行扩展页面能力。
+
+```typescript
+import type { CogitaPluginFactory } from '@cogita/shared';
+
+export const pluginExample: CogitaPluginFactory = () => ({
+  name: '@cogita/plugin-example',
+  cogita: {
+    requiredLayouts: [
+      { layout: 'example', label: '示例页面' },
+      {
+        layout: 'example-detail',
+        label: '示例详情页',
+        when: (config) => config.example?.detailEnabled === true,
+      },
+    ],
+  },
+});
+```
+
+`requiredLayouts` 中的 `layout` 对应主题 `pageLayouts` 的键名；`when` 可根据最终插件配置决定是否启用某项布局检查。
 
 ## 3. 名称唯一性
 

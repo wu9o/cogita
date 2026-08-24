@@ -370,10 +370,31 @@ export function getCogitaBuildContext(config: CogitaPluginConfig): CogitaBuildCo
   };
 }
 
+/** 插件声明的主题布局需求。插件未被启用时不会产生对应的运行时实例。 */
+export interface CogitaPluginLayoutRequirement {
+  /** 对应 CogitaTheme.pageLayouts 的键名。 */
+  layout: string;
+  /** 用于构建错误和警告的可读名称。 */
+  label?: string;
+  /** 仅在特定配置下才需要该布局。 */
+  when?: (config: CogitaPluginConfig) => boolean;
+}
+
+/** 插件实例的 Cogita 扩展元数据。 */
+export interface CogitaPluginMetadata {
+  /** 插件启用后必须由主题提供的布局。 */
+  requiredLayouts?: CogitaPluginLayoutRequirement[];
+}
+
+/** 带有 Cogita 构建元数据的 Rspress 插件。 */
+export type CogitaPlugin = RspressPlugin & {
+  cogita?: CogitaPluginMetadata;
+};
+
 // 插件工厂函数接收最终配置并返回 Rspress 插件。
 export type CogitaPluginFactory = (
   config: CogitaPluginConfig
-) => RspressPlugin | RspressPlugin[] | null | undefined;
+) => CogitaPlugin | CogitaPlugin[] | null | undefined;
 
 /** 获取插件可用的统一日志出口，并兼容旧版构建上下文。 */
 export function getCogitaLogger(config: CogitaPluginConfig): CogitaLogger {

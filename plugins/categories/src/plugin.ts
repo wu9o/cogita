@@ -1,6 +1,5 @@
 import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
-import type { CogitaPluginConfig } from '@cogita/shared';
-import type { RspressPlugin } from '@rspress/core';
+import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import type { CategoriesConfig, CategoryData, CategoryStats } from './types';
 import {
   calculateCategoryStats,
@@ -10,7 +9,7 @@ import {
 } from './utils';
 
 /** 创建文章分类插件。 */
-export function pluginCategories(config: CogitaPluginConfig): RspressPlugin | null {
+export function pluginCategories(config: CogitaPluginConfig): CogitaPlugin | null {
   const logger = getCogitaLogger(config);
   if (!config.categories || config.categories.enabled === false) {
     logger.info('[Categories Plugin] Categories 配置未启用，跳过分类功能');
@@ -30,6 +29,9 @@ export function pluginCategories(config: CogitaPluginConfig): RspressPlugin | nu
 
   return {
     name: '@cogita/plugin-categories',
+    cogita: {
+      requiredLayouts: [{ layout: 'category', label: '分类' }],
+    },
 
     async beforeBuild() {
       const postsConfig = config.posts || {};

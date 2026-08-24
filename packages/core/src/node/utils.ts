@@ -16,7 +16,8 @@ interface TransformedConfig {
 export function transformConfig(root: string, config: CogitaConfig): TransformedConfig {
   const themePackage = resolveThemePackage(config);
   // Resolve the theme's main entry point from its exports
-  const themeEntryPoint = require.resolve(themePackage);
+  // 从站点项目解析主题，避免主题只能作为 core 的传递依赖存在。
+  const themeEntryPoint = require.resolve(themePackage, { paths: [root] });
 
   return {
     root: path.join(root, 'posts'),
