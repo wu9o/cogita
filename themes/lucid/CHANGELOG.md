@@ -1,5 +1,26 @@
 # @cogita/theme-lucid
 
+## 0.10.4
+
+### Patch Changes
+
+- cd14acc: 增加文章列表的标签与分类筛选页，统一 SEO 和 Sitemap 的文章列表路由契约，收口插件配置类型，并让各内容插件复用 core 内容索引和正文缓存。
+- Updated dependencies [cd14acc]
+  - @cogita/shared@0.9.0
+  - @cogita/plugin-blog-list@0.3.0
+  - @cogita/plugin-tags@1.0.2
+  - @cogita/plugin-categories@0.2.2
+  - @cogita/plugin-collections@1.0.2
+  - @cogita/plugin-search@0.2.2
+  - @cogita/plugin-rss@1.0.2
+  - @cogita/plugin-seo@1.3.2
+  - @cogita/plugin-sitemap@1.3.2
+  - @cogita/plugin-images@1.0.2
+  - @cogita/plugin-reading-progress@0.3.2
+  - @cogita/plugin-comments@0.2.2
+  - @cogita/plugin-code-copy@0.2.1
+  - @cogita/plugin-posts-frontmatter@0.1.1
+
 ## 0.10.3
 
 ### Patch Changes

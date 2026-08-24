@@ -1,6 +1,6 @@
 {
   "name": "@cogita/plugin-seo",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "为 Cogita 生成页面级 SEO 元数据和结构化数据。",
   "keywords": ["cogita", "plugin", "seo", "open-graph", "json-ld", "rspress"],
   "author": "wu9o <https://github.com/wu9o>",
