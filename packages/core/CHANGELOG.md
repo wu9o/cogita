@@ -1,5 +1,21 @@
 # @cogita/core
 
+## 0.10.2
+
+### Patch Changes
+
+- e09a825: 支持站点自定义 favicon，完善 Editorial 主题的站点描述和手动暗黑模式样式。
+- e09a825: 阅读进度插件新增目录联动和可选的文章阅读位置记忆，两个主题同步提供恢复提示和返回顶部操作。
+- Updated dependencies [e09a825]
+- Updated dependencies [e09a825]
+- Updated dependencies [e09a825]
+- Updated dependencies [e09a825]
+- Updated dependencies [e09a825]
+- Updated dependencies [e09a825]
+  - @cogita/theme-editorial@0.2.1
+  - @cogita/theme-lucid@0.10.1
+  - @cogita/shared@0.7.1
+
 ## 0.10.1
 
 ### Patch Changes
