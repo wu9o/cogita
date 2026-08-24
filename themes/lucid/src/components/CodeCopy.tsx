@@ -11,8 +11,12 @@ interface EnhancedCodeBlock {
 
 interface EnhancedNativeCopyButton {
   button: HTMLButtonElement;
+  pre: HTMLElement;
   title: string | null;
   ariaLabel: string | null;
+  copyState: string | null;
+  onClick: (event: MouseEvent) => void;
+  resetTimer?: number;
 }
 
 /** 使用浏览器剪贴板 API 复制文本，并在不支持时回退到原生命令。 */
@@ -44,17 +48,35 @@ function getCodeText(pre: HTMLElement): string {
   return pre.querySelector('code')?.textContent || '';
 }
 
+/** 读取代码块内的选中内容，跨出代码块的选择不参与复制。 */
+function getSelectedCodeText(pre: HTMLElement): string | null {
+  const code = pre.querySelector<HTMLElement>('code');
+  const selection = window.getSelection();
+  if (!code || !selection || selection.rangeCount === 0 || selection.isCollapsed) return null;
+
+  const range = selection.getRangeAt(0);
+  if (!code.contains(range.commonAncestorContainer)) return null;
+
+  const selectedText = selection.toString();
+  return selectedText.trim() ? selectedText : null;
+}
+
 /** 获取代码块声明的语言名称。 */
 function getCodeLanguage(pre: HTMLElement): string | null {
   const codeClassName = String(pre.querySelector('code')?.className || '');
   return codeClassName.match(/(?:^|\s)language-([^\s]+)/)?.[1] || null;
 }
 
-/** 获取代码块应该展示的复制提示。 */
+/** 获取代码块未选中内容时应该展示的复制提示。 */
 function getCopyLabel(pre: HTMLElement): string {
   const language = getCodeLanguage(pre);
   if (!language) return codeCopyConfig.buttonLabel;
   return codeCopyConfig.languageLabel.replace('{language}', language);
+}
+
+/** 获取代码块当前应该展示的复制提示。 */
+function getIdleCopyLabel(pre: HTMLElement): string {
+  return getSelectedCodeText(pre) ? codeCopyConfig.selectionLabel : getCopyLabel(pre);
 }
 
 /** 获取 Rspress 已提供的原生复制按钮。 */
@@ -79,6 +101,21 @@ function removeEnhancedBlock(pre: HTMLElement, enhancedBlocks: EnhancedCodeBlock
   pre.classList.remove('cogita-code-block');
 }
 
+/** 更新 Rspress 原生按钮的可访问提示和复制状态。 */
+function setNativeCopyState(
+  enhancedButton: EnhancedNativeCopyButton,
+  label: string,
+  state: 'idle' | 'copied' | 'error'
+): void {
+  if (enhancedButton.button.title !== label) enhancedButton.button.title = label;
+  if (enhancedButton.button.getAttribute('aria-label') !== label) {
+    enhancedButton.button.setAttribute('aria-label', label);
+  }
+  if (enhancedButton.button.dataset.copyState !== state) {
+    enhancedButton.button.dataset.copyState = state;
+  }
+}
+
 /** 为页面中的代码块挂载复制按钮。 */
 function enhanceCodeBlocks(
   root: ParentNode,
@@ -96,18 +133,46 @@ function enhanceCodeBlocks(
   }
 
   for (const pre of codeBlocks) {
-    const nativeCopyButton = getNativeCopyButton(pre);
+    const trackedNativeCopyButton = nativeCopyButtons.find(
+      ({ pre: trackedPre }) => trackedPre === pre
+    );
+    const nativeCopyButton = trackedNativeCopyButton?.button || getNativeCopyButton(pre);
     if (nativeCopyButton) {
       removeEnhancedBlock(pre, enhancedBlocks);
-      if (!nativeCopyButtons.some(({ button }) => button === nativeCopyButton)) {
-        nativeCopyButtons.push({
+      if (!trackedNativeCopyButton) {
+        const enhancedButton = {
           button: nativeCopyButton,
+          pre,
           title: nativeCopyButton.getAttribute('title'),
           ariaLabel: nativeCopyButton.getAttribute('aria-label'),
-        });
-        const label = getCopyLabel(pre);
-        nativeCopyButton.title = label;
-        nativeCopyButton.setAttribute('aria-label', label);
+          copyState: nativeCopyButton.dataset.copyState || null,
+          onClick: (_event: MouseEvent) => undefined,
+        } as EnhancedNativeCopyButton;
+
+        enhancedButton.onClick = (event) => {
+          const selectedText = getSelectedCodeText(pre);
+          if (!selectedText) return;
+
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          void (async () => {
+            try {
+              await copyText(selectedText);
+              setNativeCopyState(enhancedButton, codeCopyConfig.copiedLabel, 'copied');
+            } catch {
+              setNativeCopyState(enhancedButton, codeCopyConfig.errorLabel, 'error');
+            }
+
+            if (enhancedButton.resetTimer) window.clearTimeout(enhancedButton.resetTimer);
+            enhancedButton.resetTimer = window.setTimeout(() => {
+              setNativeCopyState(enhancedButton, getIdleCopyLabel(pre), 'idle');
+            }, codeCopyConfig.resetDelay);
+          })();
+        };
+
+        nativeCopyButton.addEventListener('click', enhancedButton.onClick, true);
+        setNativeCopyState(enhancedButton, getIdleCopyLabel(pre), 'idle');
+        nativeCopyButtons.push(enhancedButton);
       }
       continue;
     }
@@ -117,8 +182,8 @@ function enhanceCodeBlocks(
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'cogita-code-copy';
-    button.textContent = getCopyLabel(pre);
-    button.setAttribute('aria-label', getCopyLabel(pre));
+    button.textContent = getIdleCopyLabel(pre);
+    button.setAttribute('aria-label', getIdleCopyLabel(pre));
     button.dataset.copyState = 'idle';
     pre.classList.add('cogita-code-block');
     pre.appendChild(button);
@@ -128,7 +193,7 @@ function enhanceCodeBlocks(
       pre,
       onClick: async () => {
         try {
-          await copyText(getCodeText(pre));
+          await copyText(getSelectedCodeText(pre) || getCodeText(pre));
           button.textContent = codeCopyConfig.copiedLabel;
           button.setAttribute('aria-label', codeCopyConfig.copiedLabel);
           button.dataset.copyState = 'copied';
@@ -140,7 +205,7 @@ function enhanceCodeBlocks(
 
         if (enhancedBlock.resetTimer) window.clearTimeout(enhancedBlock.resetTimer);
         enhancedBlock.resetTimer = window.setTimeout(() => {
-          const label = getCopyLabel(pre);
+          const label = getIdleCopyLabel(pre);
           button.textContent = label;
           button.setAttribute('aria-label', label);
           button.dataset.copyState = 'idle';
@@ -160,25 +225,52 @@ const CodeCopy: React.FC = () => {
 
     const enhancedBlocks: EnhancedCodeBlock[] = [];
     const nativeCopyButtons: EnhancedNativeCopyButton[] = [];
+    const updateButtonLabels = () => {
+      for (const block of enhancedBlocks) {
+        if (block.button.dataset.copyState !== 'idle') continue;
+        const label = getIdleCopyLabel(block.pre);
+        if (block.button.textContent !== label) block.button.textContent = label;
+        if (block.button.getAttribute('aria-label') !== label) {
+          block.button.setAttribute('aria-label', label);
+        }
+      }
+      for (const block of nativeCopyButtons) {
+        if (block.button.dataset.copyState !== 'idle') continue;
+        setNativeCopyState(block, getIdleCopyLabel(block.pre), 'idle');
+      }
+    };
     const enhance = () => enhanceCodeBlocks(document, enhancedBlocks, nativeCopyButtons);
     const observer = new MutationObserver(enhance);
 
     enhance();
+    document.addEventListener('selectionchange', updateButtonLabels);
     observer.observe(document.body, { childList: true, subtree: true });
 
     return () => {
       observer.disconnect();
+      document.removeEventListener('selectionchange', updateButtonLabels);
       for (const { button, pre, onClick, resetTimer } of enhancedBlocks) {
         button.removeEventListener('click', onClick);
         if (resetTimer) window.clearTimeout(resetTimer);
         button.remove();
         pre.classList.remove('cogita-code-block');
       }
-      for (const { button, title, ariaLabel } of nativeCopyButtons) {
+      for (const {
+        button,
+        title,
+        ariaLabel,
+        copyState,
+        onClick,
+        resetTimer,
+      } of nativeCopyButtons) {
+        button.removeEventListener('click', onClick, true);
+        if (resetTimer) window.clearTimeout(resetTimer);
         if (title === null) button.removeAttribute('title');
         else button.title = title;
         if (ariaLabel === null) button.removeAttribute('aria-label');
         else button.setAttribute('aria-label', ariaLabel);
+        if (copyState === null) delete button.dataset.copyState;
+        else button.dataset.copyState = copyState;
       }
     };
   }, []);

@@ -133,6 +133,7 @@ export interface CogitaPluginConfig {
     enabled?: boolean;
     selector?: string;
     buttonLabel?: string;
+    selectionLabel?: string;
     languageLabel?: string;
     copiedLabel?: string;
     errorLabel?: string;
