@@ -1,6 +1,6 @@
 {
   "name": "@cogita/plugin-images",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "公共图片清单与文章封面元数据插件。",
   "keywords": ["cogita", "plugin", "images", "cover", "virtual-module", "rspress"],
   "author": "wu9o <https://github.com/wu9o>",
