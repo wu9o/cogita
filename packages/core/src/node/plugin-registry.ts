@@ -1,5 +1,9 @@
-import type { CogitaLogger, CogitaPluginConfig, CogitaPluginFactory } from '@cogita/shared';
-import type { RspressPlugin } from '@rspress/core';
+import type {
+  CogitaLogger,
+  CogitaPlugin,
+  CogitaPluginConfig,
+  CogitaPluginFactory,
+} from '@cogita/shared';
 
 /** 一组插件工厂及其来源，用于生成可诊断的注册信息。 */
 export interface PluginFactorySource {
@@ -9,7 +13,7 @@ export interface PluginFactorySource {
 
 /** 已经实例化的插件及其来源。 */
 export interface PluginRegistration {
-  plugin: RspressPlugin;
+  plugin: CogitaPlugin;
   source: string;
 }
 
@@ -29,7 +33,7 @@ function withCause(message: string, cause: unknown): Error {
 }
 
 /** 保护核心注册器不被运行时无效的第三方工厂返回值破坏。 */
-function isRspressPlugin(value: unknown): value is RspressPlugin {
+function isRspressPlugin(value: unknown): value is CogitaPlugin {
   if (!value || typeof value !== 'object') {
     return false;
   }
@@ -49,8 +53,8 @@ export function registerPlugins(
   factorySources: readonly PluginFactorySource[],
   config: CogitaPluginConfig,
   options: PluginRegistryOptions
-): RspressPlugin[] {
-  const finalPlugins: RspressPlugin[] = [];
+): CogitaPlugin[] {
+  const finalPlugins: CogitaPlugin[] = [];
   const registeredPluginSources = new Map<string, string>();
 
   const registerPlugin = (value: unknown, source: string) => {

@@ -1,6 +1,5 @@
 import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
-import type { CogitaPluginConfig } from '@cogita/shared';
-import type { RspressPlugin } from '@rspress/core';
+import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import type { CollectionData, CollectionStats, CollectionsConfig } from './types';
 import {
   calculateCollectionStats,
@@ -8,7 +7,7 @@ import {
   processCollectionsFromPosts,
 } from './utils';
 
-export function pluginCollections(config: CogitaPluginConfig): RspressPlugin | null {
+export function pluginCollections(config: CogitaPluginConfig): CogitaPlugin | null {
   const logger = getCogitaLogger(config);
   const collectionsConfig = config.collections;
 
@@ -36,6 +35,9 @@ export function pluginCollections(config: CogitaPluginConfig): RspressPlugin | n
 
   return {
     name: '@cogita/plugin-collections',
+    cogita: {
+      requiredLayouts: [{ layout: 'collection', label: '合集' }],
+    },
 
     async beforeBuild() {
       logger.info('[Collections Plugin] 开始初始化合集插件...');

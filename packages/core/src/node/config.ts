@@ -3,7 +3,7 @@ import { copyFile, mkdir } from 'node:fs/promises';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createCogitaLogger } from '@cogita/shared';
-import type { CogitaPluginConfig, CogitaTheme } from '@cogita/shared';
+import type { CogitaPlugin, CogitaPluginConfig, CogitaTheme } from '@cogita/shared';
 import type { RspressPlugin, UserConfig } from '@rspress/core';
 import { findUp } from 'find-up';
 import jiti from 'jiti';
@@ -117,10 +117,26 @@ export async function loadCogitaConfig(root: string = process.cwd()): Promise<Co
   }
 }
 
-async function loadTheme(themeName: string): Promise<CogitaTheme> {
-  // Resolve theme package from the location of @cogita/core, not the user's project
-  const packageRoot = await getPackageRoot();
-  const url = await mlly.resolve(themeName, { url: packageRoot });
+interface LoadedTheme {
+  config: CogitaTheme;
+  directory: string;
+}
+
+async function loadTheme(themeName: string, projectRoot: string): Promise<LoadedTheme> {
+  // 优先从站点项目解析主题，使外部仓库可以独立安装和使用主题包。
+  let url: string;
+  try {
+    url = await mlly.resolve(themeName, { url: projectRoot });
+  } catch (error) {
+    // 保留旧版 workspace 场景的回退路径，便于迁移期间继续使用内置主题别名。
+    const packageRoot = await getPackageRoot();
+    try {
+      url = await mlly.resolve(themeName, { url: packageRoot });
+    } catch {
+      throw error;
+    }
+  }
+
   const themeEntryPath = fileURLToPath(url);
   const _require = jiti(fileURLToPath(import.meta.url));
   const mod = _require(themeEntryPath);
@@ -131,7 +147,10 @@ async function loadTheme(themeName: string): Promise<CogitaTheme> {
   }
 
   // Call the function to get the theme configuration object
-  return mod.getThemeConfig();
+  return {
+    config: mod.getThemeConfig(),
+    directory: path.dirname(themeEntryPath),
+  };
 }
 
 /**
@@ -142,7 +161,7 @@ async function loadTheme(themeName: string): Promise<CogitaTheme> {
  * 2. 注册主题的 globalUIComponents（全局组件如 Footer）
  * 3. 注册主题的页面布局（ome 页面）
  */
-function createThemePlugin(theme: CogitaTheme): RspressPlugin {
+function createThemePlugin(theme: CogitaTheme, themeDirectory: string): RspressPlugin {
   return {
     name: 'cogita-theme-plugin',
     // 注入主题全局样式（theme.css），让首页/tag页等自定义布局样式生效
@@ -154,13 +173,7 @@ function createThemePlugin(theme: CogitaTheme): RspressPlugin {
         return [];
       }
 
-      // Resolve theme package from the location of @cogita/core
-      const packageRoot = await getPackageRoot();
-      const url = await mlly.resolve(theme.name, {
-        url: packageRoot,
-      });
-      const themeDir = path.dirname(fileURLToPath(url));
-      const homeLayoutPath = path.resolve(themeDir, theme.pageLayouts.home);
+      const homeLayoutPath = path.resolve(themeDirectory, theme.pageLayouts.home);
       if (!existsSync(homeLayoutPath)) {
         return [];
       }
@@ -176,42 +189,38 @@ function createThemePlugin(theme: CogitaTheme): RspressPlugin {
   };
 }
 
-/** 校验已启用功能对应的主题布局，避免构建成功但页面静默变成 404。 */
+/** 校验主题和已实例化插件声明的布局，避免构建成功但页面静默变成 404。 */
 function validateThemeLayouts(
   config: CogitaFullConfig,
   theme: CogitaTheme,
+  plugins: readonly CogitaPlugin[],
   strict: boolean,
   themeLayouts?: Record<string, string>
 ) {
-  const requiredLayouts: Array<[boolean, keyof CogitaTheme['pageLayouts'], string]> = [
-    [Boolean(config.tags && config.tags.enabled !== false), 'tag', '标签'],
-    [Boolean(config.collections && config.collections.enabled !== false), 'collection', '合集'],
-    [Boolean(config.categories && config.categories.enabled !== false), 'category', '分类'],
-    [Boolean(config.blogList && config.blogList.enabled !== false), 'blogList', '文章列表'],
-    [
-      Boolean(
-        config.blogList && config.blogList.enabled !== false && config.blogList.generateArchives
-      ),
-      'archive',
-      '归档',
-    ],
-    [Boolean(config.search && config.search.enabled !== false), 'search', '搜索'],
-  ];
-  const missing = requiredLayouts
-    .filter(
-      ([enabled, layout]) =>
-        enabled &&
-        (!theme.pageLayouts?.[layout] ||
-          !themeLayouts?.[layout] ||
-          !existsSync(themeLayouts[layout]))
-    )
-    .map(([, , label]) => label);
+  const missing = new Set<string>();
+  const homeLayout = theme.pageLayouts?.home;
+  if (!homeLayout || !themeLayouts?.home || !existsSync(themeLayouts.home)) {
+    missing.add('首页');
+  }
 
-  if (missing.length === 0) {
+  for (const plugin of plugins) {
+    for (const requirement of plugin.cogita?.requiredLayouts || []) {
+      if (requirement.when && !requirement.when(config)) {
+        continue;
+      }
+
+      const layoutPath = themeLayouts?.[requirement.layout];
+      if (!theme.pageLayouts?.[requirement.layout] || !layoutPath || !existsSync(layoutPath)) {
+        missing.add(requirement.label || requirement.layout);
+      }
+    }
+  }
+
+  if (missing.size === 0) {
     return;
   }
 
-  const message = `[Cogita] 已启用的功能缺少主题布局：${missing.join('、')}`;
+  const message = `[Cogita] 已启用的功能缺少主题布局：${Array.from(missing).join('、')}`;
   if (strict) {
     throw new Error(`${message}。请在主题的 pageLayouts 中补齐对应布局，或关闭相关功能。`);
   }
@@ -451,9 +460,9 @@ export async function createRspressConfig(
   // 1. Default to 'lucid' alias if no theme is specified
   const themeName = resolveThemePackage(cogitaConfig);
 
-  let theme: CogitaTheme | null = null;
+  let loadedTheme: LoadedTheme | null = null;
   if (themeName) {
-    theme = await loadTheme(themeName);
+    loadedTheme = await loadTheme(themeName, root);
   }
 
   // 3. Build the base Rspress config first
@@ -474,12 +483,10 @@ export async function createRspressConfig(
   const fullConfigForPlugins = createFullConfig(cogitaConfig, root);
 
   // 4.1 注入主题布局组件绝对路径，让 tags 等插件能用主题布局作为 addPages 的 filepath
-  if (theme?.pageLayouts) {
-    const packageRoot = await getPackageRoot();
-    const themeUrl = await mlly.resolve(theme.name, { url: packageRoot });
-    const themeDir = path.dirname(fileURLToPath(themeUrl));
+  if (loadedTheme?.config.pageLayouts) {
+    const themeDir = loadedTheme.directory;
     const themeLayouts: Record<string, string> = {};
-    for (const [key, relPath] of Object.entries(theme.pageLayouts)) {
+    for (const [key, relPath] of Object.entries(loadedTheme.config.pageLayouts)) {
       if (relPath) {
         themeLayouts[key] = path.resolve(themeDir, relPath);
       }
@@ -487,15 +494,6 @@ export async function createRspressConfig(
     fullConfigForPlugins.themeLayouts = themeLayouts;
     fullConfigForPlugins.buildContext.themeLayouts = themeLayouts;
   }
-  if (theme) {
-    validateThemeLayouts(
-      fullConfigForPlugins,
-      theme,
-      cogitaConfig.strict !== false,
-      fullConfigForPlugins.themeLayouts
-    );
-  }
-
   // 5. 按稳定顺序实例化主题插件和用户插件
   const strict = cogitaConfig.strict !== false; // Default to true
   const pluginConfig: CogitaPluginConfig = fullConfigForPlugins;
@@ -511,15 +509,32 @@ export async function createRspressConfig(
         },
         source: 'core',
       },
-      ...(theme ? [{ plugin: createThemePlugin(theme), source: 'theme' }] : []),
+      ...(loadedTheme
+        ? [
+            {
+              plugin: createThemePlugin(loadedTheme.config, loadedTheme.directory),
+              source: 'theme',
+            },
+          ]
+        : []),
     ],
     [
-      { name: 'theme', factories: theme?.plugins || [] },
+      { name: 'theme', factories: loadedTheme?.config.plugins || [] },
       { name: 'user', factories: cogitaConfig.plugins || [] },
     ],
     pluginConfig,
     { strict, logger }
   );
+
+  if (loadedTheme) {
+    validateThemeLayouts(
+      fullConfigForPlugins,
+      loadedTheme.config,
+      finalPlugins,
+      strict,
+      fullConfigForPlugins.themeLayouts
+    );
+  }
 
   baseRspressConfig.plugins = finalPlugins;
 

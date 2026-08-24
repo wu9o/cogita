@@ -1,11 +1,10 @@
 import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
-import type { CogitaPluginConfig } from '@cogita/shared';
-import type { RspressPlugin } from '@rspress/core';
+import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import type { SearchDocument } from './types';
 import { createSearchIndexHash, extractSearchDocuments, resolveSearchConfig } from './utils';
 
 /** 创建本地文章搜索插件。 */
-export function pluginSearch(config: CogitaPluginConfig): RspressPlugin | null {
+export function pluginSearch(config: CogitaPluginConfig): CogitaPlugin | null {
   const logger = getCogitaLogger(config);
   const searchConfig = config.search;
 
@@ -22,6 +21,9 @@ export function pluginSearch(config: CogitaPluginConfig): RspressPlugin | null {
 
   return {
     name: '@cogita/plugin-search',
+    cogita: {
+      requiredLayouts: [{ layout: 'search', label: '搜索' }],
+    },
 
     async beforeBuild() {
       const postsConfig = config.posts || {};

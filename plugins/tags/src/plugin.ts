@@ -1,11 +1,10 @@
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
-import type { CogitaPluginConfig } from '@cogita/shared';
-import type { RspressPlugin } from '@rspress/core';
+import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import type { TagData, TagStats, TagsConfig } from './types';
 import { calculateTagStats, extractTagsFromPosts, processTagsFromPosts } from './utils';
 
-export function pluginTags(config: CogitaPluginConfig): RspressPlugin | null {
+export function pluginTags(config: CogitaPluginConfig): CogitaPlugin | null {
   const logger = getCogitaLogger(config);
   // 配置验证和默认值处理
   const tagsConfig = config.tags;
@@ -46,6 +45,9 @@ export function pluginTags(config: CogitaPluginConfig): RspressPlugin | null {
 
   return {
     name: '@cogita/plugin-tags',
+    cogita: {
+      requiredLayouts: [{ layout: 'tag', label: '标签' }],
+    },
 
     async beforeBuild() {
       logger.info('[Tags Plugin] 开始初始化标签插件...');

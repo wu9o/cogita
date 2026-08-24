@@ -1,6 +1,5 @@
 import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
-import type { CogitaPluginConfig } from '@cogita/shared';
-import type { RspressPlugin } from '@rspress/core';
+import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import type { BlogArchive, BlogListFilter, BlogListPage } from './types';
 import {
   buildArchives,
@@ -13,7 +12,7 @@ import {
 } from './utils';
 
 /** 创建文章列表与归档插件。 */
-export function pluginBlogList(config: CogitaPluginConfig): RspressPlugin | null {
+export function pluginBlogList(config: CogitaPluginConfig): CogitaPlugin | null {
   const logger = getCogitaLogger(config);
   const blogListConfig = config.blogList;
 
@@ -31,6 +30,17 @@ export function pluginBlogList(config: CogitaPluginConfig): RspressPlugin | null
 
   return {
     name: '@cogita/plugin-blog-list',
+    cogita: {
+      requiredLayouts: [
+        { layout: 'blogList', label: '文章列表' },
+        {
+          layout: 'archive',
+          label: '归档',
+          when: (pluginConfig: CogitaPluginConfig) =>
+            pluginConfig.blogList?.generateArchives === true,
+        },
+      ],
+    },
 
     async beforeBuild() {
       const postsConfig = config.posts || {};
