@@ -1,5 +1,31 @@
 # @cogita/theme-editorial
 
+## 0.2.1
+
+### Patch Changes
+
+- e09a825: Editorial 主题完善移动端导航抽屉、列表页宽度和页脚视觉样式，并修复移动端菜单为空的问题。
+- e09a825: 支持站点自定义 favicon，完善 Editorial 主题的站点描述和手动暗黑模式样式。
+- e09a825: 阅读进度插件新增目录联动和可选的文章阅读位置记忆，两个主题同步提供恢复提示和返回顶部操作。
+- e09a825: 统一两个主题的合集、标签、分类和文章导航链接处理，提升子路径部署与静态路由下的链接稳定性。
+- e09a825: 抽取主题共用的站点路径解析和日期格式化工具，统一 Editorial 与 Lucid 的页面路由处理。
+- Updated dependencies [e09a825]
+- Updated dependencies [e09a825]
+  - @cogita/plugin-reading-progress@0.3.0
+  - @cogita/shared@0.7.1
+  - @cogita/plugin-blog-list@0.2.0
+  - @cogita/plugin-categories@0.2.0
+  - @cogita/plugin-code-copy@0.2.0
+  - @cogita/plugin-collections@1.0.0
+  - @cogita/plugin-comments@0.2.0
+  - @cogita/plugin-images@1.0.0
+  - @cogita/plugin-posts-frontmatter@0.1.0
+  - @cogita/plugin-rss@1.0.0
+  - @cogita/plugin-search@0.2.0
+  - @cogita/plugin-seo@1.3.0
+  - @cogita/plugin-sitemap@1.3.0
+  - @cogita/plugin-tags@1.0.0
+
 ## 0.2.0
 
 ### Minor Changes
