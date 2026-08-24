@@ -27,7 +27,8 @@
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
-      "import": "./dist/es/index.js"
+      "import": "./dist/es/index.js",
+      "default": "./dist/es/index.js"
     }
   },
   "module": "./dist/es/index.js",
@@ -52,7 +53,6 @@
   },
   "dependencies": {
     "@cogita/shared": "workspace:*",
-    "@cogita/theme-lucid": "workspace:*",
     "@rspress/core": "^1.45.1",
     "chokidar": "^4.0.3",
     "find-up": "^7.0.0",
