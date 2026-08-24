@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
-import { copyFile, mkdir } from 'node:fs/promises';
+import { copyFile, cp, mkdir, readdir, rm } from 'node:fs/promises';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createCogitaLogger } from '@cogita/shared';
@@ -64,6 +64,46 @@ export async function prepareSiteIcon(root: string, docDirectory: string, icon?:
 
   await mkdir(path.dirname(targetPath), { recursive: true });
   await copyFile(sourcePath, targetPath);
+}
+
+/**
+ * 将站点的 Markdown 文档源复制到 Rspress 的虚拟文档目录。
+ *
+ * Cogita 的动态文章和插件页面使用虚拟文档目录，以避免 Rspress 直接扫描
+ * 站点根目录；文档站点需要通过 contentDir 显式打开普通 Markdown 页面。
+ */
+export async function prepareContentDirectory(
+  root: string,
+  docDirectory: string,
+  contentDir?: string
+) {
+  if (!contentDir) {
+    return;
+  }
+
+  const sourceDirectory = path.resolve(root, contentDir);
+  const targetDirectory = path.resolve(docDirectory);
+
+  if (sourceDirectory === targetDirectory) {
+    throw new Error('contentDir 不能指向 Cogita 的虚拟文档目录。');
+  }
+
+  if (!existsSync(sourceDirectory)) {
+    throw new Error(`文档源目录不存在：${sourceDirectory}`);
+  }
+
+  await rm(targetDirectory, { recursive: true, force: true });
+  await mkdir(targetDirectory, { recursive: true });
+
+  const entries = await readdir(sourceDirectory, { withFileTypes: true });
+  await Promise.all(
+    entries.map((entry) =>
+      cp(path.join(sourceDirectory, entry.name), path.join(targetDirectory, entry.name), {
+        recursive: entry.isDirectory(),
+        force: true,
+      })
+    )
+  );
 }
 
 /**

@@ -1,6 +1,6 @@
 # Cogita
 
-[**中文文档**](#) • [English Documentation](./README.en.md)
+[**中文文档**](./docs-site/content/overview.md) • [English Documentation](./README.en.md)
 
 一个基于 Rspress 的**开箱即用**静态博客系统，专为想要快速搭建和定制博客的开发者设计。
 
@@ -65,7 +65,7 @@ pnpm dev
 - [`@cogita/plugin-rss`](./plugins/rss) - RSS 订阅插件
 - [`@cogita/plugin-tags`](./plugins/tags) - 标签管理与标签云插件
 
-**完整文档：** [📚 完整中文文档 (当前页面)](#) • [📄 English Documentation](./README.en.md)
+**完整文档：** [📚 Cogita 技术使用手册](./docs-site/content/overview.md) • [📄 English Documentation](./README.en.md)
 
 ## 🏗️ 技术架构
 
@@ -115,6 +115,6 @@ MIT © [wu9o](https://github.com/wu9o)
 
 *让更多开发者发现这个优雅的博客解决方案*
 
-[⭐ Star this project](https://github.com/wu9o/cogita) • [🚀 快速开始](./docs/guides/development.md) • [💬 加入讨论](https://github.com/wu9o/cogita/discussions)
+[⭐ Star this project](https://github.com/wu9o/cogita) • [🚀 快速开始](./docs-site/content/getting-started.md) • [💬 加入讨论](https://github.com/wu9o/cogita/discussions)
 
 </div>
