@@ -177,12 +177,13 @@ interface CogitaTheme {
   - [x] 目录联动（二期）
   - [x] 阅读位置记忆（二期）
 
-- [ ] `@cogita/plugin-code-copy` 🚧 一期开发中
+- [x] `@cogita/plugin-code-copy` ✅ 二期完成
   - [x] 代码块复制按钮
   - [x] Clipboard API 与原生复制回退
   - [x] 成功、失败和可访问状态反馈
   - [x] 语言级复制提示
-  - [ ] 代码行选择复制
+  - [x] 选中代码内容优先复制
+  - [ ] 代码行号过滤复制
 
 - [x] `@cogita/plugin-images` 🚧 二期开发中
   - [x] 图片资源目录约定
