@@ -1,5 +1,18 @@
 # @cogita/core
 
+## 0.11.0
+
+### Minor Changes
+
+- 91ba0ee: 增加构建期共享内容索引，减少文章列表和文章元数据插件的重复扫描，并为后续标签、分类、搜索和 RSS 等插件统一数据来源。
+
+### Patch Changes
+
+- Updated dependencies [91ba0ee]
+  - @cogita/shared@0.8.0
+  - @cogita/theme-editorial@0.2.3
+  - @cogita/theme-lucid@0.10.3
+
 ## 0.10.3
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @cogita/plugin-seo
 
+## 1.3.1
+
+### Patch Changes
+
+- Updated dependencies [91ba0ee]
+  - @cogita/plugin-posts-frontmatter@0.1.1
+
 ## 1.3.0
 
 ### Minor Changes
