@@ -25,6 +25,17 @@ declare module 'virtual-blog-list-data' {
     route: string;
     previous?: string;
     next?: string;
+    filter?: BlogListFilter;
+  }
+
+  interface BlogListFilter {
+    key: string;
+    kind: 'tag' | 'category';
+    value: string;
+    label: string;
+    slug: string;
+    count: number;
+    route: string;
   }
 
   interface BlogArchive {
@@ -48,7 +59,9 @@ declare module 'virtual-blog-list-data' {
 
   export const blogListConfig: BlogListConfig;
   export const allBlogListPages: BlogListPage[];
+  export const allBlogListFilters: BlogListFilter[];
   export const allArchives: BlogArchive[];
-  export function getBlogListPage(page: number): BlogListPage | undefined;
+  export function getBlogListPage(page: number, filterKey?: string): BlogListPage | undefined;
+  export function getBlogListFilter(key: string): BlogListFilter | undefined;
   export function getArchive(key: string): BlogArchive | undefined;
 }

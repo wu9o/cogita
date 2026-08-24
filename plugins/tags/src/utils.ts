@@ -1,6 +1,7 @@
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { generateTagSlug } from '@cogita/shared';
+import type { ContentIndex } from '@cogita/shared';
 import { glob } from 'glob';
 import type { PostReference, TagData, TagStats, TagsConfig } from './types';
 
@@ -17,8 +18,16 @@ export { generateTagSlug };
 export async function extractTagsFromPosts(
   postsDir: string,
   cwd: string,
-  routePrefix = 'posts'
+  routePrefix = 'posts',
+  contentIndex?: ContentIndex
 ): Promise<PostFrontmatter[]> {
+  if (contentIndex) {
+    return (await contentIndex.getPosts()).map((post) => ({
+      ...post,
+      url: post.url || post.route,
+    }));
+  }
+
   const options = {
     absolute: true,
     cwd,

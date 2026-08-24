@@ -3,7 +3,7 @@
 **文档版本**: 1.0  
 **创建日期**: 2025年1月  
 **插件名称**: `@cogita/plugin-rss`  
-**依赖**: `@cogita/plugin-posts-frontmatter`
+**依赖**: core 提供的 `ContentIndex`（单独使用时保留 frontmatter 扫描兜底）
 
 ## 📋 概述
 
@@ -14,7 +14,7 @@ RSS订阅插件是Cogita博客系统的重要组成部分，负责生成RSS 2.0�
 ### 数据流架构
 
 ```
-Posts数据源 → RSS生成器 → 静态Feed文件 → HTML链接注入
+ContentIndex → RSS生成器 → 静态Feed文件 → HTML链接注入
      ↓           ↓           ↓            ↓
 虚拟模块     XML/JSON      构建输出     SEO优化
 ```
@@ -374,7 +374,7 @@ HTML输出 (SEO优化)
 **🎯 目标**: 完善高级功能和优化
 
 - [ ] 内容增强
-  - [ ] `includeContent`选项支持完整文章内容
+  - [x] `includeContent` 通过共享内容索引按需读取正文
   - [ ] 内容截取和摘要生成
   - [ ] HTML内容安全处理
 

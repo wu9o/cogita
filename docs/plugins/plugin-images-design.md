@@ -320,7 +320,7 @@ export interface PostListProps {
 | P0 | 构建路径、站点 `base`、资源 `assetPrefix` 没有分层 | 图片 URL 可能在本地正常、部署后错误 | 虚拟模块只暴露逻辑路径，运行时使用 `normalizeImagePath` |
 | P0 | Rspress 已经负责 Markdown 图片导入和死图检查 | 插件重复解析 Markdown 会与 Rspress 资源管线冲突 | 正文图片交给 Rspress，插件只处理 frontmatter 和公共图片 |
 | P0 | 当前 posts 插件页面 frontmatter 字符串存在旧格式残留 | 图片集成测试可能被无关路由问题干扰 | 开始图片实现前先修复并验证文章页面生成 |
-| P1 | tags、collections、rss、images 都重复扫描文章 | 构建耗时和解析结果可能逐渐不一致 | 图片一期保持独立扫描；后续引入 core `ContentIndex` |
+| P1 | tags、collections、rss、images 都重复扫描文章 | 构建耗时和解析结果可能逐渐不一致 | core 已提供 `ContentIndex`，这些插件优先复用索引，旧版 core 仍走独立扫描兜底 |
 | P1 | `CogitaPluginConfig` 与 core 配置类型重复，工厂处有 `any` | 图片配置容易出现多处定义不一致 | 图片一期统一新增类型来源，后续收敛为 normalized config/context |
 | P1 | 用户配置没有通用 `plugins` 扩展点 | 自定义主题之外难以注册额外插件 | 图片一期由 Lucid 主题自动声明；通用用户插件注册另立议题 |
 

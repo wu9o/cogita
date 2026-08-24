@@ -6,6 +6,7 @@ import {
   getCategoryPathVariants,
   normalizeCategoryPath,
 } from '@cogita/shared';
+import type { ContentIndex } from '@cogita/shared';
 import { glob } from 'glob';
 import type {
   CategoriesConfig,
@@ -42,8 +43,16 @@ export async function extractCategoriesFromPosts(
   postsDir: string,
   cwd: string,
   routePrefix = 'posts',
-  extensions = ['md', 'mdx']
+  extensions = ['md', 'mdx'],
+  contentIndex?: ContentIndex
 ): Promise<PostFrontmatter[]> {
+  if (contentIndex) {
+    return (await contentIndex.getPosts()).map((post) => ({
+      ...post,
+      url: post.url || post.route,
+    }));
+  }
+
   const normalizedExtensions = extensions.length > 0 ? extensions : ['md', 'mdx'];
   const extensionPattern =
     normalizedExtensions.length > 1
@@ -116,9 +125,10 @@ export function processCategoriesFromPosts(
         segments.length > 1 ? segments.slice(0, -1).join(config.separator) : undefined;
       const metadata = config.metadata[categoryPath];
       const existing = categoriesMap.get(categoryPath);
-      const category = existing || {
-        name: segments.at(-1) || categoryPath,
-        title: metadata?.title || segments.at(-1) || categoryPath,
+      const segmentName = segments[segments.length - 1] || categoryPath;
+      const category: CategoryData = existing || {
+        name: segmentName,
+        title: metadata?.title || segmentName,
         path: categoryPath,
         slug: generateCategorySlug(categoryPath, config.separator),
         parentPath,

@@ -41,7 +41,37 @@ export interface ContentPost {
 
 /** 构建期共享内容索引。索引采用惰性加载，只有被插件消费时才扫描文章。 */
 export interface ContentIndex {
+  /** 获取当前构建周期内的文章元数据。 */
   getPosts(): Promise<readonly ContentPost[]>;
+  /** 按需读取并缓存单篇文章正文，避免需要全文的插件重复读取文件。 */
+  getPostContent?(filePath: string): Promise<string>;
+  /** 在重新触发构建期插件钩子前清理缓存。 */
+  invalidate?(): void;
+}
+
+/**
+ * 构建期上下文。
+ *
+ * 运行时配置与构建期状态曾经全部平铺在插件配置对象上，导致插件只能依赖
+ * 一组没有明确边界的内部字段。这个上下文是向后兼容的收口入口，后续新增
+ * 构建期能力应优先放在这里，而不是继续扩展插件配置的顶层字段。
+ */
+export interface CogitaBuildContext {
+  /** 站点项目根目录。 */
+  root: string;
+  /** 当前工作目录，通常与 root 相同。 */
+  cwd: string;
+  /** 由 core 维护的共享内容索引。 */
+  contentIndex?: ContentIndex;
+  /** 当前主题提供的布局绝对路径。 */
+  themeLayouts?: Record<string, string>;
+  /** 是否以严格模式运行构建。 */
+  strict?: boolean;
+  /** Cogita 框架构建元数据。 */
+  framework?: {
+    version: string;
+    buildTime: string;
+  };
 }
 
 // Enhanced config type for plugin factory functions
@@ -53,6 +83,11 @@ export interface CogitaPluginConfig {
    * 该字段只存在于构建期插件配置，不会进入浏览器运行时。
    */
   contentIndex?: ContentIndex;
+  /**
+   * 构建期能力的稳定入口。
+   * 顶层字段仍保留，便于旧版第三方插件平滑迁移。
+   */
+  buildContext?: CogitaBuildContext;
   site?: {
     title?: string;
     description?: string;
@@ -129,11 +164,12 @@ export interface CogitaPluginConfig {
       author?: string;
       category?: string;
     };
-    [key: string]: unknown;
   };
   tags?: {
     enabled?: boolean;
     routePrefix?: string;
+    layout?: string;
+    tagTransform?: (tag: string) => string;
     tagCloud?: {
       minFontSize?: number;
       maxFontSize?: number;
@@ -142,7 +178,6 @@ export interface CogitaPluginConfig {
     };
     excludeTags?: string[];
     minPostCount?: number;
-    [key: string]: unknown;
   };
   collections?: {
     enabled?: boolean;
@@ -150,7 +185,6 @@ export interface CogitaPluginConfig {
     metadata?: Record<string, { title?: string; description?: string; cover?: string }>;
     excludeCollections?: string[];
     minPostCount?: number;
-    [key: string]: unknown;
   };
   categories?: {
     enabled?: boolean;
@@ -160,7 +194,6 @@ export interface CogitaPluginConfig {
     excludeCategories?: string[];
     minPostCount?: number;
     sortBy?: 'name' | 'count' | 'date';
-    [key: string]: unknown;
   };
   readingProgress?: {
     enabled?: boolean;
@@ -170,7 +203,6 @@ export interface CogitaPluginConfig {
     rememberPosition?: boolean;
     wordsPerMinute?: number;
     includeCode?: boolean;
-    [key: string]: unknown;
   };
   codeCopy?: {
     enabled?: boolean;
@@ -181,7 +213,6 @@ export interface CogitaPluginConfig {
     copiedLabel?: string;
     errorLabel?: string;
     resetDelay?: number;
-    [key: string]: unknown;
   };
   comments?: {
     enabled?: boolean;
@@ -209,7 +240,6 @@ export interface CogitaPluginConfig {
       label?: string;
       theme?: string;
     };
-    [key: string]: unknown;
   };
   blogList?: {
     enabled?: boolean;
@@ -220,7 +250,6 @@ export interface CogitaPluginConfig {
     generateArchives?: boolean;
     archivePrefix?: string;
     archiveGranularity?: 'year' | 'month';
-    [key: string]: unknown;
   };
   search?: {
     enabled?: boolean;
@@ -243,7 +272,6 @@ export interface CogitaPluginConfig {
       includeQuery?: boolean;
       includeFilters?: boolean;
     };
-    [key: string]: unknown;
   };
   _framework?: {
     version: string;
@@ -258,6 +286,22 @@ export interface CogitaPluginConfig {
   [key: string]: unknown;
 }
 
+/** 获取插件配置对应的构建期上下文，并兼容旧版平铺字段。 */
+export function getCogitaBuildContext(config: CogitaPluginConfig): CogitaBuildContext {
+  if (config.buildContext) {
+    return config.buildContext;
+  }
+
+  return {
+    root: config.root,
+    cwd: config.cwd,
+    contentIndex: config.contentIndex,
+    themeLayouts: config.themeLayouts,
+    strict: config.strict,
+    framework: config._framework,
+  };
+}
+
 // 插件工厂函数接收最终配置并返回 Rspress 插件。
 export type CogitaPluginFactory = (
   config: CogitaPluginConfig
@@ -266,6 +310,8 @@ export type CogitaPluginFactory = (
 /** 文章列表页面生成路由时所需的最小文章数据。 */
 export interface BlogListRoutePost {
   createDate?: string;
+  tags?: string[];
+  categories?: string[];
 }
 
 /** 文章列表与归档路由配置。 */
@@ -275,6 +321,19 @@ export interface BlogListRouteConfig {
   generateArchives?: boolean;
   archivePrefix?: string;
   archiveGranularity?: 'year' | 'month';
+  /** 是否包含标签和分类筛选路由，默认包含。 */
+  includeFilters?: boolean;
+  /** 分类字段使用的层级分隔符。 */
+  categorySeparator?: string;
+}
+
+/** 文章列表相关路由的类型，供页面生成、SEO 和 sitemap 共享。 */
+export type BlogListRouteKind = 'list' | 'filter' | 'archive';
+
+/** 一条带有页面类型的文章列表路由。 */
+export interface BlogListRouteEntry {
+  route: string;
+  kind: BlogListRouteKind;
 }
 
 function normalizeRoutePrefix(prefix: string | undefined, fallback: string): string {
@@ -282,19 +341,31 @@ function normalizeRoutePrefix(prefix: string | undefined, fallback: string): str
   return normalized || fallback;
 }
 
-/** 根据文章数量和日期分组结果生成列表、分页与归档路由。 */
-export function getBlogListRoutes(
-  posts: BlogListRoutePost[],
+/** 根据文章数量和日期分组结果生成带类型的列表、筛选与归档路由。 */
+export function getBlogListRouteEntries(
+  posts: readonly BlogListRoutePost[],
   config: BlogListRouteConfig = {}
-): string[] {
+): BlogListRouteEntry[] {
   const routePrefix = normalizeRoutePrefix(config.routePrefix, 'archive');
   const archivePrefix = normalizeRoutePrefix(config.archivePrefix, 'archives');
-  const pageSize = Math.max(1, Math.floor(config.pageSize || 10));
+  const pageSize = Math.max(
+    1,
+    Math.floor(Number.isFinite(config.pageSize) ? (config.pageSize as number) : 10)
+  );
   const totalPages = Math.max(1, Math.ceil(posts.length / pageSize));
-  const routes = [
-    `/${routePrefix}`,
-    ...Array.from({ length: totalPages - 1 }, (_, index) => `/${routePrefix}/page/${index + 2}`),
+  const routes: BlogListRouteEntry[] = [
+    { route: `/${routePrefix}`, kind: 'list' },
+    ...Array.from({ length: totalPages - 1 }, (_, index) => ({
+      route: `/${routePrefix}/page/${index + 2}`,
+      kind: 'list' as const,
+    })),
   ];
+
+  if (config.includeFilters !== false) {
+    routes.push(
+      ...getBlogListFilterRoutes(posts, config).map((route) => ({ route, kind: 'filter' as const }))
+    );
+  }
 
   if (config.generateArchives === false) {
     return routes;
@@ -309,15 +380,69 @@ export function getBlogListRoutes(
   }
 
   if (archiveKeys.size > 0) {
-    routes.push(`/${archivePrefix}`);
+    routes.push({ route: `/${archivePrefix}`, kind: 'archive' });
     routes.push(
       ...Array.from(archiveKeys)
         .sort((a, b) => b.localeCompare(a))
-        .map((key) => `/${archivePrefix}/${key}`)
+        .map((key) => ({ route: `/${archivePrefix}/${key}`, kind: 'archive' as const }))
     );
   }
 
   return routes;
+}
+
+/** 根据共享路由契约生成文章列表、筛选与归档路由。 */
+export function getBlogListRoutes(
+  posts: readonly BlogListRoutePost[],
+  config: BlogListRouteConfig = {}
+): string[] {
+  return getBlogListRouteEntries(posts, config).map((entry) => entry.route);
+}
+
+/** 根据文章标签和层级分类生成文章列表筛选路由。 */
+export function getBlogListFilterRoutes(
+  posts: readonly BlogListRoutePost[],
+  config: Pick<BlogListRouteConfig, 'routePrefix' | 'pageSize' | 'categorySeparator'> = {}
+): string[] {
+  const routePrefix = normalizeRoutePrefix(config.routePrefix, 'archive');
+  const pageSize = Math.max(
+    1,
+    Math.floor(Number.isFinite(config.pageSize) ? (config.pageSize as number) : 10)
+  );
+  const separator = config.categorySeparator || '/';
+  const filterCounts = new Map<string, number>();
+
+  const addFilter = (route: string) => {
+    filterCounts.set(route, (filterCounts.get(route) || 0) + 1);
+  };
+
+  for (const post of posts) {
+    const postTagRoutes = new Set<string>();
+    for (const tag of post.tags || []) {
+      const slug = generateTagSlug(tag.trim());
+      if (slug) postTagRoutes.add(`/${routePrefix}/tag/${slug}`);
+    }
+    postTagRoutes.forEach(addFilter);
+
+    const postCategoryRoutes = new Set<string>();
+    for (const category of post.categories || []) {
+      for (const categoryPath of getCategoryPathVariants(category, separator)) {
+        const slug = generateCategorySlug(categoryPath, separator);
+        if (slug) postCategoryRoutes.add(`/${routePrefix}/category/${slug}`);
+      }
+    }
+    postCategoryRoutes.forEach(addFilter);
+  }
+
+  return Array.from(filterCounts.entries())
+    .sort(([left], [right]) => left.localeCompare(right, 'zh-CN'))
+    .flatMap(([route, count]) => [
+      route,
+      ...Array.from(
+        { length: Math.max(0, Math.ceil(count / pageSize) - 1) },
+        (_, index) => `${route}/page/${index + 2}`
+      ),
+    ]);
 }
 
 export interface CogitaTheme {

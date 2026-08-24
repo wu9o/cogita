@@ -342,12 +342,54 @@
   color: var(--cogita-primary-color);
 }
 
-.cogita-code-copy[data-copy-state="copied"] {
-  color: var(--cogita-primary-color);
+/* 复制结果通过页面级提示反馈，按钮本身保持稳定，避免连续点击产生多种状态。 */
+.cogita-copy-toast {
+  position: fixed;
+  z-index: 100;
+  top: 50%;
+  left: 50%;
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--cogita-border-color);
+  border-radius: 999px;
+  color: var(--cogita-text-color);
+  background: color-mix(in srgb, var(--cogita-surface-color) 94%, transparent);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, calc(-50% + 0.5rem));
+  transition: opacity 160ms ease, transform 160ms ease;
+  backdrop-filter: blur(10px);
 }
 
-.cogita-code-copy[data-copy-state="error"] {
-  color: var(--cogita-primary-color);
+@media (max-width: 600px) {
+  .cogita-copy-toast {
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+.cogita-copy-toast[data-visible="true"] {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+.cogita-copy-toast[data-state="success"] {
+  border-color: #7bbf95;
+  color: #23633c;
+}
+
+.cogita-copy-toast[data-state="error"] {
+  border-color: #d58d80;
+  color: #8f3828;
 }
 
 @media (hover: none) {
@@ -489,6 +531,28 @@
 
 .archive-index-active {
   font-weight: 700;
+}
+
+.blog-list-filter-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1.5rem;
+}
+
+.blog-list-filter-nav a {
+  padding: 0.35rem 0.7rem;
+  color: var(--cogita-text-color-secondary);
+  border: 1px solid var(--cogita-border-color);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  text-decoration: none;
+}
+
+.blog-list-filter-nav a:hover,
+.blog-list-filter-active {
+  color: var(--cogita-primary-color) !important;
+  border-color: var(--cogita-primary-color) !important;
 }
 
 .search-input-label {

@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
+import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
+import { getCogitaBuildContext } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 /**
  * RSS插件主体实现
@@ -8,20 +10,7 @@ import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import { glob } from 'glob';
 import { RSSGenerator } from './generator';
-import type { FeedMeta, RSSConfig } from './types';
-
-// 定义PostFrontmatter接口（与posts-frontmatter插件兼容）
-interface PostFrontmatter {
-  title: string;
-  description?: string;
-  filePath: string;
-  route: string;
-  createDate: string;
-  updateDate: string;
-  categories?: string[];
-  tags?: string[];
-  url: string;
-}
+import type { FeedMeta, RSSConfig, RSSPost } from './types';
 
 export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
   // Enhanced configuration handling - the plugin now handles all validation internally
@@ -32,6 +21,8 @@ export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
     console.log('[RSS Plugin] RSS 配置未找到，跳过 RSS 功能');
     return null;
   }
+
+  const buildContext = getCogitaBuildContext(config);
 
   // Validate required configuration
   if (!rssConfig.title || !rssConfig.description) {
@@ -55,7 +46,7 @@ export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
   };
 
   let generator: RSSGenerator;
-  let posts: PostFrontmatter[] = [];
+  let posts: RSSPost[] = [];
   let feedMeta: FeedMeta = {};
   let outputDir = 'doc_build'; // 默认输出目录
 
@@ -75,36 +66,53 @@ export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
         // 初始化RSS生成器
         generator = new RSSGenerator(finalRssConfig as RSSConfig, siteUrl);
 
-        // 直接扫描文章文件（与posts-frontmatter插件使用相同的逻辑）
-        const postsConfig = config.posts || {};
-        const postsDir = postsConfig.dir || 'posts';
-        const cwd = config.cwd || process.cwd();
-        const routePrefix = postsConfig.routePrefix || 'posts';
-
-        console.log(`[RSS Plugin] 扫描文章目录: ${postsDir}`);
-
-        // 执行glob匹配，获取所有markdown文件
-        const extensions = postsConfig.extensions || ['md', 'mdx'];
-        const extensionPattern =
-          extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0];
-
-        const absolutePaths = await glob(`${postsDir}/**/*.${extensionPattern}`, {
-          absolute: true,
-          cwd,
-          nodir: true,
-        });
-
-        // 提取frontmatter数据
-        posts = absolutePaths
-          .map((filePath: string) => {
-            try {
-              return getFrontmatterFromFile(filePath, postsDir, routePrefix);
-            } catch (error) {
-              console.warn(`[RSS Plugin] 跳过文件 ${filePath}:`, error);
-              return null;
+        if (buildContext.contentIndex) {
+          const indexedPosts = (await buildContext.contentIndex.getPosts()).map((post) => ({
+            ...post,
+            url: post.url || post.route,
+          }));
+          if (finalRssConfig.includeContent && buildContext.contentIndex.getPostContent) {
+            posts = await Promise.all(
+              indexedPosts.map(async (post) => ({
+                ...post,
+                content: await buildContext.contentIndex?.getPostContent?.(post.filePath),
+              }))
+            );
+          } else {
+            if (finalRssConfig.includeContent) {
+              console.warn('[RSS Plugin] 当前内容索引不支持正文缓存，Feed 将只输出摘要');
             }
-          })
-          .filter(Boolean) as PostFrontmatter[];
+            posts = indexedPosts;
+          }
+        } else {
+          console.warn('[RSS Plugin] 未找到共享内容索引，RSS 将使用兼容扫描路径');
+          const postsConfig = config.posts || {};
+          const postsDir = postsConfig.dir || 'posts';
+          const cwd = buildContext.cwd || process.cwd();
+          const routePrefix = postsConfig.routePrefix || 'posts';
+          const extensions = postsConfig.extensions || ['md', 'mdx'];
+          const extensionPattern =
+            extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0];
+          const absolutePaths = await glob(`${postsDir}/**/*.${extensionPattern}`, {
+            absolute: true,
+            cwd,
+            nodir: true,
+          });
+
+          posts = absolutePaths
+            .map((filePath: string) => {
+              try {
+                return getFrontmatterFromFile(filePath, postsDir, routePrefix);
+              } catch (error) {
+                console.warn(`[RSS Plugin] 跳过文件 ${filePath}:`, error);
+                return null;
+              }
+            })
+            .filter((post): post is PostFrontmatter => post !== null);
+          if (finalRssConfig.includeContent) {
+            console.warn('[RSS Plugin] 未使用共享内容索引，Feed 将只输出摘要');
+          }
+        }
 
         // 按创建日期降序排序
         posts.sort((a, b) => new Date(b.createDate).getTime() - new Date(a.createDate).getTime());

@@ -2,15 +2,28 @@ import type { LayoutProps } from '@cogita/shared';
 import { PostList } from '@cogita/ui';
 import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
-import { allBlogListPages, blogListConfig } from 'virtual-blog-list-data';
+import {
+  allBlogListFilters,
+  type allBlogListPages,
+  blogListConfig,
+  getBlogListPage,
+} from 'virtual-blog-list-data';
 import { postCovers } from 'virtual-images-data';
 import { getBase, getCurrentRoute } from '../utils';
 
 function getPageNumber(pathname: string, base: string): number {
   const route = getCurrentRoute(pathname, base).replace(/^\/+/, '');
-  const match = route.match(new RegExp(`^${blogListConfig.routePrefix}/page/(\\d+)$`));
+  const match = route.match(/\/page\/(\d+)$/);
   const page = match ? Number(match[1]) : 1;
   return Number.isInteger(page) && page > 0 ? page : 1;
+}
+
+function getFilterKey(pathname: string, base: string): string {
+  const route = getCurrentRoute(pathname, base);
+  const filter = allBlogListFilters.find(
+    (item) => route === item.route || route.startsWith(`${item.route}/page/`)
+  );
+  return filter?.key || 'all';
 }
 
 function addPostCovers(posts: (typeof allBlogListPages)[number]['posts']) {
@@ -35,7 +48,8 @@ const BlogListLayout: React.FC<LayoutProps> = () => {
   const base = getBase(pageData);
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
   const pageNumber = getPageNumber(pathname, base);
-  const page = allBlogListPages.find((item) => item.page === pageNumber) || allBlogListPages[0];
+  const filterKey = getFilterKey(pathname, base);
+  const page = getBlogListPage(pageNumber, filterKey) || getBlogListPage(1, 'all');
 
   if (!page) {
     return <p className="blog-list-empty">暂无文章</p>;
@@ -46,13 +60,37 @@ const BlogListLayout: React.FC<LayoutProps> = () => {
       <header className="blog-list-header">
         <div>
           <p className="blog-list-eyebrow">文章归档</p>
-          <h1 className="blog-list-title">全部文章</h1>
+          <h1 className="blog-list-title">
+            {page.filter
+              ? `${page.filter.kind === 'tag' ? '标签' : '分类'}：${page.filter.label}`
+              : '全部文章'}
+          </h1>
           <p className="blog-list-meta">
-            第 {page.page} / {page.totalPages} 页
+            {page.filter ? `${page.filter.count} 篇文章 · ` : ''}第 {page.page} / {page.totalPages}{' '}
+            页
           </p>
         </div>
         <a href={normalizeHrefInRuntime(`${base}/`)}>返回首页</a>
       </header>
+
+      <nav className="blog-list-filter-nav" aria-label="文章筛选">
+        <a
+          href={normalizeHrefInRuntime(`${base}/${blogListConfig.routePrefix}`)}
+          className={!page.filter ? 'blog-list-filter-active' : undefined}
+        >
+          全部
+        </a>
+        {allBlogListFilters.map((filter) => (
+          <a
+            key={filter.key}
+            href={normalizeHrefInRuntime(`${base}${filter.route}`)}
+            className={page.filter?.key === filter.key ? 'blog-list-filter-active' : undefined}
+          >
+            {filter.kind === 'tag' ? '#' : ''}
+            {filter.label} ({filter.count})
+          </a>
+        ))}
+      </nav>
 
       {page.posts.length > 0 ? (
         <PostList posts={addPostCovers(page.posts)} showTags showCover />

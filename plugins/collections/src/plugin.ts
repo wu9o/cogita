@@ -1,3 +1,4 @@
+import { getCogitaBuildContext } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import type { CollectionData, CollectionStats, CollectionsConfig } from './types';
@@ -15,6 +16,8 @@ export function pluginCollections(config: CogitaPluginConfig): RspressPlugin | n
     console.log('[Collections Plugin] Collections 配置未启用，跳过合集功能');
     return null;
   }
+
+  const buildContext = getCogitaBuildContext(config);
 
   // 创建完整配置，应用默认值
   const finalCollectionsConfig: Required<CollectionsConfig> = {
@@ -39,12 +42,17 @@ export function pluginCollections(config: CogitaPluginConfig): RspressPlugin | n
       try {
         const postsConfig = config.posts || {};
         const postsDir = postsConfig.dir || 'posts';
-        const cwd = config.cwd || process.cwd();
+        const cwd = buildContext.cwd || process.cwd();
         const routePrefix = postsConfig.routePrefix || 'posts';
 
         console.log(`[Collections Plugin] 扫描文章目录: ${postsDir}`);
 
-        const postsData = await extractCollectionsFromPosts(postsDir, cwd, routePrefix);
+        const postsData = await extractCollectionsFromPosts(
+          postsDir,
+          cwd,
+          routePrefix,
+          buildContext.contentIndex
+        );
 
         const { collectionsData, collectionsMap } = processCollectionsFromPosts(
           postsData,
@@ -93,7 +101,7 @@ export function pluginCollections(config: CogitaPluginConfig): RspressPlugin | n
     },
 
     async addPages() {
-      const collectionLayout = config.themeLayouts?.collection;
+      const collectionLayout = buildContext.themeLayouts?.collection;
 
       if (!collectionLayout) {
         console.warn(

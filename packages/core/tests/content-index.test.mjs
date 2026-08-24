@@ -3,9 +3,51 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { describe, it } from 'node:test';
-import { createContentIndex } from '../dist/es/index.js';
+import { getBlogListRouteEntries, getBlogListRoutes, getCogitaBuildContext } from '@cogita/shared';
+import { createContentIndex, getDevWatchPaths } from '../dist/es/index.js';
 
 describe('构建期内容索引', () => {
+  it('应优先使用显式构建上下文，并兼容旧版平铺配置', () => {
+    const contentIndex = { getPosts: async () => [] };
+    const explicitContext = {
+      root: '/project',
+      cwd: '/project',
+      contentIndex,
+      themeLayouts: { blogList: '/theme/BlogList.js' },
+    };
+
+    assert.equal(
+      getCogitaBuildContext({
+        root: '/legacy',
+        cwd: '/legacy',
+        contentIndex: undefined,
+        buildContext: explicitContext,
+      }),
+      explicitContext
+    );
+
+    const legacyContext = getCogitaBuildContext({
+      root: '/legacy',
+      cwd: '/legacy',
+      contentIndex,
+      strict: false,
+    });
+    assert.equal(legacyContext.root, '/legacy');
+    assert.equal(legacyContext.contentIndex, contentIndex);
+    assert.equal(legacyContext.strict, false);
+  });
+
+  it('开发服务器应监听文章、公共资源和配置文件', () => {
+    assert.deepEqual(
+      getDevWatchPaths(
+        '/project',
+        { posts: { dir: 'content/posts' } },
+        '/project/cogita.config.ts'
+      ),
+      ['/project/content/posts', '/project/public', '/project/cogita.config.ts']
+    );
+  });
+
   it('应扫描文章、生成路由，并复用同一个索引 Promise', async () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'cogita-content-index-'));
     const postsDir = path.join(root, 'articles');
@@ -38,8 +80,48 @@ describe('构建期内容索引', () => {
         ]
       );
       assert.deepEqual(posts[0].tags, ['构建']);
+      assert.equal(posts[0].url, '/posts');
+      assert.equal((await index.getPostContent(posts[0].filePath)).trim(), '正文');
+
+      fs.writeFileSync(
+        path.join(postsDir, 'index.md'),
+        '---\ntitle: 更新后的文章\ndate: 2026-08-24\ntags: [构建]\n---\n正文\n'
+      );
+      index.invalidate();
+      const refreshedPosts = await index.getPosts();
+      assert.equal(refreshedPosts[0].title, '更新后的文章');
+      assert.equal((await index.getPostContent(refreshedPosts[0].filePath)).trim(), '正文');
     } finally {
       fs.rmSync(root, { recursive: true, force: true });
     }
+  });
+
+  it('应为文章列表生成筛选路由，并让父分类覆盖子分类', () => {
+    const posts = [
+      { createDate: '2026-08-24', tags: ['Git'], categories: ['工程实践/Git'] },
+      { createDate: '2026-08-23', tags: ['Git'], categories: ['工程实践/前端'] },
+    ];
+    const config = { pageSize: 1, categorySeparator: '/' };
+    assert.deepEqual(getBlogListRoutes(posts, config), [
+      '/archive',
+      '/archive/page/2',
+      '/archive/category/工程实践',
+      '/archive/category/工程实践/page/2',
+      '/archive/category/工程实践/前端',
+      '/archive/category/工程实践/git',
+      '/archive/tag/git',
+      '/archive/tag/git/page/2',
+      '/archives',
+      '/archives/2026',
+    ]);
+    assert.equal(
+      getBlogListRouteEntries(posts, config).find((entry) => entry.route === '/archives')?.kind,
+      'archive'
+    );
+    assert.equal(
+      getBlogListRouteEntries(posts, config).find((entry) => entry.route === '/archive/tag/git')
+        ?.kind,
+      'filter'
+    );
   });
 });

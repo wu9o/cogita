@@ -49,7 +49,38 @@ function getIdleLabel(pre: HTMLElement): string {
 interface EditorialCodeCopyState {
   block: HTMLElement;
   onClick: () => Promise<void>;
-  resetTimer?: number;
+}
+
+interface CopyToastController {
+  show(message: string, state: 'success' | 'error'): void;
+  destroy(): void;
+}
+
+/** 创建页面级复制提示，避免把成功状态堆叠到代码按钮上。 */
+function createCopyToast(): CopyToastController {
+  const toast = document.createElement('div');
+  let hideTimer: number | undefined;
+
+  toast.className = 'cogita-copy-toast';
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
+  document.body.appendChild(toast);
+
+  return {
+    show(message, state) {
+      if (hideTimer) window.clearTimeout(hideTimer);
+      toast.textContent = message;
+      toast.dataset.state = state;
+      toast.dataset.visible = 'true';
+      hideTimer = window.setTimeout(() => {
+        toast.dataset.visible = 'false';
+      }, codeCopyConfig.resetDelay);
+    },
+    destroy() {
+      if (hideTimer) window.clearTimeout(hideTimer);
+      toast.remove();
+    },
+  };
 }
 
 /** 为代码块提供主题化复制按钮，并兼容 Rspress 动态生成的代码块。 */
@@ -58,9 +89,9 @@ export default function CodeCopy() {
     if (!codeCopyConfig.enabled) return;
 
     const buttons = new Map<HTMLButtonElement, EditorialCodeCopyState>();
+    const toast = createCopyToast();
     const updateButtonLabels = () => {
       for (const [button, state] of buttons) {
-        if (button.dataset.copyState !== 'idle') continue;
         const label = getIdleLabel(state.block);
         if (button.textContent !== label) button.textContent = label;
         if (button.getAttribute('aria-label') !== label) {
@@ -78,28 +109,16 @@ export default function CodeCopy() {
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'editorial-code-copy';
-        button.dataset.copyState = 'idle';
         const state: EditorialCodeCopyState = {
           block,
           onClick: async () => {
             try {
               const code = block.querySelector('code')?.textContent || '';
               await copyText(getSelectedCodeText(block) || code);
-              button.textContent = codeCopyConfig.copiedLabel;
-              button.setAttribute('aria-label', codeCopyConfig.copiedLabel);
-              button.dataset.copyState = 'copied';
+              toast.show(codeCopyConfig.copiedLabel, 'success');
             } catch {
-              button.textContent = codeCopyConfig.errorLabel;
-              button.setAttribute('aria-label', codeCopyConfig.errorLabel);
-              button.dataset.copyState = 'error';
+              toast.show(codeCopyConfig.errorLabel, 'error');
             }
-            if (state.resetTimer) window.clearTimeout(state.resetTimer);
-            state.resetTimer = window.setTimeout(() => {
-              const label = getIdleLabel(block);
-              button.textContent = label;
-              button.setAttribute('aria-label', label);
-              button.dataset.copyState = 'idle';
-            }, codeCopyConfig.resetDelay);
           },
         };
 
@@ -121,9 +140,9 @@ export default function CodeCopy() {
       document.removeEventListener('selectionchange', updateButtonLabels);
       for (const [button, state] of buttons) {
         button.removeEventListener('click', state.onClick);
-        if (state.resetTimer) window.clearTimeout(state.resetTimer);
         button.remove();
       }
+      toast.destroy();
     };
   }, []);
 

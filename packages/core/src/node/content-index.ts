@@ -75,7 +75,7 @@ function readPost(filePath: string, postsDir: string, routePrefix: string): Cont
       imageAlt: frontmatter.imageAlt,
       imageCaption: frontmatter.imageCaption,
       seo: parsePostSEO(frontmatter.seo),
-      url: '',
+      url: getPostRoute(filePath, postsDir, routePrefix),
     };
   } catch (error) {
     console.warn(`[Cogita] 解析文章失败，已跳过 ${filePath}:`, error);
@@ -116,11 +116,26 @@ export function createContentIndex(
   posts: Required<Pick<PostsConfig, 'dir' | 'routePrefix' | 'extensions'>>
 ): ContentIndex {
   let postsPromise: Promise<readonly ContentPost[]> | undefined;
+  const contentPromises = new Map<string, Promise<string>>();
 
   return {
     getPosts() {
       postsPromise ??= scanPosts({ root, posts });
       return postsPromise;
+    },
+    getPostContent(filePath) {
+      let contentPromise = contentPromises.get(filePath);
+      if (!contentPromise) {
+        contentPromise = fs.promises
+          .readFile(filePath, 'utf8')
+          .then((fileContent) => matter(fileContent).content);
+        contentPromises.set(filePath, contentPromise);
+      }
+      return contentPromise;
+    },
+    invalidate() {
+      postsPromise = undefined;
+      contentPromises.clear();
     },
   };
 }

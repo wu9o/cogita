@@ -1,4 +1,5 @@
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
+import { getCogitaBuildContext } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import type { TagData, TagStats, TagsConfig } from './types';
@@ -13,6 +14,8 @@ export function pluginTags(config: CogitaPluginConfig): RspressPlugin | null {
     console.log('[Tags Plugin] Tags 配置未启用，跳过标签功能');
     return null;
   }
+
+  const buildContext = getCogitaBuildContext(config);
 
   // 创建完整的标签配置，应用默认值
   const finalTagsConfig = {
@@ -50,13 +53,18 @@ export function pluginTags(config: CogitaPluginConfig): RspressPlugin | null {
         // 获取文章配置
         const postsConfig = config.posts || {};
         const postsDir = postsConfig.dir || 'posts';
-        const cwd = config.cwd || process.cwd();
+        const cwd = buildContext.cwd || process.cwd();
         const routePrefix = postsConfig.routePrefix || 'posts';
 
         console.log(`[Tags Plugin] 扫描文章目录: ${postsDir}`);
 
         // 提取文章数据
-        postsData = await extractTagsFromPosts(postsDir, cwd, routePrefix);
+        postsData = await extractTagsFromPosts(
+          postsDir,
+          cwd,
+          routePrefix,
+          buildContext.contentIndex
+        );
 
         if (postsData.length === 0) {
           console.warn('[Tags Plugin] 未找到文章，跳过标签处理');
@@ -100,7 +108,7 @@ export function pluginTags(config: CogitaPluginConfig): RspressPlugin | null {
       }
 
       const pages = [];
-      const tagLayout = config.themeLayouts?.tag;
+      const tagLayout = buildContext.themeLayouts?.tag;
       const routePrefix = finalTagsConfig.routePrefix;
 
       if (tagLayout) {

@@ -12,7 +12,7 @@ Cogita 的插件系统建立在 Rspress 插件系统之上，但提供了更高�
 
 ```typescript
 export type CogitaPluginFactory = (
-  config: Record<string, any>
+  config: CogitaPluginConfig
 ) => RspressPlugin | RspressPlugin[] | null | undefined;
 ```
 
@@ -20,6 +20,27 @@ export type CogitaPluginFactory = (
 - 基于配置动态创建插件
 - 一个工厂函数返回多个相关插件
 - 条件性地启用/禁用插件功能
+
+构建期状态统一通过 `buildContext` 获取：
+
+```typescript
+import { getCogitaBuildContext } from '@cogita/shared';
+import type { CogitaPluginConfig } from '@cogita/shared';
+
+export function pluginYourFeature(config: CogitaPluginConfig) {
+  const context = getCogitaBuildContext(config);
+
+  return {
+    name: '@cogita/plugin-your-feature',
+    async beforeBuild() {
+      const posts = await context.contentIndex?.getPosts();
+      // 使用 context.cwd、context.themeLayouts 等构建期能力
+    },
+  };
+}
+```
+
+`buildContext` 是框架内部上下文，不会自动进入浏览器运行时。顶层 `root`、`cwd`、`contentIndex` 和 `themeLayouts` 暂时保留，用于兼容旧版第三方插件。
 
 #### Rspress 插件接口
 

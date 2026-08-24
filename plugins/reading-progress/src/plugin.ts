@@ -1,3 +1,4 @@
+import { getCogitaBuildContext } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import type { ReadingStats } from './types';
@@ -11,6 +12,8 @@ export function pluginReadingProgress(config: CogitaPluginConfig): RspressPlugin
     console.log('[Reading Progress Plugin] 未找到阅读进度配置，跳过阅读增强');
     return null;
   }
+
+  const buildContext = getCogitaBuildContext(config);
 
   const finalConfig = resolveReadingProgressConfig(readingProgressConfig);
   let readingStats: ReadingStats[] = [];
@@ -28,10 +31,11 @@ export function pluginReadingProgress(config: CogitaPluginConfig): RspressPlugin
       const postsConfig = config.posts || {};
       readingStats = await extractReadingStats(
         postsConfig.dir || 'posts',
-        config.cwd || process.cwd(),
+        buildContext.cwd || process.cwd(),
         postsConfig.routePrefix || 'posts',
         postsConfig.extensions || ['md', 'mdx'],
-        finalConfig
+        finalConfig,
+        buildContext.contentIndex
       );
       console.log(`[Reading Progress Plugin] 已生成 ${readingStats.length} 篇文章的阅读统计`);
     },
