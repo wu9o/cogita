@@ -1,5 +1,13 @@
 # @cogita/theme-lucid
 
+## 0.10.2
+
+### Patch Changes
+
+- d6d46df: 代码复制插件支持选中代码内容优先复制，并同步增强 Editorial 与 Lucid 主题的复制按钮提示。
+- Updated dependencies [d6d46df]
+  - @cogita/plugin-code-copy@0.2.1
+
 ## 0.10.1
 
 ### Patch Changes

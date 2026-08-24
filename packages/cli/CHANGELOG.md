@@ -1,5 +1,11 @@
 # @cogita/cli
 
+## 0.1.12
+
+### Patch Changes
+
+- @cogita/core@0.10.3
+
 ## 0.1.11
 
 ### Patch Changes
