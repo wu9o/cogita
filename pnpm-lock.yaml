@@ -42,6 +42,18 @@ importers:
         specifier: workspace:*
         version: link:../themes/editorial
 
+  docs-site:
+    devDependencies:
+      '@cogita/cli':
+        specifier: workspace:*
+        version: link:../packages/cli
+      '@cogita/core':
+        specifier: workspace:*
+        version: link:../packages/core
+      '@cogita/theme-docs':
+        specifier: workspace:*
+        version: link:../themes/docs
+
   packages/cli:
     dependencies:
       '@cogita/core':
@@ -613,6 +625,48 @@ importers:
         version: 22.17.2
       typescript:
         specifier: ^5.8.2
+        version: 5.9.2
+
+  themes/docs:
+    devDependencies:
+      '@cogita/config':
+        specifier: workspace:*
+        version: link:../../scripts/config
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@rsbuild/plugin-react':
+        specifier: ~1.3.5
+        version: 1.3.5(@rsbuild/core@1.4.15)
+      '@rsbuild/plugin-sass':
+        specifier: ~1.3.5
+        version: 1.3.5(@rsbuild/core@1.4.15)
+      '@rsbuild/plugin-svgr':
+        specifier: ^1.2.2
+        version: 1.2.2(@rsbuild/core@1.4.15)(typescript@5.9.2)
+      '@rslib/core':
+        specifier: 0.11.2
+        version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(typescript@5.9.2)
+      '@rspress/runtime':
+        specifier: ^1.45.1
+        version: 1.45.1
+      '@types/react':
+        specifier: ^19.1.9
+        version: 19.1.10
+      '@types/react-dom':
+        specifier: ^19.1.7
+        version: 19.1.7(@types/react@19.1.10)
+      react:
+        specifier: ^19.1.1
+        version: 19.1.1
+      react-dom:
+        specifier: ^19.1.1
+        version: 19.1.1(react@19.1.1)
+      rsbuild-plugin-publint:
+        specifier: ^0.3.3
+        version: 0.3.3(@rsbuild/core@1.4.15)
+      typescript:
+        specifier: ^5.0.4
         version: 5.9.2
 
   themes/editorial:
