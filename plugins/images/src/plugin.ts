@@ -2,7 +2,7 @@ import { cp, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
-import { getCogitaBuildContext } from '@cogita/shared';
+import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import { glob } from 'glob';
@@ -41,7 +41,8 @@ function createRuntimeModule(
 
 async function scanPublicImages(
   root: string,
-  imageConfig: ResolvedImagesConfig
+  imageConfig: ResolvedImagesConfig,
+  logger: ReturnType<typeof getCogitaLogger>
 ): Promise<ResolvedImage[]> {
   const directory = path.resolve(root, imageConfig.dir);
   const extensionPattern =
@@ -57,7 +58,7 @@ async function scanPublicImages(
   return files.map((filePath) => {
     const image = resolvePublicImagePath(root, imageConfig.dir, filePath);
     if (imageConfig.readDimensions) {
-      Object.assign(image, readImageDimensions(filePath));
+      Object.assign(image, readImageDimensions(filePath, logger));
     }
     return image;
   });
@@ -88,7 +89,10 @@ function getPostCover(
   });
 }
 
-async function scanPostFrontmatter(config: CogitaPluginConfig): Promise<PostFrontmatter[]> {
+async function scanPostFrontmatter(
+  config: CogitaPluginConfig,
+  logger: ReturnType<typeof getCogitaLogger>
+): Promise<PostFrontmatter[]> {
   const buildContext = getCogitaBuildContext(config);
   if (buildContext.contentIndex) {
     return (await buildContext.contentIndex.getPosts()).map((post) => ({
@@ -109,7 +113,7 @@ async function scanPostFrontmatter(config: CogitaPluginConfig): Promise<PostFron
   });
 
   return files
-    .map((filePath) => getFrontmatterFromFile(filePath, postsDir, routePrefix))
+    .map((filePath) => getFrontmatterFromFile(filePath, postsDir, routePrefix, logger))
     .filter((post): post is PostFrontmatter => post !== null);
 }
 
@@ -130,6 +134,7 @@ async function copyPublicImages(
 
 export function pluginImages(config: CogitaPluginConfig): RspressPlugin {
   const buildContext = getCogitaBuildContext(config);
+  const logger = getCogitaLogger(config);
   const imageConfig = normalizeImagesConfig(config);
   let allImages: ImageData[] = [];
   let postCovers: Record<string, ImageData> = {};
@@ -147,12 +152,12 @@ export function pluginImages(config: CogitaPluginConfig): RspressPlugin {
         return;
       }
 
-      const scannedImages = await scanPublicImages(buildContext.root, imageConfig);
+      const scannedImages = await scanPublicImages(buildContext.root, imageConfig, logger);
       allImages = scannedImages.map((image) => toRuntimeImage(image));
       const imageBySrc = new Map(
         scannedImages.map((image) => [normalizeImageSrc(stripImageSuffix(image.src)), image])
       );
-      const posts = await scanPostFrontmatter(config);
+      const posts = await scanPostFrontmatter(config, logger);
       const missingCovers: string[] = [];
       const missingAlt: string[] = [];
 
@@ -186,14 +191,14 @@ export function pluginImages(config: CogitaPluginConfig): RspressPlugin {
         if (imageConfig.failOnMissing) {
           throw new Error(message);
         }
-        console.warn(message);
+        logger.warn(message);
       }
 
       if (imageConfig.warnOnMissingAlt && missingAlt.length > 0) {
-        console.warn(`[Images Plugin] 文章封面缺少明确的 alt 文本：\n${missingAlt.join('\n')}`);
+        logger.warn(`[Images Plugin] 文章封面缺少明确的 alt 文本：\n${missingAlt.join('\n')}`);
       }
 
-      console.log(
+      logger.info(
         `[Images Plugin] 成功处理 ${allImages.length} 张公共图片，${Object.keys(postCovers).length} 个文章封面，${Object.keys(imageUsage).length} 张图片有封面引用`
       );
     },

@@ -1,3 +1,4 @@
+import { getCogitaLogger } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import type { CodeCopyConfig, ResolvedCodeCopyConfig } from './types';
@@ -22,15 +23,16 @@ export function resolveCodeCopyConfig(config?: CodeCopyConfig): ResolvedCodeCopy
 
 /** 创建代码复制插件。 */
 export function pluginCodeCopy(config: CogitaPluginConfig): RspressPlugin | null {
+  const logger = getCogitaLogger(config);
   if (!config.codeCopy) {
-    console.log('[Code Copy Plugin] 未找到代码复制配置，跳过代码复制增强');
+    logger.info('[Code Copy Plugin] 未找到代码复制配置，跳过代码复制增强');
     return null;
   }
 
   const finalConfig = resolveCodeCopyConfig(config.codeCopy);
 
   if (!finalConfig.enabled) {
-    console.log('[Code Copy Plugin] 代码复制配置已关闭，仅提供空运行时模块');
+    logger.info('[Code Copy Plugin] 代码复制配置已关闭，仅提供空运行时模块');
   }
 
   return {

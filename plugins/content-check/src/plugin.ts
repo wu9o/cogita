@@ -3,7 +3,12 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
-import { type CogitaPluginConfig, type ContentPost, getCogitaBuildContext } from '@cogita/shared';
+import {
+  type CogitaPluginConfig,
+  type ContentPost,
+  getCogitaBuildContext,
+  getCogitaLogger,
+} from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import { glob } from 'glob';
 import matter from 'gray-matter';
@@ -83,7 +88,10 @@ function hasLocalImage(root: string, post: ContentPost, reference: string): bool
   return fs.existsSync(resolveImageFile(root, post, reference));
 }
 
-async function collectPosts(config: CogitaPluginConfig): Promise<ContentPost[]> {
+async function collectPosts(
+  config: CogitaPluginConfig,
+  logger: ReturnType<typeof getCogitaLogger>
+): Promise<ContentPost[]> {
   const buildContext = getCogitaBuildContext(config);
   if (buildContext.contentIndex) {
     return (await buildContext.contentIndex.getPosts()).map((post) => ({
@@ -100,7 +108,7 @@ async function collectPosts(config: CogitaPluginConfig): Promise<ContentPost[]> 
   const files = await collectSourceFiles(config);
 
   return files
-    .map((filePath) => getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix))
+    .map((filePath) => getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix, logger))
     .filter((post): post is PostFrontmatter => post !== null);
 }
 
@@ -358,6 +366,7 @@ export function pluginContentCheck(config: CogitaPluginConfig): RspressPlugin | 
   }
 
   const buildContext = getCogitaBuildContext(config);
+  const logger = getCogitaLogger(config);
   const finalConfig = {
     failOnError: false,
     requiredFields: DEFAULT_REQUIRED_FIELDS,
@@ -375,7 +384,7 @@ export function pluginContentCheck(config: CogitaPluginConfig): RspressPlugin | 
     name: '@cogita/plugin-content-check',
 
     async beforeBuild(rspressConfig: unknown) {
-      const posts = await collectPosts(config);
+      const posts = await collectPosts(config, logger);
       const issues: ContentCheckIssue[] = await checkSourceParseErrors(config, posts);
       const routes = new Map<string, ContentPost[]>();
 
@@ -418,7 +427,7 @@ export function pluginContentCheck(config: CogitaPluginConfig): RspressPlugin | 
       }
 
       report = createReport(posts.length, applyIssuePolicy(issues, finalConfig));
-      console.log(formatReport(report));
+      logger.info(formatReport(report));
 
       reportFile = finalConfig.reportPath
         ? resolveReportFile(
@@ -441,7 +450,7 @@ export function pluginContentCheck(config: CogitaPluginConfig): RspressPlugin | 
         return;
       }
       await writeReportFile(reportFile, report);
-      console.log(`[Content Check Plugin] 诊断报告已写入：${reportFile}`);
+      logger.info(`[Content Check Plugin] 诊断报告已写入：${reportFile}`);
     },
   };
 }

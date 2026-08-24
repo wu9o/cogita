@@ -1,4 +1,4 @@
-import { getCogitaBuildContext } from '@cogita/shared';
+import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import { glob } from 'glob';
@@ -6,6 +6,7 @@ import type { PostFrontmatter } from './types';
 import { getFrontmatterFromFile } from './utils';
 
 export function pluginPostsFrontmatter(config: CogitaPluginConfig): RspressPlugin {
+  const logger = getCogitaLogger(config);
   // Enhanced configuration handling with backwards compatibility
   const postsConfig = config.posts || {};
 
@@ -36,7 +37,7 @@ export function pluginPostsFrontmatter(config: CogitaPluginConfig): RspressPlugi
     async beforeBuild() {
       if (buildContext.contentIndex) {
         allPostsData = (await buildContext.contentIndex.getPosts()).map((post) => ({ ...post }));
-        console.log(`[Posts Plugin] 使用共享内容索引，已处理 ${allPostsData.length} 篇文章`);
+        logger.info(`[Posts Plugin] 使用共享内容索引，已处理 ${allPostsData.length} 篇文章`);
         return;
       }
 
@@ -57,9 +58,9 @@ export function pluginPostsFrontmatter(config: CogitaPluginConfig): RspressPlugi
       allPostsData = absolutePaths
         .map((file) => {
           try {
-            return getFrontmatterFromFile(file, postsDir, routePrefix);
+            return getFrontmatterFromFile(file, postsDir, routePrefix, logger);
           } catch (error) {
-            console.warn(`[Posts Plugin] 处理文件失败 ${file}:`, error);
+            logger.warn(`[Posts Plugin] 处理文件失败 ${file}:`, error);
             return null;
           }
         })
@@ -70,7 +71,7 @@ export function pluginPostsFrontmatter(config: CogitaPluginConfig): RspressPlugi
         (a, b) => new Date(b.createDate).getTime() - new Date(a.createDate).getTime()
       );
 
-      console.log(`[Posts Plugin] 成功处理 ${allPostsData.length} 篇文章`);
+      logger.info(`[Posts Plugin] 成功处理 ${allPostsData.length} 篇文章`);
     },
 
     addPages() {

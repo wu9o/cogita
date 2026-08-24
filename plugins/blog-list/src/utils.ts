@@ -1,12 +1,13 @@
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import {
+  createCogitaLogger,
   generateCategorySlug,
   generateTagSlug,
   getCategoryPathVariants,
   normalizeCategoryPath,
 } from '@cogita/shared';
-import type { ContentIndex } from '@cogita/shared';
+import type { CogitaLogger, ContentIndex } from '@cogita/shared';
 import { glob } from 'glob';
 import type {
   BlogArchive,
@@ -132,7 +133,8 @@ export async function extractPosts(
   cwd: string,
   routePrefix: string,
   extensions: string[],
-  contentIndex?: ContentIndex
+  contentIndex?: ContentIndex,
+  logger: CogitaLogger = createCogitaLogger()
 ): Promise<PostFrontmatter[]> {
   if (contentIndex) {
     return (await contentIndex.getPosts()).map((post) => ({
@@ -155,9 +157,9 @@ export async function extractPosts(
   return absolutePaths
     .map((filePath) => {
       try {
-        return getFrontmatterFromFile(filePath, postsDir, routePrefix);
+        return getFrontmatterFromFile(filePath, postsDir, routePrefix, logger);
       } catch (error) {
-        console.warn(`[Blog List Plugin] 跳过文件 ${filePath}:`, error);
+        logger.warn(`[Blog List Plugin] 跳过文件 ${filePath}:`, error);
         return null;
       }
     })

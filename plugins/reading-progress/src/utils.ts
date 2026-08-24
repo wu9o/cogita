@@ -2,7 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
-import type { ContentIndex } from '@cogita/shared';
+import { createCogitaLogger } from '@cogita/shared';
+import type { CogitaLogger, ContentIndex } from '@cogita/shared';
 import { glob } from 'glob';
 import type { ReadingProgressConfig, ReadingStats, ResolvedReadingProgressConfig } from './types';
 
@@ -74,7 +75,8 @@ export async function extractReadingStats(
   routePrefix: string,
   extensions: string[],
   config: ResolvedReadingProgressConfig,
-  contentIndex?: ContentIndex
+  contentIndex?: ContentIndex,
+  logger: CogitaLogger = createCogitaLogger()
 ): Promise<ReadingStats[]> {
   if (contentIndex) {
     const posts = await contentIndex.getPosts();
@@ -87,7 +89,7 @@ export async function extractReadingStats(
             config
           );
         } catch (error) {
-          console.warn(`[Reading Progress Plugin] 读取文章正文失败：${post.filePath}`, error);
+          logger.warn(`[Reading Progress Plugin] 读取文章正文失败：${post.filePath}`, error);
           return null;
         }
       })
@@ -110,12 +112,12 @@ export async function extractReadingStats(
   return absolutePaths
     .map((filePath) => {
       try {
-        const post = getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix);
+        const post = getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix, logger);
         if (!post) return null;
 
         return createReadingStats(post, fs.readFileSync(filePath, 'utf8'), config);
       } catch (error) {
-        console.warn(`[Reading Progress Plugin] 跳过文件 ${filePath}:`, error);
+        logger.warn(`[Reading Progress Plugin] 跳过文件 ${filePath}:`, error);
         return null;
       }
     })

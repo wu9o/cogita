@@ -1,17 +1,18 @@
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
-import { getCogitaBuildContext } from '@cogita/shared';
+import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import type { TagData, TagStats, TagsConfig } from './types';
 import { calculateTagStats, extractTagsFromPosts, processTagsFromPosts } from './utils';
 
 export function pluginTags(config: CogitaPluginConfig): RspressPlugin | null {
+  const logger = getCogitaLogger(config);
   // 配置验证和默认值处理
   const tagsConfig = config.tags;
 
   // 如果未配置或明确禁用，则跳过
   if (!tagsConfig || tagsConfig.enabled === false) {
-    console.log('[Tags Plugin] Tags 配置未启用，跳过标签功能');
+    logger.info('[Tags Plugin] Tags 配置未启用，跳过标签功能');
     return null;
   }
 
@@ -47,7 +48,7 @@ export function pluginTags(config: CogitaPluginConfig): RspressPlugin | null {
     name: '@cogita/plugin-tags',
 
     async beforeBuild() {
-      console.log('[Tags Plugin] 开始初始化标签插件...');
+      logger.info('[Tags Plugin] 开始初始化标签插件...');
 
       try {
         // 获取文章配置
@@ -56,25 +57,27 @@ export function pluginTags(config: CogitaPluginConfig): RspressPlugin | null {
         const cwd = buildContext.cwd || process.cwd();
         const routePrefix = postsConfig.routePrefix || 'posts';
 
-        console.log(`[Tags Plugin] 扫描文章目录: ${postsDir}`);
+        logger.info(`[Tags Plugin] 扫描文章目录: ${postsDir}`);
 
         // 提取文章数据
         postsData = await extractTagsFromPosts(
           postsDir,
           cwd,
           routePrefix,
-          buildContext.contentIndex
+          buildContext.contentIndex,
+          logger
         );
 
         if (postsData.length === 0) {
-          console.warn('[Tags Plugin] 未找到文章，跳过标签处理');
+          logger.warn('[Tags Plugin] 未找到文章，跳过标签处理');
           return;
         }
 
         // 处理标签数据
         const { tagsData, tagsMap: processedTagsMap } = processTagsFromPosts(
           postsData,
-          finalTagsConfig
+          finalTagsConfig,
+          logger
         );
 
         allTagsData = tagsData;
@@ -83,16 +86,16 @@ export function pluginTags(config: CogitaPluginConfig): RspressPlugin | null {
         // 计算标签统计
         tagStats = calculateTagStats(allTagsData, postsData);
 
-        console.log(
+        logger.info(
           `[Tags Plugin] 成功处理 ${allTagsData.length} 个标签，来自 ${postsData.length} 篇文章`
         );
         if (tagStats.hottest?.name) {
-          console.log(
+          logger.info(
             `[Tags Plugin] 最热门标签: ${tagStats.hottest.name} (${tagStats.hottest.count} 篇文章)`
           );
         }
       } catch (error) {
-        console.error('[Tags Plugin] 初始化失败:', error);
+        logger.error('[Tags Plugin] 初始化失败:', error);
         // 不抛出错误，让构建继续，但标签功能将不可用
         allTagsData = [];
         tagMap = new Map();
@@ -103,7 +106,7 @@ export function pluginTags(config: CogitaPluginConfig): RspressPlugin | null {
 
     addPages() {
       if (allTagsData.length === 0) {
-        console.warn('[Tags Plugin] 没有标签数据，跳过页面生成');
+        logger.warn('[Tags Plugin] 没有标签数据，跳过页面生成');
         return [];
       }
 
@@ -129,13 +132,13 @@ export function pluginTags(config: CogitaPluginConfig): RspressPlugin | null {
         }
       } else {
         // 主题未提供 tag 布局，跳过页面生成
-        console.warn(
+        logger.warn(
           '[Tags Plugin] 主题未提供 pageLayouts.tag，跳过标签页面生成。' +
             '请在主题 getThemeConfig() 中声明 pageLayouts.tag 以启用标签页面。'
         );
       }
 
-      console.log(`[Tags Plugin] 生成 ${pages.length} 个标签页面`);
+      logger.info(`[Tags Plugin] 生成 ${pages.length} 个标签页面`);
       return pages;
     },
 

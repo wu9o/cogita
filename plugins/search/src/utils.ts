@@ -2,7 +2,8 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
-import type { ContentIndex } from '@cogita/shared';
+import { createCogitaLogger } from '@cogita/shared';
+import type { CogitaLogger, ContentIndex } from '@cogita/shared';
 import { glob } from 'glob';
 import type {
   ResolvedSearchAnalyticsConfig,
@@ -67,18 +68,26 @@ export function cleanMarkdownContent(markdown: string, maxLength: number): strin
   return maxLength > 0 ? content.slice(0, maxLength) : '';
 }
 
-function getContent(filePath: string, config: ResolvedSearchConfig): string | undefined {
+function getContent(
+  filePath: string,
+  config: ResolvedSearchConfig,
+  logger: CogitaLogger
+): string | undefined {
   if (!config.includeContent || !config.fields.content) return undefined;
 
   try {
     return cleanMarkdownContent(fs.readFileSync(filePath, 'utf8'), config.maxContentLength);
   } catch (error) {
-    console.warn(`[Search Plugin] 读取正文失败：${filePath}`, error);
+    logger.warn(`[Search Plugin] 读取正文失败：${filePath}`, error);
     return undefined;
   }
 }
 
-function toSearchDocument(post: PostFrontmatter, config: ResolvedSearchConfig): SearchDocument {
+function toSearchDocument(
+  post: PostFrontmatter,
+  config: ResolvedSearchConfig,
+  logger: CogitaLogger
+): SearchDocument {
   return {
     id: post.route,
     title: post.title,
@@ -88,7 +97,7 @@ function toSearchDocument(post: PostFrontmatter, config: ResolvedSearchConfig): 
     excerpt: config.fields.excerpt ? post.excerpt : undefined,
     tags: config.fields.tags ? post.tags : undefined,
     categories: config.fields.categories ? post.categories : undefined,
-    content: getContent(post.filePath, config),
+    content: getContent(post.filePath, config, logger),
     createDate: post.createDate,
     updateDate: post.updateDate,
     image: post.image,
@@ -103,12 +112,13 @@ export async function extractSearchDocuments(
   routePrefix: string,
   extensions: string[],
   config: ResolvedSearchConfig,
-  contentIndex?: ContentIndex
+  contentIndex?: ContentIndex,
+  logger: CogitaLogger = createCogitaLogger()
 ): Promise<SearchDocument[]> {
   if (contentIndex) {
     const posts = await contentIndex.getPosts();
     return posts
-      .map((post) => toSearchDocument({ ...post, url: post.url || post.route }, config))
+      .map((post) => toSearchDocument({ ...post, url: post.url || post.route }, config, logger))
       .sort((a, b) => a.route.localeCompare(b.route));
   }
 
@@ -126,14 +136,14 @@ export async function extractSearchDocuments(
   return absolutePaths
     .map((filePath) => {
       try {
-        return getFrontmatterFromFile(filePath, postsDir, routePrefix);
+        return getFrontmatterFromFile(filePath, postsDir, routePrefix, logger);
       } catch (error) {
-        console.warn(`[Search Plugin] 跳过文件：${filePath}`, error);
+        logger.warn(`[Search Plugin] 跳过文件：${filePath}`, error);
         return null;
       }
     })
     .filter((post): post is PostFrontmatter => post !== null)
-    .map((post) => toSearchDocument({ ...post, url: post.url || post.route }, config))
+    .map((post) => toSearchDocument({ ...post, url: post.url || post.route }, config, logger))
     .sort((a, b) => a.route.localeCompare(b.route));
 }
 

@@ -1,4 +1,4 @@
-import { getCogitaBuildContext } from '@cogita/shared';
+import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import type { CategoriesConfig, CategoryData, CategoryStats } from './types';
@@ -11,8 +11,9 @@ import {
 
 /** 创建文章分类插件。 */
 export function pluginCategories(config: CogitaPluginConfig): RspressPlugin | null {
+  const logger = getCogitaLogger(config);
   if (!config.categories || config.categories.enabled === false) {
-    console.log('[Categories Plugin] Categories 配置未启用，跳过分类功能');
+    logger.info('[Categories Plugin] Categories 配置未启用，跳过分类功能');
     return null;
   }
 
@@ -37,13 +38,14 @@ export function pluginCategories(config: CogitaPluginConfig): RspressPlugin | nu
         buildContext.cwd || process.cwd(),
         postsConfig.routePrefix || 'posts',
         postsConfig.extensions || ['md', 'mdx'],
-        buildContext.contentIndex
+        buildContext.contentIndex,
+        logger
       );
       const processed = processCategoriesFromPosts(posts, finalConfig);
       allCategories = processed.categoriesData;
       categoryMap = processed.categoriesMap;
       categoryStats = calculateCategoryStats(allCategories);
-      console.log(
+      logger.info(
         `[Categories Plugin] 成功处理 ${allCategories.length} 个分类，来自 ${posts.length} 篇文章`
       );
     },
@@ -51,7 +53,7 @@ export function pluginCategories(config: CogitaPluginConfig): RspressPlugin | nu
     addPages() {
       const categoryLayout = buildContext.themeLayouts?.category;
       if (!categoryLayout) {
-        console.warn('[Categories Plugin] 主题未提供 pageLayouts.category，跳过分类页面生成');
+        logger.warn('[Categories Plugin] 主题未提供 pageLayouts.category，跳过分类页面生成');
         return [];
       }
 

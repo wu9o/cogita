@@ -8,6 +8,7 @@ import {
   getBlogListRouteEntries,
   getCategoryRoutes,
   getCogitaBuildContext,
+  getCogitaLogger,
 } from '@cogita/shared';
 import type { RouteMeta } from '@rspress/shared';
 import { glob } from 'glob';
@@ -28,7 +29,10 @@ const DEFAULT_CONFIG: Required<Pick<SEOConfig, 'robots' | 'includeJsonLd'>> = {
   includeJsonLd: true,
 };
 
-async function collectPosts(config: CogitaPluginConfig): Promise<PostFrontmatter[]> {
+async function collectPosts(
+  config: CogitaPluginConfig,
+  logger: ReturnType<typeof getCogitaLogger>
+): Promise<PostFrontmatter[]> {
   const buildContext = getCogitaBuildContext(config);
   if (buildContext.contentIndex) {
     return (await buildContext.contentIndex.getPosts()).map((post) => ({
@@ -51,7 +55,7 @@ async function collectPosts(config: CogitaPluginConfig): Promise<PostFrontmatter
   });
 
   return absolutePaths
-    .map((filePath) => getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix))
+    .map((filePath) => getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix, logger))
     .filter((post): post is NonNullable<typeof post> => Boolean(post));
 }
 
@@ -63,6 +67,7 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
   }
 
   const buildContext = getCogitaBuildContext(config);
+  const logger = getCogitaLogger(config);
 
   const finalConfig = {
     ...DEFAULT_CONFIG,
@@ -87,13 +92,13 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
   async function rebuildMetadata(rspressConfig: unknown) {
     let posts = [] as Awaited<ReturnType<typeof collectPosts>>;
     try {
-      posts = await collectPosts(config);
+      posts = await collectPosts(config, logger);
     } catch (error) {
       const message = `[SEO Plugin] 扫描文章失败: ${error instanceof Error ? error.message : String(error)}`;
       if (buildContext.strict !== false) {
         throw new Error(message);
       }
-      console.warn(`${message}，将只生成站点级元数据`);
+      logger.warn(`${message}，将只生成站点级元数据`);
     }
 
     siteTitle = config.site?.title || 'Cogita Blog';
@@ -224,7 +229,7 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
         ],
         finalConfig.audit
       );
-      console.log(formatSEOAuditReport(auditReport));
+      logger.info(formatSEOAuditReport(auditReport));
 
       if (finalConfig.audit.failOnError && auditReport.errors > 0) {
         throw new Error(`[SEO Plugin] 审核发现 ${auditReport.errors} 个错误，已根据配置阻断构建`);
@@ -301,7 +306,7 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
 
       fs.mkdirSync(path.dirname(auditOutputFile), { recursive: true });
       fs.writeFileSync(auditOutputFile, `${JSON.stringify(auditReport, null, 2)}\n`, 'utf8');
-      console.log(`[SEO Plugin] 审核报告已写入: ${auditOutputFile}`);
+      logger.info(`[SEO Plugin] 审核报告已写入: ${auditOutputFile}`);
     },
   };
 }

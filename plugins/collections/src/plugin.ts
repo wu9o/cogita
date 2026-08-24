@@ -1,4 +1,4 @@
-import { getCogitaBuildContext } from '@cogita/shared';
+import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import type { CollectionData, CollectionStats, CollectionsConfig } from './types';
@@ -9,11 +9,12 @@ import {
 } from './utils';
 
 export function pluginCollections(config: CogitaPluginConfig): RspressPlugin | null {
+  const logger = getCogitaLogger(config);
   const collectionsConfig = config.collections;
 
   // 未配置或明确禁用则跳过
   if (!collectionsConfig || collectionsConfig.enabled === false) {
-    console.log('[Collections Plugin] Collections 配置未启用，跳过合集功能');
+    logger.info('[Collections Plugin] Collections 配置未启用，跳过合集功能');
     return null;
   }
 
@@ -37,7 +38,7 @@ export function pluginCollections(config: CogitaPluginConfig): RspressPlugin | n
     name: '@cogita/plugin-collections',
 
     async beforeBuild() {
-      console.log('[Collections Plugin] 开始初始化合集插件...');
+      logger.info('[Collections Plugin] 开始初始化合集插件...');
 
       try {
         const postsConfig = config.posts || {};
@@ -45,34 +46,36 @@ export function pluginCollections(config: CogitaPluginConfig): RspressPlugin | n
         const cwd = buildContext.cwd || process.cwd();
         const routePrefix = postsConfig.routePrefix || 'posts';
 
-        console.log(`[Collections Plugin] 扫描文章目录: ${postsDir}`);
+        logger.info(`[Collections Plugin] 扫描文章目录: ${postsDir}`);
 
         const postsData = await extractCollectionsFromPosts(
           postsDir,
           cwd,
           routePrefix,
-          buildContext.contentIndex
+          buildContext.contentIndex,
+          logger
         );
 
         const { collectionsData, collectionsMap } = processCollectionsFromPosts(
           postsData,
-          finalCollectionsConfig
+          finalCollectionsConfig,
+          logger
         );
 
         allCollectionsData = collectionsData;
         collectionMap = collectionsMap;
         collectionStats = calculateCollectionStats(collectionsData);
 
-        console.log(
+        logger.info(
           `[Collections Plugin] 成功处理 ${allCollectionsData.length} 个合集，来自 ${postsData.length} 篇文章`
         );
         if (collectionStats.largest) {
-          console.log(
+          logger.info(
             `[Collections Plugin] 最大合集: ${collectionStats.largest.title} (${collectionStats.largest.count} 篇文章)`
           );
         }
       } catch (error) {
-        console.error('[Collections Plugin] 初始化失败:', error);
+        logger.error('[Collections Plugin] 初始化失败:', error);
       }
     },
 
@@ -104,7 +107,7 @@ export function pluginCollections(config: CogitaPluginConfig): RspressPlugin | n
       const collectionLayout = buildContext.themeLayouts?.collection;
 
       if (!collectionLayout) {
-        console.warn(
+        logger.warn(
           '[Collections Plugin] 主题未提供 pageLayouts.collection，跳过合集页面生成。' +
             '请在主题 getThemeConfig() 中声明 pageLayouts.collection 以启用合集页面。'
         );
@@ -129,7 +132,7 @@ export function pluginCollections(config: CogitaPluginConfig): RspressPlugin | n
         });
       }
 
-      console.log(`[Collections Plugin] 生成 ${pages.length} 个合集页面`);
+      logger.info(`[Collections Plugin] 生成 ${pages.length} 个合集页面`);
       return pages;
     },
   };

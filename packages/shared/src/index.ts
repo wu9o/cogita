@@ -91,6 +91,26 @@ export interface ContentIndex {
   invalidate?(): void;
 }
 
+/** 构建期日志接口，避免插件直接依赖全局 console。 */
+export interface CogitaLogger {
+  debug(message: string, ...args: unknown[]): void;
+  info(message: string, ...args: unknown[]): void;
+  warn(message: string, ...args: unknown[]): void;
+  error(message: string, ...args: unknown[]): void;
+}
+
+const defaultLogger: CogitaLogger = {
+  debug: (message, ...args) => console.debug(message, ...args),
+  info: (message, ...args) => console.info(message, ...args),
+  warn: (message, ...args) => console.warn(message, ...args),
+  error: (message, ...args) => console.error(message, ...args),
+};
+
+/** 创建默认的控制台日志实现，供 core 初始化构建上下文。 */
+export function createCogitaLogger(): CogitaLogger {
+  return defaultLogger;
+}
+
 /**
  * 构建期上下文。
  *
@@ -109,6 +129,8 @@ export interface CogitaBuildContext {
   themeLayouts?: Record<string, string>;
   /** 是否以严格模式运行构建。 */
   strict?: boolean;
+  /** 构建期统一日志出口。 */
+  logger?: CogitaLogger;
   /** Cogita 框架构建元数据。 */
   framework?: {
     version: string;
@@ -130,6 +152,8 @@ export interface CogitaPluginConfig {
    * 顶层字段仍保留，便于旧版第三方插件平滑迁移。
    */
   buildContext?: CogitaBuildContext;
+  /** 站点额外注册的插件工厂。 */
+  plugins?: CogitaPluginFactory[];
   site?: {
     title?: string;
     description?: string;
@@ -341,6 +365,7 @@ export function getCogitaBuildContext(config: CogitaPluginConfig): CogitaBuildCo
     contentIndex: config.contentIndex,
     themeLayouts: config.themeLayouts,
     strict: config.strict,
+    logger: defaultLogger,
     framework: config._framework,
   };
 }
@@ -349,6 +374,11 @@ export function getCogitaBuildContext(config: CogitaPluginConfig): CogitaBuildCo
 export type CogitaPluginFactory = (
   config: CogitaPluginConfig
 ) => RspressPlugin | RspressPlugin[] | null | undefined;
+
+/** 获取插件可用的统一日志出口，并兼容旧版构建上下文。 */
+export function getCogitaLogger(config: CogitaPluginConfig): CogitaLogger {
+  return getCogitaBuildContext(config).logger || defaultLogger;
+}
 
 /** 文章列表页面生成路由时所需的最小文章数据。 */
 export interface BlogListRoutePost {

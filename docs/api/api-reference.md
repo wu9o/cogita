@@ -88,6 +88,7 @@ console.log(config.site?.title);
 interface CogitaConfig {
   site?: SiteConfig;
   theme?: string;
+  plugins?: CogitaPluginFactory[];
   themeConfig?: ThemeConfig;
   builderConfig?: BuilderConfig;
 }
@@ -263,7 +264,7 @@ const HomeLayout: React.FC<LayoutProps> = ({ routePath, config, pageData }) => {
 
 ```typescript
 type CogitaPluginFactory = (
-  config: Record<string, any>
+  config: CogitaPluginConfig
 ) => RspressPlugin | RspressPlugin[] | null | undefined;
 ```
 
@@ -277,9 +278,11 @@ type CogitaPluginFactory = (
 
 **示例：**
 ```typescript
+import { getCogitaLogger } from '@cogita/shared';
+
 export const pluginExample: CogitaPluginFactory = (config) => {
-  // 从配置中提取插件选项
   const options = config.example || {};
+  const logger = getCogitaLogger(config);
   
   // 条件性禁用插件
   if (!options.enabled) {
@@ -289,11 +292,13 @@ export const pluginExample: CogitaPluginFactory = (config) => {
   return {
     name: '@cogita/plugin-example',
     async beforeBuild() {
-      console.log('Example plugin: preparing build');
+      logger.info('开始准备构建');
     },
   };
 };
 ```
+
+站点可以在 `cogita.config.ts` 的 `plugins` 数组中注册自定义插件。插件执行顺序、重复名称策略和构建上下文详见[插件 API 规范](../plugins/plugin-api-specification.md)。
 
 ### Rspress 插件接口
 

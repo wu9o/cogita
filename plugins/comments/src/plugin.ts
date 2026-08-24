@@ -1,12 +1,13 @@
-import { getCogitaBuildContext } from '@cogita/shared';
+import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import { extractCommentPostRoutes, resolveCommentsConfig, validateCommentsConfig } from './utils';
 
 /** 创建评论插件。 */
 export function pluginComments(config: CogitaPluginConfig): RspressPlugin | null {
+  const logger = getCogitaLogger(config);
   if (!config.comments) {
-    console.log('[Comments Plugin] 未找到评论配置，跳过评论功能');
+    logger.info('[Comments Plugin] 未找到评论配置，跳过评论功能');
     return null;
   }
 
@@ -16,7 +17,7 @@ export function pluginComments(config: CogitaPluginConfig): RspressPlugin | null
   let configError = validateCommentsConfig(finalConfig);
 
   if (configError) {
-    console.warn(`[Comments Plugin] ${configError}，评论功能将保持关闭`);
+    logger.warn(`[Comments Plugin] ${configError}，评论功能将保持关闭`);
     finalConfig = { ...finalConfig, enabled: false };
   }
 
@@ -30,17 +31,18 @@ export function pluginComments(config: CogitaPluginConfig): RspressPlugin | null
         buildContext.cwd || process.cwd(),
         postsConfig.routePrefix || 'posts',
         postsConfig.extensions || ['md', 'mdx'],
-        buildContext.contentIndex
+        buildContext.contentIndex,
+        logger
       );
       finalConfig = resolveCommentsConfig(config.comments, postRoutes);
       configError = validateCommentsConfig(finalConfig);
 
       if (configError) {
-        console.warn(`[Comments Plugin] ${configError}，评论功能将保持关闭`);
+        logger.warn(`[Comments Plugin] ${configError}，评论功能将保持关闭`);
         finalConfig = { ...finalConfig, enabled: false };
       }
 
-      console.log(
+      logger.info(
         `[Comments Plugin] ${finalConfig.enabled ? '已启用' : '未启用'}，已识别 ${postRoutes.length} 篇文章`
       );
     },

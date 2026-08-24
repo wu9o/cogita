@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
-import type { ContentIndex } from '@cogita/shared';
+import { createCogitaLogger } from '@cogita/shared';
+import type { CogitaLogger, ContentIndex } from '@cogita/shared';
 import { glob } from 'glob';
 import type {
   CommentsConfig,
@@ -94,7 +95,8 @@ export async function extractCommentPostRoutes(
   cwd: string,
   routePrefix: string,
   extensions: string[],
-  contentIndex?: ContentIndex
+  contentIndex?: ContentIndex,
+  logger: CogitaLogger = createCogitaLogger()
 ): Promise<string[]> {
   if (contentIndex) {
     return (await contentIndex.getPosts()).map((post) => post.route).sort();
@@ -115,9 +117,11 @@ export async function extractCommentPostRoutes(
   return absolutePaths
     .map((filePath) => {
       try {
-        return getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix)?.route || null;
+        return (
+          getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix, logger)?.route || null
+        );
       } catch (error) {
-        console.warn(`[Comments Plugin] 跳过文件 ${filePath}:`, error);
+        logger.warn(`[Comments Plugin] 跳过文件 ${filePath}:`, error);
         return null;
       }
     })

@@ -1,4 +1,4 @@
-import { getCogitaBuildContext } from '@cogita/shared';
+import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import type { ReadingStats } from './types';
@@ -6,10 +6,11 @@ import { extractReadingStats, resolveReadingProgressConfig } from './utils';
 
 /** 创建阅读进度与阅读时间插件。 */
 export function pluginReadingProgress(config: CogitaPluginConfig): RspressPlugin | null {
+  const logger = getCogitaLogger(config);
   const readingProgressConfig = config.readingProgress;
 
   if (!readingProgressConfig) {
-    console.log('[Reading Progress Plugin] 未找到阅读进度配置，跳过阅读增强');
+    logger.info('[Reading Progress Plugin] 未找到阅读进度配置，跳过阅读增强');
     return null;
   }
 
@@ -19,7 +20,7 @@ export function pluginReadingProgress(config: CogitaPluginConfig): RspressPlugin
   let readingStats: ReadingStats[] = [];
 
   if (!finalConfig.enabled) {
-    console.log('[Reading Progress Plugin] 阅读进度配置已关闭，仅提供空运行时模块');
+    logger.info('[Reading Progress Plugin] 阅读进度配置已关闭，仅提供空运行时模块');
   }
 
   return {
@@ -35,9 +36,10 @@ export function pluginReadingProgress(config: CogitaPluginConfig): RspressPlugin
         postsConfig.routePrefix || 'posts',
         postsConfig.extensions || ['md', 'mdx'],
         finalConfig,
-        buildContext.contentIndex
+        buildContext.contentIndex,
+        logger
       );
-      console.log(`[Reading Progress Plugin] 已生成 ${readingStats.length} 篇文章的阅读统计`);
+      logger.info(`[Reading Progress Plugin] 已生成 ${readingStats.length} 篇文章的阅读统计`);
     },
 
     addRuntimeModules() {

@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { copyFile, mkdir } from 'node:fs/promises';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createCogitaLogger } from '@cogita/shared';
 import type { CogitaPluginConfig, CogitaTheme } from '@cogita/shared';
 import type { RspressPlugin, UserConfig } from '@rspress/core';
 import { findUp } from 'find-up';
@@ -110,7 +111,7 @@ export async function loadCogitaConfig(root: string = process.cwd()): Promise<Co
     const mod = _require(configPath);
     return mod.default || {};
   } catch (e) {
-    console.error(`Failed to load config file: ${configPath}`);
+    createCogitaLogger().error(`Failed to load config file: ${configPath}`);
     throw e;
   }
 }
@@ -200,7 +201,9 @@ function validateThemeLayouts(config: CogitaFullConfig, theme: CogitaTheme, stri
     throw new Error(`${message}。请在主题的 pageLayouts 中补齐对应布局，或关闭相关功能。`);
   }
 
-  console.warn(`${message}，非严格模式下将跳过缺失页面。`);
+  (config.buildContext.logger || createCogitaLogger()).warn(
+    `${message}，非严格模式下将跳过缺失页面。`
+  );
 }
 
 /**
@@ -213,7 +216,9 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
     extensions: ['md', 'mdx'],
     ...cogitaConfig.posts,
   };
-  const contentIndex = createContentIndex(root, posts);
+  const logger = createCogitaLogger();
+  const contentIndex = createContentIndex(root, posts, logger);
+  const strict = cogitaConfig.strict !== false;
   const framework = {
     version: '0.0.1', // TODO: get from package.json
     buildTime: new Date().toISOString(),
@@ -229,7 +234,8 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
       root,
       cwd: root,
       contentIndex,
-      strict: cogitaConfig.strict,
+      strict,
+      logger,
       framework,
     },
     // Enhanced site config with defaults
@@ -389,7 +395,7 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
       dir: 'public/images',
       extensions: ['png', 'jpg', 'jpeg', 'gif', 'webp', 'avif', 'svg'],
       readDimensions: true,
-      failOnMissing: cogitaConfig.strict !== false,
+      failOnMissing: strict,
       warnOnMissingAlt: false,
       ...cogitaConfig.images,
     },
@@ -405,7 +411,7 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
           includeCategories: true,
           changefreq: 'weekly' as const,
           priority: 0.7,
-          failOnMissingSiteUrl: cogitaConfig.strict !== false,
+          failOnMissingSiteUrl: strict,
           ...cogitaConfig.sitemap,
         }
       : undefined,
@@ -470,44 +476,68 @@ export async function createRspressConfig(
     validateThemeLayouts(fullConfigForPlugins, theme, cogitaConfig.strict !== false);
   }
 
-  // 5. Instantiate plugins from the theme's plugin factories with enhanced error handling
-  const themePlugins: RspressPlugin[] = [];
+  // 5. 按稳定顺序实例化主题插件和用户插件，并处理重复注册
   const strict = cogitaConfig.strict !== false; // Default to true
   const pluginConfig: CogitaPluginConfig = fullConfigForPlugins;
+  const logger = fullConfigForPlugins.buildContext.logger || createCogitaLogger();
+  const finalPlugins: RspressPlugin[] = [];
+  const registeredPluginSources = new Map<string, string>();
 
-  if (theme?.plugins) {
-    for (const factory of theme.plugins) {
+  const registerPlugin = (plugin: RspressPlugin, source: string) => {
+    const previousSource = registeredPluginSources.get(plugin.name);
+    if (previousSource) {
+      const message = `[Cogita] 插件 ${plugin.name} 重复注册（来源：${previousSource}、${source}）`;
+      if (strict) {
+        throw new Error(message);
+      }
+      logger.warn(`${message}，非严格模式下保留首次注册。`);
+      return;
+    }
+
+    registeredPluginSources.set(plugin.name, source);
+    finalPlugins.push(plugin);
+  };
+
+  registerPlugin(
+    {
+      name: 'cogita-content-index',
+      beforeBuild() {
+        fullConfigForPlugins.buildContext.contentIndex?.invalidate?.();
+      },
+    },
+    'core'
+  );
+
+  if (theme) {
+    registerPlugin(createThemePlugin(theme), 'theme');
+  }
+
+  const pluginSources = [
+    { name: 'theme', factories: theme?.plugins || [] },
+    { name: 'user', factories: cogitaConfig.plugins || [] },
+  ];
+
+  for (const { name: source, factories } of pluginSources) {
+    for (const factory of factories) {
       try {
         const result = factory(pluginConfig);
 
         if (result) {
-          // Handle both single plugin and array of plugins
           const plugins = Array.isArray(result) ? result : [result];
-          themePlugins.push(...plugins);
+          for (const plugin of plugins) {
+            registerPlugin(plugin, source);
+          }
         }
       } catch (error) {
-        const errorMessage = `[Cogita] Plugin instantiation failed: ${error}`;
+        const errorMessage = `[Cogita] ${source} 插件实例化失败：${error}`;
 
         if (strict) {
           throw new Error(errorMessage);
         }
-        console.warn(errorMessage);
+        logger.warn(errorMessage);
       }
     }
   }
-
-  // 6. Combine all plugins
-  const finalPlugins: RspressPlugin[] = [];
-  finalPlugins.push({
-    name: 'cogita-content-index',
-    beforeBuild() {
-      fullConfigForPlugins.buildContext.contentIndex?.invalidate?.();
-    },
-  });
-  if (theme) {
-    finalPlugins.push(createThemePlugin(theme));
-  }
-  finalPlugins.push(...themePlugins);
 
   baseRspressConfig.plugins = finalPlugins;
 
