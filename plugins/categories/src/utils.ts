@@ -2,11 +2,12 @@ import path from 'node:path';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import {
+  createCogitaLogger,
   generateCategorySlug,
   getCategoryPathVariants,
   normalizeCategoryPath,
 } from '@cogita/shared';
-import type { ContentIndex } from '@cogita/shared';
+import type { CogitaLogger, ContentIndex } from '@cogita/shared';
 import { glob } from 'glob';
 import type {
   CategoriesConfig,
@@ -44,7 +45,8 @@ export async function extractCategoriesFromPosts(
   cwd: string,
   routePrefix = 'posts',
   extensions = ['md', 'mdx'],
-  contentIndex?: ContentIndex
+  contentIndex?: ContentIndex,
+  logger: CogitaLogger = createCogitaLogger()
 ): Promise<PostFrontmatter[]> {
   if (contentIndex) {
     return (await contentIndex.getPosts()).map((post) => ({
@@ -68,9 +70,9 @@ export async function extractCategoriesFromPosts(
   return absolutePaths
     .map((filePath) => {
       try {
-        return getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix);
+        return getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix, logger);
       } catch (error) {
-        console.warn(`[Categories Plugin] 跳过文件 ${filePath}:`, error);
+        logger.warn(`[Categories Plugin] 跳过文件 ${filePath}:`, error);
         return null;
       }
     })

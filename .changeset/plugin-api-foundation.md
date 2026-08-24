@@ -1,0 +1,20 @@
+---
+'@cogita/shared': minor
+'@cogita/core': minor
+'@cogita/plugin-blog-list': patch
+'@cogita/plugin-categories': patch
+'@cogita/plugin-code-copy': patch
+'@cogita/plugin-collections': patch
+'@cogita/plugin-comments': patch
+'@cogita/plugin-content-check': patch
+'@cogita/plugin-images': patch
+'@cogita/plugin-posts-frontmatter': patch
+'@cogita/plugin-reading-progress': patch
+'@cogita/plugin-rss': patch
+'@cogita/plugin-search': patch
+'@cogita/plugin-seo': patch
+'@cogita/plugin-sitemap': patch
+'@cogita/plugin-tags': patch
+---
+
+新增用户插件注册入口、规范化构建上下文、统一日志接口和插件名称重复检测。

@@ -1,4 +1,4 @@
-import { getCogitaBuildContext } from '@cogita/shared';
+import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
 import type { CogitaPluginConfig } from '@cogita/shared';
 import type { RspressPlugin } from '@rspress/core';
 import type { BlogArchive, BlogListFilter, BlogListPage } from './types';
@@ -14,10 +14,11 @@ import {
 
 /** 创建文章列表与归档插件。 */
 export function pluginBlogList(config: CogitaPluginConfig): RspressPlugin | null {
+  const logger = getCogitaLogger(config);
   const blogListConfig = config.blogList;
 
   if (!blogListConfig || blogListConfig.enabled === false) {
-    console.log('[Blog List Plugin] Blog list 配置未启用，跳过文章列表功能');
+    logger.info('[Blog List Plugin] Blog list 配置未启用，跳过文章列表功能');
     return null;
   }
 
@@ -38,7 +39,8 @@ export function pluginBlogList(config: CogitaPluginConfig): RspressPlugin | null
         buildContext.cwd || process.cwd(),
         postsConfig.routePrefix || 'posts',
         postsConfig.extensions || ['md', 'mdx'],
-        buildContext.contentIndex
+        buildContext.contentIndex,
+        logger
       );
       const sortedPosts = sortPosts(posts, finalConfig);
 
@@ -54,7 +56,7 @@ export function pluginBlogList(config: CogitaPluginConfig): RspressPlugin | null
         const archiveResult = buildArchives(sortedPosts, finalConfig);
         archives = archiveResult.archives;
         if (archiveResult.invalidDateCount > 0) {
-          console.warn(
+          logger.warn(
             `[Blog List Plugin] 有 ${archiveResult.invalidDateCount} 篇文章的 createDate 无法生成归档，已跳过归档分组`
           );
         }
@@ -62,7 +64,7 @@ export function pluginBlogList(config: CogitaPluginConfig): RspressPlugin | null
         archives = [];
       }
 
-      console.log(
+      logger.info(
         `[Blog List Plugin] 已生成 ${pages.length} 个列表页、${filters.length} 个筛选项和 ${archives.length > 0 ? archives.length + 1 : 0} 个归档页`
       );
     },
@@ -81,7 +83,7 @@ export function pluginBlogList(config: CogitaPluginConfig): RspressPlugin | null
           }))
         );
       } else {
-        console.warn('[Blog List Plugin] 主题未提供 pageLayouts.blogList，跳过文章列表页面生成');
+        logger.warn('[Blog List Plugin] 主题未提供 pageLayouts.blogList，跳过文章列表页面生成');
       }
 
       if (finalConfig.generateArchives && archiveLayout) {
@@ -102,7 +104,7 @@ export function pluginBlogList(config: CogitaPluginConfig): RspressPlugin | null
           }))
         );
       } else if (finalConfig.generateArchives && archives.length > 0) {
-        console.warn('[Blog List Plugin] 主题未提供 pageLayouts.archive，跳过文章归档页面生成');
+        logger.warn('[Blog List Plugin] 主题未提供 pageLayouts.archive，跳过文章归档页面生成');
       }
 
       return result;

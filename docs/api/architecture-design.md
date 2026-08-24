@@ -296,6 +296,16 @@ graph TD
 3. **条件启用**：根据配置条件性地启用插件
 4. **批量创建**：一个工厂可以返回多个相关插件
 
+### 插件注册边界
+
+Cogita 同时支持主题插件和站点插件，但两者职责不同：主题插件提供主题默认能力，站点插件通过 `CogitaConfig.plugins` 提供项目级扩展。core 负责统一实例化、排序和去重，主题不再需要成为所有站点能力的唯一入口。
+
+```text
+核心插件 → 主题桥接插件 → 主题插件 → 用户插件
+```
+
+插件实例的 `name` 是全局唯一身份。严格模式下重复名称会阻断构建；非严格模式下保留首次注册并通过 `CogitaBuildContext.logger` 输出警告。构建期状态统一从 `buildContext` 读取，避免继续向插件配置顶层增加内部字段。
+
 ```typescript
 export const pluginBlogSystem: CogitaPluginFactory = (config) => {
   const blogConfig = config.blog || {};

@@ -18,10 +18,11 @@
 - **[Reading Progress 插件设计](./plugin-reading-progress-design.md)** - 阅读进度与预计阅读时间的实现方案
 - **[Code Copy 插件设计](./plugin-code-copy-design.md)** - 代码块复制按钮的实现方案
 - **[Comments 插件设计](./plugin-comments-design.md)** - Giscus / Utterances 评论接入方案
+- **[Content Check 插件设计](./plugin-content-check-design.md)** - 文章元数据、链接、图片和路由质量检查
 
 ### 📝 计划中文档
 
-- **[插件API规范](./plugin-api-specification.md)** *(计划中)* - 插件接口标准规范
+- **[插件API规范](./plugin-api-specification.md)** - 插件接口标准规范
 - **[插件测试指南](./plugin-testing-guide.md)** *(计划中)* - 插件测试最佳实践
 - **[官方插件目录](./official-plugins.md)** *(计划中)* - 官方插件列表和文档
 
@@ -60,13 +61,14 @@
 | `@cogita/plugin-reading-progress` | 阅读进度、目录联动与位置记忆 | ✅ 二期完成 | [设计文档](./plugin-reading-progress-design.md) |
 | `@cogita/plugin-code-copy` | 文章代码块复制按钮、语言级提示和选中内容复制 | ✅ 二期完成 | [设计文档](./plugin-code-copy-design.md) |
 | `@cogita/plugin-comments` | Giscus / Utterances 文章评论 | ✅ 一期完成 | [设计文档](./plugin-comments-design.md) |
+| `@cogita/plugin-content-check` | 文章内容质量和构建诊断 | ✅ 一期完成 | [设计文档](./plugin-content-check-design.md) |
 
 ### 📝 计划中插件
 
 | 插件名称 | 功能描述 | 优先级 | 预计时间 |
 |---------|----------|-------|---------|
 | `@cogita/plugin-blog-list` | 文章列表、分页和归档 | ✅ 已实现一期 | 后续增加筛选 |
-| `@cogita/plugin-comments` | 评论系统集成 | 🔸 中 | Q3 2025 |
+| 用户插件注册 | 站点直接注册自定义插件 | ✅ 已实现 | 见 [插件 API 规范](./plugin-api-specification.md) |
 
 ## 🏗️ 插件架构概览
 
@@ -111,9 +113,9 @@ Cogita 插件系统
 ## 📊 插件开发统计
 
 ### 当前状态
-- **已发布插件**: 4个
+- **内置插件**: 14个
 - **开发中插件**: 0个  
-- **计划中插件**: 10+个
+- **计划中插件**: 持续补充主题和插件测试能力
 - **社区插件**: 0个（期待你的贡献！）
 
 ### 开发活跃度

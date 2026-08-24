@@ -8,6 +8,7 @@ import {
   getBlogListRouteEntries,
   getCategoryRoutes,
   getCogitaBuildContext,
+  getCogitaLogger,
 } from '@cogita/shared';
 import { glob } from 'glob';
 import type { SitemapConfig, SitemapEntry, SitemapPost } from './types';
@@ -50,7 +51,10 @@ function getPostGlob(postsDir: string, extensions: string[]): string {
   return `${postsDir}/**/*.${extensionPattern}`;
 }
 
-async function collectPosts(config: CogitaPluginConfig): Promise<SitemapPost[]> {
+async function collectPosts(
+  config: CogitaPluginConfig,
+  logger: ReturnType<typeof getCogitaLogger>
+): Promise<SitemapPost[]> {
   const buildContext = getCogitaBuildContext(config);
   if (buildContext.contentIndex) {
     return (await buildContext.contentIndex.getPosts()).map((post) => ({
@@ -74,7 +78,7 @@ async function collectPosts(config: CogitaPluginConfig): Promise<SitemapPost[]> 
   });
 
   return absolutePaths
-    .map((filePath) => getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix))
+    .map((filePath) => getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix, logger))
     .filter((post): post is PostFrontmatter => Boolean(post))
     .map((post) => ({
       route: post.route,
@@ -104,6 +108,7 @@ export function pluginSitemap(config: CogitaPluginConfig): RspressPlugin | null 
   }
 
   const buildContext = getCogitaBuildContext(config);
+  const logger = getCogitaLogger(config);
 
   const finalConfig = {
     ...DEFAULT_CONFIG,
@@ -124,7 +129,7 @@ export function pluginSitemap(config: CogitaPluginConfig): RspressPlugin | null 
           throw new Error(message);
         }
 
-        console.warn(`${message}，已跳过`);
+        logger.warn(`${message}，已跳过`);
         entries = [];
         return;
       }
@@ -141,7 +146,9 @@ export function pluginSitemap(config: CogitaPluginConfig): RspressPlugin | null 
       }
 
       const posts =
-        finalConfig.includePosts || finalConfig.includeBlogList ? await collectPosts(config) : [];
+        finalConfig.includePosts || finalConfig.includeBlogList
+          ? await collectPosts(config, logger)
+          : [];
 
       if (finalConfig.includePosts) {
         sitemapEntries.push(
@@ -219,18 +226,18 @@ export function pluginSitemap(config: CogitaPluginConfig): RspressPlugin | null 
         String(configuredOutput || 'doc_build')
       );
       outputFile = path.join(outputDir, normalizeOutputPath(finalConfig.path));
-      console.log(`[Sitemap Plugin] 已收集 ${entries.length} 个站点地址`);
+      logger.info(`[Sitemap Plugin] 已收集 ${entries.length} 个站点地址`);
     },
 
     async afterBuild() {
       if (!outputFile || entries.length === 0) {
-        console.warn('[Sitemap Plugin] 没有可输出的站点地址，跳过 sitemap.xml 生成');
+        logger.warn('[Sitemap Plugin] 没有可输出的站点地址，跳过 sitemap.xml 生成');
         return;
       }
 
       fs.mkdirSync(path.dirname(outputFile), { recursive: true });
       fs.writeFileSync(outputFile, generateSitemapXml(entries), 'utf8');
-      console.log(`[Sitemap Plugin] 站点地图已写入: ${outputFile}`);
+      logger.info(`[Sitemap Plugin] 站点地图已写入: ${outputFile}`);
     },
   };
 }

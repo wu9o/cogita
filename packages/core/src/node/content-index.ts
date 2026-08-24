@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import type { ContentIndex, ContentPost, ContentPostSEO } from '@cogita/shared';
+import { createCogitaLogger } from '@cogita/shared';
+import type { CogitaLogger, ContentIndex, ContentPost, ContentPostSEO } from '@cogita/shared';
 import { glob } from 'glob';
 import matter from 'gray-matter';
 import type { PostsConfig } from '../types';
@@ -8,6 +9,7 @@ import type { PostsConfig } from '../types';
 interface ContentIndexOptions {
   root: string;
   posts: Required<Pick<PostsConfig, 'dir' | 'routePrefix' | 'extensions'>>;
+  logger: CogitaLogger;
 }
 
 /** 将文章路由前缀规范化为不带首尾斜杠的形式。 */
@@ -47,7 +49,12 @@ function parsePostSEO(value: unknown): ContentPostSEO | undefined {
 }
 
 /** 读取单篇文章的 frontmatter。 */
-function readPost(filePath: string, postsDir: string, routePrefix: string): ContentPost | null {
+function readPost(
+  filePath: string,
+  postsDir: string,
+  routePrefix: string,
+  logger: CogitaLogger
+): ContentPost | null {
   try {
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const stats = fs.statSync(filePath);
@@ -78,7 +85,7 @@ function readPost(filePath: string, postsDir: string, routePrefix: string): Cont
       url: getPostRoute(filePath, postsDir, routePrefix),
     };
   } catch (error) {
-    console.warn(`[Cogita] 解析文章失败，已跳过 ${filePath}:`, error);
+    logger.warn(`[Cogita] 解析文章失败，已跳过 ${filePath}:`, error);
     return null;
   }
 }
@@ -101,26 +108,27 @@ async function scanPosts(options: ContentIndexOptions): Promise<readonly Content
   });
 
   const posts = absolutePaths
-    .map((filePath) => readPost(filePath, postsDir, options.posts.routePrefix))
+    .map((filePath) => readPost(filePath, postsDir, options.posts.routePrefix, options.logger))
     .filter((post): post is ContentPost => post !== null);
 
   posts.sort((a, b) => new Date(b.createDate).getTime() - new Date(a.createDate).getTime());
 
-  console.log(`[Cogita] 内容索引已建立，共 ${posts.length} 篇文章`);
+  options.logger.info(`[Cogita] 内容索引已建立，共 ${posts.length} 篇文章`);
   return Object.freeze(posts);
 }
 
 /** 创建惰性内容索引，多个插件共享同一个扫描 Promise。 */
 export function createContentIndex(
   root: string,
-  posts: Required<Pick<PostsConfig, 'dir' | 'routePrefix' | 'extensions'>>
+  posts: Required<Pick<PostsConfig, 'dir' | 'routePrefix' | 'extensions'>>,
+  logger: CogitaLogger = createCogitaLogger()
 ): ContentIndex {
   let postsPromise: Promise<readonly ContentPost[]> | undefined;
   const contentPromises = new Map<string, Promise<string>>();
 
   return {
     getPosts() {
-      postsPromise ??= scanPosts({ root, posts });
+      postsPromise ??= scanPosts({ root, posts, logger });
       return postsPromise;
     },
     getPostContent(filePath) {

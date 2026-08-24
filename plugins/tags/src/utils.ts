@@ -1,7 +1,7 @@
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
-import { generateTagSlug } from '@cogita/shared';
-import type { ContentIndex } from '@cogita/shared';
+import { createCogitaLogger, generateTagSlug } from '@cogita/shared';
+import type { CogitaLogger, ContentIndex } from '@cogita/shared';
 import { glob } from 'glob';
 import type { PostReference, TagData, TagStats, TagsConfig } from './types';
 
@@ -19,7 +19,8 @@ export async function extractTagsFromPosts(
   postsDir: string,
   cwd: string,
   routePrefix = 'posts',
-  contentIndex?: ContentIndex
+  contentIndex?: ContentIndex,
+  logger: CogitaLogger = createCogitaLogger()
 ): Promise<PostFrontmatter[]> {
   if (contentIndex) {
     return (await contentIndex.getPosts()).map((post) => ({
@@ -39,9 +40,9 @@ export async function extractTagsFromPosts(
   return absolutePaths
     .map((filePath) => {
       try {
-        return getFrontmatterFromFile(filePath, postsDir, routePrefix);
+        return getFrontmatterFromFile(filePath, postsDir, routePrefix, logger);
       } catch (error) {
-        console.warn(`[Tags Plugin] 跳过文件 ${filePath}:`, error);
+        logger.warn(`[Tags Plugin] 跳过文件 ${filePath}:`, error);
         return null;
       }
     })
@@ -56,11 +57,12 @@ export async function extractTagsFromPosts(
  */
 export function processTagsFromPosts(
   postsData: PostFrontmatter[],
-  config: Required<TagsConfig>
+  config: Required<TagsConfig>,
+  logger: CogitaLogger = createCogitaLogger()
 ): { tagsData: TagData[]; tagsMap: Map<string, TagData> } {
   const tagsMap = new Map<string, TagData>();
 
-  console.log(`[Tags Plugin] 开始处理 ${postsData.length} 篇文章的标签数据`);
+  logger.info(`[Tags Plugin] 开始处理 ${postsData.length} 篇文章的标签数据`);
 
   // 遍历所有文章，收集标签信息
   for (const post of postsData) {
@@ -132,7 +134,7 @@ export function processTagsFromPosts(
     }
   });
 
-  console.log(`[Tags Plugin] 处理完成，共 ${tagsData.length} 个有效标签`);
+  logger.info(`[Tags Plugin] 处理完成，共 ${tagsData.length} 个有效标签`);
 
   return { tagsData, tagsMap };
 }

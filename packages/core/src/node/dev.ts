@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { VIRTUAL_CONTENT_DIR } from '@cogita/shared';
+import { VIRTUAL_CONTENT_DIR, createCogitaLogger } from '@cogita/shared';
 import { dev } from '@rspress/core';
 import chokidar from 'chokidar';
 import { findUp } from 'find-up';
@@ -41,6 +41,7 @@ async function startServer(root: string, cogitaConfig: CogitaConfig): Promise<De
 }
 
 export async function createServer(root: string = process.cwd()): Promise<void> {
+  const logger = createCogitaLogger();
   let activeConfig = await loadCogitaConfig(root);
   const initialConfigPath = await findUp(CONFIG_FILES, { cwd: root, type: 'file' });
   let server = await startServer(root, activeConfig);
@@ -69,7 +70,7 @@ export async function createServer(root: string = process.cwd()): Promise<void> 
         const docDirectory = path.join(root, VIRTUAL_CONTENT_DIR);
         await prepareSiteIcon(root, docDirectory, nextConfig.site?.icon);
 
-        console.log(
+        logger.info(
           `[Cogita] ${changedFilePath ? `${path.basename(changedFilePath)} 发生变化，` : ''}正在重建开发服务器`
         );
         const previousConfig = activeConfig;
@@ -91,7 +92,7 @@ export async function createServer(root: string = process.cwd()): Promise<void> 
       } while (pendingFilePath);
     })()
       .catch((error) => {
-        console.error('[Cogita] 开发服务器重建失败，保留当前服务器:', error);
+        logger.error('[Cogita] 开发服务器重建失败，保留当前服务器:', error);
       })
       .finally(() => {
         restartPromise = undefined;

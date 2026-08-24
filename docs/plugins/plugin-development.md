@@ -55,6 +55,47 @@ interface RspressPlugin {
 }
 ```
 
+### 用户直接注册插件
+
+主题负责提供默认能力，站点也可以在 `cogita.config.ts` 中注册自己的插件，避免为了一个站点级能力复制或修改主题：
+
+```typescript
+import { defineConfig } from '@cogita/core';
+import { pluginYourFeature } from './plugins/your-feature';
+
+export default defineConfig({
+  theme: 'lucid',
+  plugins: [pluginYourFeature],
+});
+```
+
+插件加载顺序是：核心插件 → 主题插件 → 用户插件。每个插件实例的 `name` 必须唯一；默认严格模式下重复名称会直接阻断构建。若确实需要兼容重复注册，可以设置 `strict: false`，此时保留首次注册的实例并输出警告。
+
+### 统一构建上下文与日志
+
+插件不应直接依赖全局 `console` 或继续扩展配置顶层的内部字段。构建期能力通过 `buildContext` 和 `getCogitaLogger` 获取：
+
+```typescript
+import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
+import type { CogitaPluginConfig } from '@cogita/shared';
+
+export const pluginYourFeature = (config: CogitaPluginConfig) => {
+  const context = getCogitaBuildContext(config);
+  const logger = getCogitaLogger(config);
+
+  return {
+    name: '@cogita/plugin-your-feature',
+    async beforeBuild() {
+      logger.info(`开始处理站点：${context.root}`);
+      const posts = await context.contentIndex?.getPosts();
+      logger.debug(`发现文章数量：${posts?.length ?? 0}`);
+    },
+  };
+};
+```
+
+`buildContext` 当前包含 `root`、`cwd`、共享 `contentIndex`、主题布局映射、`strict`、统一日志出口和框架元数据。顶层旧字段仍会保留一段时间，第三方插件可以渐进迁移。
+
 ## 📦 创建新插件
 
 ### 1. 项目结构
@@ -106,20 +147,24 @@ packages/plugin-your-feature/
 
 ```typescript
 import type { RspressPlugin } from '@rspress/core';
+import type { CogitaLogger } from '@cogita/shared';
 import type { YourPluginOptions } from './types';
 
-export function yourFeaturePlugin(options: YourPluginOptions): RspressPlugin {
+export function yourFeaturePlugin(
+  options: YourPluginOptions,
+  logger: CogitaLogger
+): RspressPlugin {
   return {
     name: '@cogita/plugin-your-feature',
     
     async beforeBuild() {
-      console.log('Plugin: Preparing build...');
+      logger.info('开始准备构建...');
       // 在构建前执行的逻辑
       // 例如：数据预处理、文件准备等
     },
 
     async afterBuild() {
-      console.log('Plugin: Build completed');
+      logger.info('构建完成');
       // 在构建后执行的逻辑
       // 例如：生成额外文件、清理临时文件等
     },
@@ -129,7 +174,7 @@ export function yourFeaturePlugin(options: YourPluginOptions): RspressPlugin {
       return [
         {
           routePath: '/your-feature',
-          content: '---npageType: customn---',
+          content: '---\npageType: custom\n---',
           filepath: '/path/to/your/component.tsx',
         }
       ];
@@ -150,6 +195,7 @@ export function yourFeaturePlugin(options: YourPluginOptions): RspressPlugin {
 #### 插件工厂函数 (src/index.ts)
 
 ```typescript
+import { getCogitaLogger } from '@cogita/shared';
 import type { CogitaPluginFactory } from '@cogita/shared';
 import { yourFeaturePlugin } from './plugin';
 import type { YourPluginOptions } from './types';
@@ -161,7 +207,7 @@ export const pluginYourFeature: CogitaPluginFactory = (config) => {
     data: config.yourFeature?.data ?? {},
     // 可以访问其他配置
     siteTitle: config.site?.title,
-    postsDir: config.postsDir || 'posts',
+    postsDir: config.posts?.dir || 'posts',
   };
 
   // 条件性返回插件
@@ -169,7 +215,7 @@ export const pluginYourFeature: CogitaPluginFactory = (config) => {
     return null;
   }
 
-  return yourFeaturePlugin(pluginOptions);
+  return yourFeaturePlugin(pluginOptions, getCogitaLogger(config));
 };
 
 // 导出类型供其他插件或主题使用
@@ -295,10 +341,14 @@ export function pluginPostsFrontmatter(config: Record<string, any>): RspressPlug
 ### 核心工具函数
 
 ```typescript
+import { createCogitaLogger } from '@cogita/shared';
+import type { CogitaLogger } from '@cogita/shared';
+
 export function getFrontmatterFromFile(
   filePath: string,
   postsDir: string,
-  routePrefix = 'posts'
+  routePrefix = 'posts',
+  logger: CogitaLogger = createCogitaLogger()
 ): PostFrontmatter | null {
   try {
     // 1. 读取文件内容
@@ -324,11 +374,13 @@ export function getFrontmatterFromFile(
       // ... 其他元数据
     };
   } catch (e) {
-    console.error(`从 ${filePath} 读取 frontmatter 时出错:`, e);
+    logger.error(`从 ${filePath} 读取 frontmatter 时出错:`, e);
     return null;
   }
 }
 ```
+
+工具函数也应通过参数接收 `CogitaLogger`，不要在辅助函数内部直接调用全局 `console`。这样插件工厂注入的日志出口可以贯穿扫描、解析和数据处理流程，也便于宿主统一控制日志级别与输出目标。
 
 ## 🎨 高级插件开发模式
 
@@ -492,13 +544,14 @@ describe('plugin integration', () => {
 
 ```typescript
 async beforeBuild() {
+  const logger = getCogitaLogger(config);
   try {
     await this.processFiles();
   } catch (error) {
-    console.error(`Plugin ${this.name} error:`, error.message);
+    logger.error(`Plugin ${this.name} error:`, error);
     // 提供有用的错误信息和解决建议
-    if (error.code === 'ENOENT') {
-      console.error('提示：请检查 postsDir 配置是否正确');
+    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
+      logger.error('提示：请检查 postsDir 配置是否正确');
     }
     throw error;
   }

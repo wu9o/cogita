@@ -1,5 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { createCogitaLogger } from '@cogita/shared';
+import type { CogitaLogger } from '@cogita/shared';
 import matter from 'gray-matter';
 import type { PostFrontmatter } from './types';
 
@@ -13,7 +15,8 @@ import type { PostFrontmatter } from './types';
 export function getFrontmatterFromFile(
   filePath: string,
   postsDir: string,
-  routePrefix = 'posts'
+  routePrefix = 'posts',
+  logger: CogitaLogger = createCogitaLogger()
 ): PostFrontmatter | null {
   try {
     const fileExt = path.extname(filePath).toLowerCase();
@@ -65,7 +68,7 @@ export function getFrontmatterFromFile(
       url: route,
     };
   } catch (e) {
-    console.error(`从 ${filePath} 读取 frontmatter 时出错:`, e);
+    logger.error(`从 ${filePath} 读取 frontmatter 时出错:`, e);
     return null;
   }
 }
