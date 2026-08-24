@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { copyFile, mkdir } from 'node:fs/promises';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -161,6 +161,9 @@ function createThemePlugin(theme: CogitaTheme): RspressPlugin {
       });
       const themeDir = path.dirname(fileURLToPath(url));
       const homeLayoutPath = path.resolve(themeDir, theme.pageLayouts.home);
+      if (!existsSync(homeLayoutPath)) {
+        return [];
+      }
 
       return [
         {
@@ -174,7 +177,12 @@ function createThemePlugin(theme: CogitaTheme): RspressPlugin {
 }
 
 /** 校验已启用功能对应的主题布局，避免构建成功但页面静默变成 404。 */
-function validateThemeLayouts(config: CogitaFullConfig, theme: CogitaTheme, strict: boolean) {
+function validateThemeLayouts(
+  config: CogitaFullConfig,
+  theme: CogitaTheme,
+  strict: boolean,
+  themeLayouts?: Record<string, string>
+) {
   const requiredLayouts: Array<[boolean, keyof CogitaTheme['pageLayouts'], string]> = [
     [Boolean(config.tags && config.tags.enabled !== false), 'tag', '标签'],
     [Boolean(config.collections && config.collections.enabled !== false), 'collection', '合集'],
@@ -190,7 +198,13 @@ function validateThemeLayouts(config: CogitaFullConfig, theme: CogitaTheme, stri
     [Boolean(config.search && config.search.enabled !== false), 'search', '搜索'],
   ];
   const missing = requiredLayouts
-    .filter(([enabled, layout]) => enabled && !theme.pageLayouts[layout])
+    .filter(
+      ([enabled, layout]) =>
+        enabled &&
+        (!theme.pageLayouts?.[layout] ||
+          !themeLayouts?.[layout] ||
+          !existsSync(themeLayouts[layout]))
+    )
     .map(([, , label]) => label);
 
   if (missing.length === 0) {
@@ -474,7 +488,12 @@ export async function createRspressConfig(
     fullConfigForPlugins.buildContext.themeLayouts = themeLayouts;
   }
   if (theme) {
-    validateThemeLayouts(fullConfigForPlugins, theme, cogitaConfig.strict !== false);
+    validateThemeLayouts(
+      fullConfigForPlugins,
+      theme,
+      cogitaConfig.strict !== false,
+      fullConfigForPlugins.themeLayouts
+    );
   }
 
   // 5. 按稳定顺序实例化主题插件和用户插件
