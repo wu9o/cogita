@@ -58,4 +58,44 @@ describe('插件注册契约', () => {
     assert.equal(warnings.length, 1);
     assert.match(warnings[0], /非严格模式下保留首次注册/);
   });
+
+  it('严格模式下应拒绝没有 name 的插件返回值', async () => {
+    await assert.rejects(
+      createRspressConfig(
+        {
+          plugins: [
+            () => ({
+              beforeBuild() {
+                return undefined;
+              },
+            }),
+          ],
+        },
+        '/tmp/cogita-plugin-registration-test'
+      ),
+      /必须提供非空 name/
+    );
+  });
+
+  it('严格模式下应保留插件工厂错误的原始 cause', async () => {
+    const originalError = new Error('factory exploded');
+
+    await assert.rejects(
+      createRspressConfig(
+        {
+          plugins: [
+            () => {
+              throw originalError;
+            },
+          ],
+        },
+        '/tmp/cogita-plugin-registration-test'
+      ),
+      (error) => {
+        assert.match(error.message, /插件工厂执行失败：factory exploded/);
+        assert.equal(error.cause, originalError);
+        return true;
+      }
+    );
+  });
 });
