@@ -1,6 +1,6 @@
 import type { CogitaConfig } from '../types';
 
-/** 内置主题别名统一映射，避免不同运行流程使用不一致的解析规则。 */
+/** 保留旧版主题别名，主题包本身由站点项目通过依赖直接提供。 */
 export const BUILT_IN_THEMES: Record<string, string> = {
   lucid: '@cogita/theme-lucid',
   editorial: '@cogita/theme-editorial',
