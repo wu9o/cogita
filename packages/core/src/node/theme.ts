@@ -6,7 +6,10 @@ export const BUILT_IN_THEMES: Record<string, string> = {
   editorial: '@cogita/theme-editorial',
 };
 
-export function resolveThemePackage(config: Pick<CogitaConfig, 'theme'>): string {
-  const theme = config.theme || 'lucid';
-  return BUILT_IN_THEMES[theme] || theme;
+export function resolveThemePackage(config: Pick<CogitaConfig, 'theme'>): string | undefined {
+  if (!config.theme) {
+    return undefined;
+  }
+
+  return BUILT_IN_THEMES[config.theme] || config.theme;
 }

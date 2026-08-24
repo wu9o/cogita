@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { describe, it } from 'node:test';
 import { getBlogListRouteEntries, getBlogListRoutes, getCogitaBuildContext } from '@cogita/shared';
-import { createContentIndex, getDevWatchPaths } from '../dist/es/index.js';
+import { createContentIndex, getDevWatchPaths, prepareContentDirectory } from '../dist/es/index.js';
 
 describe('构建期内容索引', () => {
   it('应优先使用显式构建上下文，并兼容旧版平铺配置', () => {
@@ -46,6 +46,32 @@ describe('构建期内容索引', () => {
       ),
       ['/project/content/posts', '/project/public', '/project/cogita.config.ts']
     );
+  });
+
+  it('文档站点应监听并复制显式配置的内容目录', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'cogita-docs-'));
+    const sourceDirectory = path.join(root, 'content');
+    const targetDirectory = path.join(root, '.cogita_content');
+    fs.mkdirSync(path.join(sourceDirectory, 'guides'), { recursive: true });
+    fs.writeFileSync(path.join(sourceDirectory, 'index.md'), '# 文档首页\n');
+    fs.writeFileSync(path.join(sourceDirectory, 'guides', 'start.md'), '# 开始\n');
+
+    try {
+      assert.deepEqual(getDevWatchPaths(root, { contentDir: 'content' }), [
+        path.join(root, 'posts'),
+        path.join(root, 'content'),
+        path.join(root, 'public'),
+      ]);
+
+      await prepareContentDirectory(root, targetDirectory, 'content');
+      assert.equal(fs.readFileSync(path.join(targetDirectory, 'index.md'), 'utf8'), '# 文档首页\n');
+      assert.equal(
+        fs.readFileSync(path.join(targetDirectory, 'guides', 'start.md'), 'utf8'),
+        '# 开始\n'
+      );
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
   });
 
   it('应扫描文章、生成路由，并复用同一个索引 Promise', async () => {

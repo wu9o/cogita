@@ -4,7 +4,12 @@ import { dev } from '@rspress/core';
 import chokidar from 'chokidar';
 import { findUp } from 'find-up';
 import type { CogitaConfig } from '../types';
-import { createRspressConfig, loadCogitaConfig, prepareSiteIcon } from './config';
+import {
+  createRspressConfig,
+  loadCogitaConfig,
+  prepareContentDirectory,
+  prepareSiteIcon,
+} from './config';
 
 const CONFIG_FILES = ['cogita.config.ts', 'cogita.config.js', 'cogita.config.mjs'];
 
@@ -16,6 +21,7 @@ export function getDevWatchPaths(
 ): string[] {
   return [
     path.resolve(root, config.posts?.dir || 'posts'),
+    config.contentDir ? path.resolve(root, config.contentDir) : undefined,
     path.resolve(root, 'public'),
     configPath,
   ].filter((item): item is string => Boolean(item));
@@ -32,6 +38,7 @@ async function startServer(root: string, cogitaConfig: CogitaConfig): Promise<De
   // docDirectory 使用虚拟目录，避免 Rspress 文件路由与动态页面冲突。
   const docDirectory = path.join(root, VIRTUAL_CONTENT_DIR);
 
+  await prepareContentDirectory(root, docDirectory, cogitaConfig.contentDir);
   await prepareSiteIcon(root, docDirectory, cogitaConfig.site?.icon);
   return dev({
     appDirectory,
@@ -68,6 +75,7 @@ export async function createServer(root: string = process.cwd()): Promise<void> 
         // 先创建并校验新配置，失败时保留旧服务器继续提供预览。
         const nextRspressConfig = await createRspressConfig(nextConfig, root);
         const docDirectory = path.join(root, VIRTUAL_CONTENT_DIR);
+        await prepareContentDirectory(root, docDirectory, nextConfig.contentDir);
         await prepareSiteIcon(root, docDirectory, nextConfig.site?.icon);
 
         logger.info(
