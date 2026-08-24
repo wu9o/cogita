@@ -306,6 +306,8 @@ Cogita 同时支持主题插件和站点插件，但两者职责不同：主题�
 
 插件实例的 `name` 是全局唯一身份。严格模式下重复名称会阻断构建；非严格模式下保留首次注册并通过 `CogitaBuildContext.logger` 输出警告。构建期状态统一从 `buildContext` 读取，避免继续向插件配置顶层增加内部字段。
 
+插件注册由 core 的独立注册器负责。它统一管理核心插件、主题插件和用户插件的来源顺序，并在边界处校验插件实例、处理工厂异常和保留错误 `cause`，配置加载器只负责组装最终配置。
+
 ```typescript
 export const pluginBlogSystem: CogitaPluginFactory = (config) => {
   const blogConfig = config.blog || {};

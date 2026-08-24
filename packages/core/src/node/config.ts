@@ -10,6 +10,7 @@ import jiti from 'jiti';
 import * as mlly from 'mlly';
 import type { CogitaConfig, CogitaFullConfig, PostsConfig } from '../types';
 import { createContentIndex } from './content-index';
+import { registerPlugins } from './plugin-registry';
 import { resolveThemePackage } from './theme';
 
 const CONFIG_FILES = ['cogita.config.ts', 'cogita.config.js', 'cogita.config.mjs'];
@@ -476,68 +477,30 @@ export async function createRspressConfig(
     validateThemeLayouts(fullConfigForPlugins, theme, cogitaConfig.strict !== false);
   }
 
-  // 5. 按稳定顺序实例化主题插件和用户插件，并处理重复注册
+  // 5. 按稳定顺序实例化主题插件和用户插件
   const strict = cogitaConfig.strict !== false; // Default to true
   const pluginConfig: CogitaPluginConfig = fullConfigForPlugins;
   const logger = fullConfigForPlugins.buildContext.logger || createCogitaLogger();
-  const finalPlugins: RspressPlugin[] = [];
-  const registeredPluginSources = new Map<string, string>();
-
-  const registerPlugin = (plugin: RspressPlugin, source: string) => {
-    const previousSource = registeredPluginSources.get(plugin.name);
-    if (previousSource) {
-      const message = `[Cogita] 插件 ${plugin.name} 重复注册（来源：${previousSource}、${source}）`;
-      if (strict) {
-        throw new Error(message);
-      }
-      logger.warn(`${message}，非严格模式下保留首次注册。`);
-      return;
-    }
-
-    registeredPluginSources.set(plugin.name, source);
-    finalPlugins.push(plugin);
-  };
-
-  registerPlugin(
-    {
-      name: 'cogita-content-index',
-      beforeBuild() {
-        fullConfigForPlugins.buildContext.contentIndex?.invalidate?.();
+  const finalPlugins = registerPlugins(
+    [
+      {
+        plugin: {
+          name: 'cogita-content-index',
+          beforeBuild() {
+            fullConfigForPlugins.buildContext.contentIndex?.invalidate?.();
+          },
+        },
+        source: 'core',
       },
-    },
-    'core'
+      ...(theme ? [{ plugin: createThemePlugin(theme), source: 'theme' }] : []),
+    ],
+    [
+      { name: 'theme', factories: theme?.plugins || [] },
+      { name: 'user', factories: cogitaConfig.plugins || [] },
+    ],
+    pluginConfig,
+    { strict, logger }
   );
-
-  if (theme) {
-    registerPlugin(createThemePlugin(theme), 'theme');
-  }
-
-  const pluginSources = [
-    { name: 'theme', factories: theme?.plugins || [] },
-    { name: 'user', factories: cogitaConfig.plugins || [] },
-  ];
-
-  for (const { name: source, factories } of pluginSources) {
-    for (const factory of factories) {
-      try {
-        const result = factory(pluginConfig);
-
-        if (result) {
-          const plugins = Array.isArray(result) ? result : [result];
-          for (const plugin of plugins) {
-            registerPlugin(plugin, source);
-          }
-        }
-      } catch (error) {
-        const errorMessage = `[Cogita] ${source} 插件实例化失败：${error}`;
-
-        if (strict) {
-          throw new Error(errorMessage);
-        }
-        logger.warn(errorMessage);
-      }
-    }
-  }
 
   baseRspressConfig.plugins = finalPlugins;
 
