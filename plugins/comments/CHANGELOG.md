@@ -1,5 +1,12 @@
 # @cogita/plugin-comments
 
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [91ba0ee]
+  - @cogita/plugin-posts-frontmatter@0.1.1
+
 ## 0.2.0
 
 ### Minor Changes
