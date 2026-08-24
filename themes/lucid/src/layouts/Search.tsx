@@ -4,6 +4,7 @@ import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { searchConfig, searchDocuments, searchIndexHash } from 'virtual-search-data';
+import { formatDate, getBase } from '../utils';
 
 interface SearchResult {
   score: number;
@@ -144,7 +145,7 @@ function scoreDocument(document: (typeof searchDocuments)[number], query: string
 /** 搜索页面布局，使用构建期生成的文章索引执行轻量本地搜索。 */
 const SearchLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
-  const base = (pageData?.siteData?.base || '').replace(/\/$/, '');
+  const base = getBase(pageData);
   const [query, setQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -335,9 +336,7 @@ const SearchLayout: React.FC<LayoutProps> = () => {
                   <a href={getRuntimeHref(base, document.route)}>
                     <h2>{highlightSearchText(document.title, trimmedQuery)}</h2>
                   </a>
-                  <time dateTime={document.updateDate}>
-                    {new Date(document.updateDate).toLocaleDateString('zh-CN')}
-                  </time>
+                  <time dateTime={document.updateDate}>{formatDate(document.updateDate)}</time>
                   {summary && <p>{highlightSearchText(summary, trimmedQuery)}</p>}
                   {document.tags && document.tags.length > 0 && (
                     <div className="search-result-tags">

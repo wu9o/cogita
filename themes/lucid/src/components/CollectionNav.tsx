@@ -1,5 +1,6 @@
-import { usePageData } from '@rspress/runtime';
+import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import { getCollectionByPostRoute } from 'virtual-collections-data';
+import { getBase, getCurrentRoute } from '../utils';
 
 /**
  * 文章详情页合集导航组件
@@ -11,16 +12,10 @@ import { getCollectionByPostRoute } from 'virtual-collections-data';
  */
 export default function CollectionNav() {
   const pageData = usePageData();
-  const base = (pageData?.siteData?.base || '').replace(/\/$/, '');
+  const base = getBase(pageData);
 
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-
-  // 去除 base 前缀和 .html 后缀，获取文章路由
-  let articleRoute = pathname;
-  if (base && articleRoute.startsWith(base)) {
-    articleRoute = articleRoute.slice(base.length);
-  }
-  articleRoute = articleRoute.replace(/\.html$/, '').replace(/\/$/, '');
+  const articleRoute = getCurrentRoute(pathname, base).replace(/^\/+/, '');
 
   // 查找文章所属合集
   const collection = getCollectionByPostRoute(articleRoute);
@@ -34,8 +29,8 @@ export default function CollectionNav() {
   const nextPost =
     currentIndex < collection.posts.length - 1 ? collection.posts[currentIndex + 1] : null;
 
-  const collectionsHref = `${base}/collections`;
-  const collectionHref = `${base}${collection.route}`;
+  const collectionsHref = normalizeHrefInRuntime(`${base}/collections`);
+  const collectionHref = normalizeHrefInRuntime(`${base}${collection.route}`);
 
   return (
     <div className="article-collection-nav">
@@ -50,7 +45,10 @@ export default function CollectionNav() {
       {(prevPost || nextPost) && (
         <nav className="collection-nav-buttons">
           {prevPost ? (
-            <a href={`${base}${prevPost.route}`} className="collection-nav-btn collection-nav-prev">
+            <a
+              href={normalizeHrefInRuntime(`${base}${prevPost.route}`)}
+              className="collection-nav-btn collection-nav-prev"
+            >
               <span className="collection-nav-btn-label">上一篇</span>
               <span className="collection-nav-btn-title">
                 {prevPost.collectionTitle || prevPost.title}
@@ -60,7 +58,10 @@ export default function CollectionNav() {
             <span className="collection-nav-btn collection-nav-btn-placeholder" />
           )}
           {nextPost ? (
-            <a href={`${base}${nextPost.route}`} className="collection-nav-btn collection-nav-next">
+            <a
+              href={normalizeHrefInRuntime(`${base}${nextPost.route}`)}
+              className="collection-nav-btn collection-nav-next"
+            >
               <span className="collection-nav-btn-label">下一篇</span>
               <span className="collection-nav-btn-title">
                 {nextPost.collectionTitle || nextPost.title}

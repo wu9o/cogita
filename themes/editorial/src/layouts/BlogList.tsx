@@ -3,14 +3,10 @@ import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allBlogListPages, blogListConfig } from 'virtual-blog-list-data';
 import { PostCardList } from '../components/PostCard';
-import { addPostCovers, getBase } from '../utils';
+import { addPostCovers, getBase, getCurrentRoute } from '../utils';
 
 function getPageNumber(pathname: string, base: string): number {
-  const route = decodeURIComponent(
-    pathname.startsWith(base) ? pathname.slice(base.length) : pathname
-  )
-    .replace(/^\/+|\/+$/g, '')
-    .replace(/\.html$/, '');
+  const route = getCurrentRoute(base, pathname).replace(/^\/+/, '');
   const match = route.match(new RegExp(`^${blogListConfig.routePrefix}/page/(\\d+)$`));
   return match ? Number(match[1]) : 1;
 }

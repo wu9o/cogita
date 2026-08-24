@@ -13,6 +13,7 @@ export interface CogitaPluginConfig {
   site?: {
     title?: string;
     description?: string;
+    icon?: string;
     base?: string;
     url?: string;
   };
@@ -122,6 +123,8 @@ export interface CogitaPluginConfig {
     enabled?: boolean;
     showBar?: boolean;
     showReadingTime?: boolean;
+    showTocProgress?: boolean;
+    rememberPosition?: boolean;
     wordsPerMinute?: number;
     includeCode?: boolean;
     [key: string]: unknown;
@@ -305,6 +308,39 @@ export interface LayoutProps {
   config: UserConfig;
   pageData: Record<string, unknown>;
   children?: React.ReactNode;
+}
+
+/** 规范化站点 base 路径，统一去掉首尾多余的斜杠。 */
+export function normalizeSiteBase(base?: string): string {
+  return (base || '').trim().replace(/^\/+/, '/').replace(/\/+$/, '');
+}
+
+/** 从浏览器路径中提取不含站点 base 和 .html 后缀的主题路由。 */
+export function getRouteFromPathname(pathname: string, base = ''): string {
+  const normalizedBase = normalizeSiteBase(base);
+  const normalizedPathname = pathname || '/';
+  const withoutBase =
+    normalizedBase &&
+    (normalizedPathname === normalizedBase || normalizedPathname.startsWith(`${normalizedBase}/`))
+      ? normalizedPathname.slice(normalizedBase.length)
+      : normalizedPathname;
+
+  let decodedPath = withoutBase;
+  try {
+    decodedPath = decodeURIComponent(withoutBase);
+  } catch {
+    // 路径编码不完整时保留原始路径，避免主题渲染直接失败。
+  }
+
+  const route = decodedPath.replace(/^\/+|\/+$/g, '').replace(/\.html$/, '');
+  return route ? `/${route}` : '/';
+}
+
+/** 将 ISO 日期格式化为站点统一使用的中文日期。 */
+export function formatSiteDate(date: string | undefined): string {
+  if (!date) return '未标注日期';
+  const parsed = new Date(date);
+  return Number.isNaN(parsed.getTime()) ? date : parsed.toLocaleDateString('zh-CN');
 }
 
 /**

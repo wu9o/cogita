@@ -4,12 +4,10 @@ import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allBlogListPages, blogListConfig } from 'virtual-blog-list-data';
 import { postCovers } from 'virtual-images-data';
+import { getBase, getCurrentRoute } from '../utils';
 
 function getPageNumber(pathname: string, base: string): number {
-  const withoutBase = pathname.startsWith(base) ? pathname.slice(base.length) : pathname;
-  const route = decodeURIComponent(withoutBase)
-    .replace(/^\/+|\/+$/g, '')
-    .replace(/\.html$/, '');
+  const route = getCurrentRoute(pathname, base).replace(/^\/+/, '');
   const match = route.match(new RegExp(`^${blogListConfig.routePrefix}/page/(\\d+)$`));
   const page = match ? Number(match[1]) : 1;
   return Number.isInteger(page) && page > 0 ? page : 1;
@@ -34,7 +32,7 @@ function addPostCovers(posts: (typeof allBlogListPages)[number]['posts']) {
 /** 文章列表布局，负责选择构建期生成的分页数据。 */
 const BlogListLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
-  const base = (pageData?.siteData?.base || '').replace(/\/$/, '');
+  const base = getBase(pageData);
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
   const pageNumber = getPageNumber(pathname, base);
   const page = allBlogListPages.find((item) => item.page === pageNumber) || allBlogListPages[0];

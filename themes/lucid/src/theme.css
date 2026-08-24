@@ -7,11 +7,14 @@
   /* 基础颜色变量 */
   --cogita-primary-color: #1a1a1a;
   --cogita-primary-text-color: #ffffff;
+  --cogita-surface-color: #ffffff;
   --cogita-border-color: #eaeaea;
   --cogita-title-color: #222222;
   --cogita-text-color: #555555;
   --cogita-text-color-secondary: #777777;
+  --cogita-text-color-tertiary: #999999;
   --cogita-bg-soft: #f8f9fa;
+  --cogita-highlight-bg: #fff0a8;
 }
 
 /* 主题容器 */
@@ -24,7 +27,7 @@
 /* 网站头部 */
 .site-header {
   border-bottom: 1px solid var(--cogita-border-color);
-  background: white;
+  background: var(--cogita-surface-color);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -70,7 +73,7 @@
   font-size: 1rem;
   border: 1px solid var(--cogita-border-color);
   border-radius: 6px;
-  background: white;
+  background: var(--cogita-surface-color);
   transition: all 0.2s ease;
 }
 
@@ -254,6 +257,7 @@
   transition: width 120ms ease-out;
 }
 
+.cogita-reading-toc-active,
 .cogita-reading-toc-active .rspress-toc-link-text {
   color: var(--cogita-primary-color);
   background: color-mix(in srgb, var(--cogita-primary-color) 12%, transparent);
@@ -270,11 +274,39 @@
   padding: 0.45rem 0.7rem;
   border: 1px solid var(--cogita-border-color);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--rp-c-bg, #ffffff) 92%, transparent);
+  background: color-mix(in srgb, var(--cogita-surface-color) 92%, transparent);
   color: var(--cogita-text-color-secondary);
   font-size: 0.75rem;
   box-shadow: 0 4px 16px rgb(0 0 0 / 8%);
   backdrop-filter: blur(8px);
+}
+
+.cogita-reading-restore {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 4.5rem;
+  z-index: 40;
+  display: inline-flex;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.55rem 0.7rem 0.55rem 0.85rem;
+  border: 1px solid var(--cogita-border-color);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--cogita-surface-color) 94%, transparent);
+  color: var(--cogita-text-color-secondary);
+  font-size: 0.75rem;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 10%);
+  backdrop-filter: blur(8px);
+}
+
+.cogita-reading-restore button {
+  padding: 0.25rem 0.45rem;
+  border: 0;
+  border-radius: 0.35rem;
+  background: var(--cogita-primary-color);
+  color: var(--cogita-primary-text-color);
+  font: inherit;
+  cursor: pointer;
 }
 
 /* 代码块复制按钮 */
@@ -290,7 +322,7 @@
   padding: 0.3rem 0.55rem;
   border: 1px solid color-mix(in srgb, var(--cogita-border-color) 80%, transparent);
   border-radius: 0.35rem;
-  background: color-mix(in srgb, var(--rp-c-bg, #ffffff) 88%, transparent);
+  background: color-mix(in srgb, var(--cogita-surface-color) 88%, transparent);
   color: var(--cogita-text-color-secondary);
   font: inherit;
   font-size: 0.75rem;
@@ -306,7 +338,7 @@
 }
 
 .cogita-code-copy:hover {
-  background: var(--rp-c-bg, #ffffff);
+  background: var(--cogita-surface-color);
   color: var(--cogita-primary-color);
 }
 
@@ -570,7 +602,7 @@
 .search-result-item mark {
   padding: 0 0.12em;
   color: var(--cogita-title-color);
-  background: #fff0a8;
+  background: var(--cogita-highlight-bg);
   border-radius: 2px;
 }
 
@@ -677,7 +709,7 @@
 }
 
 .related-tag:hover {
-  background-color: rgba(26, 26, 26, 0.05);
+  background-color: color-mix(in srgb, var(--cogita-primary-color) 8%, transparent);
 }
 
 .tag-count {
@@ -695,7 +727,7 @@
   padding: 0.25rem 0;
   font-size: 0.875rem;
   color: var(--cogita-text-color);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid color-mix(in srgb, var(--cogita-border-color) 70%, transparent);
 }
 
 .tag-meta li:last-child {
@@ -1048,7 +1080,7 @@
   flex-direction: column;
   gap: 0.25rem;
   padding: 0.75rem 1rem;
-  background: white;
+  background: var(--cogita-surface-color);
   border: 1px solid var(--cogita-border-color);
   border-radius: 6px;
   text-decoration: none;
@@ -1124,6 +1156,11 @@
   .cogita-reading-time {
     right: 0.75rem;
     bottom: 0.75rem;
+  }
+
+  .cogita-reading-restore {
+    right: 0.75rem;
+    bottom: 3.75rem;
   }
 
   .home-sidebar {
@@ -1212,40 +1249,16 @@ aside.rspress-sidebar {
 /* 深色模式适配 */
 @media (prefers-color-scheme: dark) {
   :root {
+    --cogita-primary-color: #f1f5f9;
+    --cogita-primary-text-color: #111827;
+    --cogita-surface-color: #0d1117;
     --cogita-bg-soft: #1a1a1a;
     --cogita-border-color: #333333;
     --cogita-title-color: #ffffff;
     --cogita-text-color: #cccccc;
     --cogita-text-color-secondary: #999999;
-  }
-
-  .site-header {
-    background: #0d1117;
-    border-bottom-color: var(--cogita-border-color);
-  }
-
-  .header-rss-link {
-    background: #0d1117;
-    border-color: var(--cogita-border-color);
-  }
-
-  .sidebar-section,
-  .related-tags,
-  .tag-info {
-    background: #161b22;
-  }
-
-  .article-collection-nav {
-    background: #161b22;
-  }
-
-  .collection-nav-btn {
-    background: #0d1117;
-    border-color: var(--cogita-border-color);
-  }
-
-  .collection-nav-btn-placeholder {
-    background: transparent;
+    --cogita-text-color-tertiary: #64748b;
+    --cogita-highlight-bg: #5b4a12;
   }
 }
 
@@ -1253,25 +1266,40 @@ aside.rspress-sidebar {
    暗色模式支持
    ============================================ */
 
-.dark {
+.dark,
+[data-theme="dark"] {
+  --cogita-primary-color: #f1f5f9;
+  --cogita-primary-text-color: #111827;
+  --cogita-surface-color: #0d1117;
+  --cogita-border-color: #333333;
+  --cogita-title-color: #f8fafc;
+  --cogita-text-color: #cbd5e1;
+  --cogita-text-color-secondary: #94a3b8;
+  --cogita-text-color-tertiary: #64748b;
+  --cogita-bg-soft: #161b22;
+  --cogita-highlight-bg: #5b4a12;
   --cogita-hero-title-color: #f1f5f9;
   --cogita-hero-subtitle-color: #cbd5e1;
   --cogita-hero-description-color: #94a3b8;
 }
 
-.dark .hero-section {
+.dark .hero-section,
+[data-theme="dark"] .hero-section {
   border-bottom-color: #334155;
 }
 
-.dark .section-title {
+.dark .section-title,
+[data-theme="dark"] .section-title {
   border-bottom-color: #334155;
 }
 
-.dark .rss-inline-link {
+.dark .rss-inline-link,
+[data-theme="dark"] .rss-inline-link {
   color: #e2e8f0;
 }
 
-.dark .rss-inline-link:hover {
+.dark .rss-inline-link:hover,
+[data-theme="dark"] .rss-inline-link:hover {
   color: #f1f5f9;
 }
 
@@ -1336,10 +1364,12 @@ aside.rspress-sidebar {
 }
 
 /* Footer 暗色模式优化 */
-.dark .lucid-footer {
+.dark .lucid-footer,
+[data-theme="dark"] .lucid-footer {
   border-top-color: var(--rp-c-divider);
 }
 
-.dark .lucid-footer-message a:hover {
+.dark .lucid-footer-message a:hover,
+[data-theme="dark"] .lucid-footer-message a:hover {
   color: var(--rp-c-brand-light);
 }

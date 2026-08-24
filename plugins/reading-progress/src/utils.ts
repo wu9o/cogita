@@ -17,6 +17,8 @@ export function resolveReadingProgressConfig(
     enabled: config?.enabled !== false,
     showBar: config?.showBar !== false,
     showReadingTime: config?.showReadingTime !== false,
+    showTocProgress: config?.showTocProgress !== false,
+    rememberPosition: config?.rememberPosition === true,
     wordsPerMinute: Math.max(1, wordsPerMinute),
     includeCode: config?.includeCode === true,
   };

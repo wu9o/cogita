@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { copyFile, mkdir } from 'node:fs/promises';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { CogitaTheme } from '@cogita/shared';
@@ -17,6 +18,50 @@ const __dirname = dirname(__filename);
 
 // 缓存包根目录，避免重复查找
 let packageRootCache: string | null = null;
+
+function getSiteIconSource(root: string, icon: string) {
+  const publicRoot = path.resolve(root, 'public');
+  const normalizedIcon = icon.replace(/^[/\\]+/, '');
+  const publicRelativePath = normalizedIcon.startsWith(`public${path.sep}`)
+    ? normalizedIcon.slice(`public${path.sep}`.length)
+    : normalizedIcon;
+  const sourcePath =
+    path.isAbsolute(icon) && icon.startsWith(root + path.sep)
+      ? icon
+      : path.resolve(publicRoot, publicRelativePath);
+
+  return {
+    publicRelativePath,
+    sourcePath,
+  };
+}
+
+/**
+ * 解析站点图标的公共访问路径。
+ */
+function resolveSiteIcon(root: string, icon?: string): string | undefined {
+  if (!icon) {
+    return undefined;
+  }
+
+  const { publicRelativePath } = getSiteIconSource(root, icon);
+  return `/${publicRelativePath.split(path.sep).join('/')}`;
+}
+
+/**
+ * 将 public 目录中的站点图标同步到 Rspress 使用的虚拟文档目录。
+ */
+export async function prepareSiteIcon(root: string, docDirectory: string, icon?: string) {
+  if (!icon) {
+    return;
+  }
+
+  const { publicRelativePath, sourcePath } = getSiteIconSource(root, icon);
+  const targetPath = path.join(docDirectory, 'public', publicRelativePath);
+
+  await mkdir(path.dirname(targetPath), { recursive: true });
+  await copyFile(sourcePath, targetPath);
+}
 
 /**
  * 获取@cogita/core包的根目录
@@ -188,6 +233,8 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
       enabled: true,
       showBar: true,
       showReadingTime: true,
+      showTocProgress: true,
+      rememberPosition: false,
       wordsPerMinute: 300,
       includeCode: false,
       ...cogitaConfig.readingProgress,
@@ -345,6 +392,7 @@ export async function createRspressConfig(
     root,
     title: cogitaConfig.site?.title,
     description: cogitaConfig.site?.description,
+    icon: resolveSiteIcon(root, cogitaConfig.site?.icon),
     base: cogitaConfig.site?.base,
     markdown: cogitaConfig.markdown,
     mediumZoom: cogitaConfig.mediumZoom,
