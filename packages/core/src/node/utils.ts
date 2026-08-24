@@ -15,9 +15,10 @@ interface TransformedConfig {
 
 export function transformConfig(root: string, config: CogitaConfig): TransformedConfig {
   const themePackage = resolveThemePackage(config);
-  // Resolve the theme's main entry point from its exports
   // 从站点项目解析主题，避免主题只能作为 core 的传递依赖存在。
-  const themeEntryPoint = require.resolve(themePackage, { paths: [root] });
+  const themeEntryPoint = themePackage
+    ? require.resolve(themePackage, { paths: [root] })
+    : undefined;
 
   return {
     root: path.join(root, 'posts'),
@@ -25,6 +26,6 @@ export function transformConfig(root: string, config: CogitaConfig): Transformed
     description: config.site?.description,
     base: config.site?.base,
     // Use Rspress's official API to apply the theme layout
-    globalUIComponents: [themeEntryPoint],
+    globalUIComponents: themeEntryPoint ? [themeEntryPoint] : [],
   };
 }

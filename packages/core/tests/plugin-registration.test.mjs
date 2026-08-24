@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import path from 'node:path';
 import { describe, it } from 'node:test';
 import { createRspressConfig } from '../dist/es/index.js';
 
@@ -109,8 +110,11 @@ describe('插件注册契约', () => {
 
     await assert.rejects(
       createRspressConfig(
-        { plugins: [pluginWithLayoutRequirement] },
-        '/tmp/cogita-plugin-registration-test'
+        {
+          theme: '@cogita/theme-docs',
+          plugins: [pluginWithLayoutRequirement],
+        },
+        path.resolve(process.cwd(), '../../docs-site')
       ),
       /缺少主题布局：自定义页面/
     );

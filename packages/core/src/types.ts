@@ -473,6 +473,12 @@ export interface CogitaConfig {
   site?: SiteConfig;
   theme?: string;
 
+  /**
+   * 文档 Markdown 源目录，相对于站点根目录；未配置时不复制普通文档。
+   * 文章站点可以继续只使用 posts 和插件生成页面，文档站点则可以显式配置此目录。
+   */
+  contentDir?: string;
+
   /** 用户额外注册的插件工厂，按数组顺序在主题插件之后加载。 */
   plugins?: CogitaPluginFactory[];
 
