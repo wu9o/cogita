@@ -1,5 +1,27 @@
 # @cogita/theme-editorial
 
+## 0.2.5
+
+### Patch Changes
+
+- 77e58eb: 新增内容质量与构建诊断插件，支持 frontmatter 必填字段、解析错误、重复路由、本地链接、正文图片引用、图片替代文本和空正文检查，并支持规则级别覆盖、问题忽略和版本化 JSON 报告。
+- Updated dependencies [77e58eb]
+  - @cogita/plugin-content-check@0.2.0
+  - @cogita/shared@0.9.1
+  - @cogita/plugin-blog-list@0.3.0
+  - @cogita/plugin-categories@0.2.2
+  - @cogita/plugin-code-copy@0.2.1
+  - @cogita/plugin-collections@1.0.2
+  - @cogita/plugin-comments@0.2.2
+  - @cogita/plugin-images@1.0.2
+  - @cogita/plugin-posts-frontmatter@0.1.1
+  - @cogita/plugin-reading-progress@0.3.2
+  - @cogita/plugin-rss@1.0.2
+  - @cogita/plugin-search@0.2.2
+  - @cogita/plugin-seo@1.3.2
+  - @cogita/plugin-sitemap@1.3.2
+  - @cogita/plugin-tags@1.0.2
+
 ## 0.2.4
 
 ### Patch Changes
