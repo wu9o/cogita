@@ -1,5 +1,6 @@
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
+import type { ContentIndex } from '@cogita/shared';
 import { glob } from 'glob';
 import type { BlogArchive, BlogListConfig, BlogListPage, ResolvedBlogListConfig } from './types';
 
@@ -30,8 +31,16 @@ export async function extractPosts(
   postsDir: string,
   cwd: string,
   routePrefix: string,
-  extensions: string[]
+  extensions: string[],
+  contentIndex?: ContentIndex
 ): Promise<PostFrontmatter[]> {
+  if (contentIndex) {
+    return (await contentIndex.getPosts()).map((post) => ({
+      ...post,
+      url: post.url || post.route,
+    }));
+  }
+
   const normalizedExtensions = extensions.length > 0 ? extensions : ['md', 'mdx'];
   const extensionPattern =
     normalizedExtensions.length > 1
