@@ -1,5 +1,13 @@
 # @cogita/core
 
+## 0.10.3
+
+### Patch Changes
+
+- Updated dependencies [d6d46df]
+  - @cogita/theme-editorial@0.2.2
+  - @cogita/theme-lucid@0.10.2
+
 ## 0.10.2
 
 ### Patch Changes
