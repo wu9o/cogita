@@ -31,7 +31,8 @@ export function pluginBlogList(config: CogitaPluginConfig): RspressPlugin | null
         postsConfig.dir || 'posts',
         config.cwd || process.cwd(),
         postsConfig.routePrefix || 'posts',
-        postsConfig.extensions || ['md', 'mdx']
+        postsConfig.extensions || ['md', 'mdx'],
+        config.contentIndex
       );
       const sortedPosts = sortPosts(posts, finalConfig);
 

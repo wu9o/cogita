@@ -6,10 +6,53 @@ export const VIRTUAL_CONTENT_DIR = '.cogita_content';
 // Export Rspress types for use in themes and plugins
 export type { RspressPlugin, UserConfig };
 
+/** 文章级 SEO 覆盖字段。 */
+export interface ContentPostSEO {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  image?: string;
+  imageAlt?: string;
+  noindex?: boolean;
+  author?: string;
+}
+
+/** 内容索引中的统一文章数据。 */
+export interface ContentPost {
+  title: string;
+  description?: string;
+  excerpt?: string;
+  author?: string;
+  filePath: string;
+  route: string;
+  createDate: string;
+  updateDate: string;
+  categories?: string[];
+  tags?: string[];
+  collection?: string;
+  order?: number;
+  collectionTitle?: string;
+  image?: string;
+  imageAlt?: string;
+  imageCaption?: string;
+  seo?: ContentPostSEO;
+  url: string;
+}
+
+/** 构建期共享内容索引。索引采用惰性加载，只有被插件消费时才扫描文章。 */
+export interface ContentIndex {
+  getPosts(): Promise<readonly ContentPost[]>;
+}
+
 // Enhanced config type for plugin factory functions
 export interface CogitaPluginConfig {
   root: string;
   cwd: string;
+  /**
+   * 由 core 注入的共享文章索引，避免各插件重复扫描和解析文章。
+   * 该字段只存在于构建期插件配置，不会进入浏览器运行时。
+   */
+  contentIndex?: ContentIndex;
   site?: {
     title?: string;
     description?: string;
