@@ -39,6 +39,48 @@ export interface ContentPost {
   url: string;
 }
 
+/** 内容质量与构建诊断支持检查的 frontmatter 字段。 */
+export type ContentCheckField = 'title' | 'description' | 'date' | 'author' | 'imageAlt';
+
+/** 内容诊断问题的可配置处理方式。 */
+export type ContentCheckIssueSeverity = 'error' | 'warning' | 'ignore';
+
+/** 内容诊断问题的忽略匹配条件。 */
+export interface ContentCheckIgnore {
+  /** 精确匹配问题代码。 */
+  code?: string;
+  /** 精确匹配文章路由。 */
+  route?: string;
+  /** 精确匹配或后缀匹配源文件路径。 */
+  filePath?: string;
+}
+
+/** 内容质量与构建诊断配置。 */
+export interface ContentCheckConfig {
+  /** 是否启用内容诊断。 */
+  enabled?: boolean;
+  /** 发现错误时是否阻断构建。 */
+  failOnError?: boolean;
+  /** 构建报告相对于输出目录的路径。 */
+  reportPath?: string;
+  /** 必须存在的 frontmatter 字段。 */
+  requiredFields?: ContentCheckField[];
+  /** 是否检查文章中的本地图片引用。 */
+  checkImages?: boolean;
+  /** 是否检查图片替代文本。 */
+  checkImageAlt?: boolean;
+  /** 是否检查重复路由。 */
+  checkRoutes?: boolean;
+  /** 是否检查正文为空的文章。 */
+  checkEmptyContent?: boolean;
+  /** 是否检查文章中的本地链接。 */
+  checkLinks?: boolean;
+  /** 按问题代码覆盖默认级别，设置为 ignore 可关闭单条规则。 */
+  severity?: Record<string, ContentCheckIssueSeverity>;
+  /** 按代码、路由或文件路径忽略特定问题。 */
+  ignores?: ContentCheckIgnore[];
+}
+
 /** 构建期共享内容索引。索引采用惰性加载，只有被插件消费时才扫描文章。 */
 export interface ContentIndex {
   /** 获取当前构建周期内的文章元数据。 */
@@ -108,6 +150,7 @@ export interface CogitaPluginConfig {
     failOnMissing?: boolean;
     warnOnMissingAlt?: boolean;
   };
+  contentCheck?: ContentCheckConfig;
   sitemap?: {
     enabled?: boolean;
     path?: string;

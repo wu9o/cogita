@@ -5,6 +5,7 @@ import { pluginCategories } from '@cogita/plugin-categories';
 import { pluginCodeCopy } from '@cogita/plugin-code-copy';
 import { pluginCollections } from '@cogita/plugin-collections';
 import { pluginComments } from '@cogita/plugin-comments';
+import { pluginContentCheck } from '@cogita/plugin-content-check';
 import { pluginImages } from '@cogita/plugin-images';
 import { pluginPostsFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { pluginReadingProgress } from '@cogita/plugin-reading-progress';
@@ -75,6 +76,9 @@ export function getThemeConfig(): CogitaTheme {
 
       // 公共图片清单与文章封面元数据插件
       pluginImages,
+
+      // 内容质量与构建诊断插件
+      pluginContentCheck,
 
       // RSS feed 生成插件
       pluginRSS,
