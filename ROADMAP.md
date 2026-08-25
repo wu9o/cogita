@@ -6,6 +6,17 @@
 
 创建最开发者友好的、开箱即用的静态博客系统，将 Rspress 的强大功能与丰富的插件和主题生态系统相结合。
 
+## 当前基线（2026-08）
+
+当前仓库是 Cogita 框架与技术使用手册，不再承载个人博客正文。个人博客已经迁移到独立的 `cogita-blog` 仓库，通过已发布的 Cogita 包消费主题和插件；框架仓库内的 `docs-site` 负责展示使用手册和架构示例。
+
+当前优先级是先稳定公共契约，再扩展能力：
+
+- Core 统一负责配置流、插件注册、页面路由冲突、运行时模块冲突和主题布局契约。
+- 插件通过工厂函数、`buildContext`、`contentIndex` 和虚拟模块协作，不依赖主题或插件数组的隐含执行顺序。
+- 主题只负责布局、样式和默认插件声明；`lucid`、`editorial` 面向博客，`docs` 面向技术手册。
+- 每个阶段以独立 commit 记录，并在独立博客或文档站构建中验证后再进入下一项。
+
 ## 🏗️ 完整架构设计
 
 ### 核心系统架构
@@ -73,21 +84,22 @@ Cogita 生态系统
 ### 插件系统架构
 
 ```typescript
-// 插件接口设计
-interface CogitaPlugin {
+// 当前插件接口以 Rspress 插件钩子为基础，通过 cogita 元数据扩展主题契约。
+interface CogitaPlugin extends RspressPlugin {
   name: string;
-  version: string;
-  dependencies?: string[];
-  hooks: {
-    beforeBuild?: () => void | Promise<void>;
-    afterBuild?: () => void | Promise<void>;
-    addPages?: () => AdditionalPage[];
-    addRuntimeModules?: () => Record<string, string>;
-    modifyConfig?: (config: CogitaConfig) => CogitaConfig;
+  cogita?: {
+    requiredLayouts?: Array<{
+      layout: string;
+      label?: string;
+      when?: (config: CogitaPluginConfig) => boolean;
+    }>;
+    runtimeModulePolicy?: 'fallback';
   };
-  components?: Record<string, React.ComponentType>;
-  styles?: string[];
 }
+
+type CogitaPluginFactory = (
+  config: CogitaPluginConfig
+) => CogitaPlugin | CogitaPlugin[] | null | undefined;
 ```
 
 ### 主题系统架构
@@ -96,16 +108,13 @@ interface CogitaPlugin {
 // 主题接口设计
 interface CogitaTheme {
   name: string;
-  version: string;
-  layouts: {
-    default: React.ComponentType;
-    post: React.ComponentType;
-    page: React.ComponentType;
-    archive: React.ComponentType;
+  pageLayouts: {
+    home: string;
+    [layout: string]: string | undefined;
   };
-  components: Record<string, React.ComponentType>;
-  styles: string[];
-  config: ThemeConfig;
+  globalStyles?: string;
+  globalUIComponents?: (string | [string, object])[];
+  plugins?: CogitaPluginFactory[];
 }
 ```
 
