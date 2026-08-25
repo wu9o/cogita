@@ -22,6 +22,7 @@ describe('插件注册契约', () => {
     assert.equal(pluginNames.at(-1), 'test-user-plugin');
     assert.equal(receivedConfig.buildContext.root, '/tmp/cogita-plugin-registration-test');
     assert.equal(receivedConfig.buildContext.strict, true);
+    assert.equal(receivedConfig.buildContext.framework.version, '0.12.0');
     assert.equal(typeof receivedConfig.buildContext.logger.info, 'function');
   });
 

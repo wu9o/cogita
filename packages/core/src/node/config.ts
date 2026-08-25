@@ -22,6 +22,29 @@ const __dirname = dirname(__filename);
 
 // 缓存包根目录，避免重复查找
 let packageRootCache: string | null = null;
+let packageVersionCache: string | null = null;
+
+/** 读取 Core 包版本，供插件构建上下文和诊断信息使用。 */
+function getPackageVersion(): string {
+  if (packageVersionCache) {
+    return packageVersionCache;
+  }
+
+  try {
+    const packageJsonPath = path.resolve(__dirname, '../../package.json');
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8')) as {
+      version?: unknown;
+    };
+    if (typeof packageJson.version === 'string' && packageJson.version.length > 0) {
+      packageVersionCache = packageJson.version;
+      return packageVersionCache;
+    }
+  } catch {
+    // 版本读取失败时使用稳定的未知值，不能阻断站点构建。
+  }
+
+  return 'unknown';
+}
 
 function getSiteIconSource(root: string, icon: string) {
   const publicRoot = path.resolve(root, 'public');
@@ -285,7 +308,7 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
   const contentIndex = createContentIndex(root, posts, logger);
   const strict = cogitaConfig.strict !== false;
   const framework = {
-    version: '0.0.1', // TODO: get from package.json
+    version: getPackageVersion(),
     buildTime: new Date().toISOString(),
   };
 
