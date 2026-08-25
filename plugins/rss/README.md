@@ -38,7 +38,7 @@
 pnpm add @cogita/plugin-rss
 ```
 
-> **注意：** 此插件依赖 `@cogita/plugin-posts-frontmatter` 来获取文章数据。
+> **注意：** 此插件依赖 Core 提供的 `content.posts` 能力，通过共享 `ContentIndex` 获取文章数据。
 
 ## 快速开始
 
@@ -219,7 +219,7 @@ import type { RSSConfig, FeedMeta } from '@cogita/plugin-rss';
 
 ### 订阅源中没有文章
 
-1. 确保先加载了 `@cogita/plugin-posts-frontmatter`
+1. 确保站点已注册能够提供 `content.posts` 能力的文章插件
 2. 检查posts目录中是否存在文章
 3. 验证frontmatter格式是否正确
 

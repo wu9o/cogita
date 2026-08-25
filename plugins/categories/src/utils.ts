@@ -1,14 +1,10 @@
-import path from 'node:path';
-import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import {
   createCogitaLogger,
   generateCategorySlug,
   getCategoryPathVariants,
   normalizeCategoryPath,
 } from '@cogita/shared';
-import type { CogitaLogger, ContentIndex } from '@cogita/shared';
-import { glob } from 'glob';
+import type { CogitaLogger, ContentIndex, ContentPost } from '@cogita/shared';
 import type {
   CategoriesConfig,
   CategoryData,
@@ -41,13 +37,13 @@ export function resolveCategoriesConfig(config?: CategoriesConfig): ResolvedCate
 
 /** 从文章目录提取 frontmatter。 */
 export async function extractCategoriesFromPosts(
-  postsDir: string,
-  cwd: string,
-  routePrefix = 'posts',
-  extensions = ['md', 'mdx'],
+  _postsDir: string,
+  _cwd: string,
+  _routePrefix = 'posts',
+  _extensions = ['md', 'mdx'],
   contentIndex?: ContentIndex,
   logger: CogitaLogger = createCogitaLogger()
-): Promise<PostFrontmatter[]> {
+): Promise<ContentPost[]> {
   if (contentIndex) {
     return (await contentIndex.getPosts()).map((post) => ({
       ...post,
@@ -55,28 +51,8 @@ export async function extractCategoriesFromPosts(
     }));
   }
 
-  const normalizedExtensions = extensions.length > 0 ? extensions : ['md', 'mdx'];
-  const extensionPattern =
-    normalizedExtensions.length > 1
-      ? `{${normalizedExtensions.join(',')}}`
-      : normalizedExtensions[0];
-  const absolutePostsDir = path.resolve(cwd, postsDir);
-  const absolutePaths = await glob(`${postsDir}/**/*.${extensionPattern}`, {
-    absolute: true,
-    cwd,
-    nodir: true,
-  });
-
-  return absolutePaths
-    .map((filePath) => {
-      try {
-        return getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix, logger);
-      } catch (error) {
-        logger.warn(`[Categories Plugin] 跳过文件 ${filePath}:`, error);
-        return null;
-      }
-    })
-    .filter((post): post is PostFrontmatter => post !== null);
+  logger.warn('[Categories Plugin] 未找到共享内容索引，跳过分类数据构建');
+  return [];
 }
 
 function isExcluded(categoryPath: string, config: ResolvedCategoriesConfig): boolean {
@@ -86,7 +62,7 @@ function isExcluded(categoryPath: string, config: ResolvedCategoriesConfig): boo
   );
 }
 
-function createPostReference(post: PostFrontmatter): CategoryPostReference {
+function createPostReference(post: ContentPost): CategoryPostReference {
   return {
     title: post.title,
     route: post.route,
@@ -104,7 +80,7 @@ function compareDate(left?: string, right?: string): number {
 
 /** 按分类路径构建扁平树数据，父分类会聚合子分类文章。 */
 export function processCategoriesFromPosts(
-  postsData: PostFrontmatter[],
+  postsData: ContentPost[],
   config: ResolvedCategoriesConfig
 ): { categoriesData: CategoryData[]; categoriesMap: Map<string, CategoryData> } {
   const categoriesMap = new Map<string, CategoryData>();

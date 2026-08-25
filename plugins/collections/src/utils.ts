@@ -1,8 +1,5 @@
-import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { createCogitaLogger } from '@cogita/shared';
-import type { CogitaLogger, ContentIndex } from '@cogita/shared';
-import { glob } from 'glob';
+import type { CogitaLogger, ContentIndex, ContentPost } from '@cogita/shared';
 import type {
   CollectionData,
   CollectionMetadata,
@@ -19,12 +16,12 @@ import type {
  * @returns 文章数据数组
  */
 export async function extractCollectionsFromPosts(
-  postsDir: string,
-  cwd: string,
-  routePrefix = 'posts',
+  _postsDir: string,
+  _cwd: string,
+  _routePrefix = 'posts',
   contentIndex?: ContentIndex,
   logger: CogitaLogger = createCogitaLogger()
-): Promise<PostFrontmatter[]> {
+): Promise<ContentPost[]> {
   if (contentIndex) {
     return (await contentIndex.getPosts()).map((post) => ({
       ...post,
@@ -32,24 +29,8 @@ export async function extractCollectionsFromPosts(
     }));
   }
 
-  const options = {
-    absolute: true,
-    cwd,
-    nodir: true,
-  };
-
-  const absolutePaths = await glob(`${postsDir}/**/*.{md,mdx}`, options);
-
-  return absolutePaths
-    .map((filePath) => {
-      try {
-        return getFrontmatterFromFile(filePath, postsDir, routePrefix, logger);
-      } catch (error) {
-        logger.warn(`[Collections Plugin] 跳过文件 ${filePath}:`, error);
-        return null;
-      }
-    })
-    .filter((f): f is PostFrontmatter => f !== null);
+  logger.warn('[Collections Plugin] 未找到共享内容索引，跳过合集数据构建');
+  return [];
 }
 
 /**
@@ -59,7 +40,7 @@ export async function extractCollectionsFromPosts(
  * @returns 合集数据数组和映射表
  */
 export function processCollectionsFromPosts(
-  postsData: PostFrontmatter[],
+  postsData: ContentPost[],
   config: Required<CollectionsConfig>,
   logger: CogitaLogger = createCogitaLogger()
 ): { collectionsData: CollectionData[]; collectionsMap: Map<string, CollectionData> } {

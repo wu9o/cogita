@@ -1,7 +1,7 @@
 /**
  * RSS插件类型定义
  */
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
+import type { ContentPost } from '@cogita/shared';
 
 /**
  * RSS配置接口
@@ -48,7 +48,7 @@ export interface RSSItem {
 }
 
 /** Feed 生成时使用的文章数据，正文由共享内容索引按需提供。 */
-export interface RSSPost extends PostFrontmatter {
+export interface RSSPost extends ContentPost {
   content?: string;
 }
 

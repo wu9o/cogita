@@ -1,8 +1,6 @@
 import fs from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
-import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import {
   type CogitaPlugin,
   type CogitaPluginConfig,
@@ -100,31 +98,8 @@ async function collectPosts(
     }));
   }
 
-  const postsConfig = config.posts ?? {};
-  const cwd = buildContext.cwd || process.cwd();
-  const postsDir = postsConfig.dir || 'posts';
-  const absolutePostsDir = path.resolve(cwd, postsDir);
-  const routePrefix = postsConfig.routePrefix || 'posts';
-  const files = await collectSourceFiles(config);
-
-  return files
-    .map((filePath) => getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix, logger))
-    .filter((post): post is PostFrontmatter => post !== null);
-}
-
-async function collectSourceFiles(config: CogitaPluginConfig): Promise<string[]> {
-  const buildContext = getCogitaBuildContext(config);
-  const postsConfig = config.posts ?? {};
-  const cwd = buildContext.cwd || process.cwd();
-  const postsDir = postsConfig.dir || 'posts';
-  const extensions = postsConfig.extensions?.length ? postsConfig.extensions : ['md', 'mdx'];
-  const extensionPattern = extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0];
-
-  return glob(`${postsDir}/**/*.${extensionPattern}`, {
-    absolute: true,
-    cwd,
-    nodir: true,
-  });
+  logger.warn('[Content Check Plugin] 未找到共享内容索引，跳过文章诊断');
+  return [];
 }
 
 async function readPostBody(config: CogitaPluginConfig, post: ContentPost): Promise<string> {
@@ -294,6 +269,22 @@ async function checkSourceParseErrors(
   }
 
   return issues;
+}
+
+/** 收集文章源文件，用于诊断索引阶段无法暴露的 frontmatter 解析错误。 */
+async function collectSourceFiles(config: CogitaPluginConfig): Promise<string[]> {
+  const buildContext = getCogitaBuildContext(config);
+  const postsConfig = config.posts ?? {};
+  const cwd = buildContext.cwd || process.cwd();
+  const postsDir = postsConfig.dir || 'posts';
+  const extensions = postsConfig.extensions?.length ? postsConfig.extensions : ['md', 'mdx'];
+  const extensionPattern = extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0];
+
+  return glob(`${postsDir}/**/*.${extensionPattern}`, {
+    absolute: true,
+    cwd,
+    nodir: true,
+  });
 }
 
 function createReport(postCount: number, issues: ContentCheckIssue[]): ContentCheckReport {

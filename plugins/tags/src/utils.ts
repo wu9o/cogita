@@ -1,8 +1,5 @@
-import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { createCogitaLogger, generateTagSlug } from '@cogita/shared';
-import type { CogitaLogger, ContentIndex } from '@cogita/shared';
-import { glob } from 'glob';
+import type { CogitaLogger, ContentIndex, ContentPost } from '@cogita/shared';
 import type { PostReference, TagData, TagStats, TagsConfig } from './types';
 
 // generateTagSlug 已统一到 @cogita/shared，此处 re-export 便于插件内部使用
@@ -16,12 +13,12 @@ export { generateTagSlug };
  * @returns 文章数据数组
  */
 export async function extractTagsFromPosts(
-  postsDir: string,
-  cwd: string,
-  routePrefix = 'posts',
+  _postsDir: string,
+  _cwd: string,
+  _routePrefix = 'posts',
   contentIndex?: ContentIndex,
   logger: CogitaLogger = createCogitaLogger()
-): Promise<PostFrontmatter[]> {
+): Promise<ContentPost[]> {
   if (contentIndex) {
     return (await contentIndex.getPosts()).map((post) => ({
       ...post,
@@ -29,24 +26,8 @@ export async function extractTagsFromPosts(
     }));
   }
 
-  const options = {
-    absolute: true,
-    cwd,
-    nodir: true,
-  };
-
-  const absolutePaths = await glob(`${postsDir}/**/*.{md,mdx}`, options);
-
-  return absolutePaths
-    .map((filePath) => {
-      try {
-        return getFrontmatterFromFile(filePath, postsDir, routePrefix, logger);
-      } catch (error) {
-        logger.warn(`[Tags Plugin] 跳过文件 ${filePath}:`, error);
-        return null;
-      }
-    })
-    .filter((f): f is PostFrontmatter => f !== null);
+  logger.warn('[Tags Plugin] 未找到共享内容索引，跳过标签数据构建');
+  return [];
 }
 
 /**
@@ -56,7 +37,7 @@ export async function extractTagsFromPosts(
  * @returns 标签数据和映射表
  */
 export function processTagsFromPosts(
-  postsData: PostFrontmatter[],
+  postsData: ContentPost[],
   config: Required<TagsConfig>,
   logger: CogitaLogger = createCogitaLogger()
 ): { tagsData: TagData[]; tagsMap: Map<string, TagData> } {
@@ -193,7 +174,7 @@ export function getRelatedTags(currentTagName: string, allTags: TagData[], limit
  * @param postsData 文章数据
  * @returns 统计信息
  */
-export function calculateTagStats(tagsData: TagData[], postsData: PostFrontmatter[]): TagStats {
+export function calculateTagStats(tagsData: TagData[], postsData: ContentPost[]): TagStats {
   if (tagsData.length === 0) {
     return {
       totalTags: 0,
