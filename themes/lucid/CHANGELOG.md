@@ -1,5 +1,18 @@
 # @cogita/theme-lucid
 
+## 0.11.0
+
+### Minor Changes
+
+- e42340b: 重构 Lucid 主题首页与文章列表视觉系统，增加站点元数据和 `themeConfig.lucid` 配置支持，并让最小配置站点可以在未启用可选插件时正常构建。
+
+### Patch Changes
+
+- 9d7e907: 修正 UI 与 Lucid 主题的 React peer 依赖范围，兼容 Rspress 使用的 React 18 和 React 19。
+- Updated dependencies [9d7e907]
+  - @cogita/ui@0.1.1
+  - @cogita/plugin-tags@1.0.3
+
 ## 0.10.6
 
 ### Patch Changes
