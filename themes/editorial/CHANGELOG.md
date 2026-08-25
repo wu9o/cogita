@@ -1,5 +1,26 @@
 # @cogita/theme-editorial
 
+## 0.2.7
+
+### Patch Changes
+
+- Updated dependencies [6d38a19]
+  - @cogita/shared@0.10.1
+  - @cogita/plugin-blog-list@0.3.1
+  - @cogita/plugin-categories@0.2.3
+  - @cogita/plugin-code-copy@0.2.2
+  - @cogita/plugin-collections@1.0.3
+  - @cogita/plugin-comments@0.2.3
+  - @cogita/plugin-content-check@0.2.1
+  - @cogita/plugin-images@1.0.3
+  - @cogita/plugin-posts-frontmatter@0.1.2
+  - @cogita/plugin-reading-progress@0.3.3
+  - @cogita/plugin-rss@1.0.3
+  - @cogita/plugin-search@0.2.3
+  - @cogita/plugin-seo@1.3.3
+  - @cogita/plugin-sitemap@1.3.3
+  - @cogita/plugin-tags@1.0.3
+
 ## 0.2.6
 
 ### Patch Changes
