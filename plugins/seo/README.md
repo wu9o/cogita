@@ -2,6 +2,8 @@
 
 为 Cogita 生成页面级 SEO 元数据、Open Graph、Twitter Card 和 JSON-LD 结构化数据。
 
+该插件声明依赖 `content.posts` 能力，通过 Core 注入的共享内容索引生成文章级元数据，不直接依赖文章扫描插件。
+
 ## 配置
 
 ```ts

@@ -1,17 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
-import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import {
   type CogitaPlugin,
   type CogitaPluginConfig,
+  type ContentPost,
   getBlogListRouteEntries,
   getCategoryRoutes,
   getCogitaBuildContext,
   getCogitaLogger,
 } from '@cogita/shared';
 import type { RouteMeta } from '@rspress/shared';
-import { glob } from 'glob';
 import { createSEOAuditReport, formatSEOAuditReport } from './audit';
 import type { SEOConfig, SEOPageMeta } from './types';
 import {
@@ -32,31 +30,14 @@ const DEFAULT_CONFIG: Required<Pick<SEOConfig, 'robots' | 'includeJsonLd'>> = {
 async function collectPosts(
   config: CogitaPluginConfig,
   logger: ReturnType<typeof getCogitaLogger>
-): Promise<PostFrontmatter[]> {
+): Promise<readonly ContentPost[]> {
   const buildContext = getCogitaBuildContext(config);
   if (buildContext.contentIndex) {
-    return (await buildContext.contentIndex.getPosts()).map((post) => ({
-      ...post,
-      url: post.url || post.route,
-    }));
+    return buildContext.contentIndex.getPosts();
   }
 
-  const postsConfig = config.posts ?? {};
-  const cwd = buildContext.cwd || process.cwd();
-  const postsDir = postsConfig.dir || 'posts';
-  const absolutePostsDir = path.resolve(cwd, postsDir);
-  const routePrefix = postsConfig.routePrefix || 'posts';
-  const extensions = postsConfig.extensions?.length ? postsConfig.extensions : ['md', 'mdx'];
-  const extensionPattern = extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0];
-  const absolutePaths = await glob(`${postsDir}/**/*.${extensionPattern}`, {
-    absolute: true,
-    cwd,
-    nodir: true,
-  });
-
-  return absolutePaths
-    .map((filePath) => getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix, logger))
-    .filter((post): post is NonNullable<typeof post> => Boolean(post));
+  logger.warn('[SEO Plugin] 未找到共享内容索引，将只生成站点级元数据');
+  return [];
 }
 
 /** 创建构建期页面 SEO 元数据插件。 */
@@ -195,7 +176,7 @@ export function pluginSEO(config: CogitaPluginConfig): CogitaPlugin | null {
       buildContext.themeLayouts?.category
         ? [
             `/${(config.categories.routePrefix || 'categories').replace(/^\/+|\/+$/g, '')}`,
-            ...getCategoryRoutes(posts, config.categories),
+            ...getCategoryRoutes([...posts], config.categories),
           ]
         : [];
     const categoryMeta = new Map(
@@ -252,6 +233,7 @@ export function pluginSEO(config: CogitaPluginConfig): CogitaPlugin | null {
     name: '@cogita/plugin-seo',
     cogita: {
       providesCapabilities: ['seo.metadata'],
+      requiresCapabilities: ['content.posts'],
     },
 
     async beforeBuild(rspressConfig: unknown) {

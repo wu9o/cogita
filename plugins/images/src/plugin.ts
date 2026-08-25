@@ -1,9 +1,12 @@
 import { cp, mkdir } from 'node:fs/promises';
 import path from 'node:path';
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
-import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
-import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
-import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
+import {
+  type CogitaPlugin,
+  type CogitaPluginConfig,
+  type ContentPost,
+  getCogitaBuildContext,
+  getCogitaLogger,
+} from '@cogita/shared';
 import { glob } from 'glob';
 import type { ImageData, ImageUsage, ResolvedImage, ResolvedImagesConfig } from './types';
 import {
@@ -63,10 +66,7 @@ async function scanPublicImages(
   });
 }
 
-function getPostCover(
-  post: PostFrontmatter,
-  imageBySrc: Map<string, ResolvedImage>
-): ImageData | null {
+function getPostCover(post: ContentPost, imageBySrc: Map<string, ResolvedImage>): ImageData | null {
   const reference = post.image?.trim();
   if (!reference) {
     return null;
@@ -88,32 +88,17 @@ function getPostCover(
   });
 }
 
-async function scanPostFrontmatter(
+async function getContentPosts(
   config: CogitaPluginConfig,
   logger: ReturnType<typeof getCogitaLogger>
-): Promise<PostFrontmatter[]> {
+): Promise<readonly ContentPost[]> {
   const buildContext = getCogitaBuildContext(config);
   if (buildContext.contentIndex) {
-    return (await buildContext.contentIndex.getPosts()).map((post) => ({
-      ...post,
-      url: post.url || post.route,
-    }));
+    return buildContext.contentIndex.getPosts();
   }
 
-  const postsConfig = config.posts ?? {};
-  const postsDir = postsConfig.dir || 'posts';
-  const routePrefix = postsConfig.routePrefix || 'posts';
-  const extensions = postsConfig.extensions?.length ? postsConfig.extensions : ['md', 'mdx'];
-  const extensionPattern = extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0];
-  const files = await glob(`${postsDir}/**/*.${extensionPattern}`, {
-    absolute: true,
-    cwd: buildContext.cwd,
-    nodir: true,
-  });
-
-  return files
-    .map((filePath) => getFrontmatterFromFile(filePath, postsDir, routePrefix, logger))
-    .filter((post): post is PostFrontmatter => post !== null);
+  logger.warn('[Images Plugin] 未找到共享内容索引，跳过文章封面关联');
+  return [];
 }
 
 async function copyPublicImages(
@@ -143,6 +128,7 @@ export function pluginImages(config: CogitaPluginConfig): CogitaPlugin {
     name: '@cogita/plugin-images',
     cogita: {
       providesCapabilities: ['content.images'],
+      requiresCapabilities: ['content.posts'],
     },
 
     async beforeBuild() {
@@ -159,7 +145,7 @@ export function pluginImages(config: CogitaPluginConfig): CogitaPlugin {
       const imageBySrc = new Map(
         scannedImages.map((image) => [normalizeImageSrc(stripImageSuffix(image.src)), image])
       );
-      const posts = await scanPostFrontmatter(config, logger);
+      const posts = await getContentPosts(config, logger);
       const missingCovers: string[] = [];
       const missingAlt: string[] = [];
 

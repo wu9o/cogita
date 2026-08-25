@@ -1,4 +1,4 @@
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
+import type { ContentPost } from '@cogita/shared';
 import type { RouteMeta } from '@rspress/shared';
 import type { SEOPageMeta } from './types';
 
@@ -64,7 +64,7 @@ export function resolveSiteUrl(siteRoot: string | undefined, value: string): str
 
 /** 读取可用于 SEO 的文章元数据。 */
 export function createPostMeta(
-  post: PostFrontmatter,
+  post: ContentPost,
   siteRoot: string | undefined,
   defaultImage?: string,
   defaultImageAlt?: string,
