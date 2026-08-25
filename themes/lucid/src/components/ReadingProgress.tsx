@@ -2,7 +2,7 @@ import { usePageData } from '@rspress/runtime';
 import { useEffect, useState } from 'react';
 import type React from 'react';
 import { getReadingStats, readingProgressConfig } from 'virtual-reading-progress-data';
-import { getBase, getCurrentRoute } from '../utils';
+import { getBase, getPageRoute } from '../utils';
 
 const READING_TOC_SELECTOR = '.rspress-toc-link[href^="#"], .aside-link[href^="#"]';
 const READING_HEADING_SELECTOR = 'h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]';
@@ -42,8 +42,7 @@ function savePosition(key: string, position: number): void {
 const ReadingProgress: React.FC = () => {
   const pageData = usePageData();
   const base = getBase(pageData);
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  const route = getCurrentRoute(pathname, base);
+  const route = getPageRoute(pageData, base);
   const stats = getReadingStats(route);
   const [progress, setProgress] = useState(0);
   const [positionRestored, setPositionRestored] = useState(false);

@@ -3,16 +3,14 @@ import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allBlogListFilters, blogListConfig, getBlogListPage } from 'virtual-blog-list-data';
 import { PostCardList } from '../components/PostCard';
-import { addPostCovers, getBase, getCurrentRoute } from '../utils';
+import { addPostCovers, getBase, getPageRoute } from '../utils';
 
-function getPageNumber(pathname: string, base: string): number {
-  const route = getCurrentRoute(base, pathname).replace(/^\/+/, '');
-  const match = route.match(/\/page\/(\d+)$/);
+function getPageNumber(route: string): number {
+  const match = route.replace(/^\/+/, '').match(/\/page\/(\d+)$/);
   return match ? Number(match[1]) : 1;
 }
 
-function getFilterKey(pathname: string, base: string): string {
-  const route = getCurrentRoute(base, pathname);
+function getFilterKey(route: string): string {
   const filter = allBlogListFilters.find(
     (item) => route === item.route || route.startsWith(`${item.route}/page/`)
   );
@@ -23,14 +21,9 @@ function getFilterKey(pathname: string, base: string): string {
 const BlogListLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
   const base = getBase(pageData);
-  const pageNumber = getPageNumber(
-    typeof window === 'undefined' ? '' : window.location.pathname,
-    base
-  );
-  const filterKey = getFilterKey(
-    typeof window === 'undefined' ? '' : window.location.pathname,
-    base
-  );
+  const route = getPageRoute(pageData, base);
+  const pageNumber = getPageNumber(route);
+  const filterKey = getFilterKey(route);
   const page = getBlogListPage(pageNumber, filterKey) || getBlogListPage(1, 'all');
 
   if (!page) return <p className="editorial-empty">暂无文章。</p>;

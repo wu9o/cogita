@@ -1,12 +1,12 @@
 import { usePageData } from '@rspress/runtime';
 import { useEffect, useRef, useState } from 'react';
 import { commentsConfig } from 'virtual-comments-data';
-import { getBase, getCurrentRoute } from '../utils';
+import { getBase, getPageRoute } from '../utils';
 
 /** 在文章页加载配置好的 Giscus 或 Utterances 评论组件。 */
 export default function Comments() {
   const pageData = usePageData();
-  const route = getCurrentRoute(getBase(pageData));
+  const route = getPageRoute(pageData, getBase(pageData));
   const containerRef = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
   const enabled = commentsConfig.enabled && commentsConfig.postRoutes.includes(route);

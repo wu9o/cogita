@@ -3,12 +3,12 @@ import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allArchives, blogListConfig, getArchive } from 'virtual-blog-list-data';
 import { PostCardList } from '../components/PostCard';
-import { addPostCovers, getBase, getCurrentRoute } from '../utils';
+import { addPostCovers, getBase, getPageRoute } from '../utils';
 
-function getArchiveKey(pathname: string, base: string): string {
-  const route = getCurrentRoute(base, pathname).replace(/^\/+/, '');
-  return route.startsWith(`${blogListConfig.archivePrefix}/`)
-    ? route.slice(`${blogListConfig.archivePrefix}/`.length)
+function getArchiveKey(route: string): string {
+  const normalizedRoute = route.replace(/^\/+/, '');
+  return normalizedRoute.startsWith(`${blogListConfig.archivePrefix}/`)
+    ? normalizedRoute.slice(`${blogListConfig.archivePrefix}/`.length)
     : '';
 }
 
@@ -16,7 +16,7 @@ function getArchiveKey(pathname: string, base: string): string {
 const ArchiveLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
   const base = getBase(pageData);
-  const key = getArchiveKey(typeof window === 'undefined' ? '' : window.location.pathname, base);
+  const key = getArchiveKey(getPageRoute(pageData, base));
   const archive = getArchive(key);
   const total = allArchives.reduce((count, item) => count + item.count, 0);
 

@@ -1,12 +1,12 @@
 import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import { getCollectionByPostRoute } from 'virtual-collections-data';
-import { getBase, getCurrentRoute } from '../utils';
+import { getBase, getPageRoute } from '../utils';
 
 /** 在合集文章底部提供系列信息和前后文章导航。 */
 export default function CollectionNav() {
   const pageData = usePageData();
   const base = getBase(pageData);
-  const route = getCurrentRoute(base).replace(/^\//, '');
+  const route = getPageRoute(pageData, base).replace(/^\//, '');
   const collection = getCollectionByPostRoute(route);
   if (!collection) return null;
 
