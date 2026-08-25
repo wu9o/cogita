@@ -84,6 +84,27 @@ describe('插件注册契约', () => {
     assert.match(warnings[0], /非严格模式下保留首次注册/);
   });
 
+  it('同一来源重复调用时应保持页面路由注册幂等', async () => {
+    const rspressConfig = await createRspressConfig(
+      {
+        plugins: [
+          () => ({
+            name: 'idempotent-page-route-plugin',
+            addPages: () => [{ routePath: '/same-page' }],
+          }),
+        ],
+      },
+      '/tmp/cogita-page-route-test'
+    );
+    const plugin = rspressConfig.plugins.find(
+      ({ name }) => name === 'idempotent-page-route-plugin'
+    );
+
+    const firstPages = await plugin.addPages();
+    const secondPages = await plugin.addPages();
+    assert.deepEqual(secondPages, firstPages);
+  });
+
   it('严格模式下应拒绝重复注册的运行时模块', async () => {
     const rspressConfig = await createRspressConfig(
       {
