@@ -170,6 +170,53 @@ describe('插件注册契约', () => {
     assert.match(modules['virtual-tags-data'], /\{ name: "Git" \}/);
   });
 
+  it('真实插件先完成时应丢弃迟到的 Core 默认运行时模块', async () => {
+    const rspressConfig = await createRspressConfig(
+      {
+        plugins: [
+          () => ({
+            name: 'runtime-module-override-plugin',
+            addRuntimeModules: () => ({
+              'virtual-tags-data': 'export const allTags = [{ name: "Git" }];',
+            }),
+          }),
+        ],
+      },
+      '/tmp/cogita-runtime-module-test'
+    );
+    const defaults = rspressConfig.plugins.find(({ name }) => name === 'cogita-runtime-defaults');
+    const override = rspressConfig.plugins.find(
+      ({ name }) => name === 'runtime-module-override-plugin'
+    );
+
+    await override.addRuntimeModules();
+    const modules = await defaults.addRuntimeModules();
+    assert.equal(modules['virtual-tags-data'], undefined);
+  });
+
+  it('同一来源重复调用时应保持运行时模块注册幂等', async () => {
+    const rspressConfig = await createRspressConfig(
+      {
+        plugins: [
+          () => ({
+            name: 'idempotent-runtime-module-plugin',
+            addRuntimeModules: () => ({
+              'virtual-shared-data': 'export const source = "same";',
+            }),
+          }),
+        ],
+      },
+      '/tmp/cogita-runtime-module-test'
+    );
+    const plugin = rspressConfig.plugins.find(
+      ({ name }) => name === 'idempotent-runtime-module-plugin'
+    );
+
+    const firstModules = await plugin.addRuntimeModules();
+    const secondModules = await plugin.addRuntimeModules();
+    assert.deepEqual(secondModules, firstModules);
+  });
+
   it('严格模式下应拒绝重复注册的插件名称', async () => {
     const duplicatePlugin = () => ({ name: 'duplicate-test-plugin' });
 
