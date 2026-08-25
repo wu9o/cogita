@@ -64,7 +64,7 @@ function normalizeRuntimeModuleId(moduleId: unknown): string | null {
 
 /** 判断模块是否来自 Core 提供的可覆盖默认实现。 */
 function isRuntimeDefaultProvider(plugin: CogitaPlugin): boolean {
-  return plugin.name === 'cogita-runtime-defaults';
+  return plugin.cogita?.runtimeModulePolicy === 'fallback';
 }
 
 /** 为页面生成增加统一的路由冲突保护，避免静默覆盖同一路径。 */

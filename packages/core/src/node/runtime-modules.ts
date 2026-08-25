@@ -8,6 +8,7 @@ import type { CogitaPlugin } from '@cogita/shared';
  */
 export const cogitaRuntimeDefaults: CogitaPlugin = {
   name: 'cogita-runtime-defaults',
+  cogita: { runtimeModulePolicy: 'fallback' },
 
   addRuntimeModules() {
     return {

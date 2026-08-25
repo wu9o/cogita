@@ -384,6 +384,8 @@ export interface CogitaPluginLayoutRequirement {
 export interface CogitaPluginMetadata {
   /** 插件启用后必须由主题提供的布局。 */
   requiredLayouts?: CogitaPluginLayoutRequirement[];
+  /** 运行时模块的注册策略；fallback 仅用于 Core 提供的可覆盖降级实现。 */
+  runtimeModulePolicy?: 'fallback';
 }
 
 /** 带有 Cogita 构建元数据的 Rspress 插件。 */
