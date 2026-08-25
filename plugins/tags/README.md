@@ -36,7 +36,7 @@
 pnpm add @cogita/plugin-tags
 ```
 
-> **注意**：此插件依赖 `@cogita/plugin-posts-frontmatter` 来访问文章数据。
+> **注意**：此插件依赖 Core 提供的 `content.posts` 能力，通过共享 `ContentIndex` 访问文章数据。
 
 ## 快速开始
 
@@ -240,7 +240,7 @@ import type {
 
 ### 标签页面未生成
 
-1. 确保 `@cogita/plugin-posts-frontmatter` 已正确加载
+1. 确保站点已注册能够提供 `content.posts` 能力的文章插件
 2. 检查文章的 frontmatter 格式是否正确
 3. 验证标签配置是否启用：`tags: { enabled: true }`
 

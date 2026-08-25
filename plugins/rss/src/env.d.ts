@@ -4,8 +4,8 @@
 
 // 虚拟模块类型声明
 declare module 'virtual-posts-data' {
-  import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
-  export const allPosts: PostFrontmatter[];
+  import type { ContentPost } from '@cogita/shared';
+  export const allPosts: ContentPost[];
 }
 
 declare module 'virtual-rss-meta' {

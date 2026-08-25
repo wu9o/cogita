@@ -1,6 +1,5 @@
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
-import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
+import type { CogitaPlugin, CogitaPluginConfig, ContentPost } from '@cogita/shared';
 import type { TagData, TagStats, TagsConfig } from './types';
 import { calculateTagStats, extractTagsFromPosts, processTagsFromPosts } from './utils';
 
@@ -40,7 +39,7 @@ export function pluginTags(config: CogitaPluginConfig): CogitaPlugin | null {
   // 插件内部状态
   let allTagsData: TagData[] = [];
   let tagMap: Map<string, TagData> = new Map();
-  let postsData: PostFrontmatter[] = [];
+  let postsData: ContentPost[] = [];
   let tagStats: TagStats = {} as TagStats;
 
   return {

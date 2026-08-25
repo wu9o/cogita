@@ -1,13 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
 import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 /**
  * RSS插件主体实现
  */
-import { glob } from 'glob';
 import { RSSGenerator } from './generator';
 import type { FeedMeta, RSSConfig, RSSPost } from './types';
 
@@ -89,33 +86,8 @@ export function pluginRSS(config: CogitaPluginConfig): CogitaPlugin | null {
             posts = indexedPosts;
           }
         } else {
-          logger.warn('[RSS Plugin] 未找到共享内容索引，RSS 将使用兼容扫描路径');
-          const postsConfig = config.posts || {};
-          const postsDir = postsConfig.dir || 'posts';
-          const cwd = buildContext.cwd || process.cwd();
-          const routePrefix = postsConfig.routePrefix || 'posts';
-          const extensions = postsConfig.extensions || ['md', 'mdx'];
-          const extensionPattern =
-            extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0];
-          const absolutePaths = await glob(`${postsDir}/**/*.${extensionPattern}`, {
-            absolute: true,
-            cwd,
-            nodir: true,
-          });
-
-          posts = absolutePaths
-            .map((filePath: string) => {
-              try {
-                return getFrontmatterFromFile(filePath, postsDir, routePrefix, logger);
-              } catch (error) {
-                logger.warn(`[RSS Plugin] 跳过文件 ${filePath}:`, error);
-                return null;
-              }
-            })
-            .filter((post): post is PostFrontmatter => post !== null);
-          if (finalRssConfig.includeContent) {
-            logger.warn('[RSS Plugin] 未使用共享内容索引，Feed 将只输出摘要');
-          }
+          logger.warn('[RSS Plugin] 未找到共享内容索引，跳过 RSS 数据构建');
+          posts = [];
         }
 
         // 按创建日期降序排序

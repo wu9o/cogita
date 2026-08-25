@@ -26,7 +26,7 @@ interface ContentIndex {
 - `plugin-blog-list`：优先使用索引生成列表、筛选、分页和归档数据。
 - `plugin-tags`、`plugin-categories`、`plugin-collections`：优先使用索引派生聚合数据。
 
-聚合插件统一使用 `@cogita/shared` 导出的 `ContentPostReference`，不再各自复制文章引用字段。
+聚合插件统一使用 `@cogita/shared` 导出的 `ContentPostReference`，不再各自复制文章引用字段；依赖文章能力的插件也只消费 Core 注入的 `ContentIndex`，不再直接依赖文章扫描插件包。
 文章运行时虚拟模块 `virtual-posts-data` 额外暴露 `contentDataVersion`，外部主题可据此拒绝不兼容的数据契约。
 - `plugin-search`：优先使用索引生成搜索元数据，正文仅在显式开启正文索引时按文件读取。
 - `plugin-rss`、`plugin-seo`、`plugin-sitemap`：优先使用索引生成 Feed、页面 SEO 和站点地图数据。
