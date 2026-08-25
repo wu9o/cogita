@@ -16,6 +16,7 @@
     "build:docs": "pnpm run build:packages && pnpm --filter docs-site build",
     "build:packages": "pnpm --filter \"@cogita/*\" build",
     "build:plugin": "pnpm --filter @cogita/plugin-posts-frontmatter build",
+    "preview:lucid": "node scripts/preview-lucid.mjs",
     "deploy": "pnpm run build:docs",
     "preview": "pnpm --filter docs-site preview",
     "test": "pnpm --filter \"@cogita/*\" test",

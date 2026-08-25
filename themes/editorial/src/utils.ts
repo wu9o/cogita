@@ -1,4 +1,9 @@
-import { formatSiteDate, getRouteFromPathname, normalizeSiteBase } from '@cogita/shared';
+import {
+  formatSiteDate,
+  getRouteFromPageData,
+  getRouteFromPathname,
+  normalizeSiteBase,
+} from '@cogita/shared';
 import { normalizeHrefInRuntime } from '@rspress/runtime';
 import { postCovers } from 'virtual-images-data';
 
@@ -34,6 +39,10 @@ interface EditorialPageData {
   siteData?: {
     base?: string;
     themeConfig?: unknown;
+  };
+  page?: {
+    routePath?: string;
+    pagePath?: string;
   };
 }
 
@@ -82,6 +91,15 @@ export function getCurrentRoute(base: string, pathname?: string): string {
   const currentPathname =
     pathname ?? (typeof window === 'undefined' ? '' : window.location.pathname);
   return getRouteFromPathname(currentPathname, base);
+}
+
+/** 优先读取静态页面注入的 routePath，保证 SSR 与浏览器运行时路由一致。 */
+export function getPageRoute(
+  pageData: EditorialPageData | undefined,
+  base: string,
+  pathname?: string
+): string {
+  return getRouteFromPageData(pageData, base, pathname);
 }
 
 export function addPostCovers<T extends EditorialPost>(posts: T[]): T[] {

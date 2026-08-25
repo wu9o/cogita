@@ -4,6 +4,7 @@ import { usePageData } from '@rspress/runtime';
  * Footer 配置类型
  */
 interface FooterConfig {
+  enabled?: boolean;
   message?: string;
   copyright?: string;
 }
@@ -22,12 +23,15 @@ export default function Footer() {
   const { siteData } = usePageData();
   const footer = siteData?.themeConfig?.footer as FooterConfig | undefined;
 
-  // 如果没有配置 footer，则不渲染
-  if (!footer) {
+  // 默认显示轻量页脚，只有显式关闭时才不渲染。
+  if (footer?.enabled === false) {
     return null;
   }
 
-  const { message, copyright } = footer;
+  const siteTitle = siteData?.title || 'Cogita';
+  const year = new Date().getFullYear();
+  const message = footer?.message || `用心构建 · ${siteTitle}`;
+  const copyright = footer?.copyright || `© ${year} ${siteTitle}`;
 
   return (
     <footer className="lucid-footer">

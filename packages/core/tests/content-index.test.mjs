@@ -3,10 +3,34 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { describe, it } from 'node:test';
-import { getBlogListRouteEntries, getBlogListRoutes, getCogitaBuildContext } from '@cogita/shared';
+import {
+  getBlogListRouteEntries,
+  getBlogListRoutes,
+  getCogitaBuildContext,
+  getRouteFromPageData,
+} from '@cogita/shared';
 import { createContentIndex, getDevWatchPaths, prepareContentDirectory } from '../dist/es/index.js';
 
 describe('构建期内容索引', () => {
+  it('应优先使用静态页面 routePath，并兼容运行时路径回退', () => {
+    assert.equal(
+      getRouteFromPageData(
+        { page: { routePath: '/collections/frontend-advanced' } },
+        '/cogita',
+        '/cogita/collections.html'
+      ),
+      '/collections/frontend-advanced'
+    );
+    assert.equal(
+      getRouteFromPageData({ page: { pagePath: '/tags/git.html' } }, '/cogita', ''),
+      '/tags/git'
+    );
+    assert.equal(
+      getRouteFromPageData(undefined, '/cogita', '/cogita/categories.html'),
+      '/categories'
+    );
+  });
+
   it('应优先使用显式构建上下文，并兼容旧版平铺配置', () => {
     const contentIndex = { getPosts: async () => [] };
     const explicitContext = {

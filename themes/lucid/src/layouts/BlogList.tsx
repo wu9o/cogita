@@ -1,5 +1,4 @@
 import type { LayoutProps } from '@cogita/shared';
-import { PostList } from '@cogita/ui';
 import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import {
@@ -9,17 +8,16 @@ import {
   getBlogListPage,
 } from 'virtual-blog-list-data';
 import { postCovers } from 'virtual-images-data';
-import { getBase, getCurrentRoute } from '../utils';
+import { PostCardList } from '../components/PostCard';
+import { getBase, getPageRoute } from '../utils';
 
-function getPageNumber(pathname: string, base: string): number {
-  const route = getCurrentRoute(pathname, base).replace(/^\/+/, '');
-  const match = route.match(/\/page\/(\d+)$/);
+function getPageNumber(route: string): number {
+  const match = route.replace(/^\/+/, '').match(/\/page\/(\d+)$/);
   const page = match ? Number(match[1]) : 1;
   return Number.isInteger(page) && page > 0 ? page : 1;
 }
 
-function getFilterKey(pathname: string, base: string): string {
-  const route = getCurrentRoute(pathname, base);
+function getFilterKey(route: string): string {
   const filter = allBlogListFilters.find(
     (item) => route === item.route || route.startsWith(`${item.route}/page/`)
   );
@@ -46,9 +44,9 @@ function addPostCovers(posts: (typeof allBlogListPages)[number]['posts']) {
 const BlogListLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
   const base = getBase(pageData);
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  const pageNumber = getPageNumber(pathname, base);
-  const filterKey = getFilterKey(pathname, base);
+  const route = getPageRoute(pageData, base);
+  const pageNumber = getPageNumber(route);
+  const filterKey = getFilterKey(route);
   const page = getBlogListPage(pageNumber, filterKey) || getBlogListPage(1, 'all');
 
   if (!page) {
@@ -93,7 +91,7 @@ const BlogListLayout: React.FC<LayoutProps> = () => {
       </nav>
 
       {page.posts.length > 0 ? (
-        <PostList posts={addPostCovers(page.posts)} showTags showCover />
+        <PostCardList posts={addPostCovers(page.posts)} />
       ) : (
         <p className="blog-list-empty">暂无文章</p>
       )}

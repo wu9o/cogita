@@ -1,13 +1,13 @@
 import type { LayoutProps } from '@cogita/shared';
-import { PostList } from '@cogita/ui';
 import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allArchives, blogListConfig, getArchive } from 'virtual-blog-list-data';
 import { postCovers } from 'virtual-images-data';
-import { getBase, getCurrentRoute } from '../utils';
+import { PostCardList } from '../components/PostCard';
+import { getBase, getPageRoute } from '../utils';
 
-function getArchiveKey(pathname: string, base: string): string {
-  const route = getCurrentRoute(pathname, base).replace(/^\/+/, '');
+function getArchiveKey(pageData: Parameters<typeof getPageRoute>[0], base: string): string {
+  const route = getPageRoute(pageData, base).replace(/^\/+/, '');
   return route.startsWith(`${blogListConfig.archivePrefix}/`)
     ? route.slice(`${blogListConfig.archivePrefix}/`.length)
     : '';
@@ -33,8 +33,7 @@ function addPostCovers(posts: (typeof allArchives)[number]['posts']) {
 const ArchiveLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
   const base = getBase(pageData);
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  const key = getArchiveKey(pathname, base);
+  const key = getArchiveKey(pageData, base);
   const archive = getArchive(key);
   const archiveIndex = `${base}/${blogListConfig.archivePrefix}`;
 
@@ -94,7 +93,7 @@ const ArchiveLayout: React.FC<LayoutProps> = () => {
         ))}
       </div>
 
-      <PostList posts={addPostCovers(archive.posts)} showTags showCover />
+      <PostCardList posts={addPostCovers(archive.posts)} />
     </div>
   );
 };

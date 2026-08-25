@@ -1437,3 +1437,632 @@ aside.rspress-sidebar {
 [data-theme="dark"] .lucid-footer-message a:hover {
   color: var(--rp-c-brand-light);
 }
+
+/* ============================================
+   Lucid 1.0 视觉基础
+   ============================================ */
+:root {
+  --lucid-canvas: #f5f7fb;
+  --lucid-surface: #ffffff;
+  --lucid-surface-muted: #edf1f7;
+  --lucid-text: #182235;
+  --lucid-text-muted: #667187;
+  --lucid-text-faint: #98a2b3;
+  --lucid-border: #e2e8f0;
+  --lucid-accent: #4569d8;
+  --lucid-accent-deep: #2f4da7;
+  --lucid-accent-soft: #e4ebff;
+  --lucid-shadow: 0 18px 50px rgb(39 58 96 / 8%);
+  --lucid-radius: 18px;
+  --lucid-content-width: 1220px;
+  --lucid-reading-width: 760px;
+  --lucid-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --lucid-font-serif: "Iowan Old Style", "Noto Serif SC", "Songti SC", serif;
+  --cogita-primary-color: var(--lucid-accent-deep);
+  --cogita-primary-text-color: #ffffff;
+  --cogita-surface-color: var(--lucid-surface);
+  --cogita-border-color: var(--lucid-border);
+  --cogita-title-color: var(--lucid-text);
+  --cogita-text-color: var(--lucid-text);
+  --cogita-text-color-secondary: var(--lucid-text-muted);
+  --cogita-text-color-tertiary: var(--lucid-text-faint);
+  --cogita-bg-soft: var(--lucid-surface-muted);
+  --cogita-highlight-bg: #fff0b8;
+  --rp-c-brand: var(--lucid-accent);
+  --rp-c-brand-light: var(--lucid-accent-soft);
+  --rp-c-brand-dark: var(--lucid-accent-deep);
+}
+
+html {
+  background: var(--lucid-canvas);
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  color: var(--lucid-text);
+  background: var(--lucid-canvas);
+  font-family: var(--lucid-font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+body,
+button,
+input,
+select {
+  font-family: var(--lucid-font-sans);
+}
+
+#root {
+  overflow-x: clip;
+}
+
+a {
+  color: inherit;
+}
+
+/* 让 Rspress 顶栏成为主题的一部分，避免默认蓝色与 Lucid 视觉脱节。 */
+.rp-nav,
+.rspress-nav,
+.rspress-nav-bar {
+  border-bottom: 1px solid var(--lucid-border) !important;
+  background: color-mix(in srgb, var(--lucid-canvas) 90%, transparent) !important;
+  backdrop-filter: blur(16px);
+}
+
+.rp-nav a,
+.rspress-nav a {
+  color: var(--lucid-text-muted);
+}
+
+.rp-nav a:hover,
+.rspress-nav a:hover,
+.rp-nav a[class*="active"],
+.rp-nav a[aria-current],
+.rspress-nav a[class*="active"],
+.rspress-nav a[aria-current] {
+  color: var(--lucid-accent-deep) !important;
+}
+
+/* 首页使用完整宽度的主题画布，不继承 Rspress 文档页的窄容器。 */
+.rspress-doc:has(.lucid-home) {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.lucid-home {
+  width: min(100% - 3rem, var(--lucid-content-width));
+  margin: 0 auto;
+  padding: clamp(3.5rem, 8vw, 7rem) 0 5rem;
+}
+
+.lucid-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.38fr);
+  gap: clamp(2rem, 7vw, 7rem);
+  align-items: end;
+  padding-bottom: clamp(3rem, 7vw, 6rem);
+  border-bottom: 1px solid var(--lucid-border);
+}
+
+.lucid-hero-copy {
+  max-width: 760px;
+}
+
+.lucid-eyebrow {
+  margin: 0 0 0.9rem;
+  color: var(--lucid-accent-deep);
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.lucid-hero h1 {
+  max-width: 760px;
+  margin: 0;
+  color: var(--lucid-text);
+  font-family: var(--lucid-font-serif);
+  font-size: clamp(2.5rem, 6vw, 5.2rem);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.06;
+}
+
+.lucid-hero-description {
+  max-width: 580px;
+  margin: 1.5rem 0 0;
+  color: var(--lucid-text-muted);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  line-height: 1.8;
+}
+
+.lucid-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.lucid-hero-actions a {
+  padding: 0.75rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: 180ms ease;
+}
+
+.lucid-hero-actions a:hover {
+  transform: translateY(-2px);
+}
+
+.lucid-action-primary {
+  color: #ffffff !important;
+  background: var(--lucid-accent-deep);
+  box-shadow: 0 8px 18px rgb(47 77 167 / 18%);
+}
+
+.lucid-action-secondary {
+  color: var(--lucid-text) !important;
+  border: 1px solid var(--lucid-border);
+  background: var(--lucid-surface);
+}
+
+.lucid-hero-panel {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--lucid-border);
+  border-radius: var(--lucid-radius);
+  background: color-mix(in srgb, var(--lucid-surface) 82%, var(--lucid-accent-soft));
+  box-shadow: var(--lucid-shadow);
+}
+
+.lucid-hero-panel-label {
+  color: var(--lucid-text-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.lucid-hero-panel strong {
+  color: var(--lucid-text);
+  font-family: var(--lucid-font-serif);
+  font-size: 3.5rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.lucid-hero-panel > span:not(.lucid-hero-panel-label) {
+  color: var(--lucid-text-muted);
+  font-size: 0.9rem;
+}
+
+.lucid-hero-panel-line {
+  width: 100%;
+  height: 1px;
+  margin: 0.75rem 0;
+  background: var(--lucid-border);
+}
+
+.lucid-featured {
+  margin: clamp(3rem, 7vw, 6rem) 0;
+}
+
+.lucid-section-heading {
+  margin-bottom: 1.5rem;
+}
+
+.lucid-section-heading h2 {
+  margin: 0;
+  color: var(--lucid-text);
+  font-family: var(--lucid-font-serif);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+.home-content {
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 5rem);
+}
+
+.home-content-without-sidebar {
+  grid-template-columns: minmax(0, 900px);
+  justify-content: center;
+}
+
+.home-sidebar {
+  top: 6rem;
+}
+
+.sidebar-section {
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--lucid-border);
+  background: transparent;
+  border-radius: 0;
+}
+
+.sidebar-section:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.sidebar-title {
+  color: var(--lucid-text-muted);
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.sidebar-category-link,
+.sidebar-collection-link {
+  color: var(--lucid-text-muted);
+  transition: color 160ms ease;
+}
+
+.sidebar-category-link:hover,
+.sidebar-collection-link:hover,
+.view-all-link:hover {
+  color: var(--lucid-accent-deep);
+}
+
+/* Lucid 使用轻量的标签胶囊，避免通用 TagCloud 的蓝色边框抢占视觉焦点。 */
+.lucid-tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: auto;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0;
+  min-width: 0;
+  max-width: 100%;
+  border: 0;
+  background: transparent;
+}
+
+.lucid-tag-cloud:hover {
+  border-color: transparent;
+}
+
+.lucid-tag-cloud [class*="tagLink_"] {
+  margin: 0;
+  padding: 0.35rem 0.65rem;
+  color: var(--lucid-text-muted);
+  border: 1px solid var(--lucid-border);
+  border-radius: 999px;
+  background: var(--lucid-surface);
+  font-size: 0.75rem !important;
+  font-weight: 600;
+  line-height: 1.2;
+  opacity: 1 !important;
+  max-width: 100%;
+  box-sizing: border-box;
+  transition: 160ms ease;
+}
+
+.lucid-tag-cloud [class*="tagLink_"]:hover {
+  color: var(--lucid-accent-deep);
+  border-color: color-mix(in srgb, var(--lucid-accent) 55%, var(--lucid-border));
+  background: var(--lucid-accent-soft);
+  box-shadow: none;
+  transform: translateY(-1px);
+}
+
+.sidebar-collections {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar-collections li {
+  margin: 0;
+}
+
+.sidebar-collection-link {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.65rem;
+  align-items: start;
+  padding: 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.7rem;
+  text-decoration: none;
+  transition: 160ms ease;
+}
+
+.sidebar-collection-link:hover {
+  border-color: var(--lucid-border);
+  background: var(--lucid-surface);
+  box-shadow: 0 8px 20px rgb(39 58 96 / 5%);
+}
+
+.sidebar-collection-index {
+  padding-top: 0.1rem;
+  color: var(--lucid-accent-deep);
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+}
+
+.sidebar-collection-copy {
+  display: grid;
+  min-width: 0;
+  gap: 0.2rem;
+}
+
+.sidebar-collection-title {
+  color: var(--lucid-text);
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+.sidebar-collection-description {
+  overflow: hidden;
+  color: var(--lucid-text-faint);
+  font-size: 0.72rem;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-collection-count {
+  padding-top: 0.1rem;
+  color: var(--lucid-text-faint);
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+
+.lucid-latest .blog-header {
+  align-items: end;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--lucid-border);
+}
+
+.lucid-latest .blog-title {
+  margin: 0;
+  color: var(--lucid-text);
+  font-family: var(--lucid-font-serif);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+.lucid-latest .blog-header > a {
+  color: var(--lucid-accent-deep);
+  font-size: 0.875rem;
+}
+
+.lucid-post-card-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.lucid-post-card {
+  display: grid;
+  grid-template-columns: minmax(0, 0.32fr) minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid var(--lucid-border);
+  border-radius: var(--lucid-radius);
+  background: var(--lucid-surface);
+  box-shadow: 0 5px 20px rgb(39 58 96 / 3%);
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.lucid-post-card:not(:has(.lucid-post-card-cover)) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.lucid-post-card:hover {
+  border-color: color-mix(in srgb, var(--lucid-accent) 45%, var(--lucid-border));
+  box-shadow: var(--lucid-shadow);
+  transform: translateY(-2px);
+}
+
+.lucid-post-card-featured {
+  grid-template-columns: minmax(0, 0.44fr) minmax(0, 1fr);
+}
+
+.lucid-post-card-cover {
+  display: block;
+  min-height: 100%;
+  overflow: hidden;
+  background: var(--lucid-surface-muted);
+}
+
+.lucid-post-card-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 12rem;
+  object-fit: cover;
+  transition: transform 300ms ease;
+}
+
+.lucid-post-card:hover .lucid-post-card-cover img {
+  transform: scale(1.025);
+}
+
+.lucid-post-card-body {
+  min-width: 0;
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.lucid-post-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  color: var(--lucid-text-faint);
+  font-size: 0.75rem;
+}
+
+.lucid-post-card-meta span::before {
+  margin-right: 0.65rem;
+  color: var(--lucid-border);
+  content: "•";
+}
+
+.lucid-post-card-title {
+  margin: 0.7rem 0 0;
+  color: var(--lucid-text);
+  font-family: var(--lucid-font-serif);
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.22;
+}
+
+.lucid-post-card-title a {
+  text-decoration: none;
+}
+
+.lucid-post-card-title a:hover {
+  color: var(--lucid-accent-deep);
+}
+
+.lucid-post-card-description {
+  margin: 0.9rem 0 0;
+  color: var(--lucid-text-muted);
+  line-height: 1.75;
+}
+
+.lucid-post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  color: var(--lucid-text-faint);
+  font-size: 0.75rem;
+  list-style: none;
+}
+
+/* Lucid 默认提供轻量页脚，用户仍可通过 footer.enabled=false 关闭。 */
+.lucid-footer {
+  margin-top: 0;
+  padding: 2rem 1.5rem;
+  border-top: 1px solid var(--lucid-border);
+  background: var(--lucid-canvas);
+}
+
+.lucid-footer-container {
+  display: flex;
+  max-width: var(--lucid-content-width);
+  margin: 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  text-align: left;
+}
+
+.lucid-footer-message,
+.lucid-footer-copyright {
+  margin: 0;
+  color: var(--lucid-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.lucid-footer-message a {
+  color: var(--lucid-accent-deep);
+}
+
+/* 主题自己的暗色 token，覆盖系统偏好和 Rspress 手动切换两种入口。 */
+html.dark,
+html[data-theme="dark"] {
+  --lucid-canvas: #111827;
+  --lucid-surface: #182235;
+  --lucid-surface-muted: #202c42;
+  --lucid-text: #f3f6fb;
+  --lucid-text-muted: #aeb9ca;
+  --lucid-text-faint: #7f8ba0;
+  --lucid-border: #2d3a50;
+  --lucid-accent: #91aaff;
+  --lucid-accent-deep: #b6c5ff;
+  --lucid-accent-soft: #27365f;
+  --lucid-shadow: 0 18px 50px rgb(0 0 0 / 22%);
+  --cogita-primary-color: var(--lucid-accent-deep);
+  --cogita-primary-text-color: #111827;
+  --cogita-surface-color: var(--lucid-surface);
+  --cogita-border-color: var(--lucid-border);
+  --cogita-title-color: var(--lucid-text);
+  --cogita-text-color: var(--lucid-text);
+  --cogita-text-color-secondary: var(--lucid-text-muted);
+  --cogita-text-color-tertiary: var(--lucid-text-faint);
+  --cogita-bg-soft: var(--lucid-surface-muted);
+  --rp-c-brand: var(--lucid-accent);
+  --rp-c-brand-light: var(--lucid-accent-soft);
+  --rp-c-brand-dark: var(--lucid-accent-deep);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --lucid-canvas: #111827;
+    --lucid-surface: #182235;
+    --lucid-surface-muted: #202c42;
+    --lucid-text: #f3f6fb;
+    --lucid-text-muted: #aeb9ca;
+    --lucid-text-faint: #7f8ba0;
+    --lucid-border: #2d3a50;
+    --lucid-accent: #91aaff;
+    --lucid-accent-deep: #b6c5ff;
+    --lucid-accent-soft: #27365f;
+  }
+}
+
+@media (max-width: 800px) {
+  /* Rspress 移动端导航需要占满顶栏以下的剩余视口，避免菜单项被 64px 容器裁掉。 */
+  .rspress-nav-screen {
+    height: calc(100vh - var(--rp-nav-height)) !important;
+    max-height: none;
+  }
+
+  .lucid-home {
+    width: min(100% - 2rem, var(--lucid-content-width));
+    padding-top: 3rem;
+  }
+
+  .lucid-hero {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .lucid-hero-panel {
+    max-width: 22rem;
+  }
+
+  .lucid-featured {
+    margin: 3.5rem 0;
+  }
+
+  .lucid-post-card,
+  .lucid-post-card-featured {
+    grid-template-columns: 1fr;
+  }
+
+  .lucid-post-card-cover img {
+    height: auto;
+    min-height: 0;
+    max-height: 15rem;
+  }
+
+  .home-sidebar {
+    order: 2;
+  }
+
+  .lucid-footer-container {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

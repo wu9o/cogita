@@ -2,7 +2,7 @@ import type { LayoutProps } from '@cogita/shared';
 import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allCollections, collectionsConfig, getCollectionBySlug } from 'virtual-collections-data';
-import { formatDate, getBase, getCurrentRoute } from '../utils';
+import { formatDate, getBase, getPageRoute } from '../utils';
 
 /**
  * 合集页面布局（索引页 + 详情页共用）
@@ -16,8 +16,7 @@ const CollectionPageLayout: React.FC<LayoutProps> = () => {
   const collectionPrefix = collectionsConfig.routePrefix.replace(/^\/+|\/+$/g, '');
   const collectionsHref = normalizeHrefInRuntime(`${base}/${collectionPrefix}`);
 
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  const route = getCurrentRoute(pathname, base).replace(/^\/+/, '');
+  const route = getPageRoute(pageData, base).replace(/^\/+/, '');
   const slug = route.startsWith(`${collectionPrefix}/`)
     ? route.slice(`${collectionPrefix}/`.length)
     : '';

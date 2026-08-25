@@ -10,14 +10,13 @@ import {
   getCategoryBySlug,
 } from 'virtual-categories-data';
 import { PostCardList } from '../components/PostCard';
-import { getBase, getCurrentRoute } from '../utils';
+import { getBase, getPageRoute } from '../utils';
 
 /** 分类索引和层级分类详情页面。 */
 const CategoryLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
   const base = getBase(pageData);
-  const pathname = typeof window === 'undefined' ? '' : window.location.pathname;
-  const route = getCurrentRoute(base, pathname).replace(/^\/+/, '');
+  const route = getPageRoute(pageData, base).replace(/^\/+/, '');
   const categoryPrefix = categoriesConfig.routePrefix.replace(/^\/+|\/+$/g, '');
   const slug = route.startsWith(`${categoryPrefix}/`)
     ? route.slice(`${categoryPrefix}/`.length)

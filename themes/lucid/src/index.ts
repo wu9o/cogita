@@ -115,5 +115,3 @@ export function getThemeConfig(): CogitaTheme {
     ],
   };
 }
-
-export * from './Layout';
