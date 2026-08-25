@@ -12,9 +12,10 @@ Cogita 是一个主题驱动的静态站点框架。它把站点配置、主题�
 
 1. [快速开始](./getting-started.md)：安装包并构建第一个站点。
 2. [配置指南](./configuration.md)：了解站点、主题和插件配置。
-3. [架构设计](./api/architecture-design.md)：理解构建时与运行时的数据流。
-4. [插件开发指南](./plugins/plugin-development.md)：开发自己的构建插件。
-5. [主题开发指南](./theme-development.md)：创建独立的主题包。
+3. [包与能力地图](./package-map.md)：选择适合站点的核心包、主题和插件。
+4. [架构设计](./api/architecture-design.md)：理解构建时与运行时的数据流。
+5. [插件开发指南](./plugins/plugin-development.md)：开发自己的构建插件。
+6. [主题开发指南](./theme-development.md)：创建独立的主题包。
 
 ## 文档分类
 
@@ -22,6 +23,7 @@ Cogita 是一个主题驱动的静态站点框架。它把站点配置、主题�
 - [API 与架构](./api/)：核心配置、类型和框架设计。
 - [插件开发](./plugins/)：插件 API、设计文档和实现约束。
 - [主题使用与扩展](./theme-customization.md)：安装、配置和扩展主题。
+- [内容仓库迁移](./guides/migration.md)：将个人博客或其他内容站点迁移到独立仓库。
 
 ## 当前仓库的边界
 
