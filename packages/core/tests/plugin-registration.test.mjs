@@ -120,6 +120,8 @@ describe('插件注册契约', () => {
         search: { enabled: true },
         readingProgress: { enabled: true },
         codeCopy: { enabled: true },
+        seo: { enabled: true },
+        sitemap: { enabled: true },
       },
       workspaceRoot
     );
@@ -130,6 +132,15 @@ describe('插件注册契约', () => {
     ]);
     assert.deepEqual(findPlugin('@cogita/plugin-images').cogita.providesCapabilities, [
       'content.images',
+    ]);
+    assert.deepEqual(findPlugin('@cogita/plugin-images').cogita.requiresCapabilities, [
+      'content.posts',
+    ]);
+    assert.deepEqual(findPlugin('@cogita/plugin-seo').cogita.requiresCapabilities, [
+      'content.posts',
+    ]);
+    assert.deepEqual(findPlugin('@cogita/plugin-sitemap').cogita.requiresCapabilities, [
+      'content.posts',
     ]);
     assert.deepEqual(findPlugin('@cogita/plugin-tags').cogita.requiresCapabilities, [
       'content.posts',

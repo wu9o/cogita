@@ -325,9 +325,6 @@ importers:
       '@cogita/config':
         specifier: workspace:*
         version: link:../../scripts/config
-      '@cogita/plugin-posts-frontmatter':
-        specifier: workspace:*
-        version: link:../posts-frontmatter
       '@cogita/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -446,13 +443,7 @@ importers:
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
-      glob:
-        specifier: ^11.0.0
-        version: 11.0.3
     devDependencies:
-      '@cogita/plugin-posts-frontmatter':
-        specifier: workspace:*
-        version: link:../posts-frontmatter
       '@cogita/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -477,13 +468,7 @@ importers:
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
-      glob:
-        specifier: ^11.0.0
-        version: 11.0.3
     devDependencies:
-      '@cogita/plugin-posts-frontmatter':
-        specifier: workspace:*
-        version: link:../posts-frontmatter
       '@cogita/shared':
         specifier: workspace:*
         version: link:../../packages/shared
