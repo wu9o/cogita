@@ -34,7 +34,7 @@ import { defineConfig } from '@cogita/core';
 import { pluginExample } from './plugins/example';
 
 export default defineConfig({
-  theme: 'lucid',
+  theme: '@cogita/theme-lucid',
   plugins: [pluginExample],
 });
 ```

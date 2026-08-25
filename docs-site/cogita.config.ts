@@ -4,7 +4,8 @@ export default defineConfig({
   site: {
     title: 'Cogita Documentation',
     description: '主题驱动的静态站点框架使用手册。',
-    base: '/docs/',
+    base: '/cogita/',
+    url: 'https://wu9o.github.io/cogita/',
   },
   contentDir: 'content',
   theme: '@cogita/theme-docs',
@@ -70,7 +71,7 @@ export default defineConfig({
   },
   builderConfig: {
     output: {
-      assetPrefix: '/docs/',
+      assetPrefix: '/cogita/',
     },
   },
 });

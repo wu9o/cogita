@@ -31,16 +31,14 @@ Thank you for your interest in contributing to Cogita! This guide will help you 
 ```
 cogita/
 ├── packages/           # Core packages and plugins
-├── templates/          # Blog templates
+├── docs-site/          # Framework usage manual site
 ├── examples/           # Usage examples
-├── blog/              # Personal blog (example)
-├── docs/              # Documentation
 └── scripts/           # Build and utility scripts
 ```
 
 ## 🛠️ Development Workflow
 
-For detailed development guidelines, see our [Development Guide](./docs/development.md).
+For detailed development guidelines, see our [Development Guide](./docs-site/content/guides/development.md).
 
 ### Code Quality
 

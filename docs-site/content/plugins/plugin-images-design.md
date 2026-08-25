@@ -508,7 +508,7 @@ export interface CogitaConfig {
 7. 外部图片 URL 不会被错误地拼接站点 `base`；
 8. `virtual-images-data` 在空数据时仍有稳定的类型和运行时导出；
 9. 示例博客生产构建后，图片文件和 HTML 引用均存在；
-10. 运行 `pnpm run build:packages`、`pnpm --filter blog build` 和 `pnpm run check` 通过。
+10. 运行 `pnpm run build:packages`、`pnpm run build:docs` 和 `pnpm run check` 通过。
 
 ## 十二、暂不处理的问题
 

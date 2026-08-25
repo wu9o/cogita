@@ -315,19 +315,18 @@ Cogita 同时支持主题插件和站点插件，但两者职责不同：主题�
 插件注册由 core 的独立注册器负责。它统一管理核心插件、主题插件和用户插件的来源顺序，并在边界处校验插件实例、处理工厂异常和保留错误 `cause`，配置加载器只负责组装最终配置。
 
 ```typescript
-export const pluginBlogSystem: CogitaPluginFactory = (config) => {
-  const blogConfig = config.blog || {};
+export const pluginContentFeatures: CogitaPluginFactory = (config) => {
   const plugins: RspressPlugin[] = [];
   
-  // 始终添加基础文章插件
+  // 文章处理能力由主题或站点按需注册
   plugins.push(pluginPosts(config));
   
-  // 条件性添加其他插件
-  if (blogConfig.enableTags) {
+  // 每个插件读取自己的结构化配置命名空间
+  if (config.tags?.enabled) {
     plugins.push(pluginTags(config));
   }
   
-  if (blogConfig.enableRss) {
+  if (config.rss?.enabled) {
     plugins.push(pluginRss(config));
   }
   
@@ -346,7 +345,7 @@ graph LR
     
     subgraph "虚拟模块"
         D["'virtual-posts-data'<br/>export const allPosts = [...]"]
-        E["'virtual-blog-config'<br/>export const config = {...}"]
+        E["'virtual-site-config'<br/>export const siteConfig = {...}"]
     end
 ```
 
@@ -631,7 +630,7 @@ export function getThemeConfig(): CogitaTheme {
 ```typescript
 // 在 cogita.config.ts 中
 export default defineConfig({
-  theme: 'lucid',
+  theme: '@cogita/theme-lucid',
   themeConfig: {
     // 覆盖默认组件
     components: {
