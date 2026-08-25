@@ -18,10 +18,23 @@ describe('插件注册契约', () => {
     const pluginNames = rspressConfig.plugins.map(({ name }) => name);
 
     assert.equal(pluginNames.at(0), 'cogita-content-index');
+    assert.equal(pluginNames.at(1), 'cogita-runtime-defaults');
     assert.equal(pluginNames.at(-1), 'test-user-plugin');
     assert.equal(receivedConfig.buildContext.root, '/tmp/cogita-plugin-registration-test');
     assert.equal(receivedConfig.buildContext.strict, true);
     assert.equal(typeof receivedConfig.buildContext.logger.info, 'function');
+  });
+
+  it('应由 Core 提供可选插件的安全运行时默认模块', async () => {
+    const rspressConfig = await createRspressConfig(
+      {},
+      '/tmp/cogita-runtime-defaults-test'
+    );
+    const defaults = rspressConfig.plugins.find(({ name }) => name === 'cogita-runtime-defaults');
+    const modules = defaults.addRuntimeModules();
+
+    assert.match(modules['virtual-tags-data'], /export const allTags = \[\];/);
+    assert.match(modules['virtual-comments-data'], /enabled: false/);
   });
 
   it('严格模式下应拒绝重复注册的插件名称', async () => {

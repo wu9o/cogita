@@ -37,6 +37,9 @@ pnpm run dev
 # 预览生产构建
 pnpm run preview
 
+# 使用独立博客仓库的内容预览 Lucid 主题
+pnpm run preview:lucid
+
 # 运行代码检查和格式化检查
 pnpm run check
 
@@ -45,6 +48,11 @@ pnpm run test
 ```
 
 修改包源码后，先运行 `pnpm run build:packages`，再运行文档站或测试。这样可以避免文档站继续引用旧的 `dist` 构建产物。
+
+`preview:lucid` 默认读取同级目录中的 `cogita-blog` 仓库，也可以通过
+`COGITA_BLOG_DIR=/path/to/cogita-blog pnpm run preview:lucid` 指定内容仓库。
+该命令会复制文章和公共资源到临时预览目录，使用当前工作区源码构建包和 Lucid 主题，
+并以根路径启动本地预览。生产环境的 `site.base` 仍应按实际部署地址配置。
 
 ## 工作区结构
 

@@ -1,7 +1,7 @@
 import { usePageData } from '@rspress/runtime';
 import { useEffect, useState } from 'react';
 import { getReadingStats, readingProgressConfig } from 'virtual-reading-progress-data';
-import { getBase, getCurrentRoute } from '../utils';
+import { getBase, getPageRoute } from '../utils';
 
 const READING_TOC_SELECTOR = '.rspress-toc-link[href^="#"], .aside-link[href^="#"]';
 const READING_HEADING_SELECTOR = 'h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]';
@@ -40,7 +40,7 @@ function savePosition(key: string, position: number): void {
 /** 在文章页显示阅读进度、目录联动和可选的阅读位置记忆。 */
 export default function ReadingProgress() {
   const pageData = usePageData();
-  const route = getCurrentRoute(getBase(pageData));
+  const route = getPageRoute(pageData, getBase(pageData));
   const stats = getReadingStats(route);
   const [progress, setProgress] = useState(0);
   const [positionRestored, setPositionRestored] = useState(false);

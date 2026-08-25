@@ -2,14 +2,13 @@ import type { LayoutProps } from '@cogita/shared';
 import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allCollections, collectionsConfig, getCollectionBySlug } from 'virtual-collections-data';
-import { formatDate, getBase, getCurrentRoute } from '../utils';
+import { formatDate, getBase, getPageRoute } from '../utils';
 
 /** 合集索引和合集详情页面，突出系列阅读顺序。 */
 const CollectionLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
   const base = getBase(pageData);
-  const pathname = typeof window === 'undefined' ? '' : window.location.pathname;
-  const route = getCurrentRoute(base, pathname).replace(/^\/+/, '');
+  const route = getPageRoute(pageData, base).replace(/^\/+/, '');
   const collectionPrefix = collectionsConfig.routePrefix.replace(/^\/+|\/+$/g, '');
   const slug = route.startsWith(`${collectionPrefix}/`)
     ? route.slice(`${collectionPrefix}/`.length)

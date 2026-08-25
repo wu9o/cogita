@@ -3,14 +3,13 @@ import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allTags, getRelatedTags, tagsConfig } from 'virtual-tags-data';
 import { PostCardList } from '../components/PostCard';
-import { getBase, getCurrentRoute } from '../utils';
+import { getBase, getPageRoute } from '../utils';
 
 /** 标签索引和标签详情页面。 */
 const TagLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
   const base = getBase(pageData);
-  const pathname = typeof window === 'undefined' ? '' : window.location.pathname;
-  const route = getCurrentRoute(base, pathname).replace(/^\/+/, '');
+  const route = getPageRoute(pageData, base).replace(/^\/+/, '');
   const tagPrefix = tagsConfig.routePrefix.replace(/^\/+|\/+$/g, '');
   const slug = route.startsWith(`${tagPrefix}/`) ? route.slice(`${tagPrefix}/`.length) : '';
 

@@ -11,6 +11,7 @@ import * as mlly from 'mlly';
 import type { CogitaConfig, CogitaFullConfig, PostsConfig } from '../types';
 import { createContentIndex } from './content-index';
 import { registerPlugins } from './plugin-registry';
+import { cogitaRuntimeDefaults } from './runtime-modules';
 import { resolveThemePackage } from './theme';
 
 const CONFIG_FILES = ['cogita.config.ts', 'cogita.config.js', 'cogita.config.mjs'];
@@ -548,6 +549,10 @@ export async function createRspressConfig(
             fullConfigForPlugins.buildContext.contentIndex?.invalidate?.();
           },
         },
+        source: 'core',
+      },
+      {
+        plugin: cogitaRuntimeDefaults,
         source: 'core',
       },
       ...(loadedTheme

@@ -1,18 +1,19 @@
 import type { LayoutProps } from '@cogita/shared';
-import { PostList, TagCloud, TagList } from '@cogita/ui';
+import { TagCloud, TagList } from '@cogita/ui';
 import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allTags, getRelatedTags, tagsConfig } from 'virtual-tags-data';
-import { formatDate, getBase, getCurrentRoute } from '../utils';
+import { PostCardList } from '../components/PostCard';
+import { formatDate, getBase, getPageRoute } from '../utils';
 
 /**
  * 标签页面布局（索引页 + 详情页共用）
  * 消费 virtual-tags-data 虚拟模块，根据当前 URL 路径判断渲染哪种页面：
  * - /tags（无 slug）→ 标签索引页：TagCloud 展示所有标签
- * - /tags/:slug → 标签详情页：PostList 渲染文章 + TagList 渲染相关标签
+ * - /tags/:slug → 标签详情页：文章卡片列表 + TagList 渲染相关标签
  *
  * 注意：
- * - rspress 的 addPages filepath 组件不通过 props 传 routePath，用 window.location.pathname 获取
+ * - 路由优先从 Rspress 页面数据读取，浏览器路径仅作为运行时回退
  * - <a> 标签不经过 rspress 路由，不会自动加 base 前缀，需从 siteData.base 手动拼接
  * - 中文 slug 在 URL 中被 encodeURI，需 decodeURIComponent 还原
  */
@@ -21,8 +22,7 @@ const TagPageLayout: React.FC<LayoutProps> = () => {
   const base = getBase(pageData);
   const tagsHref = normalizeHrefInRuntime(`${base}/tags`);
 
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  const route = getCurrentRoute(pathname, base).replace(/^\/+/, '');
+  const route = getPageRoute(pageData, base).replace(/^\/+/, '');
   const tagPrefix = tagsConfig.routePrefix.replace(/^\/+|\/+$/g, '');
   const slug = route.startsWith(`${tagPrefix}/`) ? route.slice(`${tagPrefix}/`.length) : '';
 
@@ -35,7 +35,7 @@ const TagPageLayout: React.FC<LayoutProps> = () => {
           <p className="tag-meta">共 {allTags.length} 个标签</p>
         </header>
         <section className="tag-cloud-section">
-          <TagCloud tags={allTags} config={tagsConfig.tagCloud} />
+          <TagCloud tags={allTags} config={tagsConfig.tagCloud} className="lucid-tag-cloud" />
         </section>
       </div>
     );
@@ -56,7 +56,7 @@ const TagPageLayout: React.FC<LayoutProps> = () => {
   }
 
   const relatedTags = getRelatedTags(tag.name, 8);
-  // PostList 需要 Post 类型，PostReference 补齐 url/filePath 字段
+  // 文章引用补齐 url/filePath 字段，供主题卡片渲染。
   const posts = tag.posts.map((p) => ({ ...p, filePath: '', url: p.route }));
 
   return (
@@ -72,7 +72,7 @@ const TagPageLayout: React.FC<LayoutProps> = () => {
       </header>
 
       <section className="tag-posts">
-        <PostList posts={posts} showTags={false} />
+        <PostCardList posts={posts} />
       </section>
 
       {relatedTags.length > 0 && (

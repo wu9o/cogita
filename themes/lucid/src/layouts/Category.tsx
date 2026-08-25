@@ -1,5 +1,4 @@
 import type { LayoutProps } from '@cogita/shared';
-import { PostList } from '@cogita/ui';
 import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import { Fragment } from 'react';
 import type React from 'react';
@@ -10,10 +9,11 @@ import {
   getCategoryBreadcrumbs,
   getCategoryBySlug,
 } from 'virtual-categories-data';
-import { getBase, getCurrentRoute } from '../utils';
+import { PostCardList } from '../components/PostCard';
+import { getBase, getPageRoute } from '../utils';
 
-function getCategorySlug(pathname: string, base: string): string {
-  const route = getCurrentRoute(pathname, base).replace(/^\/+/, '');
+function getCategorySlug(pageData: Parameters<typeof getPageRoute>[0], base: string): string {
+  const route = getPageRoute(pageData, base).replace(/^\/+/, '');
   const categoryPrefix = categoriesConfig.routePrefix.replace(/^\/+|\/+$/g, '');
   return route.startsWith(`${categoryPrefix}/`) ? route.slice(`${categoryPrefix}/`.length) : '';
 }
@@ -26,8 +26,7 @@ function toPostListPosts(posts: (typeof allCategories)[number]['posts']) {
 const CategoryLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
   const base = getBase(pageData);
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  const slug = getCategorySlug(pathname, base);
+  const slug = getCategorySlug(pageData, base);
   const categoriesHref = normalizeHrefInRuntime(`${base}/${categoriesConfig.routePrefix}`);
 
   if (!slug) {
@@ -114,7 +113,7 @@ const CategoryLayout: React.FC<LayoutProps> = () => {
 
       <section className="category-posts" aria-labelledby="category-posts-title">
         <h2 id="category-posts-title">文章</h2>
-        <PostList posts={toPostListPosts(category.posts)} showTags showCover />
+        <PostCardList posts={toPostListPosts(category.posts)} />
       </section>
     </div>
   );

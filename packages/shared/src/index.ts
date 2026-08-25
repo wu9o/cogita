@@ -599,6 +599,34 @@ export function getRouteFromPathname(pathname: string, base = ''): string {
   return route ? `/${route}` : '/';
 }
 
+/** Rspress 页面运行时数据中用于识别静态页面的最小结构。 */
+export interface CogitaPageData {
+  page?: {
+    /** 动态页面通过 addPages 注册的最终路由。 */
+    routePath?: string;
+    /** 页面源文件对应的路径，作为旧版本兼容回退。 */
+    pagePath?: string;
+  };
+}
+
+/**
+ * 从静态页面数据中解析主题路由。
+ *
+ * 构建阶段没有 window.location，必须优先使用 Rspress 注入的 routePath；
+ * 浏览器运行时再使用 pathname 作为兼容回退，保证两种渲染阶段得到同一结果。
+ */
+export function getRouteFromPageData(
+  pageData: CogitaPageData | undefined,
+  base = '',
+  pathname = typeof window === 'undefined' ? '' : window.location.pathname
+): string {
+  const routePath = pageData?.page?.routePath;
+  const pagePath = pageData?.page?.pagePath;
+  const resolvedPath =
+    typeof routePath === 'string' ? routePath : typeof pagePath === 'string' ? pagePath : pathname;
+  return getRouteFromPathname(resolvedPath, base);
+}
+
 /** 将 ISO 日期格式化为站点统一使用的中文日期。 */
 export function formatSiteDate(date: string | undefined): string {
   if (!date) return '未标注日期';
