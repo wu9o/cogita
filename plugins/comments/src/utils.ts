@@ -1,8 +1,5 @@
-import path from 'node:path';
-import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import { createCogitaLogger } from '@cogita/shared';
 import type { CogitaLogger, ContentIndex } from '@cogita/shared';
-import { glob } from 'glob';
 import type {
   CommentsConfig,
   GiscusConfig,
@@ -91,10 +88,10 @@ export function validateCommentsConfig(config: ResolvedCommentsConfig): string |
 
 /** 扫描文章路由，供主题判断评论组件是否应挂载。 */
 export async function extractCommentPostRoutes(
-  postsDir: string,
-  cwd: string,
-  routePrefix: string,
-  extensions: string[],
+  _postsDir: string,
+  _cwd: string,
+  _routePrefix: string,
+  _extensions: string[],
   contentIndex?: ContentIndex,
   logger: CogitaLogger = createCogitaLogger()
 ): Promise<string[]> {
@@ -102,29 +99,6 @@ export async function extractCommentPostRoutes(
     return (await contentIndex.getPosts()).map((post) => post.route).sort();
   }
 
-  const normalizedExtensions = extensions.length > 0 ? extensions : ['md', 'mdx'];
-  const extensionPattern =
-    normalizedExtensions.length > 1
-      ? `{${normalizedExtensions.join(',')}}`
-      : normalizedExtensions[0];
-  const absolutePostsDir = path.resolve(cwd, postsDir);
-  const absolutePaths = await glob(`${postsDir}/**/*.${extensionPattern}`, {
-    absolute: true,
-    cwd,
-    nodir: true,
-  });
-
-  return absolutePaths
-    .map((filePath) => {
-      try {
-        return (
-          getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix, logger)?.route || null
-        );
-      } catch (error) {
-        logger.warn(`[Comments Plugin] 跳过文件 ${filePath}:`, error);
-        return null;
-      }
-    })
-    .filter((route): route is string => route !== null)
-    .sort();
+  logger.warn('[Comments Plugin] 未找到共享内容索引，跳过文章路由收集');
+  return [];
 }

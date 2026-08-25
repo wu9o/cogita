@@ -1,4 +1,4 @@
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
+import type { ContentPost } from '@cogita/shared';
 
 export type BlogListSortBy = 'createDate' | 'updateDate' | 'title';
 export type BlogListOrder = 'asc' | 'desc';
@@ -32,7 +32,7 @@ export interface BlogListFilter {
 export interface BlogListPage {
   page: number;
   totalPages: number;
-  posts: PostFrontmatter[];
+  posts: ContentPost[];
   route: string;
   previous?: string;
   next?: string;
@@ -44,7 +44,7 @@ export interface BlogArchive {
   key: string;
   label: string;
   count: number;
-  posts: PostFrontmatter[];
+  posts: ContentPost[];
   route: string;
 }
 

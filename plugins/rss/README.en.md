@@ -38,7 +38,7 @@ This plugin automatically generates RSS 2.0, Atom, and JSON Feed files from your
 pnpm add @cogita/plugin-rss
 ```
 
-> **Note:** This plugin depends on `@cogita/plugin-posts-frontmatter` to access post data.
+> **Note:** This plugin consumes the `content.posts` capability provided by Core through the shared `ContentIndex`.
 
 ## Quick Start
 
@@ -219,7 +219,7 @@ import type { RSSConfig, FeedMeta } from '@cogita/plugin-rss';
 
 ### No Posts in Feed
 
-1. Ensure `@cogita/plugin-posts-frontmatter` is loaded first
+1. Ensure the site registers a post plugin that provides the `content.posts` capability
 2. Check that posts exist in your posts directory
 3. Verify frontmatter format is valid
 

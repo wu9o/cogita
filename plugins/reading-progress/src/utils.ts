@@ -1,10 +1,6 @@
 import fs from 'node:fs';
-import path from 'node:path';
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
-import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import { createCogitaLogger } from '@cogita/shared';
-import type { CogitaLogger, ContentIndex } from '@cogita/shared';
-import { glob } from 'glob';
+import type { CogitaLogger, ContentIndex, ContentPost } from '@cogita/shared';
 import type { ReadingProgressConfig, ReadingStats, ResolvedReadingProgressConfig } from './types';
 
 /** 规范化阅读进度配置。 */
@@ -52,7 +48,7 @@ export function countReadingWords(text: string): number {
 
 /** 根据正文生成阅读统计。 */
 export function createReadingStats(
-  post: PostFrontmatter,
+  post: ContentPost,
   markdown: string,
   config: ResolvedReadingProgressConfig
 ): ReadingStats {
@@ -70,10 +66,10 @@ export function createReadingStats(
 
 /** 扫描文章正文并生成阅读统计。 */
 export async function extractReadingStats(
-  postsDir: string,
-  cwd: string,
-  routePrefix: string,
-  extensions: string[],
+  _postsDir: string,
+  _cwd: string,
+  _routePrefix: string,
+  _extensions: string[],
   config: ResolvedReadingProgressConfig,
   contentIndex?: ContentIndex,
   logger: CogitaLogger = createCogitaLogger()
@@ -97,30 +93,6 @@ export async function extractReadingStats(
       .sort((left, right) => left.route.localeCompare(right.route));
   }
 
-  const normalizedExtensions = extensions.length > 0 ? extensions : ['md', 'mdx'];
-  const extensionPattern =
-    normalizedExtensions.length > 1
-      ? `{${normalizedExtensions.join(',')}}`
-      : normalizedExtensions[0];
-  const absolutePostsDir = path.resolve(cwd, postsDir);
-  const absolutePaths = await glob(`${postsDir}/**/*.${extensionPattern}`, {
-    absolute: true,
-    cwd,
-    nodir: true,
-  });
-
-  return absolutePaths
-    .map((filePath) => {
-      try {
-        const post = getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix, logger);
-        if (!post) return null;
-
-        return createReadingStats(post, fs.readFileSync(filePath, 'utf8'), config);
-      } catch (error) {
-        logger.warn(`[Reading Progress Plugin] 跳过文件 ${filePath}:`, error);
-        return null;
-      }
-    })
-    .filter((stats): stats is ReadingStats => stats !== null)
-    .sort((left, right) => left.route.localeCompare(right.route));
+  logger.warn('[Reading Progress Plugin] 未找到共享内容索引，跳过阅读统计构建');
+  return [];
 }

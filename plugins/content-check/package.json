@@ -35,7 +35,6 @@
     "test": "pnpm build && node --test tests/*.test.mjs"
   },
   "dependencies": {
-    "@cogita/plugin-posts-frontmatter": "workspace:*",
     "@rspress/core": "^1.45.1",
     "glob": "^11.0.0",
     "gray-matter": "^4.0.3"
@@ -46,8 +45,5 @@
     "@types/node": "^18.11.17",
     "rsbuild-plugin-publint": "^0.3.3",
     "typescript": "^5.0.4"
-  },
-  "peerDependencies": {
-    "@cogita/plugin-posts-frontmatter": "workspace:*"
   }
 }

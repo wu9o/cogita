@@ -1,7 +1,5 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
-import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import {
   type CogitaPlugin,
   type CogitaPluginConfig,
@@ -10,7 +8,6 @@ import {
   getCogitaBuildContext,
   getCogitaLogger,
 } from '@cogita/shared';
-import { glob } from 'glob';
 import type { SitemapConfig, SitemapEntry, SitemapPost } from './types';
 import {
   createPostEntries,
@@ -46,11 +43,6 @@ const DEFAULT_CONFIG: Required<
   priority: 0.7,
 };
 
-function getPostGlob(postsDir: string, extensions: string[]): string {
-  const extensionPattern = extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0];
-  return `${postsDir}/**/*.${extensionPattern}`;
-}
-
 async function collectPosts(
   config: CogitaPluginConfig,
   logger: ReturnType<typeof getCogitaLogger>
@@ -65,27 +57,8 @@ async function collectPosts(
     }));
   }
 
-  const postsConfig = config.posts ?? {};
-  const cwd = buildContext.cwd || process.cwd();
-  const postsDir = postsConfig.dir || 'posts';
-  const absolutePostsDir = path.resolve(cwd, postsDir);
-  const routePrefix = postsConfig.routePrefix || 'posts';
-  const extensions = postsConfig.extensions?.length ? postsConfig.extensions : ['md', 'mdx'];
-  const absolutePaths = await glob(getPostGlob(postsDir, extensions), {
-    absolute: true,
-    cwd,
-    nodir: true,
-  });
-
-  return absolutePaths
-    .map((filePath) => getFrontmatterFromFile(filePath, absolutePostsDir, routePrefix, logger))
-    .filter((post): post is PostFrontmatter => Boolean(post))
-    .map((post) => ({
-      route: post.route,
-      createDate: post.createDate,
-      updateDate: post.updateDate,
-      categories: post.categories,
-    }));
+  logger.warn('[Sitemap Plugin] 未找到共享内容索引，跳过文章路由收集');
+  return [];
 }
 
 function resolveCustomEntries(

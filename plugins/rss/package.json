@@ -51,15 +51,10 @@
   "devDependencies": {
     "@cogita/shared": "workspace:*",
     "@rslib/core": "0.11.2",
-    "@types/glob": "^8.1.0",
     "rsbuild-plugin-publint": "^0.3.3",
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@rspress/core": "^1.45.1",
-    "glob": "^11.0.0"
-  },
-  "peerDependencies": {
-    "@cogita/plugin-posts-frontmatter": "workspace:*"
+    "@rspress/core": "^1.45.1"
   }
 }

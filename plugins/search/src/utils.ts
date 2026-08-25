@@ -1,10 +1,7 @@
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
-import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import { createCogitaLogger } from '@cogita/shared';
-import type { CogitaLogger, ContentIndex } from '@cogita/shared';
-import { glob } from 'glob';
+import type { CogitaLogger, ContentIndex, ContentPost } from '@cogita/shared';
 import type {
   ResolvedSearchAnalyticsConfig,
   ResolvedSearchConfig,
@@ -84,7 +81,7 @@ function getContent(
 }
 
 function toSearchDocument(
-  post: PostFrontmatter,
+  post: ContentPost,
   config: ResolvedSearchConfig,
   logger: CogitaLogger
 ): SearchDocument {
@@ -107,10 +104,10 @@ function toSearchDocument(
 
 /** 扫描文章并生成搜索文档。 */
 export async function extractSearchDocuments(
-  postsDir: string,
-  cwd: string,
-  routePrefix: string,
-  extensions: string[],
+  _postsDir: string,
+  _cwd: string,
+  _routePrefix: string,
+  _extensions: string[],
   config: ResolvedSearchConfig,
   contentIndex?: ContentIndex,
   logger: CogitaLogger = createCogitaLogger()
@@ -122,29 +119,8 @@ export async function extractSearchDocuments(
       .sort((a, b) => a.route.localeCompare(b.route));
   }
 
-  const normalizedExtensions = extensions.length > 0 ? extensions : ['md', 'mdx'];
-  const extensionPattern =
-    normalizedExtensions.length > 1
-      ? `{${normalizedExtensions.join(',')}}`
-      : normalizedExtensions[0];
-  const absolutePaths = await glob(`${postsDir}/**/*.${extensionPattern}`, {
-    absolute: true,
-    cwd,
-    nodir: true,
-  });
-
-  return absolutePaths
-    .map((filePath) => {
-      try {
-        return getFrontmatterFromFile(filePath, postsDir, routePrefix, logger);
-      } catch (error) {
-        logger.warn(`[Search Plugin] 跳过文件：${filePath}`, error);
-        return null;
-      }
-    })
-    .filter((post): post is PostFrontmatter => post !== null)
-    .map((post) => toSearchDocument({ ...post, url: post.url || post.route }, config, logger))
-    .sort((a, b) => a.route.localeCompare(b.route));
+  logger.warn('[Search Plugin] 未找到共享内容索引，跳过搜索数据构建');
+  return [];
 }
 
 /** 为搜索索引生成稳定 hash，便于主题缓存索引实例。 */

@@ -1,5 +1,3 @@
-import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
-import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import {
   createCogitaLogger,
   generateCategorySlug,
@@ -7,8 +5,7 @@ import {
   getCategoryPathVariants,
   normalizeCategoryPath,
 } from '@cogita/shared';
-import type { CogitaLogger, ContentIndex } from '@cogita/shared';
-import { glob } from 'glob';
+import type { CogitaLogger, ContentIndex, ContentPost } from '@cogita/shared';
 import type {
   BlogArchive,
   BlogListConfig,
@@ -54,7 +51,7 @@ function getPageRoute(
 
 /** 生成标签和分类筛选项，并统计每个筛选项包含的文章数。 */
 export function buildFilters(
-  posts: PostFrontmatter[],
+  posts: ContentPost[],
   config: ResolvedBlogListConfig,
   categorySeparator = '/'
 ): BlogListFilter[] {
@@ -110,10 +107,10 @@ export function buildFilters(
 
 /** 按筛选项过滤文章，分类筛选会包含其子分类文章。 */
 export function filterPosts(
-  posts: PostFrontmatter[],
+  posts: ContentPost[],
   filter: BlogListFilter,
   categorySeparator = '/'
-): PostFrontmatter[] {
+): ContentPost[] {
   return posts.filter((post) => {
     if (filter.kind === 'tag') {
       return (post.tags || []).some((tag) => generateTagSlug(tag.trim()) === filter.slug);
@@ -129,13 +126,13 @@ export function filterPosts(
 
 /** 扫描并解析文章，保持与 posts-frontmatter 相同的路由规则。 */
 export async function extractPosts(
-  postsDir: string,
-  cwd: string,
-  routePrefix: string,
-  extensions: string[],
+  _postsDir: string,
+  _cwd: string,
+  _routePrefix: string,
+  _extensions: string[],
   contentIndex?: ContentIndex,
   logger: CogitaLogger = createCogitaLogger()
-): Promise<PostFrontmatter[]> {
+): Promise<ContentPost[]> {
   if (contentIndex) {
     return (await contentIndex.getPosts()).map((post) => ({
       ...post,
@@ -143,31 +140,11 @@ export async function extractPosts(
     }));
   }
 
-  const normalizedExtensions = extensions.length > 0 ? extensions : ['md', 'mdx'];
-  const extensionPattern =
-    normalizedExtensions.length > 1
-      ? `{${normalizedExtensions.join(',')}}`
-      : normalizedExtensions[0];
-  const absolutePaths = await glob(`${postsDir}/**/*.${extensionPattern}`, {
-    absolute: true,
-    cwd,
-    nodir: true,
-  });
-
-  return absolutePaths
-    .map((filePath) => {
-      try {
-        return getFrontmatterFromFile(filePath, postsDir, routePrefix, logger);
-      } catch (error) {
-        logger.warn(`[Blog List Plugin] 跳过文件 ${filePath}:`, error);
-        return null;
-      }
-    })
-    .filter((post): post is PostFrontmatter => post !== null)
-    .map((post) => ({ ...post, url: post.url || post.route }));
+  logger.warn('[Blog List Plugin] 未找到共享内容索引，跳过文章列表数据构建');
+  return [];
 }
 
-function getSortValue(post: PostFrontmatter, sortBy: ResolvedBlogListConfig['sortBy']): string {
+function getSortValue(post: ContentPost, sortBy: ResolvedBlogListConfig['sortBy']): string {
   if (sortBy === 'title') return post.title;
   return sortBy === 'updateDate' ? post.updateDate : post.createDate;
 }
@@ -178,10 +155,7 @@ function getTimeValue(value: string): number {
 }
 
 /** 对文章做稳定排序，避免日期相同时构建结果抖动。 */
-export function sortPosts(
-  posts: PostFrontmatter[],
-  config: ResolvedBlogListConfig
-): PostFrontmatter[] {
+export function sortPosts(posts: ContentPost[], config: ResolvedBlogListConfig): ContentPost[] {
   return posts
     .map((post, index) => ({ post, index }))
     .sort((a, b) => {
@@ -200,7 +174,7 @@ export function sortPosts(
 
 /** 将文章拆分为静态分页数据。 */
 export function paginatePosts(
-  posts: PostFrontmatter[],
+  posts: ContentPost[],
   config: ResolvedBlogListConfig,
   filter?: BlogListFilter
 ): BlogListPage[] {
@@ -232,10 +206,10 @@ function getArchiveKey(date: string, granularity: ResolvedBlogListConfig['archiv
 
 /** 按年份或月份生成归档数据。 */
 export function buildArchives(
-  posts: PostFrontmatter[],
+  posts: ContentPost[],
   config: ResolvedBlogListConfig
 ): { archives: BlogArchive[]; invalidDateCount: number } {
-  const groups = new Map<string, PostFrontmatter[]>();
+  const groups = new Map<string, ContentPost[]>();
   let invalidDateCount = 0;
 
   for (const post of posts) {
