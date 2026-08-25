@@ -1,7 +1,12 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, it } from 'node:test';
 import { createRspressConfig } from '../dist/es/index.js';
+
+const { version: coreVersion } = JSON.parse(
+  readFileSync(new URL('../package.json', import.meta.url), 'utf8')
+);
 
 describe('插件注册契约', () => {
   it('应按主题插件之后的顺序加载用户插件，并注入统一构建上下文', async () => {
@@ -22,7 +27,7 @@ describe('插件注册契约', () => {
     assert.equal(pluginNames.at(-1), 'test-user-plugin');
     assert.equal(receivedConfig.buildContext.root, '/tmp/cogita-plugin-registration-test');
     assert.equal(receivedConfig.buildContext.strict, true);
-    assert.equal(receivedConfig.buildContext.framework.version, '0.12.0');
+    assert.equal(receivedConfig.buildContext.framework.version, coreVersion);
     assert.equal(typeof receivedConfig.buildContext.logger.info, 'function');
   });
 
