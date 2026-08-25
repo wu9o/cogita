@@ -60,7 +60,8 @@ export default defineConfig({
           namedExport: false,
           exportLocalsConvention: 'camelCaseOnly',
         },
-        injectStyles: true,
+        // 组件包发布时保留独立 CSS 文件，避免把构建机内部的 style-loader 路径写入 JS。
+        injectStyles: false,
       },
     },
   ],
