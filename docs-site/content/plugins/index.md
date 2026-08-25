@@ -26,7 +26,7 @@ Cogita 插件以工厂函数形式接收增强配置，并通过 Rspress 插件�
 - [Reading Progress](./plugin-reading-progress-design.md)
 - [Code Copy](./plugin-code-copy-design.md)
 - [Comments](./plugin-comments-design.md)
-- [Content Check](./plugin-content-check.md)
+- [内容检查](./plugin-content-check-design.md)
 
 ## 内置插件状态
 
