@@ -17,6 +17,7 @@
     "build:packages": "pnpm --filter \"@cogita/*\" build",
     "build:plugin": "pnpm --filter @cogita/plugin-posts-frontmatter build",
     "check:package-boundary": "pnpm run build:packages && node scripts/check-package-boundary.mjs",
+    "check:consumer": "pnpm run build:packages && node scripts/check-consumer-install.mjs",
     "preview:lucid": "node scripts/preview-lucid.mjs",
     "deploy": "pnpm run build:docs",
     "preview": "pnpm --filter docs-site preview",
