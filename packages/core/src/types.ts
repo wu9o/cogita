@@ -18,6 +18,8 @@ export type MediumZoomConfig = UserConfig['mediumZoom'];
 export interface SiteConfig {
   title?: string;
   description?: string;
+  /** 页面语言，例如 `zh-CN` 或 `en-US`。 */
+  lang?: string;
   /** 网站图标路径，相对于站点根目录。 */
   icon?: string;
   base?: string;

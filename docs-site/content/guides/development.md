@@ -1,307 +1,220 @@
-# Development Guide
+---
+title: 开发指南
+---
 
-This guide covers the development workflow and code quality standards for Cogita.
+# 开发指南
 
-## Code Quality Tools
+本指南面向 Cogita 框架、插件和主题的贡献者，说明本地开发、质量检查、测试和发布前验证流程。
 
-Cogita uses a modern toolchain for code quality and consistency:
+## 开发环境
 
-- **[Biome](https://biomejs.dev/)** - Fast formatter and linter
-- **[Husky](https://typicode.github.io/husky/)** - Git hooks
-- **[lint-staged](https://github.com/okonet/lint-staged)** - Run linters on staged files
-- **[Commitlint](https://commitlint.js.org/)** - Conventional commit messages
+要求：
 
-## Setup
+- Node.js `>= 18`
+- pnpm `>= 9`
+- TypeScript `^5`
 
-1. **Install dependencies**:
-   ```bash
-   pnpm install
-   ```
-
-2. **Initialize Git hooks**:
-   ```bash
-   pnpm run prepare
-   ```
-
-## Development Workflow
-
-### Code Formatting and Linting
+安装依赖：
 
 ```bash
-# Check code formatting and linting
-pnpm run check
-
-# Auto-fix formatting and linting issues
-pnpm run check:fix
-
-# Format code only
-pnpm run format:fix
-
-# Lint code only
-pnpm run lint:fix
+pnpm install
 ```
 
-### Git Workflow
+Cogita 使用 pnpm workspace 管理包依赖，内部依赖使用 `workspace:*`。不要用 npm 或 yarn 替换安装命令，否则可能产生不兼容的 lockfile。
 
-#### Commit Message Format
-
-We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
-
-```
-<type>[optional scope]: <description>
-
-[optional body]
-
-[optional footer(s)]
-```
-
-**Types:**
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting, etc.)
-- `refactor`: Code refactoring
-- `perf`: Performance improvements
-- `test`: Adding or updating tests
-- `chore`: Build process or auxiliary tool changes
-- `ci`: CI configuration changes
-- `build`: Build system changes
-- `revert`: Reverting previous commits
-
-**Examples:**
-```bash
-git commit -m "feat: add blog list pagination"
-git commit -m "fix(plugin): resolve frontmatter parsing issue"
-git commit -m "docs: update deployment guide"
-git commit -m "chore: update dependencies"
-```
-
-#### Pre-commit Hooks
-
-Before each commit, the following checks run automatically:
-
-1. **lint-staged**: Formats and lints staged files
-2. **Type checking**: Ensures TypeScript compilation
-3. **Commit message validation**: Validates conventional commit format
-
-If any check fails, the commit is blocked. Fix the issues and try again.
-
-### Package Development
-
-#### Creating a New Plugin
-
-1. **Create package directory**:
-   ```bash
-   mkdir packages/plugin-your-feature
-   cd packages/plugin-your-feature
-   ```
-
-2. **Initialize package**:
-   ```bash
-   pnpm init
-   ```
-
-3. **Follow the plugin structure**:
-   ```
-   plugin-your-feature/
-   ├── src/
-   │   ├── index.ts
-   │   ├── plugin.ts
-   │   ├── types.ts
-   │   └── utils.ts
-   ├── client.d.ts
-   ├── package.json
-   ├── tsconfig.json
-   ├── rslib.config.ts
-   └── README.md
-   ```
-
-4. **Use existing plugins as reference**, especially `plugin-posts-frontmatter`
-
-#### Building Packages
+## 常用命令
 
 ```bash
-# Build all packages
+# 构建所有可发布包
 pnpm run build:packages
 
-# Build specific package
-pnpm --filter @cogita/plugin-name build
+# 构建使用手册站点
+pnpm run build:docs
 
-# Watch mode for development
-pnpm --filter @cogita/plugin-name dev
-```
+# 启动使用手册开发服务器
+pnpm run dev
 
-## Code Style Guidelines
+# 预览生产构建
+pnpm run preview
 
-### TypeScript
+# 运行代码检查和格式化检查
+pnpm run check
 
-- Use strict TypeScript configuration
-- Prefer `interface` over `type` for object shapes
-- Use explicit return types for public APIs
-- Avoid `any` type (use `unknown` instead)
-
-### Naming Conventions
-
-- **Files**: kebab-case (`plugin-posts-frontmatter.ts`)
-- **Directories**: kebab-case (`plugin-posts-frontmatter/`)
-- **Variables/Functions**: camelCase (`getFrontmatterFromFile`)
-- **Types/Interfaces**: PascalCase (`PostFrontmatter`)
-- **Constants**: UPPER_SNAKE_CASE (`DEFAULT_ROUTE_PREFIX`)
-
-### Import Organization
-
-Biome automatically organizes imports in this order:
-
-1. Node.js built-in modules
-2. External packages
-3. Internal packages (`@cogita/*`)
-4. Relative imports
-
-### Code Formatting
-
-Biome is configured with these preferences:
-
-- **Indentation**: 2 spaces
-- **Line width**: 100 characters
-- **Quotes**: Single quotes for strings, double for JSX
-- **Semicolons**: Always
-- **Trailing commas**: ES5 style
-
-## Testing
-
-### Running Tests
-
-```bash
-# Run all tests
+# 运行工作区测试
 pnpm run test
-
-# Run tests for specific package
-pnpm --filter @cogita/plugin-name test
-
-# Watch mode
-pnpm --filter @cogita/plugin-name test:watch
 ```
 
-### Writing Tests
+修改包源码后，先运行 `pnpm run build:packages`，再运行文档站或测试。这样可以避免文档站继续引用旧的 `dist` 构建产物。
 
-- Place tests in `__tests__` directory or alongside source files with `.test.ts` suffix
-- Use descriptive test names
-- Follow AAA pattern (Arrange, Act, Assert)
-- Mock external dependencies
+## 工作区结构
 
-## Documentation
+```text
+packages/       # Core、CLI、Shared 和 UI
+plugins/        # 可选功能插件
+themes/         # 完整主题包
+docs-site/      # 框架使用手册示例
+scripts/        # 构建和辅助脚本
+```
 
-### Code Documentation
+个人博客、产品文档和其他真实内容站点不放在本仓库中，而是通过 npm 包消费 Cogita。这样框架代码、使用手册和站点内容拥有独立的发布边界。
 
-- Use JSDoc comments for public APIs
-- Include examples in documentation
-- Document complex algorithms and business logic
+## 新增插件
 
-### README Files
+建议的插件结构：
 
-Each package should have a comprehensive README with:
+```text
+plugins/your-feature/
+├── src/
+│   ├── index.ts
+│   ├── plugin.ts
+│   └── utils.ts
+├── tests/
+├── client.d.ts
+├── package.json
+├── tsconfig.json
+└── rslib.config.ts
+```
 
-- Installation instructions
-- Usage examples
-- API documentation
-- Configuration options
+插件必须遵循工厂模式：
 
-## Performance Considerations
+```ts
+import type { CogitaPluginConfig } from '@cogita/shared';
 
-### Build Performance
+export function pluginYourFeature(config: CogitaPluginConfig) {
+  if (!config.yourFeature) {
+    return null;
+  }
 
-- Use incremental builds when possible
-- Leverage caching in CI/CD
-- Minimize dependencies
+  return {
+    name: '@cogita/plugin-your-feature',
+    async beforeBuild() {
+      // 在构建阶段处理文件或生成数据
+    },
+  };
+}
+```
 
-### Runtime Performance
+插件需要做到：
 
-- Avoid unnecessary re-renders
-- Use lazy loading for large components
-- Optimize bundle sizes
+1. 在自己的配置命名空间中读取配置；
+2. 未启用或缺少依赖时优雅返回 `null`；
+3. 使用 `getCogitaBuildContext` 获取共享索引、主题布局和日志；
+4. 通过 `cogita.requiredLayouts` 声明需要的主题页面；
+5. 通过虚拟模块把构建期数据传给运行时；
+6. 为默认配置、关闭配置和错误配置编写测试。
 
-## Debugging
+## 新增主题
 
-### Development Tools
+主题是页面布局、样式和默认插件能力的组合包。建议的结构：
 
-- Use browser dev tools for client-side debugging
-- Use Node.js debugger for build-time debugging
-- Enable source maps for better stack traces
+```text
+themes/your-theme/
+├── src/
+│   ├── index.ts
+│   ├── layouts/
+│   ├── components/
+│   └── theme.css
+├── package.json
+├── tsconfig.json
+└── rslib.config.ts
+```
 
-### Common Issues
+主题入口只声明布局和插件：
 
-1. **Build failures**: Check TypeScript errors and dependency issues
-2. **Linting errors**: Run `pnpm run check:fix` to auto-fix
-3. **Git hook failures**: Fix the underlying issues before committing
+```ts
+import type { CogitaTheme } from '@cogita/shared';
+import path from 'node:path';
 
-## IDE Setup
+export function getThemeConfig(): CogitaTheme {
+  return {
+    name: '@cogita/theme-your-theme',
+    pageLayouts: {
+      home: './layouts/Home.js',
+    },
+    globalStyles: [path.resolve(__dirname, './theme.css')],
+    plugins: [],
+  };
+}
+```
 
-### VS Code (Recommended)
+主题不要处理插件配置验证，也不要把具体站点内容写死在布局里。新增页面能力时，让插件声明布局需求，让主题实现对应的 `pageLayouts` 键。
 
-Install the recommended extensions:
+## 代码质量
 
-- Biome - Formatting and linting
-- TypeScript - Enhanced TypeScript support
-- MDX - MDX file support
-
-The workspace is pre-configured with optimal settings.
-
-### Other IDEs
-
-Configure your IDE to:
-
-- Use Biome for formatting and linting
-- Enable TypeScript strict mode
-- Set up auto-import organization
-
-## Continuous Integration
-
-### GitHub Actions
-
-Two workflows are configured:
-
-1. **CI** (`ci.yml`): Runs on all pushes and PRs
-   - Linting and formatting checks
-   - Type checking
-   - Tests
-
-2. **Deploy** (`deploy.yml`): Runs on main branch
-   - All CI checks
-   - Build and deploy to GitHub Pages
-
-### Local CI Simulation
-
-Run the same checks locally:
+项目使用 Biome，而不是 ESLint 和 Prettier：
 
 ```bash
-# Full CI check
-pnpm run check && pnpm run lint && pnpm run build:packages && pnpm run test
+pnpm run check
+pnpm run check:fix
 ```
 
-## Release Process
+代码注释、JSDoc、TODO 和 FIXME 使用中文。TypeScript 使用严格模式，除非有明确边界，不要使用 `any`。
 
-We use [Changesets](https://github.com/changesets/changesets) for version management:
+提交信息使用 Conventional Commits：
 
-1. **Add changeset**:
-   ```bash
-   pnpm changeset
-   ```
+```text
+feat(plugin): add image metadata support
+fix(core): validate theme layout contract
+docs: update deployment guide
+refactor(shared): simplify build context
+```
 
-2. **Version packages**:
-   ```bash
-   pnpm version-packages
-   ```
+提交前的 Husky 钩子会检查暂存文件并重新构建包。钩子中的旧版 Husky 警告不影响当前构建，但升级 Husky 主版本前需要单独迁移钩子格式。
 
-3. **Release**:
-   ```bash
-   pnpm release
-   ```
+## 测试
 
-## Getting Help
+插件测试使用 Node.js 原生测试运行器：
 
-- Check existing issues and discussions
-- Read the documentation
-- Ask questions in GitHub discussions
-- Follow the code of conduct
+```bash
+pnpm --filter @cogita/plugin-your-feature test
+```
 
-Happy coding! 🚀
+Core 和插件至少覆盖以下场景：
+
+- 默认配置是否稳定；
+- 显式关闭时是否安全降级；
+- 配置错误是否提供可读错误；
+- 虚拟模块内容是否符合运行时契约；
+- 页面布局缺失时是否按预期阻断或跳过构建。
+
+完整验证：
+
+```bash
+pnpm run build:packages
+pnpm --filter docs-site build
+pnpm run check
+pnpm run test
+```
+
+## 文档同步
+
+代码变更需要同步更新：
+
+- 包目录下的 `README.md`；
+- `docs-site/content` 中对应的使用或设计文档；
+- 需要发布版本变化时的 Changeset。
+
+文档中的示例应使用当前公开包名，例如 `@cogita/theme-lucid`，不要使用已经废弃的 `'lucid'` 简写或已经拆出的 `blog` workspace 命令。
+
+## 发布包
+
+不要手动修改包版本号。使用 Changesets 记录变更：
+
+```bash
+pnpm changeset
+pnpm changeset status
+pnpm version-packages
+pnpm release
+```
+
+Changeset 应说明受影响的包、变更级别和用户可感知的变化。只修改文档站内容时通常不需要给包版本升级；修改主题、插件或 Core 行为时需要记录对应包。
+
+## 提交前清单
+
+- [ ] 当前分支基于最新 `main`；
+- [ ] 已运行 `pnpm run build:packages`；
+- [ ] 已运行 `pnpm run check` 和相关测试；
+- [ ] 文档站可以成功构建；
+- [ ] README、设计文档和 Changeset 已同步；
+- [ ] 没有把个人博客文章或站点密钥提交到框架仓库；
+- [ ] 提交信息符合 Conventional Commits。

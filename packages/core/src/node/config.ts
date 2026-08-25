@@ -510,6 +510,7 @@ export async function createRspressConfig(
     root,
     title: cogitaConfig.site?.title,
     description: cogitaConfig.site?.description,
+    lang: cogitaConfig.site?.lang,
     icon: resolveSiteIcon(root, cogitaConfig.site?.icon),
     base: cogitaConfig.site?.base,
     markdown: cogitaConfig.markdown,
