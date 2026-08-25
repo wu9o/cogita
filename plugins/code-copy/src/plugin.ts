@@ -1,6 +1,5 @@
 import { getCogitaLogger } from '@cogita/shared';
-import type { CogitaPluginConfig } from '@cogita/shared';
-import type { RspressPlugin } from '@rspress/core';
+import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import type { CodeCopyConfig, ResolvedCodeCopyConfig } from './types';
 
 /** 规范化代码复制配置。 */
@@ -22,7 +21,7 @@ export function resolveCodeCopyConfig(config?: CodeCopyConfig): ResolvedCodeCopy
 }
 
 /** 创建代码复制插件。 */
-export function pluginCodeCopy(config: CogitaPluginConfig): RspressPlugin | null {
+export function pluginCodeCopy(config: CogitaPluginConfig): CogitaPlugin | null {
   const logger = getCogitaLogger(config);
   if (!config.codeCopy) {
     logger.info('[Code Copy Plugin] 未找到代码复制配置，跳过代码复制增强');
@@ -37,6 +36,9 @@ export function pluginCodeCopy(config: CogitaPluginConfig): RspressPlugin | null
 
   return {
     name: '@cogita/plugin-code-copy',
+    cogita: {
+      providesCapabilities: ['ui.code-copy'],
+    },
 
     addRuntimeModules() {
       return {
