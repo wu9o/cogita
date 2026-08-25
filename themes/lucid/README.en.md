@@ -39,7 +39,7 @@ export default defineConfig({
     title: 'My Lucid Blog',
     description: 'A blog powered by Cogita Lucid theme',
   },
-  theme: 'lucid',
+  theme: '@cogita/theme-lucid',
 });
 ```
 
@@ -74,7 +74,7 @@ export default defineConfig({
     title: 'My Blog',
     description: 'A personal blog',
   },
-  theme: 'lucid',
+  theme: '@cogita/theme-lucid',
   
   themeConfig: {
     // Navigation
@@ -317,7 +317,7 @@ npm list @cogita/theme-lucid
 
 # Verify config
 export default defineConfig({
-  theme: 'lucid', // Should be string, not import
+  theme: '@cogita/theme-lucid', // Should be string, not import
 });
 ```
 
@@ -337,10 +337,10 @@ posts/
 
 ## Learn More
 
-- 📖 [Complete Documentation](../../docs/README.md)
-- 🎨 [Theme Development Guide](../../docs/theme-development.md)
-- 💡 [Best Practices](../../docs/best-practices.md)
-- 🔧 [API Reference](../../docs/api-reference.md)
+- 📖 [Complete Documentation](../../docs-site/content/overview.md)
+- 🎨 [Theme Development Guide](../../docs-site/content/theme-development.md)
+- 💡 [Best Practices](../../docs-site/content/guides/best-practices.md)
+- 🔧 [API Reference](../../docs-site/content/api/api-reference.md)
 
 ## Related Packages
 

@@ -235,10 +235,10 @@ cogita create my-blog --no-install
 
 ## Learn More
 
-- 📖 [Complete Documentation](../../docs/README.md)
+- 📖 [Complete Documentation](../../docs-site/content/overview.md)
 - 🧠 [Core Package](../core) - The engine behind CLI
 - 🎨 [UI Components](../ui) - Available components
-- 💡 [Best Practices](../../docs/best-practices.md)
+- 💡 [Best Practices](../../docs-site/content/guides/best-practices.md)
 
 ## Related Packages
 

@@ -1,9 +1,9 @@
 {
   "name": "cogita",
   "version": "0.0.0",
-  "description": "A comprehensive, out-of-the-box static blog system based on Rspress",
+  "description": "A theme-driven static site framework based on Rspress",
   "private": true,
-  "keywords": ["rspress", "blog", "static-site", "markdown", "react"],
+  "keywords": ["rspress", "static-site", "documentation", "markdown", "react", "plugins", "themes"],
   "author": "wu9o",
   "license": "MIT",
   "repository": {
@@ -11,13 +11,13 @@
     "url": "git+https://github.com/wu9o/cogita.git"
   },
   "scripts": {
-    "dev": "pnpm --filter blog dev",
-    "build": "pnpm run build:packages && pnpm --filter blog build",
+    "dev": "pnpm --filter docs-site dev",
+    "build": "pnpm run build:docs",
     "build:docs": "pnpm run build:packages && pnpm --filter docs-site build",
     "build:packages": "pnpm --filter \"@cogita/*\" build",
     "build:plugin": "pnpm --filter @cogita/plugin-posts-frontmatter build",
-    "deploy": "pnpm run build && pnpm --filter blog deploy",
-    "preview": "pnpm --filter blog preview",
+    "deploy": "pnpm run build:docs",
+    "preview": "pnpm --filter docs-site preview",
     "test": "pnpm --filter \"@cogita/*\" test",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",

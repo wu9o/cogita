@@ -1,68 +1,63 @@
-name: Deploy to GitHub Pages
+name: 部署 Cogita 使用手册
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+  workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: pages
+  cancel-in-progress: true
 
 jobs:
-  # Build job
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: 检出代码
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Not needed if lastUpdated is not enabled
+          fetch-depth: 0
 
-      - name: Setup pnpm
+      - name: 配置 pnpm
         uses: pnpm/action-setup@v4
         with:
-          run_install: false
+          version: 9.15.0
 
-      - name: Setup Node.js
+      - name: 配置 Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: 'pnpm'
+          node-version: 20
+          cache: pnpm
 
-      - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
 
-      - name: Lint and format check
+      - name: 代码质量检查
         run: |
           pnpm run check
           pnpm run lint
 
-      - name: Build packages
+      - name: 构建工作区包
         run: pnpm run build:packages
 
-      - name: Build blog
-        run: pnpm --filter blog build
+      - name: 构建使用手册
+        run: pnpm --filter docs-site build
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+      - name: 配置 GitHub Pages
+        uses: actions/configure-pages@v5
         with:
           enablement: true
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
-      - name: Upload artifact
+      - name: 上传文档站构建产物
         uses: actions/upload-pages-artifact@v3
         with:
-          path: blog/doc_build
+          path: docs-site/doc_build
 
-  # Deployment job
   deploy:
     if: github.ref == 'refs/heads/main'
     environment:
@@ -71,6 +66,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to GitHub Pages
+      - name: 部署到 GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

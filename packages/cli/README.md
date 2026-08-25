@@ -5,11 +5,11 @@
 
 **中文** | [English](./README.en.md)
 
-> 用于创建和管理 Cogita 博客的命令行工具
+> 用于创建、开发和构建 Cogita 站点的命令行工具
 
 ## 这是什么？
 
-`@cogita/cli` 提供了一套简单而强大的命令来创建、开发和构建 Cogita 博客项目。通过内置模板和开发工具，几秒钟即可开始。
+`@cogita/cli` 提供了一套简单而强大的命令来创建、开发和构建 Cogita 站点项目。通过模板和开发工具，可以快速开始博客、文档或其他内容站点。
 
 ## 安装
 
@@ -235,10 +235,10 @@ cogita create my-blog --no-install
 
 ## 了解更多
 
-- 📖 [完整文档](../../docs/README.md)
+- 📖 [完整文档](../../docs-site/content/overview.md)
 - 🧠 [核心包](../core) - CLI 背后的引擎
 - 🎨 [UI 组件](../ui) - 可用组件
-- 💡 [最佳实践](../../docs/best-practices.md)
+- 💡 [最佳实践](../../docs-site/content/guides/best-practices.md)
 
 ## 相关包
 

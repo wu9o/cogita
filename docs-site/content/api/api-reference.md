@@ -31,10 +31,10 @@ import { defineConfig } from '@cogita/core';
 
 export default defineConfig({
   site: {
-    title: 'My Blog',
-    description: 'A personal blog',
+    title: 'My Documentation',
+    description: 'A project usage manual',
   },
-  theme: 'lucid',
+  theme: '@cogita/theme-docs',
 });
 ```
 

@@ -318,10 +318,10 @@ pnpm --filter @cogita/ui test
 
 ## Learn More
 
-- 📖 [Complete Documentation](../../docs/README.md)
-- 🔧 [API Reference](../../docs/api-reference.md)
-- 💡 [Best Practices](../../docs/best-practices.md)
-- 🎨 [Theme Development](../../docs/theme-development.md)
+- 📖 [Complete Documentation](../../docs-site/content/overview.md)
+- 🔧 [API Reference](../../docs-site/content/api/api-reference.md)
+- 💡 [Best Practices](../../docs-site/content/guides/best-practices.md)
+- 🎨 [Theme Development](../../docs-site/content/theme-development.md)
 
 ## Related Packages
 

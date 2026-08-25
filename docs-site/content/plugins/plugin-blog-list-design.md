@@ -225,7 +225,7 @@ ContentIndex 已经覆盖文章列表、标签、分类、合集、搜索、RSS�
 - 空文章目录仍能成功构建并展示空状态；
 - `/cogita/` 子路径下所有列表、归档和文章链接可访问；
 - 不配置 `blogList` 时，现有首页、标签、合集、RSS、sitemap 和 SEO 行为不改变；
-- `pnpm run build:packages`、`pnpm --filter blog build`、`pnpm run test`、`pnpm exec biome check .` 全部通过。
+- `pnpm run build:packages`、`pnpm run build:docs`、`pnpm run test`、`pnpm exec biome check .` 全部通过。
 
 ## 10. 后续模块关系
 

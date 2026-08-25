@@ -174,8 +174,8 @@ export default defineConfig({
 # 构建主题
 pnpm build
 
-# 在示例博客中测试
-pnpm --filter blog dev
+# 在文档站示例中测试
+pnpm --filter docs-site dev
 ```
 
 ## License

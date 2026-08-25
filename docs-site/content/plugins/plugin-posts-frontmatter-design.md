@@ -225,7 +225,7 @@ export function getFrontmatterFromFile(
 import { defineConfig } from '@cogita/core';
 
 export default defineConfig({
-  theme: 'lucid', // 主题会自动加载posts-frontmatter插件
+  theme: '@cogita/theme-lucid', // 主题会自动加载 posts-frontmatter 插件
   
   site: {
     title: '我的博客',

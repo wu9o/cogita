@@ -2,7 +2,7 @@
 
 [中文文档](./README.md) • **English Documentation**
 
-A comprehensive, out-of-the-box static blog system based on Rspress, designed for developers who want to quickly set up and customize their blogs.
+A theme-driven static site framework based on Rspress, designed for developers who want to quickly build and customize content sites.
 
 [![npm version](https://badge.fury.io/js/@cogita%2Fcore.svg)](https://badge.fury.io/js/@cogita%2Fcore)
 [![GitHub](https://img.shields.io/github/license/wu9o/cogita)](https://github.com/wu9o/cogita/blob/main/LICENSE)
@@ -44,8 +44,8 @@ Traditional Approach:
 
 1. **📦 Install Dependencies**
    ```bash
-   # Install core and default theme
-   pnpm add @cogita/core @cogita/theme-lucid
+   # Install the CLI, core, and an official theme
+   pnpm add -D @cogita/cli @cogita/core @cogita/theme-lucid
    ```
 
 2. **⚙️ Create Configuration**
@@ -73,7 +73,7 @@ Traditional Approach:
        formats: ['rss', 'atom', 'json'],
      },
      
-     theme: 'lucid', // Use default theme
+     theme: '@cogita/theme-lucid', // Use the official blog theme
      
      // Advanced Rspress config (optional)
      themeConfig: {
@@ -208,14 +208,14 @@ Base Layer (Rspress, React)
 ## 📚 Documentation
 
 ### 📖 User Documentation
-- [**Quick Start Guide**](./docs/guides/development.md) ✅
-- [**Best Practices**](./docs/guides/best-practices.md) ✅
-- [**Deployment Guide**](./docs/guides/deployment.md) ✅
+- [**Quick Start Guide**](./docs-site/content/getting-started.md) ✅
+- [**Best Practices**](./docs-site/content/guides/best-practices.md) ✅
+- [**Deployment Guide**](./docs-site/content/guides/deployment.md) ✅
 
 ### 👨‍💻 Developer Documentation
-- [**Plugin Development Guide**](./docs/plugins/plugin-development.md) ✅
-- [**API Reference**](./docs/api/api-reference.md) ✅
-- [**Architecture Design**](./docs/api/architecture-design.md) ✅
+- [**Plugin Development Guide**](./docs-site/content/plugins/plugin-development.md) ✅
+- [**API Reference**](./docs-site/content/api/api-reference.md) ✅
+- [**Architecture Design**](./docs-site/content/api/architecture-design.md) ✅
 
 ## 🛠️ Development
 
@@ -235,7 +235,7 @@ pnpm install
 # Build all packages
 pnpm run build:packages
 
-# Start example blog
+# Start the documentation site
 pnpm run dev
 
 # Code quality checks
@@ -306,7 +306,7 @@ MIT © [wu9o](https://github.com/wu9o)
 
 - **🏠 [Main Repository](https://github.com/wu9o/cogita)** - Source code and development
 - **📊 [Live Demo](https://wu9o.github.io/cogita/)** - Online demonstration
-- **📚 [Documentation](./docs/)** - Complete documentation
+- **📚 [Documentation](./docs-site/content/overview.md)** - Complete documentation
 - **💬 [Discussions](https://github.com/wu9o/cogita/discussions)** - Community exchange
 - **🐛 [Issue Tracker](https://github.com/wu9o/cogita/issues)** - Bug reports and feature requests
 - **📖 [Rspress Documentation](https://rspress.dev/)** - Underlying framework docs
@@ -317,8 +317,8 @@ MIT © [wu9o](https://github.com/wu9o)
 
 **🌟 If Cogita helps you, please give us a Star!**
 
-*Help more developers discover this elegant blogging solution*
+*Help more developers discover this extensible static site framework*
 
-[⭐ Star this project](https://github.com/wu9o/cogita) • [🚀 Quick Start](./docs/guides/development.md) • [💬 Join Discussion](https://github.com/wu9o/cogita/discussions)
+[⭐ Star this project](https://github.com/wu9o/cogita) • [🚀 Quick Start](./docs-site/content/getting-started.md) • [💬 Join Discussion](https://github.com/wu9o/cogita/discussions)
 
 </div>

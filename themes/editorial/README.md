@@ -56,5 +56,5 @@ export default defineConfig({
 ```bash
 pnpm --filter @cogita/theme-editorial build
 pnpm run build:packages
-pnpm --filter blog build
+pnpm --filter docs-site build
 ```

@@ -2,7 +2,7 @@
 
 [**中文文档**](./docs-site/content/overview.md) • [English Documentation](./README.en.md)
 
-一个基于 Rspress 的**开箱即用**静态博客系统，专为想要快速搭建和定制博客的开发者设计。
+一个基于 Rspress 的**主题驱动静态站点框架**，专为希望快速搭建和定制内容站点的开发者设计。
 
 [![npm version](https://badge.fury.io/js/@cogita%2Fcore.svg)](https://badge.fury.io/js/@cogita%2Fcore)
 [![GitHub](https://img.shields.io/github/license/wu9o/cogita)](https://github.com/wu9o/cogita/blob/main/LICENSE)
@@ -19,11 +19,11 @@
 
 ## 🚀 快速开始
 
-### 三步启动博客
+### 三步启动站点
 
 ```bash
 # 1. 安装依赖
-pnpm add @cogita/core @cogita/theme-lucid
+pnpm add -D @cogita/cli @cogita/core @cogita/theme-lucid
 
 # 2. 创建配置文件 cogita.config.ts
 echo 'import { defineConfig } from "@cogita/core";
@@ -39,7 +39,7 @@ export default defineConfig({
     title: "我的博客 RSS", 
     description: "最新文章订阅" 
   },
-  theme: "lucid",
+  theme: "@cogita/theme-lucid",
 });' > cogita.config.ts
 
 # 3. 创建第一篇文章
@@ -53,7 +53,7 @@ date: "2025-01-01"
 开始你的博客之旅！' > posts/hello.md
 
 # 启动开发服务器
-pnpm dev
+pnpm exec cogita dev
 ```
 
 ### 📦 生态系统
@@ -61,7 +61,8 @@ pnpm dev
 **核心包：**
 - [`@cogita/core`](./packages/core) - 智能核心引擎
 - [`@cogita/cli`](./packages/cli) - 命令行工具  
-- [`@cogita/theme-lucid`](./themes/lucid) - 默认主题
+- [`@cogita/theme-lucid`](./themes/lucid) - 官方博客主题
+- [`@cogita/theme-docs`](./themes/docs) - 技术文档主题
 - [`@cogita/plugin-rss`](./plugins/rss) - RSS 订阅插件
 - [`@cogita/plugin-tags`](./plugins/tags) - 标签管理与标签云插件
 
@@ -84,7 +85,7 @@ pnpm install
 # 构建所有包
 pnpm run build:packages
 
-# 启动示例博客
+# 启动框架使用手册
 pnpm run dev
 
 # 代码检查
