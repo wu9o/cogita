@@ -1,4 +1,8 @@
-import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
+import {
+  COGITA_CONTENT_DATA_VERSION,
+  getCogitaBuildContext,
+  getCogitaLogger,
+} from '@cogita/shared';
 import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import { glob } from 'glob';
 import type { PostFrontmatter } from './types';
@@ -89,7 +93,7 @@ export function pluginPostsFrontmatter(config: CogitaPluginConfig): CogitaPlugin
       // 5. 创建一个虚拟模块，用于在客户端代码中访问所有文章的数据
       const virtualModuleId = 'virtual-posts-data';
       return {
-        [virtualModuleId]: `export const allPosts = ${JSON.stringify(allPostsData)};`,
+        [virtualModuleId]: `export const contentDataVersion = ${COGITA_CONTENT_DATA_VERSION};\nexport const allPosts = ${JSON.stringify(allPostsData)};`,
       };
     },
   };

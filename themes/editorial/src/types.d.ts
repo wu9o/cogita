@@ -1,6 +1,7 @@
 // 虚拟模块类型声明
 
 declare module 'virtual-posts-data' {
+  export const contentDataVersion: 1;
   interface Post {
     title: string;
     route: string;
