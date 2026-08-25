@@ -3,6 +3,9 @@ import type React from 'react';
 
 export const VIRTUAL_CONTENT_DIR = '.cogita_content';
 
+/** 运行时内容数据契约版本，新增不兼容字段时必须递增。 */
+export const COGITA_CONTENT_DATA_VERSION = 1;
+
 // Export Rspress types for use in themes and plugins
 export type { RspressPlugin, UserConfig };
 
@@ -37,6 +40,30 @@ export interface ContentPost {
   imageCaption?: string;
   seo?: ContentPostSEO;
   url: string;
+}
+
+/**
+ * 面向标签、分类、合集等聚合插件的统一文章引用。
+ *
+ * 聚合数据不应重复定义自己的文章基础字段；新增字段时由这个契约统一扩展，
+ * 这样外部主题可以用同一套类型消费不同聚合插件的数据。
+ */
+export interface ContentPostReference {
+  title: string;
+  route: string;
+  createDate: string;
+  updateDate: string;
+  description?: string;
+  excerpt?: string;
+  author?: string;
+  tags?: string[];
+  categories?: string[];
+  image?: string;
+  imageAlt?: string;
+  imageCaption?: string;
+  collection?: string;
+  collectionTitle?: string;
+  url?: string;
 }
 
 /** 内容质量与构建诊断支持检查的 frontmatter 字段。 */

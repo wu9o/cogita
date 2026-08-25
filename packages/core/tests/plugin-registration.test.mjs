@@ -137,6 +137,9 @@ describe('插件注册契约', () => {
     assert.deepEqual(findPlugin('@cogita/plugin-search').cogita.providesCapabilities, [
       'discovery.search',
     ]);
+
+    const postsRuntime = await findPlugin('@cogita/plugin-posts-frontmatter').addRuntimeModules();
+    assert.match(postsRuntime['virtual-posts-data'], /contentDataVersion = 1/);
   });
 
   it('严格模式下应拒绝插件生成重复页面路由', async () => {

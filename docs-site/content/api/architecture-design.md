@@ -346,7 +346,7 @@ graph LR
     B --> C[运行时<br/>前端组件]
     
     subgraph "虚拟模块"
-        D["'virtual-posts-data'<br/>export const allPosts = [...]"]
+        D["'virtual-posts-data'<br/>contentDataVersion + allPosts"]
         E["'virtual-site-config'<br/>export const siteConfig = {...}"]
     end
 ```
@@ -356,6 +356,7 @@ graph LR
 addRuntimeModules() {
   return {
     'virtual-posts-data': `
+      export const contentDataVersion = 1;
       export const allPosts = ${JSON.stringify(allPostsData)};
       export const postsByTag = ${JSON.stringify(postsByTag)};
       

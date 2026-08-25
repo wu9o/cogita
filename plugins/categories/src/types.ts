@@ -1,13 +1,7 @@
+import type { ContentPostReference } from '@cogita/shared';
+
 /** 分类文章引用。 */
-export interface CategoryPostReference {
-  title: string;
-  route: string;
-  createDate: string;
-  updateDate: string;
-  description?: string;
-  tags?: string[];
-  categories?: string[];
-}
+export type CategoryPostReference = ContentPostReference;
 
 /** 分类元数据覆盖。 */
 export interface CategoryMetadata {

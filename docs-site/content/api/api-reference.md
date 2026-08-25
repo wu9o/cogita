@@ -504,6 +504,8 @@ Cogita 通过虚拟模块向前端代码提供数据。
 
 ```typescript
 declare module 'virtual-posts-data' {
+  /** 内容数据契约版本，用于主题和插件检查兼容性。 */
+  export const contentDataVersion: 1;
   export const allPosts: PostFrontmatter[];
 }
 ```
