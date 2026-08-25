@@ -29,6 +29,7 @@ describe('插件注册契约', () => {
   it('应由 Core 提供可选插件的安全运行时默认模块', async () => {
     const rspressConfig = await createRspressConfig({}, '/tmp/cogita-runtime-defaults-test');
     const defaults = rspressConfig.plugins.find(({ name }) => name === 'cogita-runtime-defaults');
+    assert.equal(defaults.cogita.runtimeModulePolicy, 'fallback');
     const modules = await defaults.addRuntimeModules();
 
     assert.match(modules['virtual-tags-data'], /export const allTags = \[\];/);
@@ -190,6 +191,33 @@ describe('插件注册契约', () => {
     await defaults.addRuntimeModules();
     const modules = await override.addRuntimeModules();
     assert.match(modules['virtual-tags-data'], /\{ name: "Git" \}/);
+  });
+
+  it('运行时默认模块应通过显式元数据识别，而不是依赖插件名称', async () => {
+    const rspressConfig = await createRspressConfig(
+      {
+        plugins: [
+          () => ({
+            name: 'runtime-module-fallback-alias',
+            cogita: { runtimeModulePolicy: 'fallback' },
+            addRuntimeModules: () => ({
+              'virtual-tags-data': 'export const allTags = [];',
+            }),
+          }),
+        ],
+      },
+      '/tmp/cogita-runtime-module-test'
+    );
+    const fallbackAlias = rspressConfig.plugins.find(
+      ({ name }) => name === 'runtime-module-fallback-alias'
+    );
+    const defaults = rspressConfig.plugins.find(({ name }) => name === 'cogita-runtime-defaults');
+
+    await defaults.addRuntimeModules();
+    await assert.rejects(
+      fallbackAlias.addRuntimeModules(),
+      /运行时模块 virtual-tags-data 重复注册/
+    );
   });
 
   it('真实插件先完成时应丢弃迟到的 Core 默认运行时模块', async () => {
