@@ -294,6 +294,61 @@ function validateThemeLayouts(
   );
 }
 
+/** 清理第三方插件提供的能力标识，避免空值和重复值污染诊断结果。 */
+function normalizeCapabilities(values: readonly string[] | undefined): string[] {
+  return Array.from(
+    new Set(
+      (values || [])
+        .filter((value): value is string => typeof value === 'string')
+        .map((value) => value.trim())
+        .filter(Boolean)
+    )
+  );
+}
+
+/** 校验主题和插件之间的能力契约，避免能力缺失时才在浏览器中暴露空页面。 */
+function validateCapabilities(
+  config: CogitaFullConfig,
+  theme: CogitaTheme | undefined,
+  plugins: readonly CogitaPlugin[],
+  strict: boolean
+) {
+  const providedCapabilities = new Set<string>();
+  for (const plugin of plugins) {
+    for (const capability of normalizeCapabilities(plugin.cogita?.providesCapabilities)) {
+      providedCapabilities.add(capability);
+    }
+  }
+
+  const missing = new Set<string>();
+  for (const capability of normalizeCapabilities(theme?.capabilities?.required)) {
+    if (!providedCapabilities.has(capability)) {
+      missing.add(`主题需要能力 ${capability}`);
+    }
+  }
+
+  for (const plugin of plugins) {
+    for (const capability of normalizeCapabilities(plugin.cogita?.requiresCapabilities)) {
+      if (!providedCapabilities.has(capability)) {
+        missing.add(`插件 ${plugin.name} 依赖能力 ${capability}`);
+      }
+    }
+  }
+
+  if (missing.size === 0) {
+    return;
+  }
+
+  const message = `[Cogita] 能力契约未满足：${Array.from(missing).join('；')}`;
+  if (strict) {
+    throw new Error(`${message}。请注册提供对应能力的插件，或将该能力改为主题的 optional 能力。`);
+  }
+
+  (config.buildContext.logger || createCogitaLogger()).warn(
+    `${message}，非严格模式下继续构建并由主题自行降级。`
+  );
+}
+
 /**
  * Create enhanced configuration object for plugin factories
  */
@@ -594,6 +649,8 @@ export async function createRspressConfig(
     pluginConfig,
     { strict, logger }
   );
+
+  validateCapabilities(fullConfigForPlugins, loadedTheme?.config, finalPlugins, strict);
 
   if (loadedTheme) {
     validateThemeLayouts(

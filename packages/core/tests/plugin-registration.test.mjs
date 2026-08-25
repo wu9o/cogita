@@ -41,6 +41,73 @@ describe('插件注册契约', () => {
     assert.match(modules['virtual-comments-data'], /enabled: false/);
   });
 
+  it('应接受已满足的插件能力契约', async () => {
+    const rspressConfig = await createRspressConfig(
+      {
+        plugins: [
+          () => ({
+            name: 'capability-provider-plugin',
+            cogita: { providesCapabilities: ['test.content'] },
+          }),
+          () => ({
+            name: 'capability-consumer-plugin',
+            cogita: { requiresCapabilities: ['test.content'] },
+          }),
+        ],
+      },
+      '/tmp/cogita-capability-contract-test'
+    );
+
+    assert.ok(rspressConfig.plugins.some(({ name }) => name === 'capability-consumer-plugin'));
+  });
+
+  it('严格模式下应拒绝缺失的插件能力契约', async () => {
+    await assert.rejects(
+      createRspressConfig(
+        {
+          plugins: [
+            () => ({
+              name: 'missing-capability-consumer-plugin',
+              cogita: { requiresCapabilities: ['test.missing'] },
+            }),
+          ],
+        },
+        '/tmp/cogita-missing-capability-test'
+      ),
+      /能力契约未满足.*插件 missing-capability-consumer-plugin 依赖能力 test\.missing/
+    );
+  });
+
+  it('非严格模式下应警告并继续构建缺失的能力契约', async () => {
+    const warnings = [];
+    const originalWarn = console.warn;
+    console.warn = (message) => warnings.push(message);
+
+    try {
+      const rspressConfig = await createRspressConfig(
+        {
+          strict: false,
+          plugins: [
+            () => ({
+              name: 'non-strict-missing-capability-plugin',
+              cogita: { requiresCapabilities: ['test.optional'] },
+            }),
+          ],
+        },
+        '/tmp/cogita-missing-capability-test'
+      );
+
+      assert.ok(
+        rspressConfig.plugins.some(({ name }) => name === 'non-strict-missing-capability-plugin')
+      );
+    } finally {
+      console.warn = originalWarn;
+    }
+
+    assert.equal(warnings.length, 1);
+    assert.match(warnings[0], /能力契约未满足.*test\.optional/);
+  });
+
   it('严格模式下应拒绝插件生成重复页面路由', async () => {
     const rspressConfig = await createRspressConfig(
       {
