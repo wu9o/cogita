@@ -52,6 +52,21 @@ function normalizePageRoute(route: unknown): string | null {
   return normalized === '/' ? '/' : normalized;
 }
 
+/** 为运行时虚拟模块规范化可比较的模块标识。 */
+function normalizeRuntimeModuleId(moduleId: unknown): string | null {
+  if (typeof moduleId !== 'string') {
+    return null;
+  }
+
+  const normalized = moduleId.trim();
+  return normalized.length > 0 ? normalized : null;
+}
+
+/** 判断模块是否来自 Core 提供的可覆盖默认实现。 */
+function isRuntimeDefaultProvider(plugin: CogitaPlugin): boolean {
+  return plugin.name === 'cogita-runtime-defaults';
+}
+
 /** 为页面生成增加统一的路由冲突保护，避免静默覆盖同一路径。 */
 function withPageRouteContract(
   plugin: CogitaPlugin,
@@ -101,6 +116,62 @@ function withPageRouteContract(
   return wrappedPlugin;
 }
 
+/** 为运行时模块生成增加冲突保护，同时允许业务插件覆盖 Core 默认模块。 */
+function withRuntimeModuleContract(
+  plugin: CogitaPlugin,
+  source: string,
+  registeredModules: Map<string, { source: string; isDefault: boolean }>,
+  options: PluginRegistryOptions
+): CogitaPlugin {
+  if (typeof plugin.addRuntimeModules !== 'function') {
+    return plugin;
+  }
+
+  const originalAddRuntimeModules = plugin.addRuntimeModules;
+  const wrappedPlugin = { ...plugin };
+
+  wrappedPlugin.addRuntimeModules = async (...args) => {
+    const modules = await originalAddRuntimeModules(...args);
+    if (!modules || typeof modules !== 'object') {
+      return modules;
+    }
+
+    const isDefault = isRuntimeDefaultProvider(plugin);
+    const acceptedModules = { ...modules };
+    for (const moduleId of Object.keys(modules)) {
+      const normalizedModuleId = normalizeRuntimeModuleId(moduleId);
+      if (!normalizedModuleId || typeof modules[moduleId] !== 'string') {
+        continue;
+      }
+
+      const previous = registeredModules.get(normalizedModuleId);
+      if (!previous) {
+        registeredModules.set(normalizedModuleId, { source, isDefault });
+        continue;
+      }
+
+      if (previous.isDefault && !isDefault) {
+        registeredModules.set(normalizedModuleId, { source, isDefault: false });
+        continue;
+      }
+
+      const message = `[Cogita] 运行时模块 ${normalizedModuleId} 重复注册（来源：${previous.source}、${source}）`;
+      if (options.strict) {
+        throw new Error(message);
+      }
+
+      options.logger.warn(
+        `${message}，非严格模式下保留${previous.isDefault ? '默认' : '首次'}注册。`
+      );
+      delete acceptedModules[moduleId];
+    }
+
+    return acceptedModules;
+  };
+
+  return wrappedPlugin;
+}
+
 /**
  * 按固定来源顺序实例化并注册插件。
  *
@@ -116,6 +187,7 @@ export function registerPlugins(
   const finalPlugins: CogitaPlugin[] = [];
   const registeredPluginSources = new Map<string, string>();
   const registeredPageRoutes = new Map<string, string>();
+  const registeredRuntimeModules = new Map<string, { source: string; isDefault: boolean }>();
 
   const registerPlugin = (value: unknown, source: string) => {
     if (!isRspressPlugin(value)) {
@@ -138,7 +210,10 @@ export function registerPlugins(
     }
 
     registeredPluginSources.set(value.name, source);
-    finalPlugins.push(withPageRouteContract(value, source, registeredPageRoutes, options));
+    const pageContract = withPageRouteContract(value, source, registeredPageRoutes, options);
+    finalPlugins.push(
+      withRuntimeModuleContract(pageContract, source, registeredRuntimeModules, options)
+    );
   };
 
   for (const { plugin, source } of initialPlugins) {
