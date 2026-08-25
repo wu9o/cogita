@@ -49,3 +49,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Verify published registry consumer
+        if: steps.changesets.outputs.published == 'true'
+        run: pnpm run check:registry-consumer
