@@ -54,6 +54,12 @@ function packWorkspacePackages(packageDirectories, packageCache) {
 /** 创建只依赖发布 tarball 的最小博客项目。 */
 function createConsumerProject(consumerRoot, archives) {
   const dependencies = Object.fromEntries(
+    ['@cogita/cli', '@cogita/core', '@cogita/theme-lucid'].map((name) => [
+      name,
+      `file:${archives.get(name)}`,
+    ])
+  );
+  const overrides = Object.fromEntries(
     Array.from(archives, ([name, archivePath]) => [name, `file:${archivePath}`])
   );
   writeFileSync(
@@ -65,7 +71,7 @@ function createConsumerProject(consumerRoot, archives) {
         type: 'module',
         dependencies,
         // 强制传递依赖也使用本次打包的本地 tarball，避免未发布版本回退到 registry。
-        pnpm: { overrides: dependencies },
+        pnpm: { overrides },
       },
       null,
       2
