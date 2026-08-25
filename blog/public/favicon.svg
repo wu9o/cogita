@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
-  <title id="title">Cogita</title>
-  <desc id="desc">Cogita 博客图标</desc>
-  <rect width="64" height="64" rx="18" fill="#252522"/>
-  <path d="M45 19.5A20 20 0 1 0 45 44.5" fill="none" stroke="#f4eee3" stroke-linecap="round" stroke-width="6"/>
-  <circle cx="45" cy="44.5" r="4.5" fill="#c55d3c"/>
-</svg>

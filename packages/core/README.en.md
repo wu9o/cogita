@@ -38,7 +38,7 @@ export default defineConfig({
     title: 'My Blog',
     description: 'A blog built with Cogita',
   },
-  theme: 'lucid', // Theme handles everything else!
+  theme: '@cogita/theme-lucid', // Theme handles everything else!
 });
 ```
 
@@ -80,7 +80,7 @@ export default defineConfig({
     description: 'My awesome blog',  // Meta description
     base: '/blog/',             // Base URL (for subpaths)
   },
-  theme: 'lucid',              // Theme name
+  theme: '@cogita/theme-lucid', // Theme name
 });
 ```
 
@@ -89,7 +89,7 @@ export default defineConfig({
 ```typescript
 export default defineConfig({
   site: { /* ... */ },
-  theme: 'lucid',
+  theme: '@cogita/theme-lucid',
   
   // Pass-through to Rspress theme config
   themeConfig: {
@@ -154,11 +154,11 @@ pnpm preview
 
 ## Learn More
 
-- 📖 [Complete Documentation](../../docs/README.md)
-- 🔧 [API Reference](../../docs/api-reference.md)
-- 🏗️ [Architecture Guide](../../docs/architecture-design.md)
-- 💡 [Best Practices](../../docs/best-practices.md)
-- 🎨 [Theme Development](../../docs/theme-development.md)
+- 📖 [Complete Documentation](../../docs-site/content/overview.md)
+- 🔧 [API Reference](../../docs-site/content/api/api-reference.md)
+- 🏗️ [Architecture Guide](../../docs-site/content/api/architecture-design.md)
+- 💡 [Best Practices](../../docs-site/content/guides/best-practices.md)
+- 🎨 [Theme Development](../../docs-site/content/theme-development.md)
 
 ## Related Packages
 

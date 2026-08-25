@@ -64,7 +64,7 @@ import { defineConfig } from '@cogita/core';
 import { pluginYourFeature } from './plugins/your-feature';
 
 export default defineConfig({
-  theme: 'lucid',
+  theme: '@cogita/theme-lucid',
   plugins: [pluginYourFeature],
 });
 ```
@@ -389,19 +389,19 @@ export function getFrontmatterFromFile(
 一个插件工厂可以返回多个相关的插件：
 
 ```typescript
-export const pluginBlogSystem: CogitaPluginFactory = (config) => {
+export const pluginContentFeatures: CogitaPluginFactory = (config) => {
   const plugins: RspressPlugin[] = [];
   
-  // 基础文章插件
+  // 基础文章插件由主题或站点按需注册
   plugins.push(pluginPosts(config));
   
-  // 条件性添加标签插件
-  if (config.blog?.enableTags) {
+  // 根据结构化配置决定是否注册标签插件
+  if (config.tags?.enabled) {
     plugins.push(pluginTags(config));
   }
   
-  // 条件性添加RSS插件
-  if (config.blog?.enableRss) {
+  // RSS 使用独立的 rss 命名空间
+  if (config.rss?.enabled) {
     plugins.push(pluginRss(config));
   }
   
@@ -453,10 +453,10 @@ addRuntimeModules() {
       }
     `,
     
-    'virtual-blog-config': `
-      export const blogConfig = ${JSON.stringify({
-        postsPerPage: config.blog?.postsPerPage || 10,
-        showExcerpts: config.blog?.showExcerpts ?? true,
+    'virtual-site-config': `
+      export const siteConfig = ${JSON.stringify({
+        title: config.site?.title || 'Cogita',
+        description: config.site?.description || '',
       })};
     `,
   };
@@ -521,7 +521,7 @@ describe('plugin integration', () => {
     const config = await createRspressConfig(
       {
         site: { title: 'Test Site' },
-        theme: 'lucid',
+        theme: '@cogita/theme-lucid',
       },
       testDir
     );

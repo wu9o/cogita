@@ -245,7 +245,7 @@ Home.tsx 的合集占位区替换为 `CollectionList` compact 变体：
 // cogita.config.ts
 export default defineConfig({
   collections: { enabled: true },
-  theme: 'lucid',  // 主题自动加载 collections 插件
+  theme: '@cogita/theme-lucid',  // 主题自动加载 collections 插件
 });
 ```
 

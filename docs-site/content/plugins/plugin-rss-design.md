@@ -240,7 +240,7 @@ export default defineConfig({
     url: 'https://myblog.com'
   },
   
-  theme: 'lucid',
+  theme: '@cogita/theme-lucid',
   
   plugins: [
     {

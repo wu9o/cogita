@@ -108,12 +108,12 @@ import { defineConfig } from '@cogita/core';
 
 export default defineConfig({
   site: {
-    title: '我的博客',
-    description: '记录技术与生活的点点滴滴',
-    base: process.env.NODE_ENV === 'production' ? '/blog/' : '/',
+    title: '我的站点',
+    description: '项目使用手册',
+    base: process.env.NODE_ENV === 'production' ? '/my-site/' : '/',
   },
   
-  theme: 'lucid',
+  theme: '@cogita/theme-docs',
   
   // 透传给 Rspress 的主题配置
   themeConfig: {
@@ -722,14 +722,14 @@ jobs:
     - name: Build packages
       run: pnpm run build:packages
       
-    - name: Build blog
-      run: pnpm --filter blog build
+    - name: Build documentation site
+      run: pnpm run build:docs
       
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./blog/doc_build
+        publish_dir: ./docs-site/doc_build
 ```
 
 ### Vercel 部署优化
@@ -738,8 +738,8 @@ jobs:
 // vercel.json
 {
   "framework": null,
-  "buildCommand": "pnpm run build:packages && pnpm --filter blog build",
-  "outputDirectory": "blog/doc_build",
+  "buildCommand": "pnpm run build:docs",
+  "outputDirectory": "docs-site/doc_build",
   "installCommand": "pnpm install --frozen-lockfile",
   "headers": [
     {

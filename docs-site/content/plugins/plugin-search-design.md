@@ -257,7 +257,7 @@ SEO 插件为 `/search` 生成普通页面元数据；sitemap 只收录 `/search
 - 代码块和 frontmatter 不污染搜索摘要；
 - `/cogita/search.html` 及结果链接可访问；
 - SEO 报告包含 `/search`，sitemap 只包含搜索入口；
-- `pnpm run build:packages`、`pnpm --filter blog build`、`pnpm run check` 和测试全部通过。
+- `pnpm run build:packages`、`pnpm run build:docs`、`pnpm run check` 和测试全部通过。
 
 ## 11. 分支建议
 

@@ -9,7 +9,7 @@
 
 ## 这是什么？
 
-`@cogita/core` 是 Cogita 框架的大脑。它自动加载主题、管理插件，并提供类型安全的配置系统，让构建博客就像选择主题一样简单。
+`@cogita/core` 是 Cogita 框架的核心引擎。它负责加载站点配置、解析主题、注册插件，并把配置转换为 Rspress 构建配置。
 
 ## 核心特性
 
@@ -38,7 +38,7 @@ export default defineConfig({
     title: '我的博客',
     description: '使用 Cogita 构建的博客',
   },
-  theme: 'lucid', // 主题处理其他一切！
+    theme: '@cogita/theme-lucid', // 主题声明所需的插件和布局
 });
 ```
 
@@ -80,7 +80,7 @@ export default defineConfig({
     description: '我的精彩博客',     // 元描述
     base: '/blog/',               // 基础 URL（子路径）
   },
-  theme: 'lucid',                // 主题名称
+  theme: '@cogita/theme-lucid',  // 主题名称
 });
 ```
 
@@ -89,7 +89,7 @@ export default defineConfig({
 ```typescript
 export default defineConfig({
   site: { /* ... */ },
-  theme: 'lucid',
+  theme: '@cogita/theme-lucid',
   
   // 透传给 Rspress 主题配置
   themeConfig: {
@@ -142,7 +142,7 @@ import { defineConfig } from '@cogita/core';
 import { pluginExample } from './plugins/example';
 
 export default defineConfig({
-  theme: 'lucid',
+  theme: '@cogita/theme-lucid',
   plugins: [pluginExample],
 });
 ```
@@ -151,8 +151,8 @@ export default defineConfig({
 
 ## 可用主题
 
-- **`lucid`**（默认）- 简洁、专注内容的博客主题
-- 更多主题即将推出...
+- **`@cogita/theme-lucid`** - 简洁、专注内容的官方博客主题
+- **`@cogita/theme-docs`** - 技术文档与框架使用手册主题
 
 ## 开发命令
 
@@ -169,11 +169,11 @@ pnpm preview
 
 ## 了解更多
 
-- 📖 [完整文档](../../docs/README.md)
-- 🔧 [API 参考](../../docs/api-reference.md)
-- 🏗️ [架构指南](../../docs/architecture-design.md)
-- 💡 [最佳实践](../../docs/best-practices.md)
-- 🎨 [主题开发](../../docs/theme-development.md)
+- 📖 [完整文档](../../docs-site/content/overview.md)
+- 🔧 [API 参考](../../docs-site/content/api/api-reference.md)
+- 🏗️ [架构指南](../../docs-site/content/api/architecture-design.md)
+- 💡 [最佳实践](../../docs-site/content/guides/best-practices.md)
+- 🎨 [主题开发](../../docs-site/content/theme-development.md)
 
 ## 相关包
 
