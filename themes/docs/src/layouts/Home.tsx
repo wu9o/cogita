@@ -49,6 +49,25 @@ const HomeLayout: React.FC<LayoutProps> = () => {
           <small>为站点增加构建能力、数据处理和运行时功能。</small>
         </a>
       </section>
+
+      <section className="docs-home-system" aria-label="框架能力">
+        <div className="docs-home-system-copy">
+          <p className="docs-home-section-label">A clear boundary</p>
+          <h2>站点内容与框架能力，各自独立演进。</h2>
+          <p>
+            Cogita 仓库维护可复用的 Core、主题和插件；博客、知识库与项目手册作为独立站点安装这些包。
+          </p>
+        </div>
+        <div className="docs-home-flow" aria-label="构建流程">
+          <span>配置</span>
+          <span className="docs-home-flow-arrow">→</span>
+          <span>主题</span>
+          <span className="docs-home-flow-arrow">→</span>
+          <span>插件</span>
+          <span className="docs-home-flow-arrow">→</span>
+          <span>静态输出</span>
+        </div>
+      </section>
     </main>
   );
 };

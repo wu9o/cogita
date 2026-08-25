@@ -13,6 +13,7 @@ title: 使用指南
 - [最佳实践](./best-practices.md)：组织内容、控制构建复杂度和优化性能。
 - [开发指南](./development.md)：本地开发、测试和代码规范。
 - [部署指南](./deployment.md)：构建产物和静态托管部署。
+- [内容仓库迁移](./migration.md)：将博客或知识库作为独立站点消费 Cogita 包。
 - [主题使用与扩展](../theme-customization.md)：选择主题并覆盖主题配置。
 
 ## 推荐路径
