@@ -150,8 +150,17 @@ function withRuntimeModuleContract(
         continue;
       }
 
+      if (previous.source === source) {
+        continue;
+      }
+
       if (previous.isDefault && !isDefault) {
         registeredModules.set(normalizedModuleId, { source, isDefault: false });
+        continue;
+      }
+
+      if (!previous.isDefault && isDefault) {
+        delete acceptedModules[moduleId];
         continue;
       }
 
