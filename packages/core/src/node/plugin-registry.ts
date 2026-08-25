@@ -42,6 +42,65 @@ function isRspressPlugin(value: unknown): value is CogitaPlugin {
   return typeof name === 'string' && name.trim().length > 0;
 }
 
+/** 将 addPages 返回的路由规范化为可比较的键。 */
+function normalizePageRoute(route: unknown): string | null {
+  if (typeof route !== 'string') {
+    return null;
+  }
+
+  const normalized = `/${route.trim().replace(/^\/+|\/+$/g, '')}`;
+  return normalized === '/' ? '/' : normalized;
+}
+
+/** 为页面生成增加统一的路由冲突保护，避免静默覆盖同一路径。 */
+function withPageRouteContract(
+  plugin: CogitaPlugin,
+  source: string,
+  registeredRoutes: Map<string, string>,
+  options: PluginRegistryOptions
+): CogitaPlugin {
+  if (typeof plugin.addPages !== 'function') {
+    return plugin;
+  }
+
+  const originalAddPages = plugin.addPages;
+  const wrappedPlugin = { ...plugin };
+
+  wrappedPlugin.addPages = async (...args) => {
+    const pages = await originalAddPages(...args);
+    if (!Array.isArray(pages)) {
+      return pages;
+    }
+
+    return pages.filter((page) => {
+      if (!page || typeof page !== 'object') {
+        return true;
+      }
+
+      const route = normalizePageRoute((page as { routePath?: unknown }).routePath);
+      if (!route) {
+        return true;
+      }
+
+      const previousSource = registeredRoutes.get(route);
+      if (!previousSource) {
+        registeredRoutes.set(route, source);
+        return true;
+      }
+
+      const message = `[Cogita] 页面路由 ${route} 重复注册（来源：${previousSource}、${source}）`;
+      if (options.strict) {
+        throw new Error(message);
+      }
+
+      options.logger.warn(`${message}，非严格模式下保留首次注册。`);
+      return false;
+    });
+  };
+
+  return wrappedPlugin;
+}
+
 /**
  * 按固定来源顺序实例化并注册插件。
  *
@@ -56,6 +115,7 @@ export function registerPlugins(
 ): CogitaPlugin[] {
   const finalPlugins: CogitaPlugin[] = [];
   const registeredPluginSources = new Map<string, string>();
+  const registeredPageRoutes = new Map<string, string>();
 
   const registerPlugin = (value: unknown, source: string) => {
     if (!isRspressPlugin(value)) {
@@ -78,7 +138,7 @@ export function registerPlugins(
     }
 
     registeredPluginSources.set(value.name, source);
-    finalPlugins.push(value);
+    finalPlugins.push(withPageRouteContract(value, source, registeredPageRoutes, options));
   };
 
   for (const { plugin, source } of initialPlugins) {
