@@ -26,15 +26,62 @@ describe('插件注册契约', () => {
   });
 
   it('应由 Core 提供可选插件的安全运行时默认模块', async () => {
-    const rspressConfig = await createRspressConfig(
-      {},
-      '/tmp/cogita-runtime-defaults-test'
-    );
+    const rspressConfig = await createRspressConfig({}, '/tmp/cogita-runtime-defaults-test');
     const defaults = rspressConfig.plugins.find(({ name }) => name === 'cogita-runtime-defaults');
     const modules = defaults.addRuntimeModules();
 
     assert.match(modules['virtual-tags-data'], /export const allTags = \[\];/);
     assert.match(modules['virtual-comments-data'], /enabled: false/);
+  });
+
+  it('严格模式下应拒绝插件生成重复页面路由', async () => {
+    const rspressConfig = await createRspressConfig(
+      {
+        plugins: [
+          () => ({
+            name: 'duplicate-page-route-plugin',
+            addPages: () => [{ routePath: '/same-page' }, { routePath: '/same-page' }],
+          }),
+        ],
+      },
+      '/tmp/cogita-page-route-test'
+    );
+    const plugin = rspressConfig.plugins.find(({ name }) => name === 'duplicate-page-route-plugin');
+
+    await assert.rejects(plugin.addPages(), /页面路由 \/same-page 重复注册/);
+  });
+
+  it('非严格模式下应保留首次注册的页面路由', async () => {
+    const warnings = [];
+    const originalWarn = console.warn;
+    console.warn = (message) => warnings.push(message);
+
+    let rspressConfig;
+    let pages;
+    try {
+      rspressConfig = await createRspressConfig(
+        {
+          strict: false,
+          plugins: [
+            () => ({
+              name: 'duplicate-page-route-plugin',
+              addPages: () => [{ routePath: '/same-page' }, { routePath: '/same-page' }],
+            }),
+          ],
+        },
+        '/tmp/cogita-page-route-test'
+      );
+      const plugin = rspressConfig.plugins.find(
+        ({ name }) => name === 'duplicate-page-route-plugin'
+      );
+      pages = await plugin.addPages();
+    } finally {
+      console.warn = originalWarn;
+    }
+
+    assert.equal(pages.length, 1);
+    assert.equal(warnings.length, 1);
+    assert.match(warnings[0], /非严格模式下保留首次注册/);
   });
 
   it('严格模式下应拒绝重复注册的插件名称', async () => {
