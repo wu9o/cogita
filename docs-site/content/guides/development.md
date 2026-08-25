@@ -108,8 +108,9 @@ export function pluginYourFeature(config: CogitaPluginConfig) {
 2. 未启用或缺少依赖时优雅返回 `null`；
 3. 使用 `getCogitaBuildContext` 获取共享索引、主题布局和日志；
 4. 通过 `cogita.requiredLayouts` 声明需要的主题页面；
-5. 通过虚拟模块把构建期数据传给运行时；
-6. 为默认配置、关闭配置和错误配置编写测试。
+5. 通过 `cogita.providesCapabilities` 和 `cogita.requiresCapabilities` 声明能力依赖；
+6. 通过虚拟模块把构建期数据传给运行时；
+7. 为默认配置、关闭配置、能力缺失和错误配置编写测试。
 
 ## 新增主题
 

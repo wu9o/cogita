@@ -380,10 +380,25 @@ export interface CogitaPluginLayoutRequirement {
   when?: (config: CogitaPluginConfig) => boolean;
 }
 
+/** 插件或主题之间传递的稳定能力标识。建议使用 `领域.能力` 命名。 */
+export type CogitaCapability = string;
+
+/** 主题消费的插件能力契约。 */
+export interface CogitaThemeCapabilities {
+  /** 主题正常渲染所需的能力，缺失时应阻断严格构建。 */
+  required?: readonly CogitaCapability[];
+  /** 主题可以增强但缺失时仍可工作的能力。 */
+  optional?: readonly CogitaCapability[];
+}
+
 /** 插件实例的 Cogita 扩展元数据。 */
 export interface CogitaPluginMetadata {
   /** 插件启用后必须由主题提供的布局。 */
   requiredLayouts?: CogitaPluginLayoutRequirement[];
+  /** 插件实例对外提供的稳定能力标识。 */
+  providesCapabilities?: readonly CogitaCapability[];
+  /** 插件实例依赖的其他插件能力标识。 */
+  requiresCapabilities?: readonly CogitaCapability[];
   /** 运行时模块的注册策略；fallback 仅用于 Core 提供的可覆盖降级实现。 */
   runtimeModulePolicy?: 'fallback';
 }
@@ -543,6 +558,8 @@ export function getBlogListFilterRoutes(
 
 export interface CogitaTheme {
   name: string;
+  /** 主题布局消费的插件能力契约。 */
+  capabilities?: CogitaThemeCapabilities;
   pageLayouts: {
     home: string;
     /** 标签详情页布局（路由 /tags/:slug） */

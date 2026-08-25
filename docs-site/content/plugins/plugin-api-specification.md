@@ -65,7 +65,31 @@ export const pluginExample: CogitaPluginFactory = () => ({
 
 `requiredLayouts` 中的 `layout` 对应主题 `pageLayouts` 的键名；`when` 可根据最终插件配置决定是否启用某项布局检查。
 
-## 3. 运行时模块契约
+## 3. 能力契约
+
+布局契约只描述“页面是否存在”，能力契约进一步描述主题或插件“需要什么数据能力”。能力标识使用稳定的 `领域.能力` 字符串，例如 `content.posts`。插件通过 `providesCapabilities` 声明自己提供的能力，通过 `requiresCapabilities` 声明依赖；主题通过 `capabilities.required` 和 `capabilities.optional` 区分硬依赖与可降级增强。
+
+```typescript
+export const pluginPosts: CogitaPluginFactory = () => ({
+  name: '@cogita/plugin-posts-frontmatter',
+  cogita: {
+    providesCapabilities: ['content.posts'],
+  },
+});
+
+export const themeExample: CogitaTheme = {
+  name: '@cogita/theme-example',
+  capabilities: {
+    required: ['content.posts'],
+    optional: ['content.images'],
+  },
+  pageLayouts: { home: './layouts/Home.js' },
+};
+```
+
+Core 会在所有插件实例化后统一校验主题硬依赖和插件依赖。默认严格模式下，缺少能力会在构建阶段直接失败；`strict: false` 时只记录警告，由主题负责对 `optional` 能力进行降级。Core 提供的运行时空模块只保证可选模块安全导入，不会冒充真实业务能力。
+
+## 4. 运行时模块契约
 
 插件通过 `addRuntimeModules` 向主题布局提供构建期数据。每个模块标识在一次构建中必须唯一；如果两个插件注册同一个模块，严格模式会阻断构建，避免运行时拿到不确定的数据。
 
@@ -85,13 +109,13 @@ const fallbackPlugin: CogitaPlugin = {
 
 默认模块只应该提供主题可安全消费的空数据和关闭状态，不应该泄露构建机绝对路径、令牌或文章正文。真实插件启用后应注册相同的模块标识，并提供完整数据契约。
 
-## 4. 名称唯一性
+## 5. 名称唯一性
 
 每个插件实例的 `name` 是注册身份，必须在最终插件列表中唯一。默认 `strict` 为 `true`，重复名称会抛错并阻断构建，避免同一虚拟模块、页面或生命周期被静默执行两次。
 
 确有兼容需要时，可以配置 `strict: false`。此时保留首次注册的插件，并通过统一日志出口输出警告。
 
-## 5. 构建上下文
+## 6. 构建上下文
 
 插件应优先通过共享辅助函数读取构建期能力：
 
@@ -126,7 +150,7 @@ const pluginExample: CogitaPluginFactory = (config) => {
 
 旧版顶层字段仍会兼容，但新增构建期能力应优先加入 `CogitaBuildContext`。
 
-## 6. 生命周期边界
+## 7. 生命周期边界
 
 - `beforeBuild`：读取内容索引、准备文件和校验配置。
 - `addPages`：生成额外页面，不应在这里重复扫描文章。
@@ -135,7 +159,7 @@ const pluginExample: CogitaPluginFactory = (config) => {
 
 插件之间通过 `contentIndex` 和虚拟模块共享数据；主题布局只负责展示，不应承担插件配置验证和文件扫描职责。
 
-## 7. 测试要求
+## 8. 测试要求
 
 至少覆盖以下场景：
 

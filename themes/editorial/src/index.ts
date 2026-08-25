@@ -26,6 +26,9 @@ export function getThemeConfig(): CogitaTheme {
 
   return {
     name: '@cogita/theme-editorial',
+    capabilities: {
+      required: ['content.posts'],
+    },
     pageLayouts: {
       home: './layouts/Home.js',
       tag: './layouts/Tag.js',

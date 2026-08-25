@@ -1,11 +1,10 @@
 import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
-import type { CogitaPluginConfig } from '@cogita/shared';
-import type { RspressPlugin } from '@rspress/core';
+import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import { glob } from 'glob';
 import type { PostFrontmatter } from './types';
 import { getFrontmatterFromFile } from './utils';
 
-export function pluginPostsFrontmatter(config: CogitaPluginConfig): RspressPlugin {
+export function pluginPostsFrontmatter(config: CogitaPluginConfig): CogitaPlugin {
   const logger = getCogitaLogger(config);
   // Enhanced configuration handling with backwards compatibility
   const postsConfig = config.posts || {};
@@ -33,6 +32,9 @@ export function pluginPostsFrontmatter(config: CogitaPluginConfig): RspressPlugi
 
   return {
     name: '@cogita/plugin-posts-frontmatter',
+    cogita: {
+      providesCapabilities: ['content.posts'],
+    },
 
     async beforeBuild() {
       if (buildContext.contentIndex) {
