@@ -3,8 +3,8 @@ import path from 'node:path';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import {
+  type CogitaPlugin,
   type CogitaPluginConfig,
-  type RspressPlugin,
   getBlogListRouteEntries,
   getCategoryRoutes,
   getCogitaBuildContext,
@@ -60,7 +60,7 @@ async function collectPosts(
 }
 
 /** 创建构建期页面 SEO 元数据插件。 */
-export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
+export function pluginSEO(config: CogitaPluginConfig): CogitaPlugin | null {
   const seoConfig = config.seo as SEOConfig | undefined;
   if (!seoConfig || seoConfig.enabled === false) {
     return null;
@@ -250,6 +250,9 @@ export function pluginSEO(config: CogitaPluginConfig): RspressPlugin | null {
 
   return {
     name: '@cogita/plugin-seo',
+    cogita: {
+      providesCapabilities: ['seo.metadata'],
+    },
 
     async beforeBuild(rspressConfig: unknown) {
       await rebuildMetadata(rspressConfig);

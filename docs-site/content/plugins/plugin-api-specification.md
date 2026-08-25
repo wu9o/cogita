@@ -89,6 +89,23 @@ export const themeExample: CogitaTheme = {
 
 Core 会在所有插件实例化后统一校验主题硬依赖和插件依赖。默认严格模式下，缺少能力会在构建阶段直接失败；`strict: false` 时只记录警告，由主题负责对 `optional` 能力进行降级。Core 提供的运行时空模块只保证可选模块安全导入，不会冒充真实业务能力。
 
+当前内置插件使用的能力标识如下：
+
+| 能力标识 | 提供者 | 典型消费者 |
+| --- | --- | --- |
+| `content.posts` | Posts Frontmatter | 标签、合集、分类、搜索、文章列表 |
+| `content.images` | Images | 主题封面与图片清单 |
+| `content.collections` | Collections | 合集导航 |
+| `discovery.tags` | Tags | 标签导航 |
+| `discovery.categories` | Categories | 分类导航 |
+| `discovery.search` | Search | 搜索页面 |
+| `content.blog-list` | Blog List | 归档与文章列表 |
+| `engagement.comments` | Comments | 文章评论区域 |
+| `ui.code-copy` | Code Copy | 代码块复制按钮 |
+| `ui.reading-progress` | Reading Progress | 阅读进度和阅读时间 |
+| `syndication.rss` | RSS | RSS、Atom、JSON Feed |
+| `seo.metadata` / `seo.sitemap` | SEO / Sitemap | 搜索引擎元数据与站点地图 |
+
 ## 4. 运行时模块契约
 
 插件通过 `addRuntimeModules` 向主题布局提供构建期数据。每个模块标识在一次构建中必须唯一；如果两个插件注册同一个模块，严格模式会阻断构建，避免运行时拿到不确定的数据。

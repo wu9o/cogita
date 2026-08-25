@@ -1,6 +1,19 @@
 ---
 '@cogita/shared': minor
 '@cogita/core': patch
+'@cogita/plugin-blog-list': patch
+'@cogita/plugin-categories': patch
+'@cogita/plugin-code-copy': patch
+'@cogita/plugin-collections': patch
+'@cogita/plugin-comments': patch
+'@cogita/plugin-content-check': patch
+'@cogita/plugin-images': patch
+'@cogita/plugin-reading-progress': patch
+'@cogita/plugin-rss': patch
+'@cogita/plugin-search': patch
+'@cogita/plugin-seo': patch
+'@cogita/plugin-sitemap': patch
+'@cogita/plugin-tags': patch
 '@cogita/plugin-posts-frontmatter': patch
 '@cogita/theme-editorial': patch
 '@cogita/theme-lucid': patch

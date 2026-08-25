@@ -3,8 +3,8 @@ import path from 'node:path';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import {
+  type CogitaPlugin,
   type CogitaPluginConfig,
-  type RspressPlugin,
   getBlogListRouteEntries,
   getCategoryRoutes,
   getCogitaBuildContext,
@@ -101,7 +101,7 @@ function resolveCustomEntries(
 }
 
 /** 创建构建期 XML 站点地图插件。 */
-export function pluginSitemap(config: CogitaPluginConfig): RspressPlugin | null {
+export function pluginSitemap(config: CogitaPluginConfig): CogitaPlugin | null {
   const sitemapConfig = config.sitemap as SitemapConfig | undefined;
   if (!sitemapConfig || sitemapConfig.enabled === false) {
     return null;
@@ -119,6 +119,9 @@ export function pluginSitemap(config: CogitaPluginConfig): RspressPlugin | null 
 
   return {
     name: '@cogita/plugin-sitemap',
+    cogita: {
+      providesCapabilities: ['seo.sitemap'],
+    },
 
     async beforeBuild(rspressConfig: unknown) {
       const siteUrl = config.site?.url;

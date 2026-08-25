@@ -7,6 +7,7 @@ import { createRspressConfig } from '../dist/es/index.js';
 const { version: coreVersion } = JSON.parse(
   readFileSync(new URL('../package.json', import.meta.url), 'utf8')
 );
+const workspaceRoot = new URL('../../..', import.meta.url).pathname;
 
 describe('插件注册契约', () => {
   it('应按主题插件之后的顺序加载用户插件，并注入统一构建上下文', async () => {
@@ -106,6 +107,36 @@ describe('插件注册契约', () => {
 
     assert.equal(warnings.length, 1);
     assert.match(warnings[0], /能力契约未满足.*test\.optional/);
+  });
+
+  it('内置插件应暴露稳定的能力标识', async () => {
+    const rspressConfig = await createRspressConfig(
+      {
+        theme: path.resolve(workspaceRoot, 'themes/lucid/dist/index.js'),
+        tags: { enabled: true },
+        collections: { enabled: true },
+        categories: { enabled: true },
+        blogList: { enabled: true },
+        search: { enabled: true },
+        readingProgress: { enabled: true },
+        codeCopy: { enabled: true },
+      },
+      workspaceRoot
+    );
+    const findPlugin = (name) => rspressConfig.plugins.find((plugin) => plugin.name === name);
+
+    assert.deepEqual(findPlugin('@cogita/plugin-posts-frontmatter').cogita.providesCapabilities, [
+      'content.posts',
+    ]);
+    assert.deepEqual(findPlugin('@cogita/plugin-images').cogita.providesCapabilities, [
+      'content.images',
+    ]);
+    assert.deepEqual(findPlugin('@cogita/plugin-tags').cogita.requiresCapabilities, [
+      'content.posts',
+    ]);
+    assert.deepEqual(findPlugin('@cogita/plugin-search').cogita.providesCapabilities, [
+      'discovery.search',
+    ]);
   });
 
   it('严格模式下应拒绝插件生成重复页面路由', async () => {
