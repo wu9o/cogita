@@ -38,6 +38,9 @@ export function getThemeConfig(): CogitaTheme {
 
   return {
     name: '@cogita/theme-lucid',
+    capabilities: {
+      required: ['content.posts'],
+    },
 
     // ============================================
     // 主题内置能力（不是插件）
