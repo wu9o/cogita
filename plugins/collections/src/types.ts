@@ -1,21 +1,11 @@
+import type { ContentPostReference } from '@cogita/shared';
+
 /**
  * 合集内的文章引用（比普通文章引用多 order 字段）
  */
-export interface CollectionPost {
-  /** 文章标题 */
-  title: string;
-  /** 文章路由 */
-  route: string;
-  /** 创建日期 */
-  createDate: string;
-  /** 更新日期 */
-  updateDate: string;
-  /** 文章描述 */
-  description?: string;
+export interface CollectionPost extends ContentPostReference {
   /** 在合集中的序号（从 1 开始） */
   order: number;
-  /** 合集内的自定义标题（可选，覆盖文章原标题） */
-  collectionTitle?: string;
 }
 
 /**

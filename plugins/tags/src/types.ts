@@ -28,17 +28,10 @@ export interface TagData {
   route: string;
 }
 
-/**
- * 文章引用（轻量级，避免循环依赖）
- */
-export interface PostReference {
-  title: string;
-  route: string;
-  createDate: string;
-  updateDate: string;
-  description?: string;
-  tags?: string[];
-}
+import type { ContentPostReference } from '@cogita/shared';
+
+/** 统一文章引用的标签插件别名，保留旧导出名称以兼容现有主题。 */
+export type PostReference = ContentPostReference;
 
 /**
  * 标签云配置
