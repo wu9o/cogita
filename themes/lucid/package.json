@@ -52,7 +52,6 @@
   },
   "devDependencies": {
     "@cogita/config": "workspace:*",
-    "@cogita/ui": "workspace:*",
     "@rslib/core": "^0.11.2",
     "@rspress/runtime": "^1.45.1",
     "@types/react": "^19.1.9",
@@ -66,6 +65,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@cogita/ui": "workspace:*",
     "@cogita/plugin-blog-list": "workspace:*",
     "@cogita/plugin-categories": "workspace:*",
     "@cogita/plugin-code-copy": "workspace:*",
