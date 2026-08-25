@@ -116,3 +116,11 @@ export default defineConfig({
 - 线上路径下的 CSS、JavaScript、图片和站内链接都能加载；
 - 评论仓库和文章仓库的配置没有继续指向框架仓库；
 - 框架仓库的使用手册不依赖个人博客文章作为示例内容。
+
+框架仓库还提供了针对同级 `cogita-blog` 仓库的发布包消费者验证。它会复制博客配置、文章和公共资源到临时目录，用当前构建出的 tarball 替换已发布依赖，然后检查首页、文章页、图片相关输出、RSS 和 sitemap：
+
+```bash
+COGITA_BLOG_DIR=/path/to/cogita-blog pnpm run check:external-blog
+```
+
+该命令不会修改博客仓库，也不会要求博客仓库加入 Cogita monorepo。
