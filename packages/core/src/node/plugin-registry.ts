@@ -87,6 +87,7 @@ function withPageRouteContract(
       return pages;
     }
 
+    const invocationRoutes = new Set<string>();
     return pages.filter((page) => {
       if (!page || typeof page !== 'object') {
         return true;
@@ -97,9 +98,24 @@ function withPageRouteContract(
         return true;
       }
 
+      if (invocationRoutes.has(route)) {
+        const message = `[Cogita] 页面路由 ${route} 重复注册（来源：${source}、${source}）`;
+        if (options.strict) {
+          throw new Error(message);
+        }
+
+        options.logger.warn(`${message}，非严格模式下保留首次注册。`);
+        return false;
+      }
+      invocationRoutes.add(route);
+
       const previousSource = registeredRoutes.get(route);
       if (!previousSource) {
         registeredRoutes.set(route, source);
+        return true;
+      }
+
+      if (previousSource === source) {
         return true;
       }
 
