@@ -94,6 +94,7 @@ export function pluginSitemap(config: CogitaPluginConfig): CogitaPlugin | null {
     name: '@cogita/plugin-sitemap',
     cogita: {
       providesCapabilities: ['seo.sitemap'],
+      requiresCapabilities: ['content.posts'],
     },
 
     async beforeBuild(rspressConfig: unknown) {

@@ -2,6 +2,8 @@
 
 为 Cogita 提供公共图片清单、文章封面校验、使用统计和 `virtual-images-data` 运行时模块。
 
+该插件声明依赖 `content.posts` 能力，通过 Core 注入的共享内容索引读取文章封面信息，不直接依赖文章扫描插件。
+
 第一阶段只扫描项目 `public/images` 下的图片。文章 frontmatter 可以使用：
 
 ```yaml
