@@ -2,6 +2,8 @@
 
 [**中文文档**](./docs-site/content/overview.md) • [English Documentation](./README.en.md)
 
+📖 [在线使用手册](https://wu9o.github.io/cogita/)
+
 一个基于 Rspress 的**主题驱动静态站点框架**，专为希望快速搭建和定制内容站点的开发者设计。
 
 [![npm version](https://badge.fury.io/js/@cogita%2Fcore.svg)](https://badge.fury.io/js/@cogita%2Fcore)
@@ -66,7 +68,7 @@ pnpm exec cogita dev
 - [`@cogita/plugin-rss`](./plugins/rss) - RSS 订阅插件
 - [`@cogita/plugin-tags`](./plugins/tags) - 标签管理与标签云插件
 
-**完整文档：** [📚 Cogita 技术使用手册](./docs-site/content/overview.md) • [📄 English Documentation](./README.en.md)
+**完整文档：** [📖 在线使用手册](https://wu9o.github.io/cogita/) • [📚 文档源码](./docs-site/content/overview.md) • [📄 English Documentation](./README.en.md)
 
 ## 🏗️ 技术架构
 
@@ -116,6 +118,6 @@ MIT © [wu9o](https://github.com/wu9o)
 
 *让更多开发者发现这个优雅的博客解决方案*
 
-[⭐ Star this project](https://github.com/wu9o/cogita) • [🚀 快速开始](./docs-site/content/getting-started.md) • [💬 加入讨论](https://github.com/wu9o/cogita/discussions)
+[⭐ Star this project](https://github.com/wu9o/cogita) • [📖 在线手册](https://wu9o.github.io/cogita/) • [💬 加入讨论](https://github.com/wu9o/cogita/discussions)
 
 </div>

@@ -1,3 +1,7 @@
+---
+title: 内容质量与构建诊断插件
+---
+
 # 内容质量与构建诊断插件
 
 `@cogita/plugin-content-check` 在构建阶段复用 Cogita 的共享 `ContentIndex`，集中检查文章内容质量，并将结果输出到终端或 JSON 报告。

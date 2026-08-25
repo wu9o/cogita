@@ -2,6 +2,8 @@
 
 [中文文档](./README.md) • **English Documentation**
 
+📖 [Online User Manual](https://wu9o.github.io/cogita/)
+
 A theme-driven static site framework based on Rspress, designed for developers who want to quickly build and customize content sites.
 
 [![npm version](https://badge.fury.io/js/@cogita%2Fcore.svg)](https://badge.fury.io/js/@cogita%2Fcore)
@@ -208,6 +210,7 @@ Base Layer (Rspress, React)
 ## 📚 Documentation
 
 ### 📖 User Documentation
+- [**Online User Manual**](https://wu9o.github.io/cogita/) ✅
 - [**Quick Start Guide**](./docs-site/content/getting-started.md) ✅
 - [**Best Practices**](./docs-site/content/guides/best-practices.md) ✅
 - [**Deployment Guide**](./docs-site/content/guides/deployment.md) ✅
@@ -306,7 +309,8 @@ MIT © [wu9o](https://github.com/wu9o)
 
 - **🏠 [Main Repository](https://github.com/wu9o/cogita)** - Source code and development
 - **📊 [Live Demo](https://wu9o.github.io/cogita/)** - Online demonstration
-- **📚 [Documentation](./docs-site/content/overview.md)** - Complete documentation
+- **📖 [Online Documentation](https://wu9o.github.io/cogita/)** - Complete user manual
+- **📝 [Documentation Source](./docs-site/content/overview.md)** - Markdown source in this repository
 - **💬 [Discussions](https://github.com/wu9o/cogita/discussions)** - Community exchange
 - **🐛 [Issue Tracker](https://github.com/wu9o/cogita/issues)** - Bug reports and feature requests
 - **📖 [Rspress Documentation](https://rspress.dev/)** - Underlying framework docs
@@ -319,6 +323,6 @@ MIT © [wu9o](https://github.com/wu9o)
 
 *Help more developers discover this extensible static site framework*
 
-[⭐ Star this project](https://github.com/wu9o/cogita) • [🚀 Quick Start](./docs-site/content/getting-started.md) • [💬 Join Discussion](https://github.com/wu9o/cogita/discussions)
+[⭐ Star this project](https://github.com/wu9o/cogita) • [📖 Online Manual](https://wu9o.github.io/cogita/) • [💬 Join Discussion](https://github.com/wu9o/cogita/discussions)
 
 </div>

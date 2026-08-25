@@ -9,4 +9,4 @@ pnpm --filter docs-site build
 pnpm --filter docs-site dev
 ```
 
-文档入口：[内容总览](./content/overview.md)。
+文档入口：[在线使用手册](https://wu9o.github.io/cogita/) · [内容总览源码](./content/overview.md)。
