@@ -1,5 +1,11 @@
 # @cogita/shared
 
+## 0.10.1
+
+### Patch Changes
+
+- 6d38a19: 发布页面路由解析 API，确保主题消费 `getRouteFromPageData` 时，独立项目安装的 shared 包与主题运行时保持兼容。
+
 ## 0.10.0
 
 ### Minor Changes
