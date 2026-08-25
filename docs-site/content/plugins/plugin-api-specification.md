@@ -39,7 +39,7 @@ export default defineConfig({
 });
 ```
 
-最终注册顺序固定为：核心插件 → 主题桥接插件 → 主题插件 → 用户插件。Rspress 按这个顺序执行插件生命周期。
+最终注册顺序固定为：核心插件 → 主题桥接插件 → 主题插件 → 用户插件。这个顺序用于确定插件身份、来源和冲突处理；不要把它当作生命周期的串行执行顺序。Rspress 可能并行调用多个插件的构建钩子，插件之间需要通过共享 `contentIndex` 或虚拟模块建立数据契约，而不是依赖数组前后顺序。
 
 核心注册器会在运行时再次校验工厂返回值：插件必须提供非空的 `name` 字段。严格模式下无效返回值或工厂异常会阻断构建，并保留原始异常作为 `cause`；非严格模式下会记录警告并跳过当前插件，避免破坏其他已注册插件。
 
@@ -65,13 +65,33 @@ export const pluginExample: CogitaPluginFactory = () => ({
 
 `requiredLayouts` 中的 `layout` 对应主题 `pageLayouts` 的键名；`when` 可根据最终插件配置决定是否启用某项布局检查。
 
-## 3. 名称唯一性
+## 3. 运行时模块契约
+
+插件通过 `addRuntimeModules` 向主题布局提供构建期数据。每个模块标识在一次构建中必须唯一；如果两个插件注册同一个模块，严格模式会阻断构建，避免运行时拿到不确定的数据。
+
+Core 会为可选能力提供安全的空模块。Core 的默认模块通过显式元数据标记为 `fallback`，真实插件可以覆盖它；这个行为不依赖默认插件的 `name`，因此第三方插件不应通过复用或猜测插件名称来改变注册策略。
+
+```typescript
+import type { CogitaPlugin } from '@cogita/shared';
+
+const fallbackPlugin: CogitaPlugin = {
+  name: '@cogita/plugin-example-defaults',
+  cogita: { runtimeModulePolicy: 'fallback' },
+  addRuntimeModules() {
+    return { 'virtual-example-data': 'export const items = [];' };
+  },
+};
+```
+
+默认模块只应该提供主题可安全消费的空数据和关闭状态，不应该泄露构建机绝对路径、令牌或文章正文。真实插件启用后应注册相同的模块标识，并提供完整数据契约。
+
+## 4. 名称唯一性
 
 每个插件实例的 `name` 是注册身份，必须在最终插件列表中唯一。默认 `strict` 为 `true`，重复名称会抛错并阻断构建，避免同一虚拟模块、页面或生命周期被静默执行两次。
 
 确有兼容需要时，可以配置 `strict: false`。此时保留首次注册的插件，并通过统一日志出口输出警告。
 
-## 4. 构建上下文
+## 5. 构建上下文
 
 插件应优先通过共享辅助函数读取构建期能力：
 
@@ -106,7 +126,7 @@ const pluginExample: CogitaPluginFactory = (config) => {
 
 旧版顶层字段仍会兼容，但新增构建期能力应优先加入 `CogitaBuildContext`。
 
-## 5. 生命周期边界
+## 6. 生命周期边界
 
 - `beforeBuild`：读取内容索引、准备文件和校验配置。
 - `addPages`：生成额外页面，不应在这里重复扫描文章。
@@ -115,7 +135,7 @@ const pluginExample: CogitaPluginFactory = (config) => {
 
 插件之间通过 `contentIndex` 和虚拟模块共享数据；主题布局只负责展示，不应承担插件配置验证和文件扫描职责。
 
-## 6. 测试要求
+## 7. 测试要求
 
 至少覆盖以下场景：
 
