@@ -3,16 +3,15 @@ import path from 'node:path';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
-import type { CogitaPluginConfig } from '@cogita/shared';
+import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 /**
  * RSS插件主体实现
  */
-import type { RspressPlugin } from '@rspress/core';
 import { glob } from 'glob';
 import { RSSGenerator } from './generator';
 import type { FeedMeta, RSSConfig, RSSPost } from './types';
 
-export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
+export function pluginRSS(config: CogitaPluginConfig): CogitaPlugin | null {
   const logger = getCogitaLogger(config);
   // Enhanced configuration handling - the plugin now handles all validation internally
   const rssConfig = config.rss;
@@ -53,6 +52,10 @@ export function pluginRSS(config: CogitaPluginConfig): RspressPlugin | null {
 
   return {
     name: '@cogita/plugin-rss',
+    cogita: {
+      providesCapabilities: ['syndication.rss'],
+      requiresCapabilities: ['content.posts'],
+    },
 
     async beforeBuild(rspressConfig: unknown) {
       logger.info('[RSS Plugin] 开始初始化RSS插件...');

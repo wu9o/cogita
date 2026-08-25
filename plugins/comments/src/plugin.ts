@@ -1,10 +1,9 @@
 import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
-import type { CogitaPluginConfig } from '@cogita/shared';
-import type { RspressPlugin } from '@rspress/core';
+import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import { extractCommentPostRoutes, resolveCommentsConfig, validateCommentsConfig } from './utils';
 
 /** 创建评论插件。 */
-export function pluginComments(config: CogitaPluginConfig): RspressPlugin | null {
+export function pluginComments(config: CogitaPluginConfig): CogitaPlugin | null {
   const logger = getCogitaLogger(config);
   if (!config.comments) {
     logger.info('[Comments Plugin] 未找到评论配置，跳过评论功能');
@@ -23,6 +22,10 @@ export function pluginComments(config: CogitaPluginConfig): RspressPlugin | null
 
   return {
     name: '@cogita/plugin-comments',
+    cogita: {
+      providesCapabilities: ['engagement.comments'],
+      requiresCapabilities: ['content.posts'],
+    },
 
     async beforeBuild() {
       const postsConfig = config.posts || {};

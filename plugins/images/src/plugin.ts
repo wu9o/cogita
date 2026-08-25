@@ -3,8 +3,7 @@ import path from 'node:path';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
-import type { CogitaPluginConfig } from '@cogita/shared';
-import type { RspressPlugin } from '@rspress/core';
+import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import { glob } from 'glob';
 import type { ImageData, ImageUsage, ResolvedImage, ResolvedImagesConfig } from './types';
 import {
@@ -132,7 +131,7 @@ async function copyPublicImages(
   await cp(sourceDir, outputDir, { recursive: true, force: true });
 }
 
-export function pluginImages(config: CogitaPluginConfig): RspressPlugin {
+export function pluginImages(config: CogitaPluginConfig): CogitaPlugin {
   const buildContext = getCogitaBuildContext(config);
   const logger = getCogitaLogger(config);
   const imageConfig = normalizeImagesConfig(config);
@@ -142,6 +141,9 @@ export function pluginImages(config: CogitaPluginConfig): RspressPlugin {
 
   return {
     name: '@cogita/plugin-images',
+    cogita: {
+      providesCapabilities: ['content.images'],
+    },
 
     async beforeBuild() {
       allImages = [];

@@ -4,12 +4,12 @@ import path from 'node:path';
 import type { PostFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { getFrontmatterFromFile } from '@cogita/plugin-posts-frontmatter';
 import {
+  type CogitaPlugin,
   type CogitaPluginConfig,
   type ContentPost,
   getCogitaBuildContext,
   getCogitaLogger,
 } from '@cogita/shared';
-import type { RspressPlugin } from '@rspress/core';
 import { glob } from 'glob';
 import matter from 'gray-matter';
 import type {
@@ -359,7 +359,7 @@ async function writeReportFile(reportFile: string, report: ContentCheckReport): 
 }
 
 /** 创建文章内容质量与构建诊断插件。 */
-export function pluginContentCheck(config: CogitaPluginConfig): RspressPlugin | null {
+export function pluginContentCheck(config: CogitaPluginConfig): CogitaPlugin | null {
   const contentCheck = config.contentCheck as ContentCheckConfig | undefined;
   if (!contentCheck || contentCheck.enabled === false) {
     return null;
@@ -382,6 +382,10 @@ export function pluginContentCheck(config: CogitaPluginConfig): RspressPlugin | 
 
   return {
     name: '@cogita/plugin-content-check',
+    cogita: {
+      providesCapabilities: ['quality.content-check'],
+      requiresCapabilities: ['content.posts'],
+    },
 
     async beforeBuild(rspressConfig: unknown) {
       const posts = await collectPosts(config, logger);

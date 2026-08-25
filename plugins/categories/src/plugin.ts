@@ -30,6 +30,8 @@ export function pluginCategories(config: CogitaPluginConfig): CogitaPlugin | nul
   return {
     name: '@cogita/plugin-categories',
     cogita: {
+      providesCapabilities: ['discovery.categories'],
+      requiresCapabilities: ['content.posts'],
       requiredLayouts: [{ layout: 'category', label: '分类' }],
     },
 

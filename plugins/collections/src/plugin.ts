@@ -36,6 +36,8 @@ export function pluginCollections(config: CogitaPluginConfig): CogitaPlugin | nu
   return {
     name: '@cogita/plugin-collections',
     cogita: {
+      providesCapabilities: ['content.collections'],
+      requiresCapabilities: ['content.posts'],
       requiredLayouts: [{ layout: 'collection', label: '合集' }],
     },
 

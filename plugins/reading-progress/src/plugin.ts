@@ -1,11 +1,10 @@
 import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
-import type { CogitaPluginConfig } from '@cogita/shared';
-import type { RspressPlugin } from '@rspress/core';
+import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import type { ReadingStats } from './types';
 import { extractReadingStats, resolveReadingProgressConfig } from './utils';
 
 /** 创建阅读进度与阅读时间插件。 */
-export function pluginReadingProgress(config: CogitaPluginConfig): RspressPlugin | null {
+export function pluginReadingProgress(config: CogitaPluginConfig): CogitaPlugin | null {
   const logger = getCogitaLogger(config);
   const readingProgressConfig = config.readingProgress;
 
@@ -25,6 +24,10 @@ export function pluginReadingProgress(config: CogitaPluginConfig): RspressPlugin
 
   return {
     name: '@cogita/plugin-reading-progress',
+    cogita: {
+      providesCapabilities: ['ui.reading-progress'],
+      requiresCapabilities: ['content.posts'],
+    },
 
     async beforeBuild() {
       if (!finalConfig.enabled) return;
