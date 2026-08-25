@@ -1,5 +1,11 @@
 # @cogita/ui
 
+## 0.1.1
+
+### Patch Changes
+
+- 9d7e907: 修正 UI 与 Lucid 主题的 React peer 依赖范围，兼容 Rspress 使用的 React 18 和 React 19。
+
 ## 0.1.0
 
 ### Minor Changes
