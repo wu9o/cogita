@@ -1,5 +1,12 @@
 # @cogita/cli
 
+## 0.1.17
+
+### Patch Changes
+
+- Updated dependencies [1e44a1c]
+  - @cogita/core@0.12.1
+
 ## 0.1.16
 
 ### Patch Changes
