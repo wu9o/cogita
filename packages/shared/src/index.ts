@@ -92,6 +92,32 @@ export interface CogitaQualityReport {
   issues: readonly CogitaQualityIssue[];
 }
 
+/** 站点自检报告的 schema 版本，字段发生不兼容变化时递增。 */
+export const COGITA_DOCTOR_SCHEMA_VERSION = 1 as const;
+
+/** 站点自检结果的严重级别。 */
+export type CogitaDoctorSeverity = 'info' | 'warning' | 'error';
+
+/** 站点自检中的单项检查结果。 */
+export interface CogitaDoctorCheck {
+  severity: CogitaDoctorSeverity;
+  code: string;
+  message: string;
+  hint?: string;
+  details?: Readonly<Record<string, unknown>>;
+}
+
+/** 面向站点作者和 CI 消费的稳定自检报告。 */
+export interface CogitaDoctorReport {
+  schemaVersion: typeof COGITA_DOCTOR_SCHEMA_VERSION;
+  root: string;
+  configPath?: string;
+  ok: boolean;
+  errors: number;
+  warnings: number;
+  checks: readonly CogitaDoctorCheck[];
+}
+
 /** 带有机器可读诊断信息的构建错误。 */
 export class CogitaDiagnosticError extends Error {
   readonly diagnostic: CogitaDiagnostic;

@@ -70,6 +70,18 @@ cogita build --outDir dist
 cogita preview
 ```
 
+### Pre-upgrade checks
+
+```bash
+# Check configuration, dependencies, theme, and content directories
+cogita doctor
+
+# Treat warnings as failures and emit a machine-readable report in CI
+cogita doctor --strict --json
+```
+
+`doctor` is read-only: it does not modify dependencies or build artifacts. By default only errors fail the command; `--strict` also fails on warnings. The JSON report includes a stable `schemaVersion`, check codes, and details for deployment pipelines.
+
 ## Available Commands
 
 ### `cogita create [name]`
@@ -116,6 +128,20 @@ Preview the built site locally.
 **Options:**
 - `-p, --port <port>` - Port number (default: 4173)
 - `--open` - Open browser automatically
+
+### `cogita doctor`
+
+Checks the basic conditions required for a site to remain buildable:
+
+- Cogita configuration exists and can be loaded
+- `package.json`, a lockfile, and a `cogita build` script are present
+- CLI, Core, and theme dependencies are declared and resolvable
+- The theme exports a valid `getThemeConfig` contract
+- `contentDir` or `posts.dir` points to an existing directory
+
+**Options:**
+- `--json` - Output a stable JSON report
+- `--strict` - Treat warnings as failures
 
 ## Example Workflows
 

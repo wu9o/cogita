@@ -38,6 +38,7 @@ export default defineConfig({
             { text: '最佳实践', link: '/guides/best-practices' },
             { text: '开发指南', link: '/guides/development' },
             { text: '部署指南', link: '/guides/deployment' },
+            { text: '站点升级与自检', link: '/guides/site-doctor' },
             { text: '内容仓库迁移', link: '/guides/migration' },
             { text: '主题使用与扩展', link: '/theme-customization' },
           ],

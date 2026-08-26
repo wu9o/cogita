@@ -37,6 +37,13 @@ async function verifyTemplate(template, expectedTheme) {
   const buildResult = runCli(['build'], projectRoot);
   assert.equal(buildResult.status, 0, `${template} 模板构建失败`);
 
+  const doctorResult = spawnSync(process.execPath, [cliPath, 'doctor', '--json'], {
+    cwd: projectRoot,
+    encoding: 'utf8',
+  });
+  assert.equal(doctorResult.status, 0, `${template} 模板 doctor 失败：${doctorResult.stderr}`);
+  assert.equal(JSON.parse(doctorResult.stdout).ok, true);
+
   const indexPath = path.join(projectRoot, 'doc_build/index.html');
   assert.equal((await readFile(indexPath, 'utf8')).length > 0, true);
 }

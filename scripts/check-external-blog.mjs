@@ -113,6 +113,18 @@ try {
     throw new Error('外部博客消费者安装发布包失败。');
   }
 
+  const doctor = spawnSync('pnpm', ['exec', 'cogita', 'doctor', '--strict', '--json'], {
+    cwd: consumerRoot,
+    encoding: 'utf8',
+  });
+  if (doctor.status !== 0) {
+    throw new Error(`外部博客消费者 doctor 失败：${doctor.stderr || doctor.stdout}`);
+  }
+  const doctorReport = JSON.parse(doctor.stdout);
+  if (!doctorReport.ok || doctorReport.errors !== 0 || doctorReport.warnings !== 0) {
+    throw new Error(`外部博客消费者 doctor 报告未通过：${doctor.stdout}`);
+  }
+
   const build = spawnSync('pnpm', ['exec', 'cogita', 'build'], {
     cwd: consumerRoot,
     encoding: 'utf8',
