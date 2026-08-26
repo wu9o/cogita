@@ -1,0 +1,17 @@
+{
+  "name": "__PACKAGE_NAME__",
+  "version": "0.0.0",
+  "private": true,
+  "description": "__SITE_TITLE__ 的 Cogita 技术博客。",
+  "type": "module",
+  "scripts": {
+    "dev": "cogita dev",
+    "build": "cogita build",
+    "preview": "cogita preview"
+  },
+  "devDependencies": {
+    "@cogita/cli": "^__CLI_VERSION__",
+    "@cogita/core": "^__CORE_VERSION__",
+    "@cogita/theme-lucid": "^__THEME_VERSION__"
+  }
+}
