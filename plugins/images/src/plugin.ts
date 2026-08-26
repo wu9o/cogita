@@ -116,10 +116,13 @@ async function copyPublicImages(
   await cp(sourceDir, outputDir, { recursive: true, force: true });
 }
 
-export function pluginImages(config: CogitaPluginConfig): CogitaPlugin {
+export function pluginImages(config: CogitaPluginConfig): CogitaPlugin | null {
   const buildContext = getCogitaBuildContext(config);
   const logger = getCogitaLogger(config);
   const imageConfig = normalizeImagesConfig(config);
+  if (!imageConfig.enabled) {
+    return null;
+  }
   let allImages: ImageData[] = [];
   let postCovers: Record<string, ImageData> = {};
   let imageUsage: Record<string, ImageUsage> = {};
@@ -135,10 +138,6 @@ export function pluginImages(config: CogitaPluginConfig): CogitaPlugin {
       allImages = [];
       postCovers = {};
       imageUsage = {};
-
-      if (!imageConfig.enabled) {
-        return;
-      }
 
       const scannedImages = await scanPublicImages(buildContext.root, imageConfig, logger);
       allImages = scannedImages.map((image) => toRuntimeImage(image));
@@ -192,7 +191,7 @@ export function pluginImages(config: CogitaPluginConfig): CogitaPlugin {
     },
 
     async afterBuild(rspressConfig, isProd) {
-      if (!imageConfig.enabled || !isProd || allImages.length === 0) {
+      if (!isProd || allImages.length === 0) {
         return;
       }
       await copyPublicImages(buildContext.root, imageConfig.dir, rspressConfig);
