@@ -1,6 +1,6 @@
 {
   "name": "@cogita/core",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "description": "The intelligent core engine that orchestrates Cogita's theme-driven architecture.",
   "keywords": [
     "cogita",
