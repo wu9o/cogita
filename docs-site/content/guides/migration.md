@@ -124,3 +124,11 @@ COGITA_BLOG_DIR=/path/to/cogita-blog pnpm run check:external-blog
 ```
 
 该命令不会修改博客仓库，也不会要求博客仓库加入 Cogita monorepo。
+
+使用手册也提供了独立消费者验证，用当前构建出的发布包安装一个临时文档站副本，检查文档主题、内容目录和代表性页面路由：
+
+```bash
+pnpm run check:docs-consumer
+```
+
+该检查不会修改 `docs-site`，用于确保使用手册不依赖博客的 `posts` 目录，也不会因为 workspace 链接掩盖主题或路由问题。

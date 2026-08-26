@@ -19,6 +19,7 @@
     "check:package-boundary": "pnpm run build:packages && node scripts/check-package-boundary.mjs",
     "check:consumer": "pnpm run build:packages && node scripts/check-consumer-install.mjs",
     "check:external-blog": "pnpm run build:packages && node scripts/check-external-blog.mjs",
+    "check:docs-consumer": "pnpm run build:packages && node scripts/check-docs-consumer.mjs",
     "check:registry-consumer": "node scripts/check-registry-consumer.mjs",
     "check:release": "pnpm run check && pnpm run build:packages && node scripts/check-package-boundary.mjs && node scripts/check-consumer-install.mjs",
     "preview:lucid": "node scripts/preview-lucid.mjs",
