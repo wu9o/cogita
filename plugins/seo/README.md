@@ -54,3 +54,5 @@ seo:
 - `failOnError: true` 时，缺少标题、描述或 canonical 会阻断构建；
 - 配置 `reportPath` 后，会在构建输出目录写入结构化的 `seo-report.json`；
 - `minDescriptionLength` 可调整描述过短的告警阈值，默认值为 50。
+
+审核报告使用统一的 `schemaVersion: 1`、`reportType: "seo-audit"`、`itemCount`、`errors`、`warnings` 和 `issues` 字段。可以与内容报告一起交给 `scripts/check-quality-reports.mjs`，按项目配置错误和警告阈值，并在 GitHub Actions 中输出 annotation。

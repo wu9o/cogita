@@ -41,9 +41,9 @@
 
 ### P1：内容质量工程
 
-- [ ] 稳定 `content-check` 与 SEO audit 的 JSON 报告 schema。
-- [ ] 提供 GitHub Actions annotation 和 warning/error 门禁配置。
-- [ ] 将链接、图片、路由、metadata 检查接入真实站点的发布流程。
+- [x] 稳定 `content-check` 与 SEO audit 的 JSON 报告 schema。
+- [x] 提供 GitHub Actions annotation 和 warning/error 门禁配置。
+- [x] 将链接、图片、路由、metadata 检查接入真实站点的发布流程。
 
 ### P2：规模化性能基线
 

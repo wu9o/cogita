@@ -1,3 +1,5 @@
+import type { CogitaQualityIssue, CogitaQualityReport } from '@cogita/shared';
+
 /** Twitter Card 支持的卡片类型。 */
 export type TwitterCard = 'summary' | 'summary_large_image' | 'app' | 'player';
 
@@ -58,19 +60,12 @@ export interface SEOAuditConfig {
 }
 
 /** SEO 审核问题。 */
-export interface SEOAuditIssue {
-  severity: 'error' | 'warning';
-  code: string;
-  route: string;
-  message: string;
-}
+export interface SEOAuditIssue extends CogitaQualityIssue {}
 
 /** SEO 审核报告。 */
-export interface SEOAuditReport {
-  generatedAt: string;
+export interface SEOAuditReport extends CogitaQualityReport {
+  reportType: 'seo-audit';
   pageCount: number;
-  errors: number;
-  warnings: number;
   issues: SEOAuditIssue[];
 }
 

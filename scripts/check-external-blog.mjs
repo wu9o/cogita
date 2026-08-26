@@ -130,6 +130,8 @@ try {
     'doc_build/rss.xml',
     'doc_build/atom.xml',
     'doc_build/feed.json',
+    'doc_build/content-report.json',
+    'doc_build/seo-report.json',
   ];
   for (const relativePath of expectedFiles) {
     if (!existsSync(path.join(consumerRoot, relativePath))) {
@@ -140,6 +142,23 @@ try {
   const indexHtml = readFileSync(path.join(consumerRoot, 'doc_build/index.html'), 'utf8');
   if (!indexHtml.includes('Cogita')) {
     throw new Error('外部博客消费者首页未包含站点标题。');
+  }
+
+  const qualityGate = spawnSync(
+    process.execPath,
+    [
+      path.join(repositoryRoot, 'scripts/check-quality-reports.mjs'),
+      '--root',
+      consumerRoot,
+      '--report',
+      'doc_build/content-report.json',
+      '--report',
+      'doc_build/seo-report.json',
+    ],
+    { cwd: consumerRoot, encoding: 'utf8', stdio: 'inherit' }
+  );
+  if (qualityGate.status !== 0) {
+    throw new Error('外部博客消费者质量报告门禁失败。');
   }
   console.log('[External Blog Smoke] 真实博客仓库的发布包安装、构建和关键产物验证通过');
 } finally {
