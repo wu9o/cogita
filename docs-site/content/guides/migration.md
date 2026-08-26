@@ -101,8 +101,8 @@ export default defineConfig({
 ```json
 {
   "devDependencies": {
-    "@cogita/cli": "^0.11.2",
-    "@cogita/core": "^0.11.2",
+    "@cogita/cli": "^0.1.19",
+    "@cogita/core": "^0.12.3",
     "@cogita/theme-lucid": "^0.11.2"
   }
 }

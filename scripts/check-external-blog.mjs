@@ -82,7 +82,14 @@ function createConsumerProject(consumerRoot, archives) {
   }
 }
 
-if (!existsSync(path.join(blogRoot, 'package.json')) || !existsSync(path.join(blogRoot, 'posts'))) {
+const hasExternalBlog =
+  existsSync(path.join(blogRoot, 'package.json')) && existsSync(path.join(blogRoot, 'posts'));
+
+if (!hasExternalBlog) {
+  if (process.env.CI === 'true' || process.env.COGITA_REQUIRE_EXTERNAL_BLOG === 'true') {
+    throw new Error(`[External Blog Smoke] 未找到必需的博客消费者：${blogRoot}`);
+  }
+
   console.log(`[External Blog Smoke] 未找到博客仓库，跳过：${blogRoot}`);
   process.exit(0);
 }
