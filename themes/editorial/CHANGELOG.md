@@ -1,5 +1,27 @@
 # @cogita/theme-editorial
 
+## 0.2.8
+
+### Patch Changes
+
+- 96dee48: 新增主题与插件之间的能力契约，并统一聚合插件使用的文章引用数据模型。插件可以声明提供和依赖的能力，主题可以声明必需与可选能力，Core 会在构建前统一校验并在非严格模式下提供降级诊断；文章虚拟模块同时暴露内容数据契约版本，便于外部主题检查兼容性。依赖文章能力的插件改为消费 Core 共享内容索引，不再直接耦合文章扫描插件。
+- Updated dependencies [96dee48]
+  - @cogita/shared@0.11.0
+  - @cogita/plugin-blog-list@0.3.2
+  - @cogita/plugin-categories@0.2.4
+  - @cogita/plugin-code-copy@0.2.3
+  - @cogita/plugin-collections@1.0.4
+  - @cogita/plugin-comments@0.2.4
+  - @cogita/plugin-content-check@0.2.2
+  - @cogita/plugin-images@1.0.4
+  - @cogita/plugin-reading-progress@0.3.4
+  - @cogita/plugin-rss@1.0.4
+  - @cogita/plugin-search@0.2.4
+  - @cogita/plugin-seo@1.3.4
+  - @cogita/plugin-sitemap@1.3.4
+  - @cogita/plugin-tags@1.0.4
+  - @cogita/plugin-posts-frontmatter@0.1.3
+
 ## 0.2.7
 
 ### Patch Changes
