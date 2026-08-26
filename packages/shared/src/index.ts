@@ -6,6 +6,60 @@ export const VIRTUAL_CONTENT_DIR = '.cogita_content';
 /** 运行时内容数据契约版本，新增不兼容字段时必须递增。 */
 export const COGITA_CONTENT_DATA_VERSION = 1;
 
+/** 构建诊断对象的 schema 版本，字段发生不兼容变化时递增。 */
+export const COGITA_DIAGNOSTIC_SCHEMA_VERSION = 1 as const;
+
+/** 构建诊断的严重级别。 */
+export type CogitaDiagnosticSeverity = 'error' | 'warning';
+
+/** 面向 CLI、CI 和第三方工具消费的稳定构建诊断格式。 */
+export interface CogitaDiagnostic {
+  schemaVersion: typeof COGITA_DIAGNOSTIC_SCHEMA_VERSION;
+  code: string;
+  severity: CogitaDiagnosticSeverity;
+  message: string;
+  source?: string;
+  details?: Readonly<Record<string, unknown>>;
+}
+
+/** 带有机器可读诊断信息的构建错误。 */
+export class CogitaDiagnosticError extends Error {
+  readonly diagnostic: CogitaDiagnostic;
+
+  constructor(diagnostic: CogitaDiagnostic, cause?: unknown) {
+    super(diagnostic.message);
+    this.name = 'CogitaDiagnosticError';
+    this.diagnostic = diagnostic;
+    if (cause !== undefined) {
+      (this as Error & { cause?: unknown }).cause = cause;
+    }
+  }
+}
+
+/** 从未知异常中提取稳定诊断，兼容跨包副本导致的 instanceof 失效。 */
+export function getCogitaDiagnostic(error: unknown): CogitaDiagnostic | undefined {
+  if (!error || typeof error !== 'object') {
+    return undefined;
+  }
+
+  const diagnostic = (error as { diagnostic?: unknown }).diagnostic;
+  if (!diagnostic || typeof diagnostic !== 'object') {
+    return undefined;
+  }
+
+  const candidate = diagnostic as Partial<CogitaDiagnostic>;
+  if (
+    candidate.schemaVersion !== COGITA_DIAGNOSTIC_SCHEMA_VERSION ||
+    typeof candidate.code !== 'string' ||
+    (candidate.severity !== 'error' && candidate.severity !== 'warning') ||
+    typeof candidate.message !== 'string'
+  ) {
+    return undefined;
+  }
+
+  return candidate as CogitaDiagnostic;
+}
+
 // Export Rspress types for use in themes and plugins
 export type { RspressPlugin, UserConfig };
 

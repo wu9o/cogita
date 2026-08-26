@@ -132,7 +132,39 @@ const fallbackPlugin: CogitaPlugin = {
 
 确有兼容需要时，可以配置 `strict: false`。此时保留首次注册的插件，并通过统一日志出口输出警告。
 
-## 6. 构建上下文
+## 6. 稳定诊断
+
+严格模式下的 Core 构建错误会保留稳定的 `diagnostic` 字段，供 CLI、CI 或第三方工具按代码处理，而不需要解析中文错误文本。诊断对象的 `schemaVersion` 当前为 `1`。
+
+```typescript
+import { getCogitaDiagnostic } from '@cogita/shared';
+
+try {
+  await buildSite();
+} catch (error) {
+  const diagnostic = getCogitaDiagnostic(error);
+  if (diagnostic?.code === 'COGITA_CAPABILITY_MISSING') {
+    console.error('请安装或注册提供缺失能力的插件。');
+  }
+  throw error;
+}
+```
+
+当前 Core 诊断代码包括：
+
+| 代码 | 场景 |
+| --- | --- |
+| `COGITA_THEME_LAYOUT_MISSING` | 主题缺少已启用功能需要的布局 |
+| `COGITA_CAPABILITY_MISSING` | 主题或插件依赖的能力未提供 |
+| `COGITA_PLUGIN_INVALID` | 插件工厂返回了无效插件 |
+| `COGITA_PLUGIN_DUPLICATE` | 插件名称重复注册 |
+| `COGITA_PLUGIN_FACTORY_FAILED` | 插件工厂执行失败 |
+| `COGITA_PAGE_ROUTE_CONFLICT` | 页面路由重复注册 |
+| `COGITA_RUNTIME_MODULE_CONFLICT` | 虚拟运行时模块重复注册 |
+
+`strict: false` 时，诊断会以 `warning` 级别通过统一 logger 输出，并保留相同的 `code` 和 `details` 字段。
+
+## 7. 构建上下文
 
 插件应优先通过共享辅助函数读取构建期能力：
 
@@ -167,7 +199,7 @@ const pluginExample: CogitaPluginFactory = (config) => {
 
 旧版顶层字段仍会兼容，但新增构建期能力应优先加入 `CogitaBuildContext`。
 
-## 7. 生命周期边界
+## 8. 生命周期边界
 
 - `beforeBuild`：读取内容索引、准备文件和校验配置。
 - `addPages`：生成额外页面，不应在这里重复扫描文章。
@@ -176,7 +208,7 @@ const pluginExample: CogitaPluginFactory = (config) => {
 
 插件之间通过 `contentIndex` 和虚拟模块共享数据；主题布局只负责展示，不应承担插件配置验证和文件扫描职责。
 
-## 8. 测试要求
+## 9. 测试要求
 
 至少覆盖以下场景：
 
