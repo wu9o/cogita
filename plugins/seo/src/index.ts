@@ -1,6 +1,13 @@
 export { createSEOAuditReport, formatSEOAuditReport } from './audit';
 export { pluginSEO } from './plugin';
-export type { PostSEO, SEOConfig, SEOPageMeta, TwitterCard } from './types';
+export type {
+  PostSEO,
+  SEOAuditIssue,
+  SEOAuditReport,
+  SEOConfig,
+  SEOPageMeta,
+  TwitterCard,
+} from './types';
 export {
   createPostMeta,
   createSiteRoot,

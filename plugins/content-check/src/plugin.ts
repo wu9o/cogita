@@ -3,6 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import {
   COGITA_CAPABILITIES,
+  COGITA_QUALITY_REPORT_SCHEMA_VERSION,
   type CogitaPlugin,
   type CogitaPluginConfig,
   type ContentPost,
@@ -290,8 +291,10 @@ async function collectSourceFiles(config: CogitaPluginConfig): Promise<string[]>
 
 function createReport(postCount: number, issues: ContentCheckIssue[]): ContentCheckReport {
   return {
-    schemaVersion: 1,
+    schemaVersion: COGITA_QUALITY_REPORT_SCHEMA_VERSION,
+    reportType: 'content-check',
     generatedAt: new Date().toISOString(),
+    itemCount: postCount,
     postCount,
     errors: issues.filter((issue) => issue.severity === 'error').length,
     warnings: issues.filter((issue) => issue.severity === 'warning').length,

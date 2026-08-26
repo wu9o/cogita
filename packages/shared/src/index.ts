@@ -66,6 +66,32 @@ export interface CogitaDiagnostic {
   details?: Readonly<Record<string, unknown>>;
 }
 
+/** 内容质量报告的 schema 版本，字段发生不兼容变化时递增。 */
+export const COGITA_QUALITY_REPORT_SCHEMA_VERSION = 1 as const;
+
+/** 内置内容质量报告的类型标识。 */
+export type CogitaQualityReportType = 'content-check' | 'seo-audit';
+
+/** 内容质量报告中的统一问题结构。 */
+export interface CogitaQualityIssue {
+  severity: CogitaDiagnosticSeverity;
+  code: string;
+  route: string;
+  filePath?: string;
+  message: string;
+}
+
+/** 面向 CLI、CI 和第三方工具消费的统一内容质量报告。 */
+export interface CogitaQualityReport {
+  schemaVersion: typeof COGITA_QUALITY_REPORT_SCHEMA_VERSION;
+  reportType: CogitaQualityReportType;
+  generatedAt: string;
+  itemCount: number;
+  errors: number;
+  warnings: number;
+  issues: readonly CogitaQualityIssue[];
+}
+
 /** 带有机器可读诊断信息的构建错误。 */
 export class CogitaDiagnosticError extends Error {
   readonly diagnostic: CogitaDiagnostic;
