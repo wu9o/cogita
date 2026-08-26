@@ -47,6 +47,9 @@ importers:
       '@cogita/core':
         specifier: workspace:*
         version: link:../core
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../shared
       commander:
         specifier: ^14.0.0
         version: 14.0.0

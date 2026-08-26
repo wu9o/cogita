@@ -101,6 +101,7 @@ describe('插件注册契约', () => {
       /能力契约未满足.*插件 missing-capability-consumer-plugin 依赖能力 test\.missing/
     );
     assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_CAPABILITY_MISSING');
+    assert.match(getCogitaDiagnostic(error)?.hint || '', /theme\.capabilities\.required/);
     assert.deepEqual(getCogitaDiagnostic(error)?.details, {
       missingCapabilities: ['插件 missing-capability-consumer-plugin 依赖能力 test.missing'],
     });
@@ -518,6 +519,7 @@ describe('插件注册契约', () => {
       /缺少主题布局：自定义页面/
     );
     assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_THEME_LAYOUT_MISSING');
+    assert.match(getCogitaDiagnostic(error)?.hint || '', /pageLayouts/);
   });
 
   it('布局需求可以根据最终插件配置决定是否启用', async () => {
