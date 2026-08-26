@@ -34,18 +34,20 @@ npx @cogita/cli --help
 
 ## 快速开始
 
-### 创建新博客
+### 创建新站点
 
 ```bash
-# 交互式创建
-cogita create
+# 创建博客站
+cogita create my-blog --template blog
 
-# 指定名称创建
-cogita create my-blog
+# 创建文档站
+cogita create my-docs --template docs
 
-# 使用模板创建
-cogita create my-blog --template minimal
+# 跳过依赖安装和 Git 初始化，适合先检查生成文件
+cogita create my-blog --template blog --no-install --no-git
 ```
+
+生成器默认使用 pnpm 安装依赖并初始化 Git。目标目录不为空时会停止，确认要覆盖模板文件时才使用 `--force`。
 
 ### 开发
 
@@ -74,20 +76,20 @@ cogita preview
 
 ### `cogita create [name]`
 
-创建新的 Cogita 博客项目。
+创建新的 Cogita 博客或文档项目。
 
 **选项：**
-- `-t, --template <name>` - 使用的模板（默认："basic"）
+- `-t, --template <name>` - 使用的模板（`blog` 或 `docs`，默认：`blog`）
 - `-p, --package-manager <pm>` - 包管理器（npm|yarn|pnpm）
 - `--no-git` - 跳过 Git 初始化
 - `--no-install` - 跳过依赖安装
 - `-f, --force` - 覆盖现有目录
 
 **模板：**
-- `basic` - 功能完整的博客模板（默认）
-- `minimal` - 基础功能的最小化设置
-- `tech` - 开发者导向的技术博客模板
-- `personal` - 个人博客模板，集成社交功能
+- `blog` - Lucid 博客模板，包含文章、搜索、标签、分类、归档和 RSS 配置
+- `docs` - Docs 文档站模板，包含 Markdown 内容目录、导航和侧边栏
+
+`basic`、`minimal`、`tech` 和 `personal` 仍作为博客模板别名保留。
 
 ### `cogita dev`
 

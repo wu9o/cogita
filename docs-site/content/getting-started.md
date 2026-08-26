@@ -6,6 +6,17 @@ title: 快速开始
 
 Cogita 是一个基于 Rspress 的主题驱动静态站点框架。站点项目只需要安装 Core、CLI 和一个主题包，就可以开始构建。
 
+## 使用模板创建项目
+
+推荐直接使用 CLI 初始化项目：
+
+~~~bash
+pnpm dlx @cogita/cli create my-blog --template blog
+pnpm dlx @cogita/cli create my-docs --template docs
+~~~
+
+博客模板使用 Lucid 主题和 `posts/` 目录；文档模板使用 Docs 主题和 `content/` 目录。生成后进入项目并运行 `pnpm run dev` 即可开始开发。
+
 ## 安装
 
 ~~~bash

@@ -4,6 +4,17 @@ title: 开发指南
 
 # 开发指南
 
+## 初始化站点
+
+可以使用 CLI 生成博客站或文档站的最小可运行项目：
+
+```bash
+pnpm dlx @cogita/cli create my-blog --template blog
+pnpm dlx @cogita/cli create my-docs --template docs
+```
+
+博客模板从 `posts/` 读取文章，文档模板从 `content/` 读取 Markdown 页面。生成项目后执行 `pnpm run dev` 即可启动开发服务器。
+
 本指南面向 Cogita 框架、插件和主题的贡献者，说明本地开发、质量检查、测试和发布前验证流程。
 
 ## 开发环境
