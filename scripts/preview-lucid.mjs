@@ -10,6 +10,12 @@ const blogRoot = path.resolve(
   process.env.COGITA_BLOG_DIR || path.join(repositoryRoot, '..', 'cogita-blog')
 );
 const port = process.env.PORT || process.argv[2] || '3034';
+const basePath = normalizeBasePath(process.env.BASE_PATH || '/');
+
+function normalizeBasePath(value) {
+  const withLeadingSlash = value.startsWith('/') ? value : `/${value}`;
+  return withLeadingSlash.endsWith('/') ? withLeadingSlash : `${withLeadingSlash}/`;
+}
 
 async function createPreviewProject() {
   const previewRoot = await mkdtemp(path.join(os.tmpdir(), 'cogita-lucid-preview-'));
@@ -17,9 +23,9 @@ async function createPreviewProject() {
   const sourceConfig = await readFile(sourceConfigPath, 'utf8');
   const localConfig = sourceConfig
     .replaceAll("theme: '@cogita/theme-editorial'", "theme: '@cogita/theme-lucid'")
-    .replaceAll("base: '/cogita-blog/'", "base: '/'")
-    .replaceAll('https://wu9o.github.io/cogita-blog/', `http://localhost:${port}/`)
-    .replaceAll('/cogita-blog/', '/');
+    .replaceAll("base: '/cogita-blog/'", `base: '${basePath}'`)
+    .replaceAll('https://wu9o.github.io/cogita-blog/', `http://localhost:${port}${basePath}`)
+    .replaceAll('/cogita-blog/', basePath);
 
   await Promise.all([
     cp(path.join(blogRoot, 'posts'), path.join(previewRoot, 'posts'), { recursive: true }),
@@ -75,7 +81,7 @@ if (buildResult.status !== 0) {
 }
 
 console.log(`[Lucid] 使用独立博客仓库内容预览：${blogRoot}`);
-console.log(`[Lucid] 本地地址：http://localhost:${port}/`);
+console.log(`[Lucid] 本地地址：http://localhost:${port}${basePath}`);
 
 const server = spawn(process.execPath, [cliPath, 'preview', '--port', String(port)], {
   cwd: previewRoot,
