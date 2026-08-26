@@ -15,6 +15,7 @@ title: 使用指南
 - [部署指南](./deployment.md)：构建产物和静态托管部署。
 - [内容仓库迁移](./migration.md)：将博客或知识库作为独立站点消费 Cogita 包。
 - [兼容性矩阵](./compatibility-matrix.md)：查看 Core、主题、插件和宿主运行时的支持组合。
+- [浏览器级验收](./browser-acceptance.md)：在根路径和子路径预览中验证真实页面运行时。
 - [主题使用与扩展](../theme-customization.md)：选择主题并覆盖主题配置。
 
 ## 推荐路径
