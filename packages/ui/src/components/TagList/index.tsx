@@ -1,5 +1,4 @@
 import { normalizeHrefInRuntime } from '@rspress/runtime';
-import { Link } from '@rspress/theme-default';
 import type React from 'react';
 import styles from './index.module.css';
 
@@ -77,14 +76,14 @@ export const TagList: React.FC<TagListProps> = ({
     <div className={`${styles.tagList} ${styles[variant]} ${className}`}>
       <span className={styles.tagLabel}>标签:</span>
       {displayTags.map((tag) => (
-        <Link
+        <a
           key={tag}
           href={normalizeHrefInRuntime(`${linkPrefix}/${generateTagSlug(tag)}`)}
           className={styles.tag}
           onClick={() => handleTagClick(tag)}
         >
           #{tag}
-        </Link>
+        </a>
       ))}
       {hasMore && limit && (
         <span className={styles.moreIndicator}>+{tags.length - limit} 更多</span>
