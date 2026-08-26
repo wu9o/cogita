@@ -2,12 +2,22 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, it } from 'node:test';
+import { getCogitaDiagnostic } from '@cogita/shared';
 import { createRspressConfig } from '../dist/es/index.js';
 
 const { version: coreVersion } = JSON.parse(
   readFileSync(new URL('../package.json', import.meta.url), 'utf8')
 );
 const workspaceRoot = new URL('../../..', import.meta.url).pathname;
+
+async function captureRejection(promise, matcher) {
+  let caught;
+  await assert.rejects(promise, (error) => {
+    caught = error;
+    return matcher.test(error.message);
+  });
+  return caught;
+}
 
 describe('插件注册契约', () => {
   it('应按主题插件之后的顺序加载用户插件，并注入统一构建上下文', async () => {
@@ -63,7 +73,7 @@ describe('插件注册契约', () => {
   });
 
   it('严格模式下应拒绝缺失的插件能力契约', async () => {
-    await assert.rejects(
+    const error = await captureRejection(
       createRspressConfig(
         {
           plugins: [
@@ -77,6 +87,10 @@ describe('插件注册契约', () => {
       ),
       /能力契约未满足.*插件 missing-capability-consumer-plugin 依赖能力 test\.missing/
     );
+    assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_CAPABILITY_MISSING');
+    assert.deepEqual(getCogitaDiagnostic(error)?.details, {
+      missingCapabilities: ['插件 missing-capability-consumer-plugin 依赖能力 test.missing'],
+    });
   });
 
   it('非严格模式下应警告并继续构建缺失的能力契约', async () => {
@@ -167,7 +181,8 @@ describe('插件注册契约', () => {
     );
     const plugin = rspressConfig.plugins.find(({ name }) => name === 'duplicate-page-route-plugin');
 
-    await assert.rejects(plugin.addPages(), /页面路由 \/same-page 重复注册/);
+    const error = await captureRejection(plugin.addPages(), /页面路由 \/same-page 重复注册/);
+    assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_PAGE_ROUTE_CONFLICT');
   });
 
   it('非严格模式下应保留首次注册的页面路由', async () => {
@@ -245,7 +260,11 @@ describe('插件注册契约', () => {
     );
 
     await plugins[0].addRuntimeModules();
-    await assert.rejects(plugins[1].addRuntimeModules(), /运行时模块 virtual-shared-data 重复注册/);
+    const error = await captureRejection(
+      plugins[1].addRuntimeModules(),
+      /运行时模块 virtual-shared-data 重复注册/
+    );
+    assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_RUNTIME_MODULE_CONFLICT');
   });
 
   it('非严格模式下应保留首次注册的运行时模块并记录警告', async () => {
@@ -387,13 +406,14 @@ describe('插件注册契约', () => {
   it('严格模式下应拒绝重复注册的插件名称', async () => {
     const duplicatePlugin = () => ({ name: 'duplicate-test-plugin' });
 
-    await assert.rejects(
+    const error = await captureRejection(
       createRspressConfig(
         { plugins: [duplicatePlugin, duplicatePlugin] },
         '/tmp/cogita-plugin-registration-test'
       ),
       /重复注册/
     );
+    assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_PLUGIN_DUPLICATE');
   });
 
   it('非严格模式下应保留首次注册的插件并记录警告', async () => {
@@ -421,7 +441,7 @@ describe('插件注册契约', () => {
   });
 
   it('严格模式下应拒绝没有 name 的插件返回值', async () => {
-    await assert.rejects(
+    const error = await captureRejection(
       createRspressConfig(
         {
           plugins: [
@@ -436,6 +456,7 @@ describe('插件注册契约', () => {
       ),
       /必须提供非空 name/
     );
+    assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_PLUGIN_INVALID');
   });
 
   it('严格模式下应保留插件工厂错误的原始 cause', async () => {
@@ -455,6 +476,7 @@ describe('插件注册契约', () => {
       (error) => {
         assert.match(error.message, /插件工厂执行失败：factory exploded/);
         assert.equal(error.cause, originalError);
+        assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_PLUGIN_FACTORY_FAILED');
         return true;
       }
     );
@@ -468,7 +490,7 @@ describe('插件注册契约', () => {
       },
     });
 
-    await assert.rejects(
+    const error = await captureRejection(
       createRspressConfig(
         {
           theme: '@cogita/theme-docs',
@@ -478,6 +500,7 @@ describe('插件注册契约', () => {
       ),
       /缺少主题布局：自定义页面/
     );
+    assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_THEME_LAYOUT_MISSING');
   });
 
   it('布局需求可以根据最终插件配置决定是否启用', async () => {

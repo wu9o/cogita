@@ -10,6 +10,7 @@ import jiti from 'jiti';
 import * as mlly from 'mlly';
 import type { CogitaConfig, CogitaFullConfig, PostsConfig } from '../types';
 import { createContentIndex } from './content-index';
+import { createCoreDiagnostic, createCoreDiagnosticError, warnCoreDiagnostic } from './diagnostics';
 import { registerPlugins } from './plugin-registry';
 import { cogitaRuntimeDefaults } from './runtime-modules';
 import { resolveThemePackage } from './theme';
@@ -285,13 +286,20 @@ function validateThemeLayouts(
   }
 
   const message = `[Cogita] 已启用的功能缺少主题布局：${Array.from(missing).join('、')}`;
+  const diagnostic = createCoreDiagnostic(
+    'COGITA_THEME_LAYOUT_MISSING',
+    `${message}。请在主题的 pageLayouts 中补齐对应布局，或关闭相关功能。`,
+    { missingLayouts: Array.from(missing) }
+  );
   if (strict) {
-    throw new Error(`${message}。请在主题的 pageLayouts 中补齐对应布局，或关闭相关功能。`);
+    throw createCoreDiagnosticError(diagnostic.code, diagnostic.message, diagnostic.details);
   }
 
-  (config.buildContext.logger || createCogitaLogger()).warn(
-    `${message}，非严格模式下将跳过缺失页面。`
-  );
+  warnCoreDiagnostic(config.buildContext.logger || createCogitaLogger(), {
+    ...diagnostic,
+    severity: 'warning',
+    message: `${message}，非严格模式下将跳过缺失页面。`,
+  });
 }
 
 /** 清理第三方插件提供的能力标识，避免空值和重复值污染诊断结果。 */
@@ -340,13 +348,20 @@ function validateCapabilities(
   }
 
   const message = `[Cogita] 能力契约未满足：${Array.from(missing).join('；')}`;
+  const diagnostic = createCoreDiagnostic(
+    'COGITA_CAPABILITY_MISSING',
+    `${message}。请注册提供对应能力的插件，或将该能力改为主题的 optional 能力。`,
+    { missingCapabilities: Array.from(missing) }
+  );
   if (strict) {
-    throw new Error(`${message}。请注册提供对应能力的插件，或将该能力改为主题的 optional 能力。`);
+    throw createCoreDiagnosticError(diagnostic.code, diagnostic.message, diagnostic.details);
   }
 
-  (config.buildContext.logger || createCogitaLogger()).warn(
-    `${message}，非严格模式下继续构建并由主题自行降级。`
-  );
+  warnCoreDiagnostic(config.buildContext.logger || createCogitaLogger(), {
+    ...diagnostic,
+    severity: 'warning',
+    message: `${message}，非严格模式下继续构建并由主题自行降级。`,
+  });
 }
 
 /**
