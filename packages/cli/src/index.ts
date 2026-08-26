@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createBuild, createPreview, createServer } from '@cogita/core';
+import { getCogitaDiagnostic } from '@cogita/shared';
 import { program } from 'commander';
 import { createProject, getSupportedTemplates } from './create';
 
@@ -121,4 +122,24 @@ program
     await createPreview(CWD, port);
   });
 
-await program.parseAsync(process.argv);
+function reportCliError(error: unknown): void {
+  const diagnostic = getCogitaDiagnostic(error);
+  if (diagnostic) {
+    console.error(`[Cogita] ${diagnostic.message}`);
+    console.error(`错误码：${diagnostic.code}`);
+    if (diagnostic.hint) {
+      console.error(`提示：${diagnostic.hint}`);
+    }
+    return;
+  }
+
+  const message = error instanceof Error ? error.message : String(error);
+  console.error(`[Cogita] ${message}`);
+}
+
+try {
+  await program.parseAsync(process.argv);
+} catch (error) {
+  reportCliError(error);
+  process.exitCode = 1;
+}

@@ -134,7 +134,7 @@ const fallbackPlugin: CogitaPlugin = {
 
 ## 6. 稳定诊断
 
-严格模式下的 Core 构建错误会保留稳定的 `diagnostic` 字段，供 CLI、CI 或第三方工具按代码处理，而不需要解析中文错误文本。诊断对象的 `schemaVersion` 当前为 `1`。
+严格模式下的 Core 构建错误会保留稳定的 `diagnostic` 字段，供 CLI、CI 或第三方工具按代码处理，而不需要解析中文错误文本。诊断对象的 `schemaVersion` 当前为 `1`，`hint` 字段用于提供面向站点作者的下一步操作建议。
 
 ```typescript
 import { getCogitaDiagnostic } from '@cogita/shared';
@@ -161,6 +161,12 @@ try {
 | `COGITA_PLUGIN_FACTORY_FAILED` | 插件工厂执行失败 |
 | `COGITA_PAGE_ROUTE_CONFLICT` | 页面路由重复注册 |
 | `COGITA_RUNTIME_MODULE_CONFLICT` | 虚拟运行时模块重复注册 |
+| `COGITA_CONFIG_NOT_FOUND` | 首次构建没有找到 Cogita 配置文件 |
+| `COGITA_CONFIG_LOAD_FAILED` | 配置文件无法加载或存在语法错误 |
+| `COGITA_THEME_LOAD_FAILED` | 主题包无法解析或加载 |
+| `COGITA_THEME_INVALID` | 主题没有返回有效的 `CogitaTheme` |
+| `COGITA_CONTENT_DIR_NOT_FOUND` | `contentDir` 指向的目录不存在 |
+| `COGITA_CONTENT_DIR_INVALID` | `contentDir` 指向了 Cogita 的虚拟文档目录 |
 
 `strict: false` 时，诊断会以 `warning` 级别通过统一 logger 输出，并保留相同的 `code` 和 `details` 字段。
 

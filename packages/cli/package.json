@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "@cogita/core": "workspace:*",
+    "@cogita/shared": "workspace:*",
     "commander": "^14.0.0"
   },
   "devDependencies": {

@@ -60,6 +60,8 @@ export interface CogitaDiagnostic {
   code: string;
   severity: CogitaDiagnosticSeverity;
   message: string;
+  /** 面向站点作者的下一步操作建议。 */
+  hint?: string;
   source?: string;
   details?: Readonly<Record<string, unknown>>;
 }
