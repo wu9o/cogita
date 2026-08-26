@@ -1,6 +1,4 @@
 import { normalizeHrefInRuntime } from '@rspress/runtime';
-// import { Link } from 'react-router-dom';
-import { Link } from '@rspress/theme-default';
 import type React from 'react';
 import type { Post } from '../../types';
 import { PostCover } from '../PostCover';
@@ -40,12 +38,12 @@ const DefaultPostItem: React.FC<{ post: Post; showTags?: boolean; showCover?: bo
         height={post.imageHeight}
       />
     )}
-    <Link href={normalizeHrefInRuntime(post.route)}>
+    <a href={normalizeHrefInRuntime(post.route)}>
       <h2 className={styles.title}>{post.title}</h2>
       <time dateTime={post.updateDate} className={styles.date}>
         {new Date(post.updateDate).toLocaleDateString('zh-CN')}
       </time>
-    </Link>
+    </a>
 
     {post.description && <p className={styles.description}>{post.description}</p>}
 

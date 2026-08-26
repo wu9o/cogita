@@ -585,6 +585,21 @@ export async function createRspressConfig(
   }
 
   // 3. Build the base Rspress config first
+  const existingRspackTools = cogitaConfig.builderConfig?.tools?.rspack;
+  const rspackTools = existingRspackTools
+    ? Array.isArray(existingRspackTools)
+      ? [...existingRspackTools]
+      : [existingRspackTools]
+    : [];
+  // Rspress 生成的语法高亮虚拟模块同时包含 ESM 和 CommonJS 语法，需要使用兼容解析模式。
+  rspackTools.push((rspackConfig) => {
+    rspackConfig.module.rules ??= [];
+    rspackConfig.module.rules.push({
+      test: /virtual-prism-languages/,
+      type: 'javascript/auto',
+    });
+  });
+
   const baseRspressConfig: UserConfig = {
     root,
     title: cogitaConfig.site?.title,
@@ -595,7 +610,13 @@ export async function createRspressConfig(
     markdown: cogitaConfig.markdown,
     mediumZoom: cogitaConfig.mediumZoom,
     themeConfig: cogitaConfig.themeConfig,
-    builderConfig: cogitaConfig.builderConfig,
+    builderConfig: {
+      ...cogitaConfig.builderConfig,
+      tools: {
+        ...cogitaConfig.builderConfig?.tools,
+        rspack: rspackTools,
+      },
+    },
     plugins: [], // Will be populated next
   };
 
