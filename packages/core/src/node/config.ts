@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { copyFile, cp, mkdir, readdir, rm } from 'node:fs/promises';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createCogitaLogger } from '@cogita/shared';
+import { COGITA_BUILD_CONTEXT_VERSION, createCogitaLogger } from '@cogita/shared';
 import type { CogitaPlugin, CogitaPluginConfig, CogitaTheme } from '@cogita/shared';
 import type { RspressPlugin, UserConfig } from '@rspress/core';
 import { findUp } from 'find-up';
@@ -389,6 +389,7 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
     contentIndex,
     _framework: framework,
     buildContext: {
+      contractVersion: COGITA_BUILD_CONTEXT_VERSION,
       root,
       cwd: root,
       contentIndex,

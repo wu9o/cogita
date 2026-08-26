@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import {
+  COGITA_CAPABILITIES,
   type CogitaPlugin,
   type CogitaPluginConfig,
   type ContentPost,
@@ -375,7 +376,7 @@ export function pluginContentCheck(config: CogitaPluginConfig): CogitaPlugin | n
     name: '@cogita/plugin-content-check',
     cogita: {
       providesCapabilities: ['quality.content-check'],
-      requiresCapabilities: ['content.posts'],
+      requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 
     async beforeBuild(rspressConfig: unknown) {

@@ -4,6 +4,7 @@
  */
 
 declare module 'virtual-rss-meta' {
+  export const cogitaVirtualModuleVersion: 1;
   export interface FeedMeta {
     rssUrl?: string;
     atomUrl?: string;

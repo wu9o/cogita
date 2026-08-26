@@ -1,5 +1,8 @@
 import {
+  COGITA_CAPABILITIES,
   COGITA_CONTENT_DATA_VERSION,
+  COGITA_VIRTUAL_MODULE_IDS,
+  createCogitaVirtualModule,
   getCogitaBuildContext,
   getCogitaLogger,
 } from '@cogita/shared';
@@ -37,7 +40,7 @@ export function pluginPostsFrontmatter(config: CogitaPluginConfig): CogitaPlugin
   return {
     name: '@cogita/plugin-posts-frontmatter',
     cogita: {
-      providesCapabilities: ['content.posts'],
+      providesCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 
     async beforeBuild() {
@@ -91,9 +94,10 @@ export function pluginPostsFrontmatter(config: CogitaPluginConfig): CogitaPlugin
 
     addRuntimeModules() {
       // 5. 创建一个虚拟模块，用于在客户端代码中访问所有文章的数据
-      const virtualModuleId = 'virtual-posts-data';
       return {
-        [virtualModuleId]: `export const contentDataVersion = ${COGITA_CONTENT_DATA_VERSION};\nexport const allPosts = ${JSON.stringify(allPostsData)};`,
+        [COGITA_VIRTUAL_MODULE_IDS.POSTS_DATA]: createCogitaVirtualModule(
+          `export const contentDataVersion = ${COGITA_CONTENT_DATA_VERSION};\nexport const allPosts = ${JSON.stringify(allPostsData)};`
+        ),
       };
     },
   };

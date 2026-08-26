@@ -1,6 +1,7 @@
 // 客户端虚拟模块类型声明
 // 注意：声明必须与 plugin.ts 的 addRuntimeModules 实际导出保持一致
 declare module 'virtual-collections-data' {
+  export const cogitaVirtualModuleVersion: 1;
   import type {
     CollectionData,
     CollectionPost,

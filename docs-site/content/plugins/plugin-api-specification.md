@@ -208,6 +208,16 @@ const pluginExample: CogitaPluginFactory = (config) => {
 
 插件之间通过 `contentIndex` 和虚拟模块共享数据；主题布局只负责展示，不应承担插件配置验证和文件扫描职责。
 
+### 8.1 公共契约版本
+
+Core 创建的 `buildContext` 和 `contentIndex` 分别带有 `contractVersion`。虚拟模块统一导出
+`cogitaVirtualModuleVersion`，文章模块额外保留 `contentDataVersion`。插件应从
+`@cogita/shared` 导入 `COGITA_VIRTUAL_MODULE_IDS`、`COGITA_CAPABILITIES` 和
+`createCogitaVirtualModule`，不要手写公共模块 ID、`content.posts` 或版本头。
+
+第三方实现可以省略构建上下文和内容索引的版本字段以兼容旧版 Core，但如果主动提供版本字段，
+必须只在确认契约兼容时消费新增字段。
+
 ## 9. 测试要求
 
 至少覆盖以下场景：

@@ -3,8 +3,50 @@ import type React from 'react';
 
 export const VIRTUAL_CONTENT_DIR = '.cogita_content';
 
+/** 构建上下文公共契约版本，新增不兼容字段时必须递增。 */
+export const COGITA_BUILD_CONTEXT_VERSION = 1 as const;
+
+/** 构建期内容索引公共契约版本，新增不兼容字段时必须递增。 */
+export const COGITA_CONTENT_INDEX_VERSION = 1 as const;
+
 /** 运行时内容数据契约版本，新增不兼容字段时必须递增。 */
-export const COGITA_CONTENT_DATA_VERSION = 1;
+export const COGITA_CONTENT_DATA_VERSION = 1 as const;
+
+/** Cogita 虚拟运行时模块的数据契约版本，新增不兼容字段时必须递增。 */
+export const COGITA_VIRTUAL_MODULE_SCHEMA_VERSION = 1 as const;
+
+/** Core 与内置插件共同使用的稳定能力标识。 */
+export const COGITA_CAPABILITIES = {
+  CONTENT_POSTS: 'content.posts',
+} as const;
+
+/** Cogita 公开虚拟运行时模块的稳定模块 ID。 */
+export const COGITA_VIRTUAL_MODULE_IDS = {
+  POSTS_DATA: 'virtual-posts-data',
+  TAGS_DATA: 'virtual-tags-data',
+  COLLECTIONS_DATA: 'virtual-collections-data',
+  CATEGORIES_DATA: 'virtual-categories-data',
+  BLOG_LIST_DATA: 'virtual-blog-list-data',
+  SEARCH_DATA: 'virtual-search-data',
+  READING_PROGRESS_DATA: 'virtual-reading-progress-data',
+  CODE_COPY_DATA: 'virtual-code-copy-data',
+  COMMENTS_DATA: 'virtual-comments-data',
+  IMAGES_DATA: 'virtual-images-data',
+  RSS_META: 'virtual-rss-meta',
+} as const;
+
+export type CogitaBuiltinCapability =
+  (typeof COGITA_CAPABILITIES)[keyof typeof COGITA_CAPABILITIES];
+export type CogitaVirtualModuleId =
+  (typeof COGITA_VIRTUAL_MODULE_IDS)[keyof typeof COGITA_VIRTUAL_MODULE_IDS];
+
+/** 为虚拟运行时模块写入统一版本头，供主题和第三方消费者进行兼容性检查。 */
+export function createCogitaVirtualModule(
+  source: string,
+  version: number = COGITA_VIRTUAL_MODULE_SCHEMA_VERSION
+): string {
+  return `export const cogitaVirtualModuleVersion = ${version};\n${source}`;
+}
 
 /** 构建诊断对象的 schema 版本，字段发生不兼容变化时递增。 */
 export const COGITA_DIAGNOSTIC_SCHEMA_VERSION = 1 as const;
@@ -164,6 +206,8 @@ export interface ContentCheckConfig {
 
 /** 构建期共享内容索引。索引采用惰性加载，只有被插件消费时才扫描文章。 */
 export interface ContentIndex {
+  /** 内容索引契约版本，第三方兼容实现可以省略以保持旧版兼容。 */
+  readonly contractVersion?: typeof COGITA_CONTENT_INDEX_VERSION;
   /** 获取当前构建周期内的文章元数据。 */
   getPosts(): Promise<readonly ContentPost[]>;
   /** 按需读取并缓存单篇文章正文，避免需要全文的插件重复读取文件。 */
@@ -200,6 +244,8 @@ export function createCogitaLogger(): CogitaLogger {
  * 构建期能力应优先放在这里，而不是继续扩展插件配置的顶层字段。
  */
 export interface CogitaBuildContext {
+  /** 构建上下文契约版本，第三方兼容实现可以省略以保持旧版兼容。 */
+  readonly contractVersion?: typeof COGITA_BUILD_CONTEXT_VERSION;
   /** 站点项目根目录。 */
   root: string;
   /** 当前工作目录，通常与 root 相同。 */

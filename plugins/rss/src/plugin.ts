@@ -1,6 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
+import {
+  COGITA_CAPABILITIES,
+  COGITA_VIRTUAL_MODULE_IDS,
+  createCogitaVirtualModule,
+  getCogitaBuildContext,
+  getCogitaLogger,
+} from '@cogita/shared';
 import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 /**
  * RSS插件主体实现
@@ -51,7 +57,7 @@ export function pluginRSS(config: CogitaPluginConfig): CogitaPlugin | null {
     name: '@cogita/plugin-rss',
     cogita: {
       providesCapabilities: ['syndication.rss'],
-      requiresCapabilities: ['content.posts'],
+      requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 
     async beforeBuild(rspressConfig: unknown) {
@@ -153,7 +159,9 @@ export function pluginRSS(config: CogitaPluginConfig): CogitaPlugin | null {
     addRuntimeModules() {
       // 向客户端暴露feed元数据
       return {
-        'virtual-rss-meta': `export const feedMeta = ${JSON.stringify(feedMeta, null, 2)};`,
+        [COGITA_VIRTUAL_MODULE_IDS.RSS_META]: createCogitaVirtualModule(
+          `export const feedMeta = ${JSON.stringify(feedMeta, null, 2)};`
+        ),
       };
     },
 

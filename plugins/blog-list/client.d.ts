@@ -1,4 +1,5 @@
 declare module 'virtual-blog-list-data' {
+  export const cogitaVirtualModuleVersion: 1;
   interface BlogListPost {
     title: string;
     description?: string;
