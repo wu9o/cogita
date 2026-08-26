@@ -72,6 +72,18 @@ cogita build --outDir dist
 cogita preview
 ```
 
+### 升级前自检
+
+```bash
+# 检查配置、依赖、主题和内容目录
+cogita doctor
+
+# 在 CI 中将 warning 也作为失败处理，并输出机器可读报告
+cogita doctor --strict --json
+```
+
+`doctor` 是只读检查，不会修改依赖或构建产物。默认只有 error 会导致失败；`--strict` 会将 warning 也作为失败。`--json` 的报告包含稳定的 `schemaVersion`、检查码和详情，适合接入部署流水线。
+
 ## 可用命令
 
 ### `cogita create [name]`
@@ -118,6 +130,20 @@ cogita preview
 **选项：**
 - `-p, --port <port>` - 端口号（默认：4173）
 - `--open` - 自动打开浏览器
+
+### `cogita doctor`
+
+检查当前站点是否具备持续构建的基本条件：
+
+- Cogita 配置文件是否存在且可以加载
+- `package.json`、lockfile 和 `cogita build` 脚本是否存在
+- CLI、Core 和主题依赖是否声明并可以解析
+- 主题是否导出有效的 `getThemeConfig` 契约
+- `contentDir` 或 `posts.dir` 指向的内容目录是否存在
+
+**选项：**
+- `--json` - 输出稳定 JSON 报告
+- `--strict` - 将 warning 也作为失败处理
 
 ## 示例工作流程
 

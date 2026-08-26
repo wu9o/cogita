@@ -5,6 +5,7 @@ import { createBuild, createPreview, createServer } from '@cogita/core';
 import { getCogitaDiagnostic } from '@cogita/shared';
 import { program } from 'commander';
 import { createProject, getSupportedTemplates } from './create';
+import { formatDoctorReport, runDoctor } from './doctor';
 
 function findPackageJsonPath(startDir: string): string | null {
   let dir = startDir;
@@ -120,6 +121,23 @@ program
     const port = Number.parseInt(options.port, 10);
     console.log(`Starting preview server on port ${port}...`);
     await createPreview(CWD, port);
+  });
+
+program
+  .command('doctor')
+  .description('检查站点配置、依赖、主题和内容目录是否适合持续构建')
+  .option('--json', '以稳定 JSON 报告输出')
+  .option('--strict', '将 warning 也作为失败处理')
+  .action(async (options: { json?: boolean; strict?: boolean }) => {
+    const report = await runDoctor(CWD);
+    if (options.json) {
+      console.log(JSON.stringify(report, null, 2));
+    } else {
+      console.log(formatDoctorReport(report));
+    }
+    if (!report.ok || (options.strict && report.warnings > 0)) {
+      process.exitCode = 1;
+    }
   });
 
 function reportCliError(error: unknown): void {

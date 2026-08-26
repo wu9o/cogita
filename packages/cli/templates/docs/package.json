@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "cogita dev",
+    "doctor": "cogita doctor",
     "build": "cogita build",
     "preview": "cogita preview"
   },

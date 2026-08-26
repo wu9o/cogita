@@ -13,6 +13,7 @@ title: 使用指南
 - [最佳实践](./best-practices.md)：组织内容、控制构建复杂度和优化性能。
 - [开发指南](./development.md)：本地开发、测试和代码规范。
 - [部署指南](./deployment.md)：构建产物和静态托管部署。
+- [站点升级与自检](./site-doctor.md)：使用 `cogita doctor` 管理真实站点的长期采用。
 - [内容仓库迁移](./migration.md)：将博客或知识库作为独立站点消费 Cogita 包。
 - [兼容性矩阵](./compatibility-matrix.md)：查看 Core、主题、插件和宿主运行时的支持组合。
 - [浏览器级验收](./browser-acceptance.md)：在根路径和子路径预览中验证真实页面运行时。
