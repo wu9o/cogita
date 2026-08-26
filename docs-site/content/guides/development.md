@@ -45,6 +45,9 @@ pnpm run check
 
 # 运行工作区测试
 pnpm run test
+
+# 运行发布包边界和独立消费者检查
+pnpm run check:release
 ```
 
 修改包源码后，先运行 `pnpm run build:packages`，再运行文档站或测试。这样可以避免文档站继续引用旧的 `dist` 构建产物。
@@ -194,6 +197,8 @@ pnpm --filter docs-site build
 pnpm run check
 pnpm run test
 ```
+
+发布前还应运行 `pnpm run check:release`。它会在一次包构建后依次检查发布包边界、最小博客消费者、同级独立博客消费者和独立文档消费者；同级博客仓库不存在时，博客消费者检查会安全跳过，但文档消费者检查仍会执行。
 
 ## 文档同步
 
