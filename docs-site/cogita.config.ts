@@ -28,6 +28,7 @@ export default defineConfig({
             { text: '配置指南', link: '/configuration' },
             { text: '主题总览', link: '/themes' },
             { text: '包与能力地图', link: '/package-map' },
+            { text: '第三方扩展 Starter', link: '/starters' },
           ],
         },
         {

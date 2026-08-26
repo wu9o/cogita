@@ -96,6 +96,8 @@ export const pluginYourFeature = (config: CogitaPluginConfig) => {
 
 `buildContext` 当前包含 `root`、`cwd`、共享 `contentIndex`、主题布局映射、`strict`、统一日志出口和框架元数据。顶层旧字段仍会保留一段时间，第三方插件可以渐进迁移。
 
+如果希望从可运行骨架开始，可以复制仓库中的[插件 starter](https://github.com/wu9o/cogita/tree/main/starters/plugin)。它已经包含独立包构建配置、统一日志接入、能力声明和可选工厂配置；复制后替换占位包名即可运行 `pnpm run build`。
+
 ## 📦 创建新插件
 
 ### 1. 项目结构
