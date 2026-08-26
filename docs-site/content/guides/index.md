@@ -14,6 +14,7 @@ title: 使用指南
 - [开发指南](./development.md)：本地开发、测试和代码规范。
 - [部署指南](./deployment.md)：构建产物和静态托管部署。
 - [内容仓库迁移](./migration.md)：将博客或知识库作为独立站点消费 Cogita 包。
+- [兼容性矩阵](./compatibility-matrix.md)：查看 Core、主题、插件和宿主运行时的支持组合。
 - [主题使用与扩展](../theme-customization.md)：选择主题并覆盖主题配置。
 
 ## 推荐路径
