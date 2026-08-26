@@ -1,4 +1,10 @@
-import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
+import {
+  COGITA_CAPABILITIES,
+  COGITA_VIRTUAL_MODULE_IDS,
+  createCogitaVirtualModule,
+  getCogitaBuildContext,
+  getCogitaLogger,
+} from '@cogita/shared';
 import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import type { BlogArchive, BlogListFilter, BlogListPage } from './types';
 import {
@@ -32,7 +38,7 @@ export function pluginBlogList(config: CogitaPluginConfig): CogitaPlugin | null 
     name: '@cogita/plugin-blog-list',
     cogita: {
       providesCapabilities: ['content.blog-list'],
-      requiresCapabilities: ['content.posts'],
+      requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
       requiredLayouts: [
         { layout: 'blogList', label: '文章列表' },
         {
@@ -124,7 +130,7 @@ export function pluginBlogList(config: CogitaPluginConfig): CogitaPlugin | null 
 
     addRuntimeModules() {
       return {
-        'virtual-blog-list-data': `
+        [COGITA_VIRTUAL_MODULE_IDS.BLOG_LIST_DATA]: createCogitaVirtualModule(`
           export const blogListConfig = ${JSON.stringify(finalConfig)};
           export const allBlogListPages = ${JSON.stringify(pages)};
           export const allBlogListFilters = ${JSON.stringify(filters)};
@@ -141,7 +147,7 @@ export function pluginBlogList(config: CogitaPluginConfig): CogitaPlugin | null 
           export function getArchive(key) {
             return allArchives.find(item => item.key === key);
           }
-        `,
+        `),
       };
     },
   };

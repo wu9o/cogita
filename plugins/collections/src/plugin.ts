@@ -1,4 +1,10 @@
-import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
+import {
+  COGITA_CAPABILITIES,
+  COGITA_VIRTUAL_MODULE_IDS,
+  createCogitaVirtualModule,
+  getCogitaBuildContext,
+  getCogitaLogger,
+} from '@cogita/shared';
 import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import type { CollectionData, CollectionStats, CollectionsConfig } from './types';
 import {
@@ -37,7 +43,7 @@ export function pluginCollections(config: CogitaPluginConfig): CogitaPlugin | nu
     name: '@cogita/plugin-collections',
     cogita: {
       providesCapabilities: ['content.collections'],
-      requiresCapabilities: ['content.posts'],
+      requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
       requiredLayouts: [{ layout: 'collection', label: '合集' }],
     },
 
@@ -85,7 +91,7 @@ export function pluginCollections(config: CogitaPluginConfig): CogitaPlugin | nu
 
     addRuntimeModules() {
       return {
-        'virtual-collections-data': `
+        [COGITA_VIRTUAL_MODULE_IDS.COLLECTIONS_DATA]: createCogitaVirtualModule(`
           export const allCollections = ${JSON.stringify(allCollectionsData)};
           export const collectionMap = ${JSON.stringify(Object.fromEntries(collectionMap))};
           export const collectionsConfig = ${JSON.stringify(finalCollectionsConfig)};
@@ -103,7 +109,7 @@ export function pluginCollections(config: CogitaPluginConfig): CogitaPlugin | nu
           export function getCollectionByPostRoute(route) {
             return allCollections.find(c => c.posts.some(p => p.route === route));
           }
-        `,
+        `),
       };
     },
 

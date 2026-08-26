@@ -1,4 +1,5 @@
 declare module 'virtual-categories-data' {
+  export const cogitaVirtualModuleVersion: 1;
   import type {
     CategoryData,
     CategoryPostReference,

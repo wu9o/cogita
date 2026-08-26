@@ -1,4 +1,10 @@
-import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
+import {
+  COGITA_CAPABILITIES,
+  COGITA_VIRTUAL_MODULE_IDS,
+  createCogitaVirtualModule,
+  getCogitaBuildContext,
+  getCogitaLogger,
+} from '@cogita/shared';
 import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import type { CategoriesConfig, CategoryData, CategoryStats } from './types';
 import {
@@ -31,7 +37,7 @@ export function pluginCategories(config: CogitaPluginConfig): CogitaPlugin | nul
     name: '@cogita/plugin-categories',
     cogita: {
       providesCapabilities: ['discovery.categories'],
-      requiresCapabilities: ['content.posts'],
+      requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
       requiredLayouts: [{ layout: 'category', label: '分类' }],
     },
 
@@ -77,7 +83,7 @@ export function pluginCategories(config: CogitaPluginConfig): CogitaPlugin | nul
 
     addRuntimeModules() {
       return {
-        'virtual-categories-data': `
+        [COGITA_VIRTUAL_MODULE_IDS.CATEGORIES_DATA]: createCogitaVirtualModule(`
           export const allCategories = ${JSON.stringify(allCategories)};
           export const categoryMap = ${JSON.stringify(Object.fromEntries(categoryMap))};
           export const categoriesConfig = ${JSON.stringify(finalConfig)};
@@ -104,7 +110,7 @@ export function pluginCategories(config: CogitaPluginConfig): CogitaPlugin | nul
             }
             return breadcrumbs;
           }
-        `,
+        `),
       };
     },
   };

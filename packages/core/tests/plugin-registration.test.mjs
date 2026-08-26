@@ -2,7 +2,14 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, it } from 'node:test';
-import { getCogitaDiagnostic } from '@cogita/shared';
+import {
+  COGITA_BUILD_CONTEXT_VERSION,
+  COGITA_CAPABILITIES,
+  COGITA_CONTENT_INDEX_VERSION,
+  COGITA_VIRTUAL_MODULE_IDS,
+  COGITA_VIRTUAL_MODULE_SCHEMA_VERSION,
+  getCogitaDiagnostic,
+} from '@cogita/shared';
 import { createRspressConfig } from '../dist/es/index.js';
 
 const { version: coreVersion } = JSON.parse(
@@ -37,6 +44,8 @@ describe('插件注册契约', () => {
     assert.equal(pluginNames.at(1), 'cogita-runtime-defaults');
     assert.equal(pluginNames.at(-1), 'test-user-plugin');
     assert.equal(receivedConfig.buildContext.root, '/tmp/cogita-plugin-registration-test');
+    assert.equal(receivedConfig.buildContext.contractVersion, COGITA_BUILD_CONTEXT_VERSION);
+    assert.equal(receivedConfig.contentIndex.contractVersion, COGITA_CONTENT_INDEX_VERSION);
     assert.equal(receivedConfig.buildContext.strict, true);
     assert.equal(receivedConfig.buildContext.framework.version, coreVersion);
     assert.equal(typeof receivedConfig.buildContext.logger.info, 'function');
@@ -48,8 +57,12 @@ describe('插件注册契约', () => {
     assert.equal(defaults.cogita.runtimeModulePolicy, 'fallback');
     const modules = await defaults.addRuntimeModules();
 
-    assert.match(modules['virtual-tags-data'], /export const allTags = \[\];/);
-    assert.match(modules['virtual-comments-data'], /enabled: false/);
+    assert.match(
+      modules[COGITA_VIRTUAL_MODULE_IDS.TAGS_DATA],
+      new RegExp(`cogitaVirtualModuleVersion = ${COGITA_VIRTUAL_MODULE_SCHEMA_VERSION}`)
+    );
+    assert.match(modules[COGITA_VIRTUAL_MODULE_IDS.TAGS_DATA], /export const allTags = \[\];/);
+    assert.match(modules[COGITA_VIRTUAL_MODULE_IDS.COMMENTS_DATA], /enabled: false/);
   });
 
   it('应接受已满足的插件能力契约', async () => {
@@ -142,7 +155,7 @@ describe('插件注册契约', () => {
     const findPlugin = (name) => rspressConfig.plugins.find((plugin) => plugin.name === name);
 
     assert.deepEqual(findPlugin('@cogita/plugin-posts-frontmatter').cogita.providesCapabilities, [
-      'content.posts',
+      COGITA_CAPABILITIES.CONTENT_POSTS,
     ]);
     assert.deepEqual(findPlugin('@cogita/plugin-images').cogita.providesCapabilities, [
       'content.images',
@@ -164,7 +177,11 @@ describe('插件注册契约', () => {
     ]);
 
     const postsRuntime = await findPlugin('@cogita/plugin-posts-frontmatter').addRuntimeModules();
-    assert.match(postsRuntime['virtual-posts-data'], /contentDataVersion = 1/);
+    assert.match(
+      postsRuntime[COGITA_VIRTUAL_MODULE_IDS.POSTS_DATA],
+      /cogitaVirtualModuleVersion = 1/
+    );
+    assert.match(postsRuntime[COGITA_VIRTUAL_MODULE_IDS.POSTS_DATA], /contentDataVersion = 1/);
   });
 
   it('严格模式下应拒绝插件生成重复页面路由', async () => {

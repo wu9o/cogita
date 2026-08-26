@@ -1,9 +1,12 @@
 import { cp, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import {
+  COGITA_CAPABILITIES,
+  COGITA_VIRTUAL_MODULE_IDS,
   type CogitaPlugin,
   type CogitaPluginConfig,
   type ContentPost,
+  createCogitaVirtualModule,
   getCogitaBuildContext,
   getCogitaLogger,
 } from '@cogita/shared';
@@ -131,7 +134,7 @@ export function pluginImages(config: CogitaPluginConfig): CogitaPlugin | null {
     name: '@cogita/plugin-images',
     cogita: {
       providesCapabilities: ['content.images'],
-      requiresCapabilities: ['content.posts'],
+      requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 
     async beforeBuild() {
@@ -199,7 +202,9 @@ export function pluginImages(config: CogitaPluginConfig): CogitaPlugin | null {
 
     addRuntimeModules() {
       return {
-        'virtual-images-data': createRuntimeModule(allImages, postCovers, imageUsage),
+        [COGITA_VIRTUAL_MODULE_IDS.IMAGES_DATA]: createCogitaVirtualModule(
+          createRuntimeModule(allImages, postCovers, imageUsage)
+        ),
       };
     },
   };

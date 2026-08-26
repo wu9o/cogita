@@ -1,4 +1,10 @@
-import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
+import {
+  COGITA_CAPABILITIES,
+  COGITA_VIRTUAL_MODULE_IDS,
+  createCogitaVirtualModule,
+  getCogitaBuildContext,
+  getCogitaLogger,
+} from '@cogita/shared';
 import type { CogitaPlugin, CogitaPluginConfig, ContentPost } from '@cogita/shared';
 import type { TagData, TagStats, TagsConfig } from './types';
 import { calculateTagStats, extractTagsFromPosts, processTagsFromPosts } from './utils';
@@ -46,7 +52,7 @@ export function pluginTags(config: CogitaPluginConfig): CogitaPlugin | null {
     name: '@cogita/plugin-tags',
     cogita: {
       providesCapabilities: ['discovery.tags'],
-      requiresCapabilities: ['content.posts'],
+      requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
       requiredLayouts: [{ layout: 'tag', label: '标签' }],
     },
 
@@ -148,7 +154,7 @@ export function pluginTags(config: CogitaPluginConfig): CogitaPlugin | null {
     addRuntimeModules() {
       // 创建虚拟模块暴露标签数据给主题组件
       return {
-        'virtual-tags-data': `
+        [COGITA_VIRTUAL_MODULE_IDS.TAGS_DATA]: createCogitaVirtualModule(`
           export const allTags = ${JSON.stringify(allTagsData)};
           export const tagMap = ${JSON.stringify(Object.fromEntries(tagMap))};
           export const tagsConfig = ${JSON.stringify(finalTagsConfig)};
@@ -180,7 +186,7 @@ export function pluginTags(config: CogitaPluginConfig): CogitaPlugin | null {
               .slice(0, limit)
               .map(({ relevance, ...tag }) => tag);
           }
-        `,
+        `),
       };
     },
   };

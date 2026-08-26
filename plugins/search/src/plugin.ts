@@ -1,4 +1,10 @@
-import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
+import {
+  COGITA_CAPABILITIES,
+  COGITA_VIRTUAL_MODULE_IDS,
+  createCogitaVirtualModule,
+  getCogitaBuildContext,
+  getCogitaLogger,
+} from '@cogita/shared';
 import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import type { SearchDocument } from './types';
 import { createSearchIndexHash, extractSearchDocuments, resolveSearchConfig } from './utils';
@@ -23,7 +29,7 @@ export function pluginSearch(config: CogitaPluginConfig): CogitaPlugin | null {
     name: '@cogita/plugin-search',
     cogita: {
       providesCapabilities: ['discovery.search'],
-      requiresCapabilities: ['content.posts'],
+      requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
       requiredLayouts: [{ layout: 'search', label: '搜索' }],
     },
 
@@ -60,11 +66,11 @@ export function pluginSearch(config: CogitaPluginConfig): CogitaPlugin | null {
 
     addRuntimeModules() {
       return {
-        'virtual-search-data': `
+        [COGITA_VIRTUAL_MODULE_IDS.SEARCH_DATA]: createCogitaVirtualModule(`
           export const searchConfig = ${JSON.stringify(finalConfig)};
           export const searchDocuments = ${JSON.stringify(documents)};
           export const searchIndexHash = ${JSON.stringify(indexHash)};
-        `,
+        `),
       };
     },
   };

@@ -1,4 +1,5 @@
 declare module 'virtual-images-data' {
+  export const cogitaVirtualModuleVersion: 1;
   export interface ImageData {
     src: string;
     relativePath?: string;
