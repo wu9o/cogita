@@ -62,4 +62,4 @@ jobs:
 
       - name: Verify published registry consumer
         if: steps.changesets.outputs.published == 'true'
-        run: pnpm run check:registry-consumer
+        run: pnpm run check:registry-consumer -- --require-doctor
