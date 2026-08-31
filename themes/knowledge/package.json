@@ -53,6 +53,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@cogita/plugin-content-check": "workspace:*",
     "@cogita/plugin-content-relations": "workspace:*",
     "@cogita/plugin-posts-frontmatter": "workspace:*",
     "@cogita/plugin-search": "workspace:*",

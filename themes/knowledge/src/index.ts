@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { pluginContentCheck } from '@cogita/plugin-content-check';
 import { pluginContentRelations } from '@cogita/plugin-content-relations';
 import { pluginPostsFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { pluginSearch } from '@cogita/plugin-search';
@@ -53,6 +54,12 @@ export function getThemeConfig(): CogitaTheme {
     },
     globalStyles: path.resolve(__dirname, './theme.css'),
     globalUIComponents: [path.resolve(__dirname, './components/Relations.js')],
-    plugins: [pluginPostsFrontmatter, knowledgeRelations, knowledgeSearch, knowledgeTags],
+    plugins: [
+      pluginPostsFrontmatter,
+      pluginContentCheck,
+      knowledgeRelations,
+      knowledgeSearch,
+      knowledgeTags,
+    ],
   };
 }

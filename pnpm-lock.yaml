@@ -679,6 +679,9 @@ importers:
 
   themes/knowledge:
     dependencies:
+      '@cogita/plugin-content-check':
+        specifier: workspace:*
+        version: link:../../plugins/content-check
       '@cogita/plugin-content-relations':
         specifier: workspace:*
         version: link:../../plugins/content-relations

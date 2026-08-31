@@ -4,7 +4,7 @@ title: 内容质量与构建诊断插件
 
 # 内容质量与构建诊断插件
 
-`@cogita/plugin-content-check` 在构建阶段复用 Cogita 的共享 `ContentIndex`，集中检查文章内容质量，并将结果输出到终端或 JSON 报告。
+`@cogita/plugin-content-check` 在构建阶段复用 Cogita 的共享 `ContentIndex`，集中检查文章和普通文档的内容质量，并将结果输出到终端或 JSON 报告。
 
 ## 启用方式
 
@@ -33,9 +33,9 @@ export default defineConfig({
 第一期支持以下检查：
 
 - 必填 `title`、`description`、`date`、`author`、`imageAlt` 字段；
-- 文章路由重复；
-- 文章中的本地 Markdown、文章路由和公共资源链接；
-- 文章封面和正文中的本地图片是否存在；
+- 内容条目路由重复；
+- 文章或普通文档中的本地 Markdown、内容路由和公共资源链接；
+- 内容封面和正文中的本地图片是否存在；
 - 封面和正文图片是否有替代文本；
 - 正文是否为空。
 
@@ -67,7 +67,7 @@ export default defineConfig({
 }
 ```
 
-`reportType` 为 `content-check` 或 `seo-audit`，`itemCount` 表示文章或页面数量。旧版消费者仍可读取 `postCount` 或 `pageCount`，但新的 CI 工具应优先使用统一字段。
+`reportType` 为 `content-check` 或 `seo-audit`，`itemCount` 表示文章或普通文档数量。旧版消费者仍可读取 `postCount` 或 `pageCount`，但新的 CI 工具应优先使用统一字段。为兼容旧报告，插件仍会保留 `postCount` 字段，但在统一索引模式下它表示全部内容条目数量。
 
 在构建后执行统一门禁：
 
@@ -81,4 +81,4 @@ node scripts/check-quality-reports.mjs \
 
 错误阈值默认是 `0`，警告默认不阻断；也可以通过 `COGITA_QUALITY_MAX_ERRORS` 和 `COGITA_QUALITY_MAX_WARNINGS` 配置。运行在 GitHub Actions 时会自动输出 `::error`/`::warning` annotation，也可以用 `--annotations always` 或 `--no-annotations` 显式控制。真实博客发布检查会同时验证两份报告和构建产物。
 
-插件还会独立扫描文章源文件，捕获共享内容索引因 Frontmatter 解析失败而跳过的文件。插件只负责构建期诊断，不向浏览器注入运行时代码，也不把检查逻辑放进主题布局，因此可以由不同主题复用。
+插件还会独立扫描文章和普通文档源文件，捕获共享内容索引因 Frontmatter 解析失败而跳过的文件。Knowledge 主题默认声明该插件，但只有站点显式配置 `contentCheck` 时才执行检查。插件只负责构建期诊断，不向浏览器注入运行时代码，也不把检查逻辑放进主题布局，因此可以由不同主题复用。

@@ -2,6 +2,7 @@
 '@cogita/plugin-images': patch
 '@cogita/theme-docs': patch
 '@cogita/plugin-content-relations': minor
+'@cogita/plugin-content-check': patch
 '@cogita/shared': patch
 '@cogita/core': patch
 '@cogita/plugin-search': patch

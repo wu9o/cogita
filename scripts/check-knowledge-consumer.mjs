@@ -55,7 +55,7 @@ function packWorkspacePackages(packageDirectories, packageCache) {
 }
 
 /** 创建同时包含文章和普通文档的知识库消费者。 */
-function createConsumerProject(consumerRoot, archives) {
+function createConsumerProject(consumerRoot, archives, base) {
   const dependencies = Object.fromEntries(
     requiredPackages.map((name) => [name, `file:${archives.get(name)}`])
   );
@@ -69,6 +69,10 @@ function createConsumerProject(consumerRoot, archives) {
         name: 'cogita-knowledge-consumer-smoke',
         private: true,
         type: 'module',
+        scripts: {
+          build: 'cogita build',
+          doctor: 'cogita doctor',
+        },
         dependencies,
         pnpm: { overrides },
       },
@@ -84,10 +88,16 @@ export default defineConfig({
   site: {
     title: 'Knowledge Consumer Smoke',
     description: '文章和文档的统一知识库消费者。',
-    base: '/knowledge/',
+    base: '${base}',
   },
   posts: { dir: 'posts', routePrefix: 'posts', extensions: ['md'] },
   contentDir: 'content',
+  contentCheck: {
+    enabled: true,
+    reportPath: 'content-report.json',
+    checkImages: false,
+    checkLinks: true,
+  },
   theme: '@cogita/theme-knowledge',
 });
 `
@@ -123,8 +133,38 @@ tags: [实践]
 ---
 
 这是一个可被文章反向链接的文档。
+
+[尚未完成的页面](/guides/missing)
 `
   );
+}
+
+/** 执行一次独立消费者构建并返回关键首页内容。 */
+function buildConsumer(consumerRoot, label) {
+  const build = spawnSync('pnpm', ['exec', 'cogita', 'build'], {
+    cwd: consumerRoot,
+    encoding: 'utf8',
+    stdio: 'inherit',
+  });
+  if (build.status !== 0) {
+    throw new Error(`独立知识库消费者${label}构建失败。`);
+  }
+
+  const expectedFiles = [
+    'doc_build/index.html',
+    'doc_build/posts/hello.html',
+    'doc_build/guides/start.html',
+    'doc_build/search.html',
+    'doc_build/tags.html',
+    'doc_build/content-report.json',
+  ];
+  for (const relativePath of expectedFiles) {
+    if (!existsSync(path.join(consumerRoot, relativePath))) {
+      throw new Error(`独立知识库消费者缺少${label}构建产物：${relativePath}`);
+    }
+  }
+
+  return readFileSync(path.join(consumerRoot, 'doc_build/index.html'), 'utf8');
 }
 
 const tempRoot = mkdtempSync(path.join(os.tmpdir(), 'cogita-knowledge-consumer-'));
@@ -136,7 +176,7 @@ try {
   mkdirSync(path.join(consumerRoot, 'posts'), { recursive: true });
   mkdirSync(path.join(consumerRoot, 'content', 'guides'), { recursive: true });
   const archives = packWorkspacePackages(getPackageDirectories(), packageCache);
-  createConsumerProject(consumerRoot, archives);
+  createConsumerProject(consumerRoot, archives, '/knowledge/');
 
   const install = spawnSync(
     'pnpm',
@@ -147,33 +187,45 @@ try {
     throw new Error('独立知识库消费者安装发布包失败。');
   }
 
-  const build = spawnSync('pnpm', ['exec', 'cogita', 'build'], {
+  const doctor = spawnSync('pnpm', ['exec', 'cogita', 'doctor', '--strict', '--json'], {
     cwd: consumerRoot,
     encoding: 'utf8',
-    stdio: 'inherit',
   });
-  if (build.status !== 0) {
-    throw new Error('独立知识库消费者构建失败。');
+  if (doctor.status !== 0) {
+    throw new Error(`独立知识库消费者 doctor 失败：${doctor.stderr || doctor.stdout}`);
+  }
+  const doctorReport = JSON.parse(doctor.stdout);
+  if (!doctorReport.ok || doctorReport.errors !== 0 || doctorReport.warnings !== 0) {
+    throw new Error(`独立知识库消费者 doctor 报告未通过：${doctor.stdout}`);
   }
 
-  const expectedFiles = [
-    'doc_build/index.html',
-    'doc_build/posts/hello.html',
-    'doc_build/guides/start.html',
-    'doc_build/search.html',
-    'doc_build/tags.html',
-  ];
-  for (const relativePath of expectedFiles) {
-    if (!existsSync(path.join(consumerRoot, relativePath))) {
-      throw new Error(`独立知识库消费者缺少构建产物：${relativePath}`);
-    }
+  const subpathIndexHtml = buildConsumer(consumerRoot, '子路径');
+  if (!subpathIndexHtml.includes('/knowledge/')) {
+    throw new Error('独立知识库消费者子路径构建未生成 /knowledge/ 基础路径。');
   }
 
-  const indexHtml = readFileSync(path.join(consumerRoot, 'doc_build/index.html'), 'utf8');
-  if (!indexHtml.includes('消费者文章') || !indexHtml.includes('开始指南')) {
+  const contentReport = JSON.parse(
+    readFileSync(path.join(consumerRoot, 'doc_build/content-report.json'), 'utf8')
+  );
+  if (
+    contentReport.itemCount !== 3 ||
+    contentReport.errors !== 0 ||
+    !contentReport.issues.some(
+      (issue) => issue.code === 'missing-link' && issue.route === '/guides/start'
+    )
+  ) {
+    throw new Error(`统一内容断链诊断结果不符合预期：${JSON.stringify(contentReport)}`);
+  }
+
+  createConsumerProject(consumerRoot, archives, '/');
+  const rootIndexHtml = buildConsumer(consumerRoot, '根路径');
+
+  if (!rootIndexHtml.includes('消费者文章') || !rootIndexHtml.includes('开始指南')) {
     throw new Error('知识库首页未同时包含文章和文档入口。');
   }
-  console.log('[Knowledge Consumer Smoke] 文章、文档、搜索、标签和子路径构建验证通过');
+  console.log(
+    '[Knowledge Consumer Smoke] doctor 严格检查、根路径/子路径构建、文章文档统一索引和断链诊断验证通过'
+  );
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });
 }

@@ -8,6 +8,7 @@
 - 本地搜索；
 - 标签聚合；
 - 内容出链与反向链接；
+- 可选的统一内容质量诊断；
 - 首页内容探索、搜索页和标签页。
 
 ```bash
@@ -29,4 +30,4 @@ export default defineConfig({
 ```
 
 搜索、标签和内容关系默认启用；站点仍可以通过 `search`、`tags` 和
-`contentRelations` 配置覆盖路由或关闭对应能力。
+`contentRelations` 配置覆盖路由或关闭对应能力。显式配置 `contentCheck` 后，主题会对文章和普通文档共同生成内容质量报告。

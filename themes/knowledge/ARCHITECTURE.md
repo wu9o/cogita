@@ -13,8 +13,9 @@ posts/*.md + content/**/*.md
        Knowledge 主题布局
 ```
 
-主题默认注册 `pluginPostsFrontmatter`、`pluginSearch`、`pluginTags` 和
-`pluginContentRelations`。后三个插件通过主题包装器提供合理默认配置，同时保留站点显式配置。
+主题默认注册 `pluginPostsFrontmatter`、`pluginContentCheck`、`pluginSearch`、
+`pluginTags` 和 `pluginContentRelations`。搜索、标签和关系插件通过主题包装器提供合理默认配置，
+内容诊断插件则只有在站点显式配置 `contentCheck` 后才执行。
 
 ## 页面边界
 
@@ -22,4 +23,5 @@ posts/*.md + content/**/*.md
 - 搜索页消费搜索虚拟模块，不在浏览器重新读取源文件；
 - 标签页消费标签虚拟模块，可展示标签索引和标签详情；
 - 全局关系组件在有出链或反向链接的内容页展示探索入口；
+- 内容诊断插件对文章和文档统一生成质量报告，不把检查逻辑放入布局；
 - 文章和文档的正文仍由 Rspress 内容页面负责。
