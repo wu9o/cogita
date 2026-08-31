@@ -24,7 +24,15 @@ images: {
 }
 ```
 
-运行时可以从 `virtual-images-data` 读取 `imageUsage`，并通过 `getUnusedImages()` 找到没有被文章封面引用的公共图片。正文图片的 `figure`、说明文字和 lightbox 交互仍属于后续阶段。
+运行时可以从 `virtual-images-data` 读取 `imageUsage`，并通过 `getUnusedImages()` 找到没有被文章封面引用的公共图片。正文图片的 lightbox 交互仍由 Rspress 原生能力负责。
+
+独立 Markdown 图片可以使用标准 title 语法生成说明文字：
+
+```md
+![示例图片](/images/example.png "图片说明")
+```
+
+图片插件会把只有一张图片的段落转换为带有 `cogita-image-figure` 类名的 `figure`，并将 title 放入 `figcaption`。带有其他文字的段落和没有 title 的图片保持 Rspress 原始输出；图片放大仍由 Rspress 原生能力负责。
 
 Rspress 已内置图片放大能力，Cogita 通过顶层 `mediumZoom` 配置透传其选择器和选项，不在图片插件中重复引入交互依赖：
 

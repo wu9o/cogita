@@ -291,6 +291,29 @@ body {
   border: 1px solid var(--cogita-docs-border);
 }
 
+/* 正文图片统一使用居中、圆角和说明文字，保留 Rspress 的放大交互。 */
+.rspress-doc p:has(> img:only-child),
+.rspress-doc figure.cogita-image-figure {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.rspress-doc p:has(> img:only-child) > img,
+.rspress-doc figure.cogita-image-figure > img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--cogita-docs-border);
+  border-radius: 14px;
+}
+
+.rspress-doc figure.cogita-image-figure figcaption {
+  margin-top: 0.75rem;
+  color: var(--cogita-docs-muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
 @media (max-width: 760px) {
   .docs-home {
     padding-top: 56px;
