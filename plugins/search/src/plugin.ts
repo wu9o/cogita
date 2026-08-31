@@ -28,7 +28,7 @@ export function pluginSearch(config: CogitaPluginConfig): CogitaPlugin | null {
   return {
     name: '@cogita/plugin-search',
     cogita: {
-      providesCapabilities: ['discovery.search'],
+      providesCapabilities: [COGITA_CAPABILITIES.DISCOVERY_SEARCH],
       requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
       requiredLayouts: [{ layout: 'search', label: '搜索' }],
     },

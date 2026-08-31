@@ -52,12 +52,12 @@
     "prepack": "npm run build"
   },
   "dependencies": {
+    "@cogita/shared": "workspace:*",
     "glob": "^11.0.3",
     "gray-matter": "^4.0.3"
   },
   "devDependencies": {
     "@cogita/config": "workspace:*",
-    "@cogita/shared": "workspace:*",
     "@microsoft/api-extractor": "^7.52.10",
     "@rslib/core": "0.11.2",
     "@rspress/shared": "^1.11.2",

@@ -56,7 +56,7 @@ export function pluginRSS(config: CogitaPluginConfig): CogitaPlugin | null {
   return {
     name: '@cogita/plugin-rss',
     cogita: {
-      providesCapabilities: ['syndication.rss'],
+      providesCapabilities: [COGITA_CAPABILITIES.SYNDICATION_RSS],
       requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 

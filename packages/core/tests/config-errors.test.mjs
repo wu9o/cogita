@@ -4,9 +4,25 @@ import os from 'node:os';
 import path from 'node:path';
 import { describe, it } from 'node:test';
 import { getCogitaDiagnostic } from '@cogita/shared';
-import { loadCogitaConfig, prepareContentDirectory } from '../dist/es/index.js';
+import {
+  isCogitaThemeConfig,
+  loadCogitaConfig,
+  prepareContentDirectory,
+} from '../dist/es/index.js';
 
 describe('配置错误诊断', () => {
+  it('Core 与 CLI 应共享最小主题契约判断', () => {
+    assert.equal(
+      isCogitaThemeConfig({ name: '@cogita/theme-test', pageLayouts: { home: './Home.js' } }),
+      true
+    );
+    assert.equal(
+      isCogitaThemeConfig({ name: '@cogita/theme-test', pageLayouts: { tag: './Tag.js' } }),
+      false
+    );
+    assert.equal(isCogitaThemeConfig({ pageLayouts: { home: './Home.js' } }), false);
+  });
+
   it('首次构建相关命令应识别缺少配置文件', async () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'cogita-config-missing-'));
 

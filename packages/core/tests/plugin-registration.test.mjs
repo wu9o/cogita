@@ -137,6 +137,67 @@ describe('插件注册契约', () => {
     assert.match(warnings[0], /能力契约未满足.*test\.optional/);
   });
 
+  it('严格模式下应拒绝多个插件提供同一能力', async () => {
+    const error = await captureRejection(
+      createRspressConfig(
+        {
+          plugins: [
+            () => ({
+              name: 'first-capability-provider-plugin',
+              cogita: { providesCapabilities: ['test.shared'] },
+            }),
+            () => ({
+              name: 'second-capability-provider-plugin',
+              cogita: { providesCapabilities: ['test.shared'] },
+            }),
+          ],
+        },
+        '/tmp/cogita-capability-provider-conflict-test'
+      ),
+      /能力由多个插件提供.*test\.shared/
+    );
+
+    assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_CAPABILITY_PROVIDER_CONFLICT');
+    assert.deepEqual(getCogitaDiagnostic(error)?.details, {
+      providers: [
+        {
+          capability: 'test.shared',
+          providers: ['first-capability-provider-plugin', 'second-capability-provider-plugin'],
+        },
+      ],
+    });
+  });
+
+  it('非严格模式下应警告多个插件提供同一能力', async () => {
+    const warnings = [];
+    const originalWarn = console.warn;
+    console.warn = (message) => warnings.push(message);
+
+    try {
+      await createRspressConfig(
+        {
+          strict: false,
+          plugins: [
+            () => ({
+              name: 'first-capability-provider-plugin',
+              cogita: { providesCapabilities: ['test.shared'] },
+            }),
+            () => ({
+              name: 'second-capability-provider-plugin',
+              cogita: { providesCapabilities: ['test.shared'] },
+            }),
+          ],
+        },
+        '/tmp/cogita-capability-provider-conflict-test'
+      );
+    } finally {
+      console.warn = originalWarn;
+    }
+
+    assert.equal(warnings.length, 1);
+    assert.match(warnings[0], /能力由多个插件提供.*非严格模式下继续构建/);
+  });
+
   it('内置插件应暴露稳定的能力标识', async () => {
     const rspressConfig = await createRspressConfig(
       {

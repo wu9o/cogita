@@ -258,11 +258,15 @@ pnpm run test
 - [x] **Default Theme**: Complete lucid theme implementation ✅
 - [x] **Plugin System Optimization**: Unified API and type safety ✅
 
-### 🚀 Phase 2: Ecosystem Expansion (In Progress)
-- [ ] **Official Plugin Library**: Tags, categories, search, comment systems
-- [ ] **Theme Diversity**: At least 2-3 official themes with different styles
-- [ ] **Documentation Website**: Complete documentation and example site
-- [ ] **Template Repository**: Quick start template collection
+### 🚧 Current Focus: Productization and Long-term Adoption
+- [x] **Official Plugin Library**: Tags, categories, search, comment systems
+- [x] **Theme Diversity**: Blog, editorial, and documentation themes
+- [x] **Documentation Website**: Complete documentation and example site
+- [x] **Template Repository**: Quick start template collection
+
+The current focus is productization and long-term adoption: stable public contracts,
+upgrade diagnostics, independent-site deployment checks, and a predictable extension
+boundary for third-party themes and plugins.
 
 ### 🔮 Phase 3: Advanced Features (Planned)
 - [ ] **Full-text Search**: Algolia/local search based search functionality

@@ -37,7 +37,7 @@ export function pluginBlogList(config: CogitaPluginConfig): CogitaPlugin | null 
   return {
     name: '@cogita/plugin-blog-list',
     cogita: {
-      providesCapabilities: ['content.blog-list'],
+      providesCapabilities: [COGITA_CAPABILITIES.CONTENT_BLOG_LIST],
       requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
       requiredLayouts: [
         { layout: 'blogList', label: '文章列表' },

@@ -2,7 +2,12 @@ import fs from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { findCogitaConfigPath, loadCogitaConfig, resolveThemePackage } from '@cogita/core';
+import {
+  findCogitaConfigPath,
+  isCogitaThemeConfig,
+  loadCogitaConfig,
+  resolveThemePackage,
+} from '@cogita/core';
 import {
   COGITA_DOCTOR_SCHEMA_VERSION,
   type CogitaDoctorCheck,
@@ -263,13 +268,8 @@ async function checkTheme(
       return;
     }
 
-    const themeConfig = (
-      themeModule.getThemeConfig as () => {
-        name?: unknown;
-        pageLayouts?: { home?: unknown };
-      }
-    )();
-    if (!themeConfig?.name || !themeConfig.pageLayouts?.home) {
+    const themeConfig = (themeModule.getThemeConfig as () => unknown)();
+    if (!isCogitaThemeConfig(themeConfig)) {
       addCheck(
         checks,
         'error',

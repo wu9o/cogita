@@ -94,7 +94,7 @@ export function pluginSitemap(config: CogitaPluginConfig): CogitaPlugin | null {
   return {
     name: '@cogita/plugin-sitemap',
     cogita: {
-      providesCapabilities: ['seo.sitemap'],
+      providesCapabilities: [COGITA_CAPABILITIES.SEO_SITEMAP],
       requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 
