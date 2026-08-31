@@ -40,4 +40,13 @@ export default defineConfig({
 pnpm exec cogita build
 ~~~
 
+如果在没有配置文件的目录中首次执行构建，CLI 会输出 `COGITA_CONFIG_NOT_FOUND`，并提示使用初始化命令。配置语法错误、主题包未安装和 `contentDir` 不存在也会使用统一错误码；修复提示会直接跟随错误输出，便于本地排查和 CI 识别。
+
+常见诊断包括：
+
+- `COGITA_CONFIG_LOAD_FAILED`：配置文件无法加载或存在语法错误。
+- `COGITA_THEME_LOAD_FAILED` / `COGITA_THEME_INVALID`：主题包无法解析或没有正确导出主题配置。
+- `COGITA_CONTENT_DIR_NOT_FOUND`：`contentDir` 指向的目录不存在。
+- `COGITA_CAPABILITY_MISSING`：主题或插件声明的能力没有提供者。
+
 开发模式和部署方式请参考[开发指南](./guides/development.md)与[部署指南](./guides/deployment.md)。

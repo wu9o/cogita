@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {
+  COGITA_CAPABILITIES,
   type CogitaPlugin,
   type CogitaPluginConfig,
   getBlogListRouteEntries,
@@ -93,8 +94,8 @@ export function pluginSitemap(config: CogitaPluginConfig): CogitaPlugin | null {
   return {
     name: '@cogita/plugin-sitemap',
     cogita: {
-      providesCapabilities: ['seo.sitemap'],
-      requiresCapabilities: ['content.posts'],
+      providesCapabilities: [COGITA_CAPABILITIES.SEO_SITEMAP],
+      requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 
     async beforeBuild(rspressConfig: unknown) {

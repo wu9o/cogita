@@ -34,18 +34,20 @@ npx @cogita/cli --help
 
 ## 快速开始
 
-### 创建新博客
+### 创建新站点
 
 ```bash
-# 交互式创建
-cogita create
+# 创建博客站
+cogita create my-blog --template blog
 
-# 指定名称创建
-cogita create my-blog
+# 创建文档站
+cogita create my-docs --template docs
 
-# 使用模板创建
-cogita create my-blog --template minimal
+# 跳过依赖安装和 Git 初始化，适合先检查生成文件
+cogita create my-blog --template blog --no-install --no-git
 ```
+
+生成器默认使用 pnpm 安装依赖并初始化 Git。目标目录不为空时会停止，确认要覆盖模板文件时才使用 `--force`。
 
 ### 开发
 
@@ -70,24 +72,36 @@ cogita build --outDir dist
 cogita preview
 ```
 
+### 升级前自检
+
+```bash
+# 检查配置、依赖、主题和内容目录
+cogita doctor
+
+# 在 CI 中将 warning 也作为失败处理，并输出机器可读报告
+cogita doctor --strict --json
+```
+
+`doctor` 是只读检查，不会修改依赖或构建产物。默认只有 error 会导致失败；`--strict` 会将 warning 也作为失败。`--json` 的报告包含稳定的 `schemaVersion`、检查码和详情，适合接入部署流水线。
+
 ## 可用命令
 
 ### `cogita create [name]`
 
-创建新的 Cogita 博客项目。
+创建新的 Cogita 博客或文档项目。
 
 **选项：**
-- `-t, --template <name>` - 使用的模板（默认："basic"）
+- `-t, --template <name>` - 使用的模板（`blog` 或 `docs`，默认：`blog`）
 - `-p, --package-manager <pm>` - 包管理器（npm|yarn|pnpm）
 - `--no-git` - 跳过 Git 初始化
 - `--no-install` - 跳过依赖安装
 - `-f, --force` - 覆盖现有目录
 
 **模板：**
-- `basic` - 功能完整的博客模板（默认）
-- `minimal` - 基础功能的最小化设置
-- `tech` - 开发者导向的技术博客模板
-- `personal` - 个人博客模板，集成社交功能
+- `blog` - Lucid 博客模板，包含文章、搜索、标签、分类、归档和 RSS 配置
+- `docs` - Docs 文档站模板，包含 Markdown 内容目录、导航和侧边栏
+
+`basic`、`minimal`、`tech` 和 `personal` 仍作为博客模板别名保留。
 
 ### `cogita dev`
 
@@ -116,6 +130,20 @@ cogita preview
 **选项：**
 - `-p, --port <port>` - 端口号（默认：4173）
 - `--open` - 自动打开浏览器
+
+### `cogita doctor`
+
+检查当前站点是否具备持续构建的基本条件：
+
+- Cogita 配置文件是否存在且可以加载
+- `package.json`、lockfile 和 `cogita build` 脚本是否存在
+- CLI、Core 和主题依赖是否声明并可以解析
+- 主题是否导出有效的 `getThemeConfig` 契约
+- `contentDir` 或 `posts.dir` 指向的内容目录是否存在
+
+**选项：**
+- `--json` - 输出稳定 JSON 报告
+- `--strict` - 将 warning 也作为失败处理
 
 ## 示例工作流程
 

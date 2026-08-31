@@ -4,6 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { describe, it } from 'node:test';
 import {
+  COGITA_CONTENT_INDEX_VERSION,
   getBlogListRouteEntries,
   getBlogListRoutes,
   getCogitaBuildContext,
@@ -121,6 +122,7 @@ describe('构建期内容索引', () => {
       const secondRead = index.getPosts();
       const posts = await firstRead;
 
+      assert.equal(index.contractVersion, COGITA_CONTENT_INDEX_VERSION);
       assert.strictEqual(firstRead, secondRead);
       assert.deepEqual(
         posts.map((post) => [post.title, post.route]),

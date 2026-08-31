@@ -1,4 +1,10 @@
-import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
+import {
+  COGITA_CAPABILITIES,
+  COGITA_VIRTUAL_MODULE_IDS,
+  createCogitaVirtualModule,
+  getCogitaBuildContext,
+  getCogitaLogger,
+} from '@cogita/shared';
 import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import { extractCommentPostRoutes, resolveCommentsConfig, validateCommentsConfig } from './utils';
 
@@ -23,8 +29,8 @@ export function pluginComments(config: CogitaPluginConfig): CogitaPlugin | null 
   return {
     name: '@cogita/plugin-comments',
     cogita: {
-      providesCapabilities: ['engagement.comments'],
-      requiresCapabilities: ['content.posts'],
+      providesCapabilities: [COGITA_CAPABILITIES.ENGAGEMENT_COMMENTS],
+      requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 
     async beforeBuild() {
@@ -52,9 +58,9 @@ export function pluginComments(config: CogitaPluginConfig): CogitaPlugin | null 
 
     addRuntimeModules() {
       return {
-        'virtual-comments-data': `
+        [COGITA_VIRTUAL_MODULE_IDS.COMMENTS_DATA]: createCogitaVirtualModule(`
           export const commentsConfig = ${JSON.stringify(finalConfig)};
-        `,
+        `),
       };
     },
   };

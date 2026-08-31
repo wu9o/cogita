@@ -5,3 +5,4 @@ export * from './node/dev';
 export * from './node/build';
 export * from './node/content-index';
 export * from './node/preview';
+export * from './node/theme';

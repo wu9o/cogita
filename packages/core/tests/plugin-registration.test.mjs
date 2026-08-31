@@ -2,12 +2,29 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, it } from 'node:test';
+import {
+  COGITA_BUILD_CONTEXT_VERSION,
+  COGITA_CAPABILITIES,
+  COGITA_CONTENT_INDEX_VERSION,
+  COGITA_VIRTUAL_MODULE_IDS,
+  COGITA_VIRTUAL_MODULE_SCHEMA_VERSION,
+  getCogitaDiagnostic,
+} from '@cogita/shared';
 import { createRspressConfig } from '../dist/es/index.js';
 
 const { version: coreVersion } = JSON.parse(
   readFileSync(new URL('../package.json', import.meta.url), 'utf8')
 );
 const workspaceRoot = new URL('../../..', import.meta.url).pathname;
+
+async function captureRejection(promise, matcher) {
+  let caught;
+  await assert.rejects(promise, (error) => {
+    caught = error;
+    return matcher.test(error.message);
+  });
+  return caught;
+}
 
 describe('插件注册契约', () => {
   it('应按主题插件之后的顺序加载用户插件，并注入统一构建上下文', async () => {
@@ -27,6 +44,8 @@ describe('插件注册契约', () => {
     assert.equal(pluginNames.at(1), 'cogita-runtime-defaults');
     assert.equal(pluginNames.at(-1), 'test-user-plugin');
     assert.equal(receivedConfig.buildContext.root, '/tmp/cogita-plugin-registration-test');
+    assert.equal(receivedConfig.buildContext.contractVersion, COGITA_BUILD_CONTEXT_VERSION);
+    assert.equal(receivedConfig.contentIndex.contractVersion, COGITA_CONTENT_INDEX_VERSION);
     assert.equal(receivedConfig.buildContext.strict, true);
     assert.equal(receivedConfig.buildContext.framework.version, coreVersion);
     assert.equal(typeof receivedConfig.buildContext.logger.info, 'function');
@@ -38,8 +57,12 @@ describe('插件注册契约', () => {
     assert.equal(defaults.cogita.runtimeModulePolicy, 'fallback');
     const modules = await defaults.addRuntimeModules();
 
-    assert.match(modules['virtual-tags-data'], /export const allTags = \[\];/);
-    assert.match(modules['virtual-comments-data'], /enabled: false/);
+    assert.match(
+      modules[COGITA_VIRTUAL_MODULE_IDS.TAGS_DATA],
+      new RegExp(`cogitaVirtualModuleVersion = ${COGITA_VIRTUAL_MODULE_SCHEMA_VERSION}`)
+    );
+    assert.match(modules[COGITA_VIRTUAL_MODULE_IDS.TAGS_DATA], /export const allTags = \[\];/);
+    assert.match(modules[COGITA_VIRTUAL_MODULE_IDS.COMMENTS_DATA], /enabled: false/);
   });
 
   it('应接受已满足的插件能力契约', async () => {
@@ -63,7 +86,7 @@ describe('插件注册契约', () => {
   });
 
   it('严格模式下应拒绝缺失的插件能力契约', async () => {
-    await assert.rejects(
+    const error = await captureRejection(
       createRspressConfig(
         {
           plugins: [
@@ -77,6 +100,11 @@ describe('插件注册契约', () => {
       ),
       /能力契约未满足.*插件 missing-capability-consumer-plugin 依赖能力 test\.missing/
     );
+    assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_CAPABILITY_MISSING');
+    assert.match(getCogitaDiagnostic(error)?.hint || '', /theme\.capabilities\.required/);
+    assert.deepEqual(getCogitaDiagnostic(error)?.details, {
+      missingCapabilities: ['插件 missing-capability-consumer-plugin 依赖能力 test.missing'],
+    });
   });
 
   it('非严格模式下应警告并继续构建缺失的能力契约', async () => {
@@ -109,6 +137,67 @@ describe('插件注册契约', () => {
     assert.match(warnings[0], /能力契约未满足.*test\.optional/);
   });
 
+  it('严格模式下应拒绝多个插件提供同一能力', async () => {
+    const error = await captureRejection(
+      createRspressConfig(
+        {
+          plugins: [
+            () => ({
+              name: 'first-capability-provider-plugin',
+              cogita: { providesCapabilities: ['test.shared'] },
+            }),
+            () => ({
+              name: 'second-capability-provider-plugin',
+              cogita: { providesCapabilities: ['test.shared'] },
+            }),
+          ],
+        },
+        '/tmp/cogita-capability-provider-conflict-test'
+      ),
+      /能力由多个插件提供.*test\.shared/
+    );
+
+    assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_CAPABILITY_PROVIDER_CONFLICT');
+    assert.deepEqual(getCogitaDiagnostic(error)?.details, {
+      providers: [
+        {
+          capability: 'test.shared',
+          providers: ['first-capability-provider-plugin', 'second-capability-provider-plugin'],
+        },
+      ],
+    });
+  });
+
+  it('非严格模式下应警告多个插件提供同一能力', async () => {
+    const warnings = [];
+    const originalWarn = console.warn;
+    console.warn = (message) => warnings.push(message);
+
+    try {
+      await createRspressConfig(
+        {
+          strict: false,
+          plugins: [
+            () => ({
+              name: 'first-capability-provider-plugin',
+              cogita: { providesCapabilities: ['test.shared'] },
+            }),
+            () => ({
+              name: 'second-capability-provider-plugin',
+              cogita: { providesCapabilities: ['test.shared'] },
+            }),
+          ],
+        },
+        '/tmp/cogita-capability-provider-conflict-test'
+      );
+    } finally {
+      console.warn = originalWarn;
+    }
+
+    assert.equal(warnings.length, 1);
+    assert.match(warnings[0], /能力由多个插件提供.*非严格模式下继续构建/);
+  });
+
   it('内置插件应暴露稳定的能力标识', async () => {
     const rspressConfig = await createRspressConfig(
       {
@@ -128,7 +217,7 @@ describe('插件注册契约', () => {
     const findPlugin = (name) => rspressConfig.plugins.find((plugin) => plugin.name === name);
 
     assert.deepEqual(findPlugin('@cogita/plugin-posts-frontmatter').cogita.providesCapabilities, [
-      'content.posts',
+      COGITA_CAPABILITIES.CONTENT_POSTS,
     ]);
     assert.deepEqual(findPlugin('@cogita/plugin-images').cogita.providesCapabilities, [
       'content.images',
@@ -150,7 +239,11 @@ describe('插件注册契约', () => {
     ]);
 
     const postsRuntime = await findPlugin('@cogita/plugin-posts-frontmatter').addRuntimeModules();
-    assert.match(postsRuntime['virtual-posts-data'], /contentDataVersion = 1/);
+    assert.match(
+      postsRuntime[COGITA_VIRTUAL_MODULE_IDS.POSTS_DATA],
+      /cogitaVirtualModuleVersion = 1/
+    );
+    assert.match(postsRuntime[COGITA_VIRTUAL_MODULE_IDS.POSTS_DATA], /contentDataVersion = 1/);
   });
 
   it('严格模式下应拒绝插件生成重复页面路由', async () => {
@@ -167,7 +260,8 @@ describe('插件注册契约', () => {
     );
     const plugin = rspressConfig.plugins.find(({ name }) => name === 'duplicate-page-route-plugin');
 
-    await assert.rejects(plugin.addPages(), /页面路由 \/same-page 重复注册/);
+    const error = await captureRejection(plugin.addPages(), /页面路由 \/same-page 重复注册/);
+    assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_PAGE_ROUTE_CONFLICT');
   });
 
   it('非严格模式下应保留首次注册的页面路由', async () => {
@@ -245,7 +339,11 @@ describe('插件注册契约', () => {
     );
 
     await plugins[0].addRuntimeModules();
-    await assert.rejects(plugins[1].addRuntimeModules(), /运行时模块 virtual-shared-data 重复注册/);
+    const error = await captureRejection(
+      plugins[1].addRuntimeModules(),
+      /运行时模块 virtual-shared-data 重复注册/
+    );
+    assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_RUNTIME_MODULE_CONFLICT');
   });
 
   it('非严格模式下应保留首次注册的运行时模块并记录警告', async () => {
@@ -387,13 +485,14 @@ describe('插件注册契约', () => {
   it('严格模式下应拒绝重复注册的插件名称', async () => {
     const duplicatePlugin = () => ({ name: 'duplicate-test-plugin' });
 
-    await assert.rejects(
+    const error = await captureRejection(
       createRspressConfig(
         { plugins: [duplicatePlugin, duplicatePlugin] },
         '/tmp/cogita-plugin-registration-test'
       ),
       /重复注册/
     );
+    assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_PLUGIN_DUPLICATE');
   });
 
   it('非严格模式下应保留首次注册的插件并记录警告', async () => {
@@ -421,7 +520,7 @@ describe('插件注册契约', () => {
   });
 
   it('严格模式下应拒绝没有 name 的插件返回值', async () => {
-    await assert.rejects(
+    const error = await captureRejection(
       createRspressConfig(
         {
           plugins: [
@@ -436,6 +535,7 @@ describe('插件注册契约', () => {
       ),
       /必须提供非空 name/
     );
+    assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_PLUGIN_INVALID');
   });
 
   it('严格模式下应保留插件工厂错误的原始 cause', async () => {
@@ -455,6 +555,7 @@ describe('插件注册契约', () => {
       (error) => {
         assert.match(error.message, /插件工厂执行失败：factory exploded/);
         assert.equal(error.cause, originalError);
+        assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_PLUGIN_FACTORY_FAILED');
         return true;
       }
     );
@@ -468,7 +569,7 @@ describe('插件注册契约', () => {
       },
     });
 
-    await assert.rejects(
+    const error = await captureRejection(
       createRspressConfig(
         {
           theme: '@cogita/theme-docs',
@@ -478,6 +579,8 @@ describe('插件注册契约', () => {
       ),
       /缺少主题布局：自定义页面/
     );
+    assert.equal(getCogitaDiagnostic(error)?.code, 'COGITA_THEME_LAYOUT_MISSING');
+    assert.match(getCogitaDiagnostic(error)?.hint || '', /pageLayouts/);
   });
 
   it('布局需求可以根据最终插件配置决定是否启用', async () => {

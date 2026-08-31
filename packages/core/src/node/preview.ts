@@ -7,7 +7,7 @@ import { createRspressConfig, loadCogitaConfig } from './config';
  * @param port 预览端口
  */
 export async function createPreview(root: string, port?: number): Promise<void> {
-  const cogitaConfig = await loadCogitaConfig(root);
+  const cogitaConfig = await loadCogitaConfig(root, { required: true });
   const rspressConfig = await createRspressConfig(cogitaConfig, root);
 
   await serve({

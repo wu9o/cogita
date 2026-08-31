@@ -14,7 +14,7 @@ import { pluginSearch } from '@cogita/plugin-search';
 import { pluginSEO } from '@cogita/plugin-seo';
 import { pluginSitemap } from '@cogita/plugin-sitemap';
 import { pluginTags } from '@cogita/plugin-tags';
-import type { CogitaTheme } from '@cogita/shared';
+import { COGITA_CAPABILITIES, type CogitaTheme } from '@cogita/shared';
 
 /**
  * Lucid 主题配置
@@ -39,7 +39,7 @@ export function getThemeConfig(): CogitaTheme {
   return {
     name: '@cogita/theme-lucid',
     capabilities: {
-      required: ['content.posts'],
+      required: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 
     // ============================================

@@ -170,7 +170,7 @@ body {
   text-align: center;
 }
 
-.docs-home-flow span {
+.docs-home-flow > span:not(.docs-home-flow-arrow) {
   padding: 17px 10px;
   border: 1px solid var(--cogita-docs-border);
   border-radius: 12px;

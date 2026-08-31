@@ -1,4 +1,5 @@
 declare module 'virtual-search-data' {
+  export const cogitaVirtualModuleVersion: 1;
   interface SearchDocument {
     id: string;
     title: string;

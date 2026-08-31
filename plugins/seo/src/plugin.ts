@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {
+  COGITA_CAPABILITIES,
   type CogitaPlugin,
   type CogitaPluginConfig,
   type ContentPost,
@@ -232,8 +233,8 @@ export function pluginSEO(config: CogitaPluginConfig): CogitaPlugin | null {
   return {
     name: '@cogita/plugin-seo',
     cogita: {
-      providesCapabilities: ['seo.metadata'],
-      requiresCapabilities: ['content.posts'],
+      providesCapabilities: [COGITA_CAPABILITIES.SEO_METADATA],
+      requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 
     async beforeBuild(rspressConfig: unknown) {

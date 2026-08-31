@@ -40,6 +40,8 @@ export function getThemeConfig(): CogitaTheme {
 
 主题包应拥有独立的 `package.json`、构建配置和版本。消费方项目直接安装主题包，并在配置中使用包名。Core 不再绑定某个具体主题，这保证了主题数量增长时不会持续修改框架核心。
 
+如果希望从可运行骨架开始，可以复制仓库中的[主题 starter](https://github.com/wu9o/cogita/tree/main/starters/theme)。它已经包含 `pageLayouts.home`、React 布局、全局样式和独立包构建配置。
+
 ## 验证主题
 
 ~~~bash

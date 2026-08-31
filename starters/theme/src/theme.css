@@ -1,0 +1,37 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, system-ui, sans-serif;
+  color: #172033;
+  background: #f5f7fb;
+}
+
+body {
+  margin: 0;
+}
+
+.starter-home {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 7rem 1.5rem;
+}
+
+.starter-home-eyebrow {
+  color: #5167d8;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.starter-home h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  line-height: 1;
+}
+
+.starter-home p:last-child {
+  max-width: 38rem;
+  color: #5c667a;
+  font-size: 1.15rem;
+  line-height: 1.7;
+}

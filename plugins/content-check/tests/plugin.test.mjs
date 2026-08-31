@@ -59,6 +59,8 @@ test('内容诊断插件应生成通过报告', async () => {
       await readFile(path.join(root, 'doc_build', 'content-report.json'), 'utf8')
     );
     assert.equal(report.schemaVersion, 1);
+    assert.equal(report.reportType, 'content-check');
+    assert.equal(report.itemCount, 1);
     assert.equal(report.postCount, 1);
     assert.equal(report.errors, 0);
     assert.equal(report.warnings, 0);

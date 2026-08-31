@@ -1,5 +1,4 @@
 import { normalizeHrefInRuntime } from '@rspress/runtime';
-import { Link } from '@rspress/theme-default';
 import type React from 'react';
 import styles from './index.module.css';
 
@@ -98,7 +97,7 @@ export const TagCloud: React.FC<TagCloudProps> = ({
   return (
     <div className={`${styles.tagCloud} ${className}`}>
       {displayTags.map((tag) => (
-        <Link
+        <a
           key={tag.slug}
           href={normalizeHrefInRuntime(tag.route)}
           className={styles.tagLink}
@@ -107,7 +106,7 @@ export const TagCloud: React.FC<TagCloudProps> = ({
           onClick={() => handleTagClick(tag)}
         >
           {tag.name}
-        </Link>
+        </a>
       ))}
     </div>
   );

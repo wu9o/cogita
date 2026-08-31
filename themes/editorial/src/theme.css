@@ -383,7 +383,9 @@ a {
   list-style: none;
 }
 
-.editorial-post-tags li {
+.editorial-post-tags li,
+.rspress-doc .editorial-post-tags li {
+  margin: 0;
   color: var(--editorial-accent-deep);
   font-size: 0.78rem;
 }
@@ -844,6 +846,11 @@ a {
   list-style: none;
   color: var(--editorial-accent-deep);
   font-size: 0.78rem;
+}
+
+.editorial-article-tags li,
+.rspress-doc .editorial-article-tags li {
+  margin: 0;
 }
 
 .editorial-related-posts-mount {

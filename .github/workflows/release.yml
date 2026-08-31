@@ -22,6 +22,13 @@ jobs:
           # This is important for changeset to be able to create tags
           fetch-depth: 0
 
+      - name: Checkout external blog consumer
+        uses: actions/checkout@v4
+        with:
+          repository: wu9o/cogita-blog
+          path: cogita-blog
+          fetch-depth: 1
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -38,6 +45,9 @@ jobs:
 
       - name: Verify package consumer boundaries
         run: pnpm run check:release
+        env:
+          COGITA_BLOG_DIR: ${{ github.workspace }}/cogita-blog
+          COGITA_REQUIRE_EXTERNAL_BLOG: 'true'
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
@@ -52,4 +62,4 @@ jobs:
 
       - name: Verify published registry consumer
         if: steps.changesets.outputs.published == 'true'
-        run: pnpm run check:registry-consumer
+        run: pnpm run check:registry-consumer -- --require-doctor

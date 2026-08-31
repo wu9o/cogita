@@ -1,0 +1,35 @@
+{
+  "name": "@your-scope/cogita-plugin-starter",
+  "version": "0.0.0",
+  "description": "Cogita 第三方插件起始模板。",
+  "keywords": ["cogita", "plugin", "starter"],
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "README.md"],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build -w"
+  },
+  "peerDependencies": {
+    "@cogita/shared": ">=0.11.0",
+    "@rspress/core": "^1.45.1"
+  },
+  "devDependencies": {
+    "@cogita/shared": "workspace:*",
+    "@rslib/core": "0.11.2",
+    "@rspress/core": "^1.45.1",
+    "rsbuild-plugin-publint": "^0.3.3",
+    "typescript": "^5.0.4"
+  }
+}
