@@ -67,27 +67,29 @@ export const pluginExample: CogitaPluginFactory = () => ({
 
 ## 3. 能力契约
 
-布局契约只描述“页面是否存在”，能力契约进一步描述主题或插件“需要什么数据能力”。能力标识使用稳定的 `领域.能力` 字符串，例如 `content.posts`。插件通过 `providesCapabilities` 声明自己提供的能力，通过 `requiresCapabilities` 声明依赖；主题通过 `capabilities.required` 和 `capabilities.optional` 区分硬依赖与可降级增强。
+布局契约只描述“页面是否存在”，能力契约进一步描述主题或插件“需要什么数据能力”。能力标识使用稳定的 `领域.能力` 字符串，例如 `content.posts`。插件通过 `providesCapabilities` 声明自己提供的能力，通过 `requiresCapabilities` 声明依赖；主题通过 `capabilities.required` 和 `capabilities.optional` 区分硬依赖与可降级增强。内置能力应从 `@cogita/shared` 的 `COGITA_CAPABILITIES` 引用；第三方能力可以使用自己的稳定字符串，但不能重新定义已有内置能力。
 
 ```typescript
+import { COGITA_CAPABILITIES } from '@cogita/shared';
+
 export const pluginPosts: CogitaPluginFactory = () => ({
   name: '@cogita/plugin-posts-frontmatter',
   cogita: {
-    providesCapabilities: ['content.posts'],
+    providesCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
   },
 });
 
 export const themeExample: CogitaTheme = {
   name: '@cogita/theme-example',
   capabilities: {
-    required: ['content.posts'],
-    optional: ['content.images'],
+    required: [COGITA_CAPABILITIES.CONTENT_POSTS],
+    optional: [COGITA_CAPABILITIES.CONTENT_IMAGES],
   },
   pageLayouts: { home: './layouts/Home.js' },
 };
 ```
 
-Core 会在所有插件实例化后统一校验主题硬依赖和插件依赖。默认严格模式下，缺少能力会在构建阶段直接失败；`strict: false` 时只记录警告，由主题负责对 `optional` 能力进行降级。Core 提供的运行时空模块只保证可选模块安全导入，不会冒充真实业务能力。
+Core 会在所有插件实例化后统一校验主题硬依赖和插件依赖。默认严格模式下，缺少能力会在构建阶段直接失败；`strict: false` 时只记录警告，由主题负责对 `optional` 能力进行降级。一个能力应只有一个 provider；如果多个插件声明提供同一能力，严格模式会以 `COGITA_CAPABILITY_PROVIDER_CONFLICT` 失败，避免主题和插件读取到不确定的数据来源。Core 提供的运行时空模块只保证可选模块安全导入，不会冒充真实业务能力。
 
 当前内置插件使用的能力标识如下：
 
@@ -156,6 +158,7 @@ try {
 | --- | --- |
 | `COGITA_THEME_LAYOUT_MISSING` | 主题缺少已启用功能需要的布局 |
 | `COGITA_CAPABILITY_MISSING` | 主题或插件依赖的能力未提供 |
+| `COGITA_CAPABILITY_PROVIDER_CONFLICT` | 多个插件提供同一能力 |
 | `COGITA_PLUGIN_INVALID` | 插件工厂返回了无效插件 |
 | `COGITA_PLUGIN_DUPLICATE` | 插件名称重复注册 |
 | `COGITA_PLUGIN_FACTORY_FAILED` | 插件工厂执行失败 |
