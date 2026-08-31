@@ -5,6 +5,7 @@ import type { CogitaConfig } from '../types';
 export const BUILT_IN_THEMES: Record<string, string> = {
   lucid: '@cogita/theme-lucid',
   editorial: '@cogita/theme-editorial',
+  knowledge: '@cogita/theme-knowledge',
 };
 
 export function resolveThemePackage(config: Pick<CogitaConfig, 'theme'>): string | undefined {

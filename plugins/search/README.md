@@ -1,6 +1,6 @@
 # @cogita/plugin-search
 
-Cogita 的本地文章搜索索引插件。
+Cogita 的本地内容搜索索引插件。使用统一内容索引时，搜索范围包含文章和 `contentDir` 文档。
 
 ## 能力
 

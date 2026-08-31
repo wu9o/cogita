@@ -29,6 +29,7 @@
 | `@cogita/theme-lucid` | 0.11.3 | 博客主题 | 默认博客主题和完整插件集成 |
 | `@cogita/theme-editorial` | 0.2.9 | 博客主题 | 编辑风格博客主题 |
 | `@cogita/theme-docs` | 0.2.1 | 文档主题 | 技术手册和文档站主题 |
+| `@cogita/theme-knowledge` | 0.1.0 | 知识库主题 | 统一内容、搜索、标签和反向链接 |
 <!-- compatibility-matrix:end -->
 
 ## 兼容轨道
@@ -49,6 +50,11 @@ Changesets 发布批次中验证。CLI 应与 Core 使用同一批次生成的�
 
 `@cogita/theme-docs` 是独立文档主题轨道，不依赖博客插件集合。它必须通过独立文档消费者验证，
 尤其要覆盖首页、文档路由、主题预览和静态产物生成。
+
+### 知识库主题与插件
+
+`@cogita/theme-knowledge` 组合统一内容索引、搜索、标签和内容关系，属于知识库主题轨道。
+它必须通过独立知识库消费者验证，尤其要覆盖文章、`contentDir` 文档、根路径和子路径部署。
 
 ### 宿主运行时
 

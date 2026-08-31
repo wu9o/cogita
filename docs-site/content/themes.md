@@ -13,8 +13,9 @@ Cogita 的主题不是单纯的颜色和字体。主题包负责页面布局、�
 | **Docs** | 项目手册、API 文档、知识库 | 目录导航、代码阅读、页面检索 | `@cogita/theme-docs` |
 | **Lucid** | 个人博客、技术文章、内容归档 | 文章列表、标签、搜索、阅读体验 | `@cogita/theme-lucid` |
 | **Editorial** | 专题站点、深度文章、编辑型内容 | 大标题、精选内容、杂志式节奏 | `@cogita/theme-editorial` |
+| **Knowledge** | 个人 Wiki、研究记录、混合知识库 | 统一内容、搜索、标签、反向链接 | `@cogita/theme-knowledge` |
 
-下面是三个主题的实际渲染结果。它们共享 Cogita 的 Core、插件和内容索引，但在信息架构和阅读节奏上做了不同取舍。截图均来自当前仓库源码构建后的本地预览页面。
+下面介绍当前提供的四个主题。它们共享 Cogita 的 Core、插件和内容索引，但在信息架构和阅读节奏上做了不同取舍。前三个主题已有当前仓库源码构建后的本地预览页面。
 
 ## Docs：技术文档主题
 
@@ -67,11 +68,27 @@ export default defineConfig({
 });
 ```
 
+## Knowledge：知识库主题
+
+Knowledge 面向“连接和回溯”。它把 `posts` 与 `contentDir` 纳入统一内容入口，并默认组合本地搜索、标签和内容关系，适合个人 Wiki、技术研究记录以及同时包含文章和手册的长期知识库。
+
+```bash
+pnpm add -D @cogita/cli @cogita/core @cogita/theme-knowledge
+```
+
+```ts
+export default defineConfig({
+  contentDir: 'content',
+  theme: '@cogita/theme-knowledge',
+});
+```
+
 ## 如何选择
 
 - 读者主要通过目录、代码和 API 查找信息：选择 **Docs**。
 - 站点以持续写文章、归档和搜索为主：选择 **Lucid**。
 - 站点以专题、深度文章和编辑节奏为主：选择 **Editorial**。
+- 站点需要把文章、文档和反向链接放在同一知识空间中：选择 **Knowledge**。
 
 主题之间可以共享同一套文章内容和插件。迁移主题时，通常只需要修改 `theme` 和主题专属配置，不需要迁移文章文件。
 

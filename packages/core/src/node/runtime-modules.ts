@@ -68,6 +68,14 @@ export const cogitaRuntimeDefaults: CogitaPlugin = {
         export const searchDocuments = [];
         export const searchIndexHash = '';
       `),
+      [COGITA_VIRTUAL_MODULE_IDS.CONTENT_RELATIONS_DATA]: createCogitaVirtualModule(`
+        export const contentRelations = [];
+        export const relationMap = {};
+        export function getContentRelations(route) { return { route, outbound: [], inbound: [] }; }
+        export function getBacklinks() { return []; }
+        export function getOutgoingLinks() { return []; }
+        export function getRelatedContent() { return []; }
+      `),
       [COGITA_VIRTUAL_MODULE_IDS.READING_PROGRESS_DATA]: createCogitaVirtualModule(`
         export const readingProgressConfig = { enabled: false, showBar: false, showReadingTime: false, showTocProgress: false, rememberPosition: false, wordsPerMinute: 300, includeCode: false };
         export const readingStatsByRoute = {};
