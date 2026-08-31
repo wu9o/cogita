@@ -15,9 +15,27 @@ export const COGITA_CONTENT_DATA_VERSION = 1 as const;
 /** Cogita 虚拟运行时模块的数据契约版本，新增不兼容字段时必须递增。 */
 export const COGITA_VIRTUAL_MODULE_SCHEMA_VERSION = 1 as const;
 
-/** Core 与内置插件共同使用的稳定能力标识。 */
+/**
+ * Core、内置插件和第三方扩展共同使用的稳定能力标识。
+ *
+ * 第三方能力仍然可以使用自定义字符串，但内置能力必须从这里引用，
+ * 避免同一能力因为拼写差异变成多个无法互操作的契约。
+ */
 export const COGITA_CAPABILITIES = {
   CONTENT_POSTS: 'content.posts',
+  CONTENT_IMAGES: 'content.images',
+  CONTENT_COLLECTIONS: 'content.collections',
+  CONTENT_BLOG_LIST: 'content.blog-list',
+  DISCOVERY_TAGS: 'discovery.tags',
+  DISCOVERY_CATEGORIES: 'discovery.categories',
+  DISCOVERY_SEARCH: 'discovery.search',
+  SYNDICATION_RSS: 'syndication.rss',
+  SEO_METADATA: 'seo.metadata',
+  SEO_SITEMAP: 'seo.sitemap',
+  ENGAGEMENT_COMMENTS: 'engagement.comments',
+  UI_READING_PROGRESS: 'ui.reading-progress',
+  UI_CODE_COPY: 'ui.code-copy',
+  QUALITY_CONTENT_CHECK: 'quality.content-check',
 } as const;
 
 /** Cogita 公开虚拟运行时模块的稳定模块 ID。 */

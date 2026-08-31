@@ -1,4 +1,5 @@
 import {
+  COGITA_CAPABILITIES,
   COGITA_VIRTUAL_MODULE_IDS,
   createCogitaVirtualModule,
   getCogitaLogger,
@@ -41,7 +42,7 @@ export function pluginCodeCopy(config: CogitaPluginConfig): CogitaPlugin | null 
   return {
     name: '@cogita/plugin-code-copy',
     cogita: {
-      providesCapabilities: ['ui.code-copy'],
+      providesCapabilities: [COGITA_CAPABILITIES.UI_CODE_COPY],
     },
 
     addRuntimeModules() {

@@ -12,8 +12,11 @@ description: 使用 cogita doctor 在升级和部署前检查真实站点的长�
 在站点根目录执行：
 
 ```bash
-pnpm run doctor
+pnpm exec cogita doctor
 ```
+
+如果站点的 `package.json` 已经包含 `"doctor": "cogita doctor"`，也可以使用
+`pnpm run doctor`。CLI 模板会默认生成这个 script。
 
 它会检查：
 

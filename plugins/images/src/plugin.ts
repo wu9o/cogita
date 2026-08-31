@@ -133,7 +133,7 @@ export function pluginImages(config: CogitaPluginConfig): CogitaPlugin | null {
   return {
     name: '@cogita/plugin-images',
     cogita: {
-      providesCapabilities: ['content.images'],
+      providesCapabilities: [COGITA_CAPABILITIES.CONTENT_IMAGES],
       requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 

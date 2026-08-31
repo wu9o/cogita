@@ -42,7 +42,7 @@ export function pluginCollections(config: CogitaPluginConfig): CogitaPlugin | nu
   return {
     name: '@cogita/plugin-collections',
     cogita: {
-      providesCapabilities: ['content.collections'],
+      providesCapabilities: [COGITA_CAPABILITIES.CONTENT_COLLECTIONS],
       requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
       requiredLayouts: [{ layout: 'collection', label: '合集' }],
     },

@@ -233,7 +233,7 @@ export function pluginSEO(config: CogitaPluginConfig): CogitaPlugin | null {
   return {
     name: '@cogita/plugin-seo',
     cogita: {
-      providesCapabilities: ['seo.metadata'],
+      providesCapabilities: [COGITA_CAPABILITIES.SEO_METADATA],
       requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 

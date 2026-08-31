@@ -34,10 +34,10 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@cogita/shared": "workspace:*",
     "@rspress/core": "^1.45.1"
   },
   "devDependencies": {
-    "@cogita/shared": "workspace:*",
     "@rslib/core": "0.11.2",
     "@types/node": "^18.11.17",
     "rsbuild-plugin-publint": "^0.3.3",

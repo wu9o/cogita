@@ -29,7 +29,7 @@ export function pluginComments(config: CogitaPluginConfig): CogitaPlugin | null 
   return {
     name: '@cogita/plugin-comments',
     cogita: {
-      providesCapabilities: ['engagement.comments'],
+      providesCapabilities: [COGITA_CAPABILITIES.ENGAGEMENT_COMMENTS],
       requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 

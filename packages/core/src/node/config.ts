@@ -22,7 +22,7 @@ import {
 } from './diagnostics';
 import { registerPlugins } from './plugin-registry';
 import { cogitaRuntimeDefaults } from './runtime-modules';
-import { resolveThemePackage } from './theme';
+import { isCogitaThemeConfig, resolveThemePackage } from './theme';
 
 const CONFIG_FILES = ['cogita.config.ts', 'cogita.config.js', 'cogita.config.mjs'];
 
@@ -300,10 +300,10 @@ async function loadTheme(themeName: string, projectRoot: string): Promise<Loaded
     );
   }
 
-  if (!themeConfig || typeof themeConfig !== 'object') {
+  if (!isCogitaThemeConfig(themeConfig)) {
     throw createCoreDiagnosticError(
       'COGITA_THEME_INVALID',
-      `主题「${themeName}」的 getThemeConfig 没有返回有效配置。`,
+      `主题「${themeName}」的 getThemeConfig 返回值不符合主题契约。`,
       { theme: themeName, themeEntryPath },
       undefined,
       '请返回包含 name 和 pageLayouts.home 的 CogitaTheme 对象。'
@@ -426,12 +426,47 @@ function validateCapabilities(
   plugins: readonly CogitaPlugin[],
   strict: boolean
 ) {
-  const providedCapabilities = new Set<string>();
+  const capabilityProviders = new Map<string, string[]>();
   for (const plugin of plugins) {
     for (const capability of normalizeCapabilities(plugin.cogita?.providesCapabilities)) {
-      providedCapabilities.add(capability);
+      const providers = capabilityProviders.get(capability) || [];
+      providers.push(plugin.name);
+      capabilityProviders.set(capability, providers);
     }
   }
+
+  const duplicateProviders = Array.from(capabilityProviders.entries())
+    .filter(([, providers]) => providers.length > 1)
+    .map(([capability, providers]) => ({ capability, providers }));
+
+  if (duplicateProviders.length > 0) {
+    const message = duplicateProviders
+      .map(({ capability, providers }) => `${capability}（${providers.join('、')}）`)
+      .join('；');
+    const diagnostic = createCoreDiagnostic(
+      'COGITA_CAPABILITY_PROVIDER_CONFLICT',
+      `[Cogita] 能力由多个插件提供：${message}。请保留一个提供者，避免主题和插件读取到不确定的数据来源。`,
+      { providers: duplicateProviders },
+      '检查主题默认插件和站点 plugins 配置，确保同一能力只由一个插件提供。'
+    );
+    if (strict) {
+      throw createCoreDiagnosticError(
+        diagnostic.code,
+        diagnostic.message,
+        diagnostic.details,
+        undefined,
+        diagnostic.hint
+      );
+    }
+
+    warnCoreDiagnostic(config.buildContext.logger || createCogitaLogger(), {
+      ...diagnostic,
+      severity: 'warning',
+      message: `${diagnostic.message} 非严格模式下继续构建，但该组合不受支持。`,
+    });
+  }
+
+  const providedCapabilities = new Set(capabilityProviders.keys());
 
   const missing = new Set<string>();
   for (const capability of normalizeCapabilities(theme?.capabilities?.required)) {

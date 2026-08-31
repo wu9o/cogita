@@ -378,7 +378,7 @@ export function pluginContentCheck(config: CogitaPluginConfig): CogitaPlugin | n
   return {
     name: '@cogita/plugin-content-check',
     cogita: {
-      providesCapabilities: ['quality.content-check'],
+      providesCapabilities: [COGITA_CAPABILITIES.QUALITY_CONTENT_CHECK],
       requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 

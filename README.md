@@ -64,11 +64,12 @@ pnpm exec cogita dev
 - [`@cogita/core`](./packages/core) - 智能核心引擎
 - [`@cogita/cli`](./packages/cli) - 命令行工具  
 - [`@cogita/theme-lucid`](./themes/lucid) - 官方博客主题
+- [`@cogita/theme-editorial`](./themes/editorial) - 编辑型内容主题
 - [`@cogita/theme-docs`](./themes/docs) - 技术文档主题
 - [`@cogita/plugin-rss`](./plugins/rss) - RSS 订阅插件
 - [`@cogita/plugin-tags`](./plugins/tags) - 标签管理与标签云插件
 
-**完整文档：** [📖 在线使用手册](https://wu9o.github.io/cogita/) • [📚 文档源码](./docs-site/content/overview.md) • [📄 English Documentation](./README.en.md)
+**完整文档：** [📖 在线使用手册](https://wu9o.github.io/cogita/) • [📚 文档源码](./docs-site/content/overview.md) • [🗺️ 包与能力地图](./docs-site/content/package-map.md) • [📄 English Documentation](./README.en.md)
 
 ## 🏗️ 技术架构
 
@@ -94,11 +95,11 @@ pnpm run dev
 pnpm run check
 ```
 
-## 🗺️ 发展路线图
+## 🗺️ 当前发展方向
 
-- **✅ Phase 1**: 核心基础设施（已完成）
-- **🚧 Phase 2**: 生态扩展（进行中）
-- **📋 Phase 3**: 高级功能（规划中）
+- **✅ 核心基础**：主题驱动架构、配置流和插件系统已经完成。
+- **🚧 产品化与长期采用**：持续收口公共契约、升级诊断、独立站点部署和第三方扩展边界。
+- **📋 需求驱动扩展**：在现有契约稳定后，再根据真实站点需求增加主题和插件。
 
 详细路线图请查看 [ROADMAP.md](./ROADMAP.md)
 

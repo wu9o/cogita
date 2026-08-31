@@ -51,7 +51,7 @@ export function pluginTags(config: CogitaPluginConfig): CogitaPlugin | null {
   return {
     name: '@cogita/plugin-tags',
     cogita: {
-      providesCapabilities: ['discovery.tags'],
+      providesCapabilities: [COGITA_CAPABILITIES.DISCOVERY_TAGS],
       requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
       requiredLayouts: [{ layout: 'tag', label: '标签' }],
     },

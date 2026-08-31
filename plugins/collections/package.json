@@ -43,12 +43,12 @@
     "clean": "rm -rf dist"
   },
   "devDependencies": {
-    "@cogita/shared": "workspace:*",
     "@rslib/core": "0.11.2",
     "rsbuild-plugin-publint": "^0.3.3",
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@cogita/shared": "workspace:*",
     "@rspress/core": "^1.45.1"
   }
 }

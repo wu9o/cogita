@@ -31,7 +31,7 @@ export function pluginReadingProgress(config: CogitaPluginConfig): CogitaPlugin 
   return {
     name: '@cogita/plugin-reading-progress',
     cogita: {
-      providesCapabilities: ['ui.reading-progress'],
+      providesCapabilities: [COGITA_CAPABILITIES.UI_READING_PROGRESS],
       requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 
