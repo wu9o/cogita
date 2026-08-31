@@ -1,5 +1,18 @@
 # @cogita/plugin-search
 
+## 0.2.5
+
+### Patch Changes
+
+- 03fc3c6: 补充插件发布包的默认入口条件，兼容 Core 通过配置加载器读取主题时的运行时解析路径。
+- 03fc3c6: 固化构建上下文、ContentIndex、内置能力标识和虚拟模块 ID 的共享契约，并为 Core 与内置插件的虚拟模块统一增加版本头，方便主题和第三方消费者进行兼容性检查。
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+  - @cogita/shared@0.12.0
+
 ## 0.2.4
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@cogita/plugin-blog-list",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "文章列表、分页与归档插件，为 Cogita 提供可复用的静态列表页面。",
   "keywords": ["cogita", "plugin", "blog-list", "archive", "pagination", "rspress"],
   "author": "wu9o <https://github.com/wu9o>",

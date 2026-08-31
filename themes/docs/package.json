@@ -1,6 +1,6 @@
 {
   "name": "@cogita/theme-docs",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Cogita 的技术文档与框架使用手册主题。",
   "keywords": ["cogita", "theme", "documentation", "developer-tools", "responsive"],
   "author": "wu9o <https://github.com/wu9o>",

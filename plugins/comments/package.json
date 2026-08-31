@@ -1,6 +1,6 @@
 {
   "name": "@cogita/plugin-comments",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "为 Cogita 文章页接入 Giscus 和 Utterances 评论服务。",
   "keywords": ["cogita", "plugin", "comments", "giscus", "utterances", "rspress"],
   "author": "wu9o <https://wu9o.github.io>",
