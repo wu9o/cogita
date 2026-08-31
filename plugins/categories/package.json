@@ -1,6 +1,6 @@
 {
   "name": "@cogita/plugin-categories",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "文章分类与层级分类插件，为 Cogita 提供分类页面和面包屑导航。",
   "keywords": ["cogita", "plugin", "categories", "blog", "rspress"],
   "author": "wu9o <https://github.com/wu9o>",

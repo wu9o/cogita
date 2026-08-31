@@ -1,5 +1,23 @@
 # @cogita/cli
 
+## 0.2.0
+
+### Minor Changes
+
+- 03fc3c6: 为 CLI 增加 `cogita create` 初始化命令，提供博客站和文档站模板，并在发布检查中验证两个模板可以真实构建。
+- 03fc3c6: 新增只读的 `cogita doctor` 站点自检入口，检查配置、依赖、主题契约、内容目录和可复现安装条件，并提供稳定 JSON 报告供真实站点部署流水线使用。
+
+### Patch Changes
+
+- 03fc3c6: 统一首次构建、配置加载、主题解析、内容目录和能力缺失时的稳定诊断与 CLI 修复提示。
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+  - @cogita/core@0.13.0
+  - @cogita/shared@0.12.0
+
 ## 0.1.19
 
 ### Patch Changes

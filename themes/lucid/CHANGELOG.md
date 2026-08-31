@@ -1,5 +1,32 @@
 # @cogita/theme-lucid
 
+## 0.11.3
+
+### Patch Changes
+
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+  - @cogita/plugin-blog-list@0.3.3
+  - @cogita/plugin-categories@0.2.5
+  - @cogita/plugin-code-copy@0.2.4
+  - @cogita/plugin-collections@1.0.5
+  - @cogita/plugin-comments@0.2.5
+  - @cogita/plugin-content-check@0.2.3
+  - @cogita/plugin-images@1.0.5
+  - @cogita/plugin-posts-frontmatter@0.1.4
+  - @cogita/plugin-reading-progress@0.3.5
+  - @cogita/plugin-rss@1.0.5
+  - @cogita/plugin-search@0.2.5
+  - @cogita/plugin-seo@1.3.5
+  - @cogita/plugin-sitemap@1.3.5
+  - @cogita/plugin-tags@1.0.5
+  - @cogita/shared@0.12.0
+  - @cogita/ui@0.1.1
+
 ## 0.11.2
 
 ### Patch Changes

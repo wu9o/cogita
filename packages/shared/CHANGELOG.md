@@ -1,5 +1,18 @@
 # @cogita/shared
 
+## 0.12.0
+
+### Minor Changes
+
+- 03fc3c6: 固化构建上下文、ContentIndex、内置能力标识和虚拟模块 ID 的共享契约，并为 Core 与内置插件的虚拟模块统一增加版本头，方便主题和第三方消费者进行兼容性检查。
+- 03fc3c6: 统一内容检查和 SEO 审核报告 schema，新增 GitHub Actions annotation 与错误/警告阈值门禁。
+- 03fc3c6: 新增只读的 `cogita doctor` 站点自检入口，检查配置、依赖、主题契约、内容目录和可复现安装条件，并提供稳定 JSON 报告供真实站点部署流水线使用。
+- 03fc3c6: 为 Core 的能力缺失、布局缺失、插件冲突、页面路由冲突和运行时模块冲突增加稳定的 `diagnostic.code` 与 `details` 字段，方便 CLI、CI 和第三方插件消费构建诊断。
+
+### Patch Changes
+
+- 03fc3c6: 统一首次构建、配置加载、主题解析、内容目录和能力缺失时的稳定诊断与 CLI 修复提示。
+
 ## 0.11.0
 
 ### Minor Changes

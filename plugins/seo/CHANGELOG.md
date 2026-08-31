@@ -1,5 +1,18 @@
 # @cogita/plugin-seo
 
+## 1.3.5
+
+### Patch Changes
+
+- 03fc3c6: 补充插件发布包的默认入口条件，兼容 Core 通过配置加载器读取主题时的运行时解析路径。
+- 03fc3c6: 统一内容检查和 SEO 审核报告 schema，新增 GitHub Actions annotation 与错误/警告阈值门禁。
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+- Updated dependencies [03fc3c6]
+  - @cogita/shared@0.12.0
+
 ## 1.3.4
 
 ### Patch Changes
