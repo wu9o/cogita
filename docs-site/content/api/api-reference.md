@@ -510,6 +510,23 @@ declare module 'virtual-posts-data' {
 }
 ```
 
+### `virtual-content-relations-data`
+
+由 `@cogita/plugin-content-relations` 提供的内容关系虚拟模块。启用插件后，主题可以读取单篇内容的
+出链、反向链接和去重后的相关文章集合。
+
+```typescript
+declare module 'virtual-content-relations-data' {
+  export const cogitaVirtualModuleVersion: 1;
+  export const contentRelations: ContentRelationEntry[];
+  export const relationMap: Record<string, ContentRelationEntry>;
+  export function getContentRelations(route: string): ContentRelationEntry;
+  export function getBacklinks(route: string): ContentRelationLink[];
+  export function getOutgoingLinks(route: string): ContentRelationLink[];
+  export function getRelatedContent(route: string, limit?: number): ContentRelationLink[];
+}
+```
+
 **使用示例：**
 ```typescript
 import { allPosts } from 'virtual-posts-data';

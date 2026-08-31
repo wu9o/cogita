@@ -23,6 +23,7 @@ export const COGITA_VIRTUAL_MODULE_SCHEMA_VERSION = 1 as const;
  */
 export const COGITA_CAPABILITIES = {
   CONTENT_POSTS: 'content.posts',
+  CONTENT_RELATIONS: 'content.relations',
   CONTENT_IMAGES: 'content.images',
   CONTENT_COLLECTIONS: 'content.collections',
   CONTENT_BLOG_LIST: 'content.blog-list',
@@ -41,6 +42,7 @@ export const COGITA_CAPABILITIES = {
 /** Cogita 公开虚拟运行时模块的稳定模块 ID。 */
 export const COGITA_VIRTUAL_MODULE_IDS = {
   POSTS_DATA: 'virtual-posts-data',
+  CONTENT_RELATIONS_DATA: 'virtual-content-relations-data',
   TAGS_DATA: 'virtual-tags-data',
   COLLECTIONS_DATA: 'virtual-collections-data',
   CATEGORIES_DATA: 'virtual-categories-data',
@@ -372,6 +374,9 @@ export interface CogitaPluginConfig {
     readDimensions?: boolean;
     failOnMissing?: boolean;
     warnOnMissingAlt?: boolean;
+  };
+  contentRelations?: {
+    enabled?: boolean;
   };
   contentCheck?: ContentCheckConfig;
   sitemap?: {

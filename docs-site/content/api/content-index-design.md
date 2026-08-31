@@ -29,6 +29,26 @@ interface ContentIndex {
 聚合插件统一使用 `@cogita/shared` 导出的 `ContentPostReference`，不再各自复制文章引用字段；依赖文章能力的插件也只消费 Core 注入的 `ContentIndex`，不再直接依赖文章扫描插件包。
 文章运行时虚拟模块 `virtual-posts-data` 额外暴露 `contentDataVersion`，外部主题可据此拒绝不兼容的数据契约。
 
+## 内容关系数据
+
+`@cogita/plugin-content-relations` 是第一个建立在共享索引之上的知识库基础插件。它按需读取
+文章正文，提取站内 Markdown 文本链接，并通过 `virtual-content-relations-data` 暴露出链、反向链接
+和相关文章查询。插件只消费 `ContentIndex`，不会再次扫描文章目录，也不绑定具体主题的页面布局。
+
+```ts
+import {
+  getBacklinks,
+  getRelatedContent,
+} from 'virtual-content-relations-data';
+
+const backlinks = getBacklinks('/posts/current');
+const related = getRelatedContent('/posts/current');
+```
+
+当前实现的索引对象仍以文章为主，`contentDir` 下的普通文档页尚未进入同一索引。因此它是知识库主题
+的第一层数据基础，不代表统一知识库主题已经完成；下一步需要扩展内容条目模型，再由主题组合搜索、
+标签、关系和文档导航。
+
 ## 公共契约版本策略
 
 `@cogita/shared` 暴露以下稳定版本字段，新增不兼容字段时递增对应版本：
@@ -82,5 +102,6 @@ return {
 1. ✅ 开发服务器现在监听文章目录、公共资源目录和 Cogita 配置文件。变更发生后会关闭旧 Rspress 实例，重新加载配置并重新执行插件工厂、`beforeBuild`、`addPages` 和 `addRuntimeModules`，因此新增文章、筛选路由和聚合数据可以同步更新。普通正文编辑仍可由 Rspress HMR 处理，完整重建只针对需要重新生成 Cogita 页面数据的输入。
 2. ✅ 需要正文的内置插件复用 `getPostContent`，并为第三方索引实现保留摘要降级行为。
 3. ✅ 依赖文章能力的内置插件已移除对 `plugin-posts-frontmatter` 的直接依赖；后续只需在发布前持续验证独立消费者构建。
+4. ✅ 内容关系插件复用共享索引，提供稳定的 `content.relations` 能力和 `virtual-content-relations-data` 模块。
 
 迁移完成后，主题仍负责声明文章插件，内容消费者插件只依赖共享能力契约；独立插件若要兼容旧版 Core，应自行提供适配层，而不应把旧文章解析实现重新带入核心插件包。

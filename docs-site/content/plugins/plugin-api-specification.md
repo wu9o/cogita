@@ -96,6 +96,7 @@ Core 会在所有插件实例化后统一校验主题硬依赖和插件依赖。
 | 能力标识 | 提供者 | 典型消费者 |
 | --- | --- | --- |
 | `content.posts` | Posts Frontmatter | 标签、合集、分类、搜索、文章列表 |
+| `content.relations` | Content Relations | 相关文章、出链和反向链接 |
 | `content.images` | Images | 主题封面与图片清单 |
 | `content.collections` | Collections | 合集导航 |
 | `discovery.tags` | Tags | 标签导航 |

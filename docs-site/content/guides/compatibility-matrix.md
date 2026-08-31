@@ -17,6 +17,7 @@
 | `@cogita/plugin-collections` | 1.0.5 | 博客主题插件 | 合集聚合和页面 |
 | `@cogita/plugin-comments` | 0.2.5 | 博客主题插件 | 评论配置和文章路由 |
 | `@cogita/plugin-content-check` | 0.2.3 | 博客主题插件 | 内容质量诊断 |
+| `@cogita/plugin-content-relations` | 0.1.0 | 知识库插件 | 本地链接、相关文章和反向链接 |
 | `@cogita/plugin-images` | 1.0.5 | 博客主题插件 | 公共图片和封面处理 |
 | `@cogita/plugin-posts-frontmatter` | 0.1.4 | 博客主题插件 | 文章索引和文章页面 |
 | `@cogita/plugin-reading-progress` | 0.3.5 | 博客主题插件 | 阅读时间和阅读进度 |

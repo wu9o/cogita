@@ -1,0 +1,48 @@
+{
+  "name": "@cogita/plugin-content-relations",
+  "version": "0.1.0",
+  "description": "从 Markdown 本地链接生成相关文章和反向链接数据。",
+  "keywords": ["cogita", "plugin", "content", "relations", "backlinks", "knowledge-base"],
+  "author": "wu9o <https://github.com/wu9o>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wu9o/cogita.git",
+    "directory": "plugins/content-relations"
+  },
+  "bugs": {
+    "url": "https://github.com/wu9o/cogita/issues"
+  },
+  "homepage": "https://github.com/wu9o/cogita/tree/main/plugins/content-relations#readme",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "client.d.ts", "README.md", "LICENSE"],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build -w",
+    "clean": "rm -rf dist",
+    "test": "pnpm build && node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@cogita/shared": "workspace:*",
+    "@rspress/core": "^1.45.1"
+  },
+  "devDependencies": {
+    "@rslib/core": "0.11.2",
+    "@types/node": "^18.11.17",
+    "rsbuild-plugin-publint": "^0.3.3",
+    "typescript": "^5.0.4"
+  }
+}

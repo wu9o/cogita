@@ -30,6 +30,7 @@ Cogita 把框架能力拆成可以独立发布的包。站点项目只需要安�
 | 能力 | 包 |
 | --- | --- |
 | 文章元数据和内容索引 | `@cogita/plugin-posts-frontmatter` |
+| 内容关系和反向链接 | `@cogita/plugin-content-relations` |
 | 文章列表和归档 | `@cogita/plugin-blog-list` |
 | 标签、分类和合集 | `@cogita/plugin-tags`、`@cogita/plugin-categories`、`@cogita/plugin-collections` |
 | 搜索、阅读进度和代码复制 | `@cogita/plugin-search`、`@cogita/plugin-reading-progress`、`@cogita/plugin-code-copy` |
