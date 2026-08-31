@@ -4,11 +4,18 @@ import type {
   CogitaTheme,
   ContentCheckConfig,
   ContentIndex,
+  ContentRelationsConfig,
   LayoutProps,
 } from '@cogita/shared';
 import type { UserConfig } from '@rspress/core';
 
-export type { CogitaPluginFactory, CogitaTheme, ContentCheckConfig, LayoutProps };
+export type {
+  CogitaPluginFactory,
+  CogitaTheme,
+  ContentCheckConfig,
+  ContentRelationsConfig,
+  LayoutProps,
+};
 
 export type ThemeConfig = UserConfig['themeConfig'];
 export type BuilderConfig = UserConfig['builderConfig'];
@@ -527,6 +534,9 @@ export interface CogitaConfig {
 
   /** 内容质量与构建诊断配置。 */
   contentCheck?: ContentCheckConfig;
+
+  /** 内容关系与反向链接配置。 */
+  contentRelations?: ContentRelationsConfig;
 
   /** XML 站点地图配置。 */
   sitemap?: SitemapConfig;

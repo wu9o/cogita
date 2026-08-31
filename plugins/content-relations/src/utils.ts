@@ -1,5 +1,5 @@
 import path from 'node:path';
-import type { CogitaLogger, ContentIndex, ContentPost } from '@cogita/shared';
+import type { CogitaLogger, ContentEntry, ContentIndex, ContentPost } from '@cogita/shared';
 import type { ContentRelationEntry, ContentRelationLink, ContentRelationNode } from './types';
 
 export interface MarkdownLink {
@@ -59,28 +59,28 @@ function getFileCandidates(filePath: string, extensions: readonly string[]): str
   ];
 }
 
-function createPostMaps(posts: readonly ContentPost[], extensions: readonly string[]) {
-  const routeMap = new Map(posts.map((post) => [normalizeRoute(post.route), post]));
-  const fileMap = new Map<string, ContentPost>();
+function createEntryMaps(entries: readonly ContentEntry[], extensions: readonly string[]) {
+  const routeMap = new Map(entries.map((entry) => [normalizeRoute(entry.route), entry]));
+  const fileMap = new Map<string, ContentEntry>();
 
-  for (const post of posts) {
-    for (const candidate of getFileCandidates(post.filePath, extensions)) {
-      fileMap.set(path.normalize(candidate), post);
+  for (const entry of entries) {
+    for (const candidate of getFileCandidates(entry.filePath, extensions)) {
+      fileMap.set(path.normalize(candidate), entry);
     }
   }
 
   return { routeMap, fileMap };
 }
 
-type PostMaps = ReturnType<typeof createPostMaps>;
+type EntryMaps = ReturnType<typeof createEntryMaps>;
 
-function resolvePost(
-  source: ContentPost,
+function resolveEntry(
+  source: ContentEntry,
   href: string,
-  maps: PostMaps,
-  postsDir: string,
-  extensions: readonly string[]
-): ContentPost | undefined {
+  maps: EntryMaps,
+  extensions: readonly string[],
+  contentRoots: readonly string[]
+): ContentEntry | undefined {
   const target = href.split(/[?#]/, 1)[0];
   if (!target) return undefined;
 
@@ -94,15 +94,21 @@ function resolvePost(
   );
   if (fileTarget) return maps.fileMap.get(path.normalize(fileTarget));
 
-  const routeTarget = path.posix.join(
-    '/',
-    path.relative(postsDir, absoluteTarget).split(path.sep).join('/')
-  );
-  return maps.routeMap.get(normalizeRoute(routeTarget));
+  for (const contentRoot of contentRoots) {
+    const routeTarget = path.posix.join(
+      '/',
+      path.relative(contentRoot, absoluteTarget).split(path.sep).join('/')
+    );
+    const entry = maps.routeMap.get(normalizeRoute(routeTarget));
+    if (entry) return entry;
+  }
+
+  return undefined;
 }
 
-function toNode(post: ContentPost): ContentRelationNode {
+function toNode(post: ContentEntry | ContentPost): ContentRelationNode {
   return {
+    kind: 'kind' in post && post.kind ? post.kind : 'post',
     title: post.title,
     route: post.route,
     url: post.url || post.route,
@@ -111,7 +117,11 @@ function toNode(post: ContentPost): ContentRelationNode {
   };
 }
 
-function toLink(post: ContentPost, href: string, label: string): ContentRelationLink {
+function toLink(
+  post: ContentEntry | ContentPost,
+  href: string,
+  label: string
+): ContentRelationLink {
   return { ...toNode(post), href, label: label || undefined };
 }
 
@@ -119,9 +129,10 @@ function toLink(post: ContentPost, href: string, label: string): ContentRelation
 export async function buildContentRelations(
   contentIndex: ContentIndex | undefined,
   options: {
-    postsDir: string;
     extensions: readonly string[];
     root: string;
+    postsDir: string;
+    contentDir?: string;
     logger: CogitaLogger;
   }
 ): Promise<ContentRelationEntry[]> {
@@ -130,17 +141,22 @@ export async function buildContentRelations(
     return [];
   }
 
-  const posts = await contentIndex.getPosts();
-  const postsDir = path.resolve(options.root, options.postsDir);
-  const postMaps = createPostMaps(posts, options.extensions);
+  const entries = contentIndex.getEntries
+    ? await contentIndex.getEntries()
+    : (await contentIndex.getPosts()).map((post) => ({ ...post, kind: 'post' as const }));
+  const entryMaps = createEntryMaps(entries, options.extensions);
+  const contentRoots = [
+    path.resolve(options.root, options.postsDir),
+    options.contentDir ? path.resolve(options.root, options.contentDir) : undefined,
+  ].filter((root): root is string => Boolean(root));
   const relationMap = new Map<string, ContentRelationEntry>();
 
-  for (const post of posts) {
+  for (const post of entries) {
     const outbound = new Map<string, ContentRelationLink>();
     try {
       const content = await contentIndex.getPostContent(post.filePath);
       for (const link of extractMarkdownLinks(content)) {
-        const target = resolvePost(post, link.href, postMaps, postsDir, options.extensions);
+        const target = resolveEntry(post, link.href, entryMaps, options.extensions, contentRoots);
         if (target && target.route !== post.route) {
           outbound.set(target.route, toLink(target, link.href, link.label));
         }
@@ -161,7 +177,7 @@ export async function buildContentRelations(
     });
   }
 
-  for (const source of posts) {
+  for (const source of entries) {
     const entry = relationMap.get(source.route);
     if (!entry) continue;
 
@@ -180,6 +196,6 @@ export async function buildContentRelations(
   const relations = Array.from(relationMap.values()).sort((left, right) =>
     left.route.localeCompare(right.route, 'zh-CN')
   );
-  options.logger.info(`[Content Relations Plugin] 已生成 ${relations.length} 篇内容的关系数据`);
+  options.logger.info(`[Content Relations Plugin] 已生成 ${relations.length} 个内容条目的关系数据`);
   return relations;
 }

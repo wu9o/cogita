@@ -11,12 +11,13 @@ core 在创建主题插件之前，为每次构建注入一个惰性 `ContentInd
 ```ts
 interface ContentIndex {
   getPosts(): Promise<readonly ContentPost[]>;
+  getEntries?(): Promise<readonly ContentEntry[]>;
   getPostContent?(filePath: string): Promise<string>;
   invalidate?(): void;
 }
 ```
 
-索引只在第一个插件调用 `getPosts()` 时扫描，后续插件复用同一个 Promise。正文通过 `getPostContent(filePath)` 按需读取并缓存，搜索、RSS 等需要全文的插件不再各自重复读取同一文件。core 会在重新触发构建期插件钩子前调用 `invalidate()`，让下一轮构建重新读取文章。该方法和正文读取方法都是可选的，以保持第三方插件自行实现 `ContentIndex` 时的兼容性。索引使用与 `posts-frontmatter` 一致的路由规则，并根据 `posts.dir`、`posts.routePrefix` 和 `posts.extensions` 生成文章数据。
+索引只在第一个插件调用 `getEntries()` 或 `getPosts()` 时扫描，后续插件复用同一个 Promise。`getEntries()` 返回文章和 `contentDir` 文档，`getPosts()` 保持只返回文章的旧行为。正文通过 `getPostContent(filePath)` 按需读取并缓存，搜索、RSS 等需要全文的插件不再各自重复读取同一文件。core 会在重新触发构建期插件钩子前调用 `invalidate()`，让下一轮构建重新读取文章和文档。`getEntries()` 和正文读取方法都是可选的，以保持第三方插件自行实现 `ContentIndex` 时的兼容性。索引使用与 `posts-frontmatter` 一致的文章路由规则，并根据 `contentDir` 生成普通文档路由。
 
 插件工厂收到的配置现在还包含 `buildContext`。它集中承载 `root`、`cwd`、`contentIndex`、主题布局路径和构建元数据等框架内部状态。旧版插件仍可读取同名顶层字段；新插件应通过 `getCogitaBuildContext(config)` 获取上下文，避免继续扩展配置对象的内部字段。
 
@@ -45,9 +46,9 @@ const backlinks = getBacklinks('/posts/current');
 const related = getRelatedContent('/posts/current');
 ```
 
-当前实现的索引对象仍以文章为主，`contentDir` 下的普通文档页尚未进入同一索引。因此它是知识库主题
-的第一层数据基础，不代表统一知识库主题已经完成；下一步需要扩展内容条目模型，再由主题组合搜索、
-标签、关系和文档导航。
+当前实现的索引对象已经覆盖文章和 `contentDir` 普通文档页，但知识条目的关系类型、来源位置和主题
+展示仍未完成。因此它是知识库主题的第一层数据基础，不代表统一知识库主题已经完成；下一步由主题
+组合搜索、标签、关系和文档导航。
 
 ## 公共契约版本策略
 

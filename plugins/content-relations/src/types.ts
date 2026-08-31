@@ -1,5 +1,8 @@
+import type { ContentEntryKind } from '@cogita/shared';
+
 /** 运行时可安全暴露的内容关系节点。 */
 export interface ContentRelationNode {
+  kind: ContentEntryKind;
   title: string;
   route: string;
   url: string;

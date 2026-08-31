@@ -33,9 +33,10 @@ export function pluginContentRelations(config: CogitaPluginConfig): CogitaPlugin
 
     async beforeBuild() {
       relations = await buildContentRelations(buildContext.contentIndex, {
-        postsDir,
+        contentDir: config.contentDir,
         extensions,
         root: buildContext.root,
+        postsDir,
         logger,
       });
     },

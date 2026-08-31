@@ -33,6 +33,28 @@ function createContentIndex() {
   };
 }
 
+function createUnifiedContentIndex() {
+  const posts = createContentIndex();
+  const document = {
+    kind: 'document',
+    title: '知识库指南',
+    route: '/guides/start',
+    url: '/guides/start',
+    filePath: '/tmp/cogita-relations/content/guides/start.md',
+    updateDate: '2026-08-03',
+  };
+
+  return {
+    ...posts,
+    getEntries: async () => [
+      ...(await posts.getPosts()).map((post) => ({ ...post, kind: 'post' })),
+      document,
+    ],
+    getPostContent: async (filePath) =>
+      filePath === document.filePath ? '[目标文章](/posts/target)' : posts.getPostContent(filePath),
+  };
+}
+
 describe('内容关系插件能力契约', () => {
   it('未配置时应优雅跳过', () => {
     assert.equal(pluginContentRelations({ root: process.cwd(), cwd: process.cwd() }), null);
@@ -65,5 +87,21 @@ describe('内容关系插件能力契约', () => {
     assert.match(source, /export const contentRelations/);
     assert.match(source, /目标文章/);
     assert.match(source, /getBacklinks/);
+  });
+
+  it('应使用统一内容条目生成文章到文档的关系', async () => {
+    const plugin = pluginContentRelations({
+      root: '/tmp/cogita-relations',
+      cwd: '/tmp/cogita-relations',
+      contentDir: 'content',
+      posts: { dir: 'posts', extensions: ['md'] },
+      contentRelations: { enabled: true },
+      contentIndex: createUnifiedContentIndex(),
+    });
+
+    await plugin.beforeBuild();
+    const source = plugin.addRuntimeModules()['virtual-content-relations-data'];
+    assert.match(source, /知识库指南/);
+    assert.match(source, /"kind":"document"/);
   });
 });
