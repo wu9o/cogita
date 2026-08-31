@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { createCogitaLogger } from '@cogita/shared';
+import { COGITA_CONTENT_INDEX_VERSION, createCogitaLogger } from '@cogita/shared';
 import type { CogitaLogger, ContentIndex, ContentPost, ContentPostSEO } from '@cogita/shared';
 import { glob } from 'glob';
 import matter from 'gray-matter';
@@ -127,6 +127,7 @@ export function createContentIndex(
   const contentPromises = new Map<string, Promise<string>>();
 
   return {
+    contractVersion: COGITA_CONTENT_INDEX_VERSION,
     getPosts() {
       postsPromise ??= scanPosts({ root, posts, logger });
       return postsPromise;

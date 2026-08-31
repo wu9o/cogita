@@ -1,4 +1,10 @@
-import { getCogitaBuildContext, getCogitaLogger } from '@cogita/shared';
+import {
+  COGITA_CAPABILITIES,
+  COGITA_VIRTUAL_MODULE_IDS,
+  createCogitaVirtualModule,
+  getCogitaBuildContext,
+  getCogitaLogger,
+} from '@cogita/shared';
 import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import type { ReadingStats } from './types';
 import { extractReadingStats, resolveReadingProgressConfig } from './utils';
@@ -25,8 +31,8 @@ export function pluginReadingProgress(config: CogitaPluginConfig): CogitaPlugin 
   return {
     name: '@cogita/plugin-reading-progress',
     cogita: {
-      providesCapabilities: ['ui.reading-progress'],
-      requiresCapabilities: ['content.posts'],
+      providesCapabilities: [COGITA_CAPABILITIES.UI_READING_PROGRESS],
+      requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
     },
 
     async beforeBuild() {
@@ -47,13 +53,13 @@ export function pluginReadingProgress(config: CogitaPluginConfig): CogitaPlugin 
 
     addRuntimeModules() {
       return {
-        'virtual-reading-progress-data': `
+        [COGITA_VIRTUAL_MODULE_IDS.READING_PROGRESS_DATA]: createCogitaVirtualModule(`
           export const readingProgressConfig = ${JSON.stringify(finalConfig)};
           export const readingStatsByRoute = ${JSON.stringify(Object.fromEntries(readingStats.map((stats) => [stats.route, stats])))};
           export function getReadingStats(route) {
             return readingStatsByRoute[route];
           }
-        `,
+        `),
       };
     },
   };

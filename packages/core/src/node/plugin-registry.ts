@@ -4,6 +4,8 @@ import type {
   CogitaPluginConfig,
   CogitaPluginFactory,
 } from '@cogita/shared';
+import { getCogitaDiagnostic } from '@cogita/shared';
+import { createCoreDiagnostic, createCoreDiagnosticError, warnCoreDiagnostic } from './diagnostics';
 
 /** 一组插件工厂及其来源，用于生成可诊断的注册信息。 */
 export interface PluginFactorySource {
@@ -24,12 +26,6 @@ export interface PluginRegistryOptions {
 
 function formatError(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
-}
-
-function withCause(message: string, cause: unknown): Error {
-  const error = new Error(message);
-  (error as Error & { cause?: unknown }).cause = cause;
-  return error;
 }
 
 /** 保护核心注册器不被运行时无效的第三方工厂返回值破坏。 */
@@ -100,11 +96,19 @@ function withPageRouteContract(
 
       if (invocationRoutes.has(route)) {
         const message = `[Cogita] 页面路由 ${route} 重复注册（来源：${source}、${source}）`;
+        const diagnostic = createCoreDiagnostic('COGITA_PAGE_ROUTE_CONFLICT', message, {
+          route,
+          sources: [source, source],
+        });
         if (options.strict) {
-          throw new Error(message);
+          throw createCoreDiagnosticError(diagnostic.code, diagnostic.message, diagnostic.details);
         }
 
-        options.logger.warn(`${message}，非严格模式下保留首次注册。`);
+        warnCoreDiagnostic(options.logger, {
+          ...diagnostic,
+          severity: 'warning',
+          message: `${message}，非严格模式下保留首次注册。`,
+        });
         return false;
       }
       invocationRoutes.add(route);
@@ -120,11 +124,19 @@ function withPageRouteContract(
       }
 
       const message = `[Cogita] 页面路由 ${route} 重复注册（来源：${previousSource}、${source}）`;
+      const diagnostic = createCoreDiagnostic('COGITA_PAGE_ROUTE_CONFLICT', message, {
+        route,
+        sources: [previousSource, source],
+      });
       if (options.strict) {
-        throw new Error(message);
+        throw createCoreDiagnosticError(diagnostic.code, diagnostic.message, diagnostic.details);
       }
 
-      options.logger.warn(`${message}，非严格模式下保留首次注册。`);
+      warnCoreDiagnostic(options.logger, {
+        ...diagnostic,
+        severity: 'warning',
+        message: `${message}，非严格模式下保留首次注册。`,
+      });
       return false;
     });
   };
@@ -181,13 +193,19 @@ function withRuntimeModuleContract(
       }
 
       const message = `[Cogita] 运行时模块 ${normalizedModuleId} 重复注册（来源：${previous.source}、${source}）`;
+      const diagnostic = createCoreDiagnostic('COGITA_RUNTIME_MODULE_CONFLICT', message, {
+        moduleId: normalizedModuleId,
+        sources: [previous.source, source],
+      });
       if (options.strict) {
-        throw new Error(message);
+        throw createCoreDiagnosticError(diagnostic.code, diagnostic.message, diagnostic.details);
       }
 
-      options.logger.warn(
-        `${message}，非严格模式下保留${previous.isDefault ? '默认' : '首次'}注册。`
-      );
+      warnCoreDiagnostic(options.logger, {
+        ...diagnostic,
+        severity: 'warning',
+        message: `${message}，非严格模式下保留${previous.isDefault ? '默认' : '首次'}注册。`,
+      });
       delete acceptedModules[moduleId];
     }
 
@@ -217,20 +235,33 @@ export function registerPlugins(
   const registerPlugin = (value: unknown, source: string) => {
     if (!isRspressPlugin(value)) {
       const message = `[Cogita] ${source} 返回了无效插件，插件必须提供非空 name 字段`;
+      const diagnostic = createCoreDiagnostic('COGITA_PLUGIN_INVALID', message, { source });
       if (options.strict) {
-        throw new Error(message);
+        throw createCoreDiagnosticError(diagnostic.code, diagnostic.message, diagnostic.details);
       }
-      options.logger.warn(`${message}，非严格模式下跳过。`);
+      warnCoreDiagnostic(options.logger, {
+        ...diagnostic,
+        severity: 'warning',
+        message: `${message}，非严格模式下跳过。`,
+      });
       return;
     }
 
     const previousSource = registeredPluginSources.get(value.name);
     if (previousSource) {
       const message = `[Cogita] 插件 ${value.name} 重复注册（来源：${previousSource}、${source}）`;
+      const diagnostic = createCoreDiagnostic('COGITA_PLUGIN_DUPLICATE', message, {
+        plugin: value.name,
+        sources: [previousSource, source],
+      });
       if (options.strict) {
-        throw new Error(message);
+        throw createCoreDiagnosticError(diagnostic.code, diagnostic.message, diagnostic.details);
       }
-      options.logger.warn(`${message}，非严格模式下保留首次注册。`);
+      warnCoreDiagnostic(options.logger, {
+        ...diagnostic,
+        severity: 'warning',
+        message: `${message}，非严格模式下保留首次注册。`,
+      });
       return;
     }
 
@@ -259,11 +290,31 @@ export function registerPlugins(
           registerPlugin(plugin, `${source}${plugins.length > 1 ? `#${pluginIndex}` : ''}`);
         });
       } catch (error) {
-        const message = `[Cogita] ${source} 插件工厂执行失败：${formatError(error)}`;
-        if (options.strict) {
-          throw withCause(message, error);
+        if (getCogitaDiagnostic(error)) {
+          if (options.strict) {
+            throw error;
+          }
+
+          return;
         }
-        options.logger.warn(`${message}，非严格模式下跳过。`);
+
+        const message = `[Cogita] ${source} 插件工厂执行失败：${formatError(error)}`;
+        const diagnostic = createCoreDiagnostic('COGITA_PLUGIN_FACTORY_FAILED', message, {
+          source,
+        });
+        if (options.strict) {
+          throw createCoreDiagnosticError(
+            diagnostic.code,
+            diagnostic.message,
+            diagnostic.details,
+            error
+          );
+        }
+        warnCoreDiagnostic(options.logger, {
+          ...diagnostic,
+          severity: 'warning',
+          message: `${message}，非严格模式下跳过。`,
+        });
       }
     });
   }

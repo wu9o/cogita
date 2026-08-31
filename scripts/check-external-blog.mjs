@@ -82,7 +82,14 @@ function createConsumerProject(consumerRoot, archives) {
   }
 }
 
-if (!existsSync(path.join(blogRoot, 'package.json')) || !existsSync(path.join(blogRoot, 'posts'))) {
+const hasExternalBlog =
+  existsSync(path.join(blogRoot, 'package.json')) && existsSync(path.join(blogRoot, 'posts'));
+
+if (!hasExternalBlog) {
+  if (process.env.CI === 'true' || process.env.COGITA_REQUIRE_EXTERNAL_BLOG === 'true') {
+    throw new Error(`[External Blog Smoke] 未找到必需的博客消费者：${blogRoot}`);
+  }
+
   console.log(`[External Blog Smoke] 未找到博客仓库，跳过：${blogRoot}`);
   process.exit(0);
 }
@@ -106,6 +113,18 @@ try {
     throw new Error('外部博客消费者安装发布包失败。');
   }
 
+  const doctor = spawnSync('pnpm', ['exec', 'cogita', 'doctor', '--strict', '--json'], {
+    cwd: consumerRoot,
+    encoding: 'utf8',
+  });
+  if (doctor.status !== 0) {
+    throw new Error(`外部博客消费者 doctor 失败：${doctor.stderr || doctor.stdout}`);
+  }
+  const doctorReport = JSON.parse(doctor.stdout);
+  if (!doctorReport.ok || doctorReport.errors !== 0 || doctorReport.warnings !== 0) {
+    throw new Error(`外部博客消费者 doctor 报告未通过：${doctor.stdout}`);
+  }
+
   const build = spawnSync('pnpm', ['exec', 'cogita', 'build'], {
     cwd: consumerRoot,
     encoding: 'utf8',
@@ -123,6 +142,8 @@ try {
     'doc_build/rss.xml',
     'doc_build/atom.xml',
     'doc_build/feed.json',
+    'doc_build/content-report.json',
+    'doc_build/seo-report.json',
   ];
   for (const relativePath of expectedFiles) {
     if (!existsSync(path.join(consumerRoot, relativePath))) {
@@ -133,6 +154,23 @@ try {
   const indexHtml = readFileSync(path.join(consumerRoot, 'doc_build/index.html'), 'utf8');
   if (!indexHtml.includes('Cogita')) {
     throw new Error('外部博客消费者首页未包含站点标题。');
+  }
+
+  const qualityGate = spawnSync(
+    process.execPath,
+    [
+      path.join(repositoryRoot, 'scripts/check-quality-reports.mjs'),
+      '--root',
+      consumerRoot,
+      '--report',
+      'doc_build/content-report.json',
+      '--report',
+      'doc_build/seo-report.json',
+    ],
+    { cwd: consumerRoot, encoding: 'utf8', stdio: 'inherit' }
+  );
+  if (qualityGate.status !== 0) {
+    throw new Error('外部博客消费者质量报告门禁失败。');
   }
   console.log('[External Blog Smoke] 真实博客仓库的发布包安装、构建和关键产物验证通过');
 } finally {

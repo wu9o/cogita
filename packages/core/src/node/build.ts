@@ -9,7 +9,7 @@ import {
 } from './config';
 
 export async function createBuild(root: string) {
-  const cogitaConfig = await loadCogitaConfig(root);
+  const cogitaConfig = await loadCogitaConfig(root, { required: true });
   const rspressConfig = await createRspressConfig(cogitaConfig, root);
 
   const appDirectory = root;

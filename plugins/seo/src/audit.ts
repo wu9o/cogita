@@ -1,3 +1,4 @@
+import { COGITA_QUALITY_REPORT_SCHEMA_VERSION } from '@cogita/shared';
 import type { SEOAuditConfig, SEOAuditIssue, SEOAuditReport, SEOPageMeta } from './types';
 
 export interface SEOAuditPage {
@@ -64,7 +65,10 @@ export function createSEOAuditReport(
   }
 
   return {
+    schemaVersion: COGITA_QUALITY_REPORT_SCHEMA_VERSION,
+    reportType: 'seo-audit',
     generatedAt: new Date().toISOString(),
+    itemCount: pages.length,
     pageCount: pages.length,
     errors: issues.filter((issue) => issue.severity === 'error').length,
     warnings: issues.filter((issue) => issue.severity === 'warning').length,

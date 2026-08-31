@@ -4,6 +4,17 @@ title: 开发指南
 
 # 开发指南
 
+## 初始化站点
+
+可以使用 CLI 生成博客站或文档站的最小可运行项目：
+
+```bash
+pnpm dlx @cogita/cli create my-blog --template blog
+pnpm dlx @cogita/cli create my-docs --template docs
+```
+
+博客模板从 `posts/` 读取文章，文档模板从 `content/` 读取 Markdown 页面。生成项目后执行 `pnpm run dev` 即可启动开发服务器。
+
 本指南面向 Cogita 框架、插件和主题的贡献者，说明本地开发、质量检查、测试和发布前验证流程。
 
 ## 开发环境
@@ -198,7 +209,7 @@ pnpm run check
 pnpm run test
 ```
 
-发布前还应运行 `pnpm run check:release`。它会在一次包构建后依次检查发布包边界、最小博客消费者、同级独立博客消费者和独立文档消费者；同级博客仓库不存在时，博客消费者检查会安全跳过，但文档消费者检查仍会执行。
+发布前还应运行 `pnpm run check:release`。它会在一次包构建后依次检查发布包边界、最小博客消费者、独立博客消费者和独立文档消费者。开发机上没有同级 `cogita-blog` 仓库时，外部博客检查会跳过；CI 发布流程会显式检出 `wu9o/cogita-blog`，缺少博客消费者或构建失败都会阻断发布。
 
 ## 文档同步
 

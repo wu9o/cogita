@@ -49,7 +49,7 @@ async function startServer(root: string, cogitaConfig: CogitaConfig): Promise<De
 
 export async function createServer(root: string = process.cwd()): Promise<void> {
   const logger = createCogitaLogger();
-  let activeConfig = await loadCogitaConfig(root);
+  let activeConfig = await loadCogitaConfig(root, { required: true });
   const initialConfigPath = await findUp(CONFIG_FILES, { cwd: root, type: 'file' });
   let server = await startServer(root, activeConfig);
   let watchedPaths = getDevWatchPaths(root, activeConfig, initialConfigPath);
@@ -68,7 +68,7 @@ export async function createServer(root: string = process.cwd()): Promise<void> 
 
         // 等待编辑器完成原子写入，避免读取到半截配置或文章。
         await new Promise((resolve) => setTimeout(resolve, 80));
-        const nextConfig = await loadCogitaConfig(root);
+        const nextConfig = await loadCogitaConfig(root, { required: true });
         const nextConfigPath = await findUp(CONFIG_FILES, { cwd: root, type: 'file' });
         const nextWatchPaths = getDevWatchPaths(root, nextConfig, nextConfigPath);
 

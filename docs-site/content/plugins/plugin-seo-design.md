@@ -80,6 +80,8 @@ Rspress 1.45 提供了 `config.head` 的路由回调能力，因此插件可以�
 
 审核默认只输出报告，不阻断构建。设置 `audit.failOnError: true` 后，缺少标题、描述或 canonical 会让构建失败。设置 `audit.reportPath` 后，报告会以 JSON 写入构建输出目录，便于 CI 或后续工具继续处理。
 
+SEO 审核报告遵循统一质量报告 schema，除兼容保留的 `pageCount` 外，还包含 `reportType: "seo-audit"` 和通用的 `itemCount`、`errors`、`warnings`、`issues` 字段。它可以和 `content-report.json` 一起交给 `scripts/check-quality-reports.mjs`，由同一个门禁统计总错误和警告，并在 GitHub Actions 中生成逐条 annotation。
+
 ## 生成内容
 
 文章页包含：

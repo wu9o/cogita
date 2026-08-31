@@ -2,7 +2,11 @@ import { existsSync, readFileSync } from 'node:fs';
 import { copyFile, cp, mkdir, readdir, rm } from 'node:fs/promises';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createCogitaLogger } from '@cogita/shared';
+import {
+  COGITA_BUILD_CONTEXT_VERSION,
+  createCogitaLogger,
+  getCogitaDiagnostic,
+} from '@cogita/shared';
 import type { CogitaPlugin, CogitaPluginConfig, CogitaTheme } from '@cogita/shared';
 import type { RspressPlugin, UserConfig } from '@rspress/core';
 import { findUp } from 'find-up';
@@ -10,9 +14,15 @@ import jiti from 'jiti';
 import * as mlly from 'mlly';
 import type { CogitaConfig, CogitaFullConfig, PostsConfig } from '../types';
 import { createContentIndex } from './content-index';
+import {
+  createCoreDiagnostic,
+  createCoreDiagnosticError,
+  getCoreErrorMessage,
+  warnCoreDiagnostic,
+} from './diagnostics';
 import { registerPlugins } from './plugin-registry';
 import { cogitaRuntimeDefaults } from './runtime-modules';
-import { resolveThemePackage } from './theme';
+import { isCogitaThemeConfig, resolveThemePackage } from './theme';
 
 const CONFIG_FILES = ['cogita.config.ts', 'cogita.config.js', 'cogita.config.mjs'];
 
@@ -109,11 +119,23 @@ export async function prepareContentDirectory(
   const targetDirectory = path.resolve(docDirectory);
 
   if (sourceDirectory === targetDirectory) {
-    throw new Error('contentDir 不能指向 Cogita 的虚拟文档目录。');
+    throw createCoreDiagnosticError(
+      'COGITA_CONTENT_DIR_INVALID',
+      'contentDir 不能指向 Cogita 的虚拟文档目录。',
+      { contentDir, root },
+      undefined,
+      '请把 contentDir 设置为站点根目录下独立的 Markdown 目录，例如 content。'
+    );
   }
 
   if (!existsSync(sourceDirectory)) {
-    throw new Error(`文档源目录不存在：${sourceDirectory}`);
+    throw createCoreDiagnosticError(
+      'COGITA_CONTENT_DIR_NOT_FOUND',
+      `文档源目录不存在：${sourceDirectory}`,
+      { contentDir, sourceDirectory },
+      undefined,
+      '请创建该目录，或从配置中移除 contentDir。'
+    );
   }
 
   await rm(targetDirectory, { recursive: true, force: true });
@@ -164,10 +186,33 @@ async function getPackageRoot(): Promise<string> {
   return packageRoot;
 }
 
-export async function loadCogitaConfig(root: string = process.cwd()): Promise<CogitaConfig> {
-  const configPath = await findUp(CONFIG_FILES, { cwd: root });
+export async function findCogitaConfigPath(
+  root: string = process.cwd()
+): Promise<string | undefined> {
+  return findUp(CONFIG_FILES, { cwd: root, type: 'file' });
+}
+
+export interface LoadCogitaConfigOptions {
+  /** 没有配置文件时是否阻断 CLI 的构建、开发和预览命令。 */
+  required?: boolean;
+}
+
+export async function loadCogitaConfig(
+  root: string = process.cwd(),
+  options: LoadCogitaConfigOptions = {}
+): Promise<CogitaConfig> {
+  const configPath = await findCogitaConfigPath(root);
 
   if (!configPath) {
+    if (options.required) {
+      throw createCoreDiagnosticError(
+        'COGITA_CONFIG_NOT_FOUND',
+        `未找到 Cogita 配置文件：${root}`,
+        { root, configFiles: CONFIG_FILES },
+        undefined,
+        '请运行 pnpm dlx @cogita/cli create my-site，或在项目根目录创建 cogita.config.ts。'
+      );
+    }
     return {};
   }
 
@@ -176,8 +221,18 @@ export async function loadCogitaConfig(root: string = process.cwd()): Promise<Co
     const mod = _require(configPath);
     return mod.default || {};
   } catch (e) {
-    createCogitaLogger().error(`Failed to load config file: ${configPath}`);
-    throw e;
+    if (getCogitaDiagnostic(e)) {
+      throw e;
+    }
+
+    const message = getCoreErrorMessage(e);
+    throw createCoreDiagnosticError(
+      'COGITA_CONFIG_LOAD_FAILED',
+      `配置文件加载失败：${configPath}。${message}`,
+      { configPath },
+      e,
+      '请检查 cogita.config.ts 的语法、导入路径和配置字段。'
+    );
   }
 }
 
@@ -197,22 +252,66 @@ async function loadTheme(themeName: string, projectRoot: string): Promise<Loaded
     try {
       url = await mlly.resolve(themeName, { url: packageRoot });
     } catch {
-      throw error;
+      throw createCoreDiagnosticError(
+        'COGITA_THEME_LOAD_FAILED',
+        `无法加载主题「${themeName}」。${getCoreErrorMessage(error)}`,
+        { theme: themeName, projectRoot },
+        error,
+        '请确认主题包已安装，并检查配置中的 theme 包名或本地路径。'
+      );
     }
   }
 
   const themeEntryPath = fileURLToPath(url);
   const _require = jiti(fileURLToPath(import.meta.url));
-  const mod = _require(themeEntryPath);
-
-  // Check for the exported getThemeConfig function
-  if (typeof mod.getThemeConfig !== 'function') {
-    throw new Error(`Theme '${themeName}' does not export a 'getThemeConfig' function.`);
+  let mod: { getThemeConfig?: unknown };
+  try {
+    mod = _require(themeEntryPath) as { getThemeConfig?: unknown };
+  } catch (error) {
+    throw createCoreDiagnosticError(
+      'COGITA_THEME_LOAD_FAILED',
+      `主题「${themeName}」加载失败：${getCoreErrorMessage(error)}`,
+      { theme: themeName, themeEntryPath },
+      error,
+      '请检查主题包的依赖、导出入口和当前 Core 版本兼容性。'
+    );
   }
 
-  // Call the function to get the theme configuration object
+  if (typeof mod.getThemeConfig !== 'function') {
+    throw createCoreDiagnosticError(
+      'COGITA_THEME_INVALID',
+      `主题「${themeName}」没有导出 getThemeConfig 函数。`,
+      { theme: themeName, themeEntryPath },
+      undefined,
+      '请升级主题包，或确认主题入口导出了 getThemeConfig。'
+    );
+  }
+
+  let themeConfig: CogitaTheme;
+  try {
+    themeConfig = (mod.getThemeConfig as () => CogitaTheme)();
+  } catch (error) {
+    throw createCoreDiagnosticError(
+      'COGITA_THEME_INVALID',
+      `主题「${themeName}」执行 getThemeConfig 失败：${getCoreErrorMessage(error)}`,
+      { theme: themeName, themeEntryPath },
+      error,
+      '请检查主题配置返回值和主题依赖是否完整。'
+    );
+  }
+
+  if (!isCogitaThemeConfig(themeConfig)) {
+    throw createCoreDiagnosticError(
+      'COGITA_THEME_INVALID',
+      `主题「${themeName}」的 getThemeConfig 返回值不符合主题契约。`,
+      { theme: themeName, themeEntryPath },
+      undefined,
+      '请返回包含 name 和 pageLayouts.home 的 CogitaTheme 对象。'
+    );
+  }
+
   return {
-    config: mod.getThemeConfig(),
+    config: themeConfig,
     directory: path.dirname(themeEntryPath),
   };
 }
@@ -285,13 +384,27 @@ function validateThemeLayouts(
   }
 
   const message = `[Cogita] 已启用的功能缺少主题布局：${Array.from(missing).join('、')}`;
+  const diagnostic = createCoreDiagnostic(
+    'COGITA_THEME_LAYOUT_MISSING',
+    `${message}。请在主题的 pageLayouts 中补齐对应布局，或关闭相关功能。`,
+    { missingLayouts: Array.from(missing) },
+    '请安装提供这些布局的主题，或在自定义主题中补充对应的 pageLayouts。'
+  );
   if (strict) {
-    throw new Error(`${message}。请在主题的 pageLayouts 中补齐对应布局，或关闭相关功能。`);
+    throw createCoreDiagnosticError(
+      diagnostic.code,
+      diagnostic.message,
+      diagnostic.details,
+      undefined,
+      diagnostic.hint
+    );
   }
 
-  (config.buildContext.logger || createCogitaLogger()).warn(
-    `${message}，非严格模式下将跳过缺失页面。`
-  );
+  warnCoreDiagnostic(config.buildContext.logger || createCogitaLogger(), {
+    ...diagnostic,
+    severity: 'warning',
+    message: `${message}，非严格模式下将跳过缺失页面。`,
+  });
 }
 
 /** 清理第三方插件提供的能力标识，避免空值和重复值污染诊断结果。 */
@@ -313,12 +426,47 @@ function validateCapabilities(
   plugins: readonly CogitaPlugin[],
   strict: boolean
 ) {
-  const providedCapabilities = new Set<string>();
+  const capabilityProviders = new Map<string, string[]>();
   for (const plugin of plugins) {
     for (const capability of normalizeCapabilities(plugin.cogita?.providesCapabilities)) {
-      providedCapabilities.add(capability);
+      const providers = capabilityProviders.get(capability) || [];
+      providers.push(plugin.name);
+      capabilityProviders.set(capability, providers);
     }
   }
+
+  const duplicateProviders = Array.from(capabilityProviders.entries())
+    .filter(([, providers]) => providers.length > 1)
+    .map(([capability, providers]) => ({ capability, providers }));
+
+  if (duplicateProviders.length > 0) {
+    const message = duplicateProviders
+      .map(({ capability, providers }) => `${capability}（${providers.join('、')}）`)
+      .join('；');
+    const diagnostic = createCoreDiagnostic(
+      'COGITA_CAPABILITY_PROVIDER_CONFLICT',
+      `[Cogita] 能力由多个插件提供：${message}。请保留一个提供者，避免主题和插件读取到不确定的数据来源。`,
+      { providers: duplicateProviders },
+      '检查主题默认插件和站点 plugins 配置，确保同一能力只由一个插件提供。'
+    );
+    if (strict) {
+      throw createCoreDiagnosticError(
+        diagnostic.code,
+        diagnostic.message,
+        diagnostic.details,
+        undefined,
+        diagnostic.hint
+      );
+    }
+
+    warnCoreDiagnostic(config.buildContext.logger || createCogitaLogger(), {
+      ...diagnostic,
+      severity: 'warning',
+      message: `${diagnostic.message} 非严格模式下继续构建，但该组合不受支持。`,
+    });
+  }
+
+  const providedCapabilities = new Set(capabilityProviders.keys());
 
   const missing = new Set<string>();
   for (const capability of normalizeCapabilities(theme?.capabilities?.required)) {
@@ -340,13 +488,27 @@ function validateCapabilities(
   }
 
   const message = `[Cogita] 能力契约未满足：${Array.from(missing).join('；')}`;
+  const diagnostic = createCoreDiagnostic(
+    'COGITA_CAPABILITY_MISSING',
+    `${message}。请注册提供对应能力的插件，或将该能力改为主题的 optional 能力。`,
+    { missingCapabilities: Array.from(missing) },
+    '请检查 theme.capabilities.required、插件 cogita.requiresCapabilities，以及站点 plugins 注册项。'
+  );
   if (strict) {
-    throw new Error(`${message}。请注册提供对应能力的插件，或将该能力改为主题的 optional 能力。`);
+    throw createCoreDiagnosticError(
+      diagnostic.code,
+      diagnostic.message,
+      diagnostic.details,
+      undefined,
+      diagnostic.hint
+    );
   }
 
-  (config.buildContext.logger || createCogitaLogger()).warn(
-    `${message}，非严格模式下继续构建并由主题自行降级。`
-  );
+  warnCoreDiagnostic(config.buildContext.logger || createCogitaLogger(), {
+    ...diagnostic,
+    severity: 'warning',
+    message: `${message}，非严格模式下继续构建并由主题自行降级。`,
+  });
 }
 
 /**
@@ -374,6 +536,7 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
     contentIndex,
     _framework: framework,
     buildContext: {
+      contractVersion: COGITA_BUILD_CONTEXT_VERSION,
       root,
       cwd: root,
       contentIndex,
@@ -585,6 +748,21 @@ export async function createRspressConfig(
   }
 
   // 3. Build the base Rspress config first
+  const existingRspackTools = cogitaConfig.builderConfig?.tools?.rspack;
+  const rspackTools = existingRspackTools
+    ? Array.isArray(existingRspackTools)
+      ? [...existingRspackTools]
+      : [existingRspackTools]
+    : [];
+  // Rspress 生成的语法高亮虚拟模块同时包含 ESM 和 CommonJS 语法，需要使用兼容解析模式。
+  rspackTools.push((rspackConfig) => {
+    rspackConfig.module.rules ??= [];
+    rspackConfig.module.rules.push({
+      test: /virtual-prism-languages/,
+      type: 'javascript/auto',
+    });
+  });
+
   const baseRspressConfig: UserConfig = {
     root,
     title: cogitaConfig.site?.title,
@@ -595,7 +773,13 @@ export async function createRspressConfig(
     markdown: cogitaConfig.markdown,
     mediumZoom: cogitaConfig.mediumZoom,
     themeConfig: cogitaConfig.themeConfig,
-    builderConfig: cogitaConfig.builderConfig,
+    builderConfig: {
+      ...cogitaConfig.builderConfig,
+      tools: {
+        ...cogitaConfig.builderConfig?.tools,
+        rspack: rspackTools,
+      },
+    },
     plugins: [], // Will be populated next
   };
 

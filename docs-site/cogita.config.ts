@@ -28,6 +28,7 @@ export default defineConfig({
             { text: '配置指南', link: '/configuration' },
             { text: '主题总览', link: '/themes' },
             { text: '包与能力地图', link: '/package-map' },
+            { text: '第三方扩展 Starter', link: '/starters' },
           ],
         },
         {
@@ -37,6 +38,7 @@ export default defineConfig({
             { text: '最佳实践', link: '/guides/best-practices' },
             { text: '开发指南', link: '/guides/development' },
             { text: '部署指南', link: '/guides/deployment' },
+            { text: '站点升级与自检', link: '/guides/site-doctor' },
             { text: '内容仓库迁移', link: '/guides/migration' },
             { text: '主题使用与扩展', link: '/theme-customization' },
           ],

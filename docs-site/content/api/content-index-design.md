@@ -28,6 +28,40 @@ interface ContentIndex {
 
 聚合插件统一使用 `@cogita/shared` 导出的 `ContentPostReference`，不再各自复制文章引用字段；依赖文章能力的插件也只消费 Core 注入的 `ContentIndex`，不再直接依赖文章扫描插件包。
 文章运行时虚拟模块 `virtual-posts-data` 额外暴露 `contentDataVersion`，外部主题可据此拒绝不兼容的数据契约。
+
+## 公共契约版本策略
+
+`@cogita/shared` 暴露以下稳定版本字段，新增不兼容字段时递增对应版本：
+
+| 契约 | 版本字段 | 作用 |
+| --- | --- | --- |
+| 构建上下文 | `COGITA_BUILD_CONTEXT_VERSION` / `buildContext.contractVersion` | 识别 `CogitaBuildContext` 的字段形状 |
+| 内容索引 | `COGITA_CONTENT_INDEX_VERSION` / `contentIndex.contractVersion` | 识别 `ContentIndex` 的方法和数据模型 |
+| 虚拟模块 | `COGITA_VIRTUAL_MODULE_SCHEMA_VERSION` / `cogitaVirtualModuleVersion` | 识别所有 Cogita 虚拟运行时模块的公共数据头 |
+| 文章数据 | `COGITA_CONTENT_DATA_VERSION` / `contentDataVersion` | 保留 `virtual-posts-data` 的文章数据兼容性 |
+
+虚拟模块 ID 统一从 `COGITA_VIRTUAL_MODULE_IDS` 获取，内置文章能力统一使用
+`COGITA_CAPABILITIES.CONTENT_POSTS`。第三方插件仍可以声明自己的能力标识，但不应重新定义
+`content.posts` 或复用已有虚拟模块 ID。插件生成虚拟模块时应使用
+`createCogitaVirtualModule(source)` 写入版本头：
+
+```typescript
+import {
+  COGITA_VIRTUAL_MODULE_IDS,
+  createCogitaVirtualModule,
+} from '@cogita/shared';
+
+return {
+  [COGITA_VIRTUAL_MODULE_IDS.SEARCH_DATA]: createCogitaVirtualModule(`
+    export const searchDocuments = ${JSON.stringify(documents)};
+  `),
+};
+```
+
+`contractVersion` 对第三方兼容实现保持可选，以便旧插件继续工作；Core 创建的原生实现总是提供
+版本字段。第三方主题如果消费自己关心的模块，应在版本不兼容时显式降级或给出诊断，而不是静默
+按旧字段继续渲染。
+
 - `plugin-search`：优先使用索引生成搜索元数据，正文仅在显式开启正文索引时按文件读取。
 - `plugin-rss`、`plugin-seo`、`plugin-sitemap`：优先使用索引生成 Feed、页面 SEO 和站点地图数据。
 - `plugin-images`：优先使用索引中的文章封面字段关联公共图片。

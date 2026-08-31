@@ -23,3 +23,5 @@ export default defineConfig({
 ```
 
 插件默认只输出警告和 JSON 报告，不会改变现有构建结果。可以用 `severity` 按问题代码调整为 `error`、`warning` 或 `ignore`，也可以用 `ignores` 按代码、路由或文件路径忽略特定问题。需要将内容错误纳入 CI 门禁时，再显式设置 `failOnError: true`。报告会在构建继续失败时尽可能提前写入，便于 CI 保留诊断结果。
+
+报告使用统一的 `schemaVersion: 1`、`reportType: "content-check"`、`itemCount`、`errors`、`warnings` 和 `issues` 字段。构建后可以使用仓库中的 `scripts/check-quality-reports.mjs` 合并内容与 SEO 报告，并通过 `--max-errors`、`--max-warnings` 设置 CI 门禁；GitHub Actions 会自动生成 annotation。

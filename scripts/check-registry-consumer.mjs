@@ -4,6 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 
 const packageNames = ['@cogita/cli', '@cogita/core', '@cogita/theme-lucid'];
+const requireDoctor = process.argv.includes('--require-doctor');
 
 /** 获取 registry 当前可安装的公开版本。 */
 function getPublishedVersion(packageName) {
@@ -31,6 +32,10 @@ function createConsumerProject(consumerRoot, versions) {
         name: 'cogita-registry-consumer-smoke',
         private: true,
         type: 'module',
+        scripts: {
+          build: 'cogita build',
+          doctor: 'cogita doctor',
+        },
         dependencies: {
           '@cogita/cli': versions['@cogita/cli'],
           '@cogita/core': versions['@cogita/core'],
@@ -87,6 +92,32 @@ try {
   });
   if (install.status !== 0) {
     throw new Error('registry 消费者项目安装失败。');
+  }
+
+  const help = spawnSync('pnpm', ['exec', 'cogita', '--help'], {
+    cwd: consumerRoot,
+    encoding: 'utf8',
+  });
+  const hasDoctor = help.status === 0 && /\bdoctor\b/.test(help.stdout);
+  if (requireDoctor && !hasDoctor) {
+    throw new Error(`registry 中的 @cogita/cli 尚未提供 doctor 命令：${versions['@cogita/cli']}`);
+  }
+  if (hasDoctor) {
+    const doctor = spawnSync('pnpm', ['run', 'doctor', '--', '--strict', '--json'], {
+      cwd: consumerRoot,
+      encoding: 'utf8',
+    });
+    if (doctor.status !== 0) {
+      throw new Error(`registry 消费者 doctor 失败：${doctor.stderr || doctor.stdout}`);
+    }
+    const doctorReport = JSON.parse(doctor.stdout);
+    if (!doctorReport.ok || doctorReport.errors !== 0 || doctorReport.warnings !== 0) {
+      throw new Error(`registry 消费者 doctor 报告未通过：${doctor.stdout}`);
+    }
+  } else {
+    console.log(
+      `[Registry Consumer Smoke] @cogita/cli@${versions['@cogita/cli']} 尚未提供 doctor，兼容性检查跳过`
+    );
   }
 
   const build = spawnSync('pnpm', ['exec', 'cogita', 'build'], {

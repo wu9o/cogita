@@ -35,7 +35,7 @@
   },
   "module": "./dist/es/index.js",
   "types": "./dist/types/index.d.ts",
-  "files": ["dist", "bin", "README.md", "README.zh-CN.md", "LICENSE"],
+  "files": ["dist", "bin", "templates", "README.md", "README.zh-CN.md", "LICENSE"],
   "engines": {
     "node": ">=18.0.0"
   },
@@ -45,10 +45,12 @@
   },
   "scripts": {
     "build": "rslib build",
-    "dev": "rslib build -w"
+    "dev": "rslib build -w",
+    "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
     "@cogita/core": "workspace:*",
+    "@cogita/shared": "workspace:*",
     "commander": "^14.0.0"
   },
   "devDependencies": {

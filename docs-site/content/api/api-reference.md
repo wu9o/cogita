@@ -600,6 +600,8 @@ Error: Theme '@cogita/theme-nonexistent' does not export a 'getThemeConfig' func
 Error: Failed to load config file: /path/to/cogita.config.ts
 ```
 
+CLI 会将首次构建、配置加载和主题解析错误统一输出为稳定诊断。例如，在没有 `cogita.config.ts` 的目录执行 `cogita build` 时，会显示 `COGITA_CONFIG_NOT_FOUND` 和初始化提示；CI 可以读取错误码，站点作者则可以直接按 `提示` 修复。
+
 #### 插件错误
 
 ```typescript

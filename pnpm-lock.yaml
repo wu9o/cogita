@@ -47,6 +47,9 @@ importers:
       '@cogita/core':
         specifier: workspace:*
         version: link:../core
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../shared
       commander:
         specifier: ^14.0.0
         version: 14.0.0
@@ -189,13 +192,13 @@ importers:
 
   plugins/blog-list:
     dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
     devDependencies:
-      '@cogita/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@rslib/core':
         specifier: 0.11.2
         version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(typescript@5.9.2)
@@ -208,13 +211,13 @@ importers:
 
   plugins/categories:
     dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
     devDependencies:
-      '@cogita/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@rslib/core':
         specifier: 0.11.2
         version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(typescript@5.9.2)
@@ -227,13 +230,13 @@ importers:
 
   plugins/code-copy:
     dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
     devDependencies:
-      '@cogita/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@rslib/core':
         specifier: 0.11.2
         version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(typescript@5.9.2)
@@ -246,13 +249,13 @@ importers:
 
   plugins/collections:
     dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
     devDependencies:
-      '@cogita/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@rslib/core':
         specifier: 0.11.2
         version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(typescript@5.9.2)
@@ -265,13 +268,13 @@ importers:
 
   plugins/comments:
     dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
     devDependencies:
-      '@cogita/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@rslib/core':
         specifier: 0.11.2
         version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(typescript@5.9.2)
@@ -284,6 +287,9 @@ importers:
 
   plugins/content-check:
     dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
@@ -294,9 +300,6 @@ importers:
         specifier: ^4.0.3
         version: 4.0.3
     devDependencies:
-      '@cogita/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@rslib/core':
         specifier: 0.11.2
         version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@18.19.123))(typescript@5.9.2)
@@ -312,6 +315,9 @@ importers:
 
   plugins/images:
     dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
@@ -325,9 +331,6 @@ importers:
       '@cogita/config':
         specifier: workspace:*
         version: link:../../scripts/config
-      '@cogita/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@rslib/core':
         specifier: 0.11.2
         version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@18.19.123))(typescript@5.9.2)
@@ -343,6 +346,9 @@ importers:
 
   plugins/posts-frontmatter:
     dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
@@ -356,9 +362,6 @@ importers:
       '@cogita/config':
         specifier: workspace:*
         version: link:../../scripts/config
-      '@cogita/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@microsoft/api-extractor':
         specifier: ^7.52.10
         version: 7.52.10(@types/node@18.19.123)
@@ -383,13 +386,13 @@ importers:
 
   plugins/reading-progress:
     dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
     devDependencies:
-      '@cogita/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@rslib/core':
         specifier: 0.11.2
         version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(typescript@5.9.2)
@@ -402,13 +405,13 @@ importers:
 
   plugins/rss:
     dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
     devDependencies:
-      '@cogita/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@rslib/core':
         specifier: 0.11.2
         version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(typescript@5.9.2)
@@ -421,13 +424,13 @@ importers:
 
   plugins/search:
     dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
     devDependencies:
-      '@cogita/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@rslib/core':
         specifier: 0.11.2
         version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(typescript@5.9.2)
@@ -440,13 +443,13 @@ importers:
 
   plugins/seo:
     dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
     devDependencies:
-      '@cogita/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@rslib/core':
         specifier: 0.11.2
         version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@18.19.123))(typescript@5.9.2)
@@ -465,13 +468,13 @@ importers:
 
   plugins/sitemap:
     dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
     devDependencies:
-      '@cogita/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@rslib/core':
         specifier: 0.11.2
         version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@18.19.123))(typescript@5.9.2)
@@ -487,13 +490,13 @@ importers:
 
   plugins/tags:
     dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
     devDependencies:
-      '@cogita/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@cogita/ui':
         specifier: workspace:*
         version: link:../../packages/ui

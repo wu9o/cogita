@@ -1,4 +1,9 @@
-import { getCogitaLogger } from '@cogita/shared';
+import {
+  COGITA_CAPABILITIES,
+  COGITA_VIRTUAL_MODULE_IDS,
+  createCogitaVirtualModule,
+  getCogitaLogger,
+} from '@cogita/shared';
 import type { CogitaPlugin, CogitaPluginConfig } from '@cogita/shared';
 import type { CodeCopyConfig, ResolvedCodeCopyConfig } from './types';
 
@@ -37,14 +42,14 @@ export function pluginCodeCopy(config: CogitaPluginConfig): CogitaPlugin | null 
   return {
     name: '@cogita/plugin-code-copy',
     cogita: {
-      providesCapabilities: ['ui.code-copy'],
+      providesCapabilities: [COGITA_CAPABILITIES.UI_CODE_COPY],
     },
 
     addRuntimeModules() {
       return {
-        'virtual-code-copy-data': `
+        [COGITA_VIRTUAL_MODULE_IDS.CODE_COPY_DATA]: createCogitaVirtualModule(`
           export const codeCopyConfig = ${JSON.stringify(finalConfig)};
-        `,
+        `),
       };
     },
   };

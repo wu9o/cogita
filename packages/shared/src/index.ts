@@ -3,8 +3,176 @@ import type React from 'react';
 
 export const VIRTUAL_CONTENT_DIR = '.cogita_content';
 
+/** 构建上下文公共契约版本，新增不兼容字段时必须递增。 */
+export const COGITA_BUILD_CONTEXT_VERSION = 1 as const;
+
+/** 构建期内容索引公共契约版本，新增不兼容字段时必须递增。 */
+export const COGITA_CONTENT_INDEX_VERSION = 1 as const;
+
 /** 运行时内容数据契约版本，新增不兼容字段时必须递增。 */
-export const COGITA_CONTENT_DATA_VERSION = 1;
+export const COGITA_CONTENT_DATA_VERSION = 1 as const;
+
+/** Cogita 虚拟运行时模块的数据契约版本，新增不兼容字段时必须递增。 */
+export const COGITA_VIRTUAL_MODULE_SCHEMA_VERSION = 1 as const;
+
+/**
+ * Core、内置插件和第三方扩展共同使用的稳定能力标识。
+ *
+ * 第三方能力仍然可以使用自定义字符串，但内置能力必须从这里引用，
+ * 避免同一能力因为拼写差异变成多个无法互操作的契约。
+ */
+export const COGITA_CAPABILITIES = {
+  CONTENT_POSTS: 'content.posts',
+  CONTENT_IMAGES: 'content.images',
+  CONTENT_COLLECTIONS: 'content.collections',
+  CONTENT_BLOG_LIST: 'content.blog-list',
+  DISCOVERY_TAGS: 'discovery.tags',
+  DISCOVERY_CATEGORIES: 'discovery.categories',
+  DISCOVERY_SEARCH: 'discovery.search',
+  SYNDICATION_RSS: 'syndication.rss',
+  SEO_METADATA: 'seo.metadata',
+  SEO_SITEMAP: 'seo.sitemap',
+  ENGAGEMENT_COMMENTS: 'engagement.comments',
+  UI_READING_PROGRESS: 'ui.reading-progress',
+  UI_CODE_COPY: 'ui.code-copy',
+  QUALITY_CONTENT_CHECK: 'quality.content-check',
+} as const;
+
+/** Cogita 公开虚拟运行时模块的稳定模块 ID。 */
+export const COGITA_VIRTUAL_MODULE_IDS = {
+  POSTS_DATA: 'virtual-posts-data',
+  TAGS_DATA: 'virtual-tags-data',
+  COLLECTIONS_DATA: 'virtual-collections-data',
+  CATEGORIES_DATA: 'virtual-categories-data',
+  BLOG_LIST_DATA: 'virtual-blog-list-data',
+  SEARCH_DATA: 'virtual-search-data',
+  READING_PROGRESS_DATA: 'virtual-reading-progress-data',
+  CODE_COPY_DATA: 'virtual-code-copy-data',
+  COMMENTS_DATA: 'virtual-comments-data',
+  IMAGES_DATA: 'virtual-images-data',
+  RSS_META: 'virtual-rss-meta',
+} as const;
+
+export type CogitaBuiltinCapability =
+  (typeof COGITA_CAPABILITIES)[keyof typeof COGITA_CAPABILITIES];
+export type CogitaVirtualModuleId =
+  (typeof COGITA_VIRTUAL_MODULE_IDS)[keyof typeof COGITA_VIRTUAL_MODULE_IDS];
+
+/** 为虚拟运行时模块写入统一版本头，供主题和第三方消费者进行兼容性检查。 */
+export function createCogitaVirtualModule(
+  source: string,
+  version: number = COGITA_VIRTUAL_MODULE_SCHEMA_VERSION
+): string {
+  return `export const cogitaVirtualModuleVersion = ${version};\n${source}`;
+}
+
+/** 构建诊断对象的 schema 版本，字段发生不兼容变化时递增。 */
+export const COGITA_DIAGNOSTIC_SCHEMA_VERSION = 1 as const;
+
+/** 构建诊断的严重级别。 */
+export type CogitaDiagnosticSeverity = 'error' | 'warning';
+
+/** 面向 CLI、CI 和第三方工具消费的稳定构建诊断格式。 */
+export interface CogitaDiagnostic {
+  schemaVersion: typeof COGITA_DIAGNOSTIC_SCHEMA_VERSION;
+  code: string;
+  severity: CogitaDiagnosticSeverity;
+  message: string;
+  /** 面向站点作者的下一步操作建议。 */
+  hint?: string;
+  source?: string;
+  details?: Readonly<Record<string, unknown>>;
+}
+
+/** 内容质量报告的 schema 版本，字段发生不兼容变化时递增。 */
+export const COGITA_QUALITY_REPORT_SCHEMA_VERSION = 1 as const;
+
+/** 内置内容质量报告的类型标识。 */
+export type CogitaQualityReportType = 'content-check' | 'seo-audit';
+
+/** 内容质量报告中的统一问题结构。 */
+export interface CogitaQualityIssue {
+  severity: CogitaDiagnosticSeverity;
+  code: string;
+  route: string;
+  filePath?: string;
+  message: string;
+}
+
+/** 面向 CLI、CI 和第三方工具消费的统一内容质量报告。 */
+export interface CogitaQualityReport {
+  schemaVersion: typeof COGITA_QUALITY_REPORT_SCHEMA_VERSION;
+  reportType: CogitaQualityReportType;
+  generatedAt: string;
+  itemCount: number;
+  errors: number;
+  warnings: number;
+  issues: readonly CogitaQualityIssue[];
+}
+
+/** 站点自检报告的 schema 版本，字段发生不兼容变化时递增。 */
+export const COGITA_DOCTOR_SCHEMA_VERSION = 1 as const;
+
+/** 站点自检结果的严重级别。 */
+export type CogitaDoctorSeverity = 'info' | 'warning' | 'error';
+
+/** 站点自检中的单项检查结果。 */
+export interface CogitaDoctorCheck {
+  severity: CogitaDoctorSeverity;
+  code: string;
+  message: string;
+  hint?: string;
+  details?: Readonly<Record<string, unknown>>;
+}
+
+/** 面向站点作者和 CI 消费的稳定自检报告。 */
+export interface CogitaDoctorReport {
+  schemaVersion: typeof COGITA_DOCTOR_SCHEMA_VERSION;
+  root: string;
+  configPath?: string;
+  ok: boolean;
+  errors: number;
+  warnings: number;
+  checks: readonly CogitaDoctorCheck[];
+}
+
+/** 带有机器可读诊断信息的构建错误。 */
+export class CogitaDiagnosticError extends Error {
+  readonly diagnostic: CogitaDiagnostic;
+
+  constructor(diagnostic: CogitaDiagnostic, cause?: unknown) {
+    super(diagnostic.message);
+    this.name = 'CogitaDiagnosticError';
+    this.diagnostic = diagnostic;
+    if (cause !== undefined) {
+      (this as Error & { cause?: unknown }).cause = cause;
+    }
+  }
+}
+
+/** 从未知异常中提取稳定诊断，兼容跨包副本导致的 instanceof 失效。 */
+export function getCogitaDiagnostic(error: unknown): CogitaDiagnostic | undefined {
+  if (!error || typeof error !== 'object') {
+    return undefined;
+  }
+
+  const diagnostic = (error as { diagnostic?: unknown }).diagnostic;
+  if (!diagnostic || typeof diagnostic !== 'object') {
+    return undefined;
+  }
+
+  const candidate = diagnostic as Partial<CogitaDiagnostic>;
+  if (
+    candidate.schemaVersion !== COGITA_DIAGNOSTIC_SCHEMA_VERSION ||
+    typeof candidate.code !== 'string' ||
+    (candidate.severity !== 'error' && candidate.severity !== 'warning') ||
+    typeof candidate.message !== 'string'
+  ) {
+    return undefined;
+  }
+
+  return candidate as CogitaDiagnostic;
+}
 
 // Export Rspress types for use in themes and plugins
 export type { RspressPlugin, UserConfig };
@@ -110,6 +278,8 @@ export interface ContentCheckConfig {
 
 /** 构建期共享内容索引。索引采用惰性加载，只有被插件消费时才扫描文章。 */
 export interface ContentIndex {
+  /** 内容索引契约版本，第三方兼容实现可以省略以保持旧版兼容。 */
+  readonly contractVersion?: typeof COGITA_CONTENT_INDEX_VERSION;
   /** 获取当前构建周期内的文章元数据。 */
   getPosts(): Promise<readonly ContentPost[]>;
   /** 按需读取并缓存单篇文章正文，避免需要全文的插件重复读取文件。 */
@@ -146,6 +316,8 @@ export function createCogitaLogger(): CogitaLogger {
  * 构建期能力应优先放在这里，而不是继续扩展插件配置的顶层字段。
  */
 export interface CogitaBuildContext {
+  /** 构建上下文契约版本，第三方兼容实现可以省略以保持旧版兼容。 */
+  readonly contractVersion?: typeof COGITA_BUILD_CONTEXT_VERSION;
   /** 站点项目根目录。 */
   root: string;
   /** 当前工作目录，通常与 root 相同。 */

@@ -1,3 +1,4 @@
+import { COGITA_VIRTUAL_MODULE_IDS, createCogitaVirtualModule } from '@cogita/shared';
 import type { CogitaPlugin } from '@cogita/shared';
 
 /**
@@ -12,7 +13,7 @@ export const cogitaRuntimeDefaults: CogitaPlugin = {
 
   addRuntimeModules() {
     return {
-      'virtual-tags-data': `
+      [COGITA_VIRTUAL_MODULE_IDS.TAGS_DATA]: createCogitaVirtualModule(`
         export const allTags = [];
         export const tagMap = {};
         export const tagsConfig = {
@@ -24,8 +25,8 @@ export const cogitaRuntimeDefaults: CogitaPlugin = {
         export function getTagBySlug() { return undefined; }
         export function getPostsByTag() { return []; }
         export function getRelatedTags() { return []; }
-      `,
-      'virtual-collections-data': `
+      `),
+      [COGITA_VIRTUAL_MODULE_IDS.COLLECTIONS_DATA]: createCogitaVirtualModule(`
         export const allCollections = [];
         export const collectionMap = {};
         export const collectionsConfig = { enabled: false, routePrefix: 'collections', metadata: {}, excludeCollections: [], minPostCount: 1 };
@@ -33,8 +34,8 @@ export const cogitaRuntimeDefaults: CogitaPlugin = {
         export function getCollectionBySlug() { return undefined; }
         export function getPostsByCollection() { return []; }
         export function getCollectionByPostRoute() { return undefined; }
-      `,
-      'virtual-categories-data': `
+      `),
+      [COGITA_VIRTUAL_MODULE_IDS.CATEGORIES_DATA]: createCogitaVirtualModule(`
         export const allCategories = [];
         export const categoryMap = {};
         export const categoriesConfig = { enabled: false, routePrefix: 'categories', separator: '/', metadata: {}, excludeCategories: [], minPostCount: 1, sortBy: 'name' };
@@ -43,8 +44,8 @@ export const cogitaRuntimeDefaults: CogitaPlugin = {
         export function getCategoryBySlug() { return undefined; }
         export function getPostsByCategory() { return []; }
         export function getCategoryBreadcrumbs() { return []; }
-      `,
-      'virtual-blog-list-data': `
+      `),
+      [COGITA_VIRTUAL_MODULE_IDS.BLOG_LIST_DATA]: createCogitaVirtualModule(`
         export const blogListConfig = { enabled: false, routePrefix: 'archive', pageSize: 10, sortBy: 'createDate', order: 'desc', generateArchives: false, archivePrefix: 'archives', archiveGranularity: 'year' };
         export const allBlogListPages = [];
         export const allBlogListFilters = [];
@@ -52,8 +53,8 @@ export const cogitaRuntimeDefaults: CogitaPlugin = {
         export function getBlogListPage() { return undefined; }
         export function getBlogListFilter() { return undefined; }
         export function getArchive() { return undefined; }
-      `,
-      'virtual-search-data': `
+      `),
+      [COGITA_VIRTUAL_MODULE_IDS.SEARCH_DATA]: createCogitaVirtualModule(`
         export const searchConfig = {
           enabled: false,
           routePrefix: 'search',
@@ -66,16 +67,16 @@ export const cogitaRuntimeDefaults: CogitaPlugin = {
         };
         export const searchDocuments = [];
         export const searchIndexHash = '';
-      `,
-      'virtual-reading-progress-data': `
+      `),
+      [COGITA_VIRTUAL_MODULE_IDS.READING_PROGRESS_DATA]: createCogitaVirtualModule(`
         export const readingProgressConfig = { enabled: false, showBar: false, showReadingTime: false, showTocProgress: false, rememberPosition: false, wordsPerMinute: 300, includeCode: false };
         export const readingStatsByRoute = {};
         export function getReadingStats() { return undefined; }
-      `,
-      'virtual-code-copy-data': `
+      `),
+      [COGITA_VIRTUAL_MODULE_IDS.CODE_COPY_DATA]: createCogitaVirtualModule(`
         export const codeCopyConfig = { enabled: false, selector: '.rspress-doc pre', buttonLabel: '复制代码', selectionLabel: '复制选中代码', languageLabel: '复制 {language} 代码', copiedLabel: '已复制', errorLabel: '复制失败', resetDelay: 2000 };
-      `,
-      'virtual-comments-data': `
+      `),
+      [COGITA_VIRTUAL_MODULE_IDS.COMMENTS_DATA]: createCogitaVirtualModule(`
         export const commentsConfig = {
           enabled: false,
           provider: 'giscus',
@@ -84,7 +85,7 @@ export const cogitaRuntimeDefaults: CogitaPlugin = {
           utterances: { repo: '', issueTerm: 'pathname', term: '', label: '', theme: 'github-light' },
           postRoutes: []
         };
-      `,
+      `),
     };
   },
 };
