@@ -11,6 +11,7 @@
   "devDependencies": {
     "@cogita/cli": "workspace:*",
     "@cogita/core": "workspace:*",
+    "@cogita/plugin-content-source-git": "workspace:*",
     "@cogita/plugin-content-source-json": "workspace:*",
     "@cogita/theme-knowledge": "workspace:*"
   }

@@ -63,6 +63,12 @@ const matrixEntries = [
     '知识库插件',
     'JSON 导出内容源适配',
   ],
+  [
+    '@cogita/plugin-content-source-git',
+    'plugins/content-source-git/package.json',
+    '知识库插件',
+    '独立 Git Markdown 内容源适配',
+  ],
   ['@cogita/plugin-images', 'plugins/images/package.json', '博客主题插件', '公共图片和封面处理'],
   [
     '@cogita/plugin-posts-frontmatter',

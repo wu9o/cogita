@@ -1,4 +1,5 @@
 import { defineConfig } from '@cogita/core';
+import { createGitContentSource } from '@cogita/plugin-content-source-git';
 import { createJsonContentSource } from '@cogita/plugin-content-source-json';
 
 const demoPrefix = (process.env.COGITA_DEMO_PREFIX || '').replace(/\/$/, '');
@@ -12,6 +13,12 @@ export default defineConfig({
   },
   contentDir: 'content',
   contentSources: [
+    createGitContentSource({
+      id: 'field-notes-git',
+      directory: 'git-content',
+      kind: 'document',
+      routePrefix: 'git-notes',
+    }),
     createJsonContentSource({
       id: 'field-notes-export',
       file: 'content/field-notes.json',

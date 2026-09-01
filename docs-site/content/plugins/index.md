@@ -29,6 +29,7 @@ Cogita 插件以工厂函数形式接收增强配置，并通过 Rspress 插件�
 - [内容检查](./plugin-content-check-design.md)
 - [内容关系](./plugin-content-relations-design.md)
 - [JSON 内容源](./plugin-content-source-json-design.md)
+- [Git 内容源](./plugin-content-source-git-design.md)
 
 ## 内置插件状态
 
