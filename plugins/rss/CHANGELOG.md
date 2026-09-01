@@ -1,5 +1,12 @@
 # @cogita/plugin-rss
 
+## 1.0.6
+
+### Patch Changes
+
+- Updated dependencies [1a78273]
+  - @cogita/shared@0.12.1
+
 ## 1.0.5
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@cogita/theme-knowledge",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Cogita 的知识库主题，组合统一内容索引、搜索、标签和内容关系。",
   "keywords": ["cogita", "theme", "knowledge-base", "wiki", "search", "backlinks"],
   "author": "wu9o <https://github.com/wu9o>",

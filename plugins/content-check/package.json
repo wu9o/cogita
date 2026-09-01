@@ -1,6 +1,6 @@
 {
   "name": "@cogita/plugin-content-check",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Cogita 内容质量与构建诊断插件。",
   "keywords": ["cogita", "plugin", "content", "quality", "diagnostics", "validation"],
   "author": "wu9o <https://github.com/wu9o>",

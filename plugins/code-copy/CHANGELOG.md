@@ -1,5 +1,12 @@
 # @cogita/plugin-code-copy
 
+## 0.2.5
+
+### Patch Changes
+
+- Updated dependencies [1a78273]
+  - @cogita/shared@0.12.1
+
 ## 0.2.4
 
 ### Patch Changes

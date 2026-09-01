@@ -1,5 +1,14 @@
 # @cogita/cli
 
+## 0.2.1
+
+### Patch Changes
+
+- 71f3707: 修复 `cogita doctor` 在 pnpm 或 npm workspace 子项目中误报缺少 lockfile 的问题。
+- Updated dependencies [1a78273]
+  - @cogita/shared@0.12.1
+  - @cogita/core@0.13.1
+
 ## 0.2.0
 
 ### Minor Changes

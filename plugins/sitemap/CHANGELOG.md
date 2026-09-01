@@ -1,5 +1,12 @@
 # @cogita/plugin-sitemap
 
+## 1.3.6
+
+### Patch Changes
+
+- Updated dependencies [1a78273]
+  - @cogita/shared@0.12.1
+
 ## 1.3.5
 
 ### Patch Changes
