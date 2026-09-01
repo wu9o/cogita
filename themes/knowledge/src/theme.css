@@ -274,6 +274,87 @@ body {
   color: #d9f3e2;
 }
 
+/* 关系组件位于 Rspress 文档容器之外，需要独立建立与主题一致的内容宽度和层级。 */
+.knowledge-relations {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.7fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 32px;
+  max-width: 1180px;
+  margin: 64px auto 0;
+  padding: 32px 24px 72px;
+  border-top: 1px solid var(--cogita-knowledge-border);
+}
+
+.knowledge-relations-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.knowledge-relations-heading span {
+  color: var(--cogita-knowledge-accent);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.knowledge-relations-heading strong {
+  font-size: 24px;
+  letter-spacing: -0.04em;
+}
+
+.knowledge-relations-section {
+  min-width: 0;
+  padding-left: 24px;
+  border-left: 1px solid var(--cogita-knowledge-border);
+}
+
+.knowledge-relations-section h3 {
+  margin: 0 0 16px;
+  color: var(--cogita-knowledge-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.knowledge-relations-section ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.knowledge-relations-section li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--cogita-knowledge-border);
+}
+
+.knowledge-relations-section li a {
+  min-width: 0;
+  overflow: hidden;
+  color: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.knowledge-relations-section li a:hover {
+  color: var(--cogita-knowledge-accent);
+}
+
+.knowledge-relations-section li span {
+  flex: 0 0 auto;
+  color: var(--cogita-knowledge-muted);
+  font-size: 12px;
+}
+
 .knowledge-search-header,
 .knowledge-page-header {
   padding-bottom: 48px;
@@ -401,6 +482,18 @@ body {
 
   .knowledge-grid {
     gap: 32px;
+  }
+
+  .knowledge-relations {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    margin-top: 48px;
+    padding-top: 28px;
+  }
+
+  .knowledge-relations-section {
+    padding: 0;
+    border-left: 0;
   }
 
   .knowledge-entry-card {
