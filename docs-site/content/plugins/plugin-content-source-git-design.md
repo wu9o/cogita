@@ -26,6 +26,8 @@ export default defineConfig({
 
 适配器默认扫描 `md` 和 `mdx` 文件。`title`、`description`、`excerpt`、`author`、`date`、`createDate`、`updateDate`、`tags`、`categories`、`image` 和 `imageAlt` 会映射到统一内容条目；设置 `kind: 'post'` 时，每篇文件必须提供 `date` 或 `createDate`。
 
+内容目录中的非 Markdown 文件会作为静态资源发布到隔离的 `/external-content/<source>/...` 命名空间。Git 适配器只会改写正文中能够匹配到真实文件的相对资源引用，例如 `guides/start.md` 中的 `![流程图](../assets/diagram.svg)` 会指向对应的站点公共路径；外部 URL、绝对 URL 和不存在的引用保持不变。这样开发预览和生产构建都能使用同一套资源路径，同时不会直接暴露外部 checkout 的原始 Markdown 文件。
+
 ## 与 JSON 内容源的边界
 
 - Git 内容源适合由版本控制系统管理的 Markdown 原文，部署流程负责 checkout 哪一个 commit。
@@ -36,6 +38,8 @@ export default defineConfig({
 `architecture.md` 会生成 `/notes/architecture`。没有正文的 JSON 条目仍可进入索引，但不会生成空页面。
 
 Knowledge Demo 使用 `demos/knowledge/git-content` 模拟一个独立 checkout，访问 `/demos/knowledge/` 可以看到它和本地文章、普通文档及 JSON 来源一起进入知识库。
+
+如果自定义 `ContentSource` 也需要发布资源，可以实现可选的 `getAssets`：返回 `{ filePath, publicPath }` 数组。`filePath` 是构建机上的文件路径，`publicPath` 必须是相对于公共目录的正斜杠路径；Core 会在每轮构建前复制这些文件，并清理上一轮的 `external-content` 命名空间。
 
 ## GitHub Actions 接入
 

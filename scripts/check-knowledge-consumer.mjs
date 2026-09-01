@@ -161,7 +161,13 @@ tags: [知识库, 架构]
 这篇文档来自独立 checkout 的内容仓库。
 
 [回到知识库首页](/)
+
+![外部架构示意图](./assets/diagram.svg)
 `
+  );
+  writeFileSync(
+    path.join(consumerRoot, 'git-content', 'assets', 'diagram.svg'),
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="8" fill="#dff4ea"/><text x="60" y="25" text-anchor="middle" fill="#176b4d">content source</text></svg>\n'
   );
 }
 
@@ -202,6 +208,7 @@ try {
   mkdirSync(path.join(consumerRoot, 'posts'), { recursive: true });
   mkdirSync(path.join(consumerRoot, 'content', 'guides'), { recursive: true });
   mkdirSync(path.join(consumerRoot, 'git-content'), { recursive: true });
+  mkdirSync(path.join(consumerRoot, 'git-content', 'assets'), { recursive: true });
   const archives = packWorkspacePackages(getPackageDirectories(), packageCache);
   createConsumerProject(consumerRoot, archives, '/knowledge/');
 
@@ -250,6 +257,17 @@ try {
   );
   if (!externalPage.includes('外部架构笔记') || !externalPage.includes('来自独立 checkout')) {
     throw new Error('独立 Git 内容源没有生成可访问的静态页面。');
+  }
+  const externalAssetRoot = path.join(consumerRoot, 'doc_build', 'external-content');
+  const assetSourceDirectory = readdirSync(externalAssetRoot).find((entry) =>
+    entry.startsWith('external-notes-')
+  );
+  if (
+    !assetSourceDirectory ||
+    !existsSync(path.join(externalAssetRoot, assetSourceDirectory, 'assets', 'diagram.svg')) ||
+    !externalPage.includes('diagram.svg')
+  ) {
+    throw new Error('独立 Git 内容源没有发布正文引用的静态资源。');
   }
 
   createConsumerProject(consumerRoot, archives, '/');

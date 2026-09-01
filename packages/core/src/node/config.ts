@@ -14,6 +14,7 @@ import jiti from 'jiti';
 import * as mlly from 'mlly';
 import type { CogitaConfig, CogitaFullConfig, PostsConfig } from '../types';
 import { createContentIndex } from './content-index';
+import { createContentSourceAssetsPlugin } from './content-source-assets';
 import { createContentSourcePagesPlugin } from './content-source-pages';
 import {
   createCoreDiagnostic,
@@ -826,6 +827,10 @@ export async function createRspressConfig(
       },
       {
         plugin: createContentSourcePagesPlugin(pluginConfig),
+        source: 'core',
+      },
+      {
+        plugin: createContentSourceAssetsPlugin(pluginConfig),
         source: 'core',
       },
       ...(loadedTheme

@@ -7,6 +7,7 @@ import {
   type CogitaPlugin,
   type CogitaPluginConfig,
   type ContentEntry,
+  VIRTUAL_CONTENT_DIR,
   getCogitaBuildContext,
   getCogitaLogger,
 } from '@cogita/shared';
@@ -103,7 +104,19 @@ function resolveImageFile(root: string, entry: ContentEntry, reference: string):
 }
 
 function hasLocalImage(root: string, entry: ContentEntry, reference: string): boolean {
-  return fs.existsSync(resolveImageFile(root, entry, reference));
+  if (fs.existsSync(resolveImageFile(root, entry, reference))) {
+    return true;
+  }
+
+  const cleanReference = stripReferenceSuffix(reference).replace(/^[/\\]+/, '');
+  if (entry.sourceId && cleanReference.startsWith('external-content/')) {
+    // 外部内容源只有在资源清单匹配成功后才会改写为该命名空间，避免依赖插件钩子执行顺序。
+    return true;
+  }
+  return Boolean(
+    entry.sourceId &&
+      fs.existsSync(path.resolve(root, VIRTUAL_CONTENT_DIR, 'public', cleanReference))
+  );
 }
 
 /** 读取统一内容索引，兼容只提供旧版文章索引的第三方实现。 */

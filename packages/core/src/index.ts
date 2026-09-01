@@ -5,5 +5,6 @@ export * from './node/dev';
 export * from './node/build';
 export * from './node/content-index';
 export * from './node/content-source-pages';
+export * from './node/content-source-assets';
 export * from './node/preview';
 export * from './node/theme';

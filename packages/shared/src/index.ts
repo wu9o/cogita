@@ -269,6 +269,14 @@ export interface ContentSourceEntry extends Omit<ContentEntry, 'sourceId' | 'url
   url?: string;
 }
 
+/** 外部内容源需要随页面发布的静态资源。 */
+export interface ContentSourceAsset {
+  /** 资源在构建机上的绝对文件路径。 */
+  filePath: string;
+  /** 资源相对于站点公共目录的路径，必须使用正斜杠。 */
+  publicPath: string;
+}
+
 /** 内容源加载时可以使用的构建期上下文。 */
 export interface ContentSourceContext {
   root: string;
@@ -284,6 +292,8 @@ export interface ContentSource {
   load(context: ContentSourceContext): Promise<readonly ContentSourceEntry[]>;
   /** 按需读取外部条目的正文；未提供时仅支持元数据消费。 */
   getContent?(entry: ContentEntry, context: ContentSourceContext): Promise<string>;
+  /** 返回正文引用的静态资源，由 Core 复制到隔离的公共资源命名空间。 */
+  getAssets?(context: ContentSourceContext): Promise<readonly ContentSourceAsset[]>;
 }
 
 /** 内容质量与构建诊断支持检查的 frontmatter 字段。 */
