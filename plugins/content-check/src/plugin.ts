@@ -6,7 +6,7 @@ import {
   COGITA_QUALITY_REPORT_SCHEMA_VERSION,
   type CogitaPlugin,
   type CogitaPluginConfig,
-  type ContentPost,
+  type ContentEntry,
   getCogitaBuildContext,
   getCogitaLogger,
 } from '@cogita/shared';
@@ -48,10 +48,10 @@ function addIssue(
   issues: ContentCheckIssue[],
   severity: ContentCheckIssue['severity'],
   code: string,
-  post: Pick<ContentPost, 'route' | 'filePath'>,
+  entry: Pick<ContentEntry, 'route' | 'filePath'>,
   message: string
 ): void {
-  issues.push({ severity, code, route: post.route, filePath: post.filePath, message });
+  issues.push({ severity, code, route: entry.route, filePath: entry.filePath, message });
 }
 
 function readFrontmatter(filePath: string): Record<string, unknown> {
@@ -76,49 +76,65 @@ function resolveReportFile(outputDir: string, reportPath: string): string {
   return reportFile;
 }
 
-function resolveImageFile(root: string, post: ContentPost, reference: string): string {
+function resolveImageFile(root: string, entry: ContentEntry, reference: string): string {
   const cleanReference = stripReferenceSuffix(reference);
   if (cleanReference.startsWith('./') || cleanReference.startsWith('../')) {
-    return path.resolve(path.dirname(post.filePath), cleanReference);
+    return path.resolve(path.dirname(entry.filePath), cleanReference);
   }
   return path.resolve(root, 'public', cleanReference.replace(/^[/\\]+/, ''));
 }
 
-function hasLocalImage(root: string, post: ContentPost, reference: string): boolean {
-  return fs.existsSync(resolveImageFile(root, post, reference));
+function hasLocalImage(root: string, entry: ContentEntry, reference: string): boolean {
+  return fs.existsSync(resolveImageFile(root, entry, reference));
 }
 
-async function collectPosts(
+/** 读取统一内容索引，兼容只提供旧版文章索引的第三方实现。 */
+async function collectEntries(
   config: CogitaPluginConfig,
   logger: ReturnType<typeof getCogitaLogger>
-): Promise<ContentPost[]> {
+): Promise<ContentEntry[]> {
   const buildContext = getCogitaBuildContext(config);
   if (buildContext.contentIndex) {
-    return (await buildContext.contentIndex.getPosts()).map((post) => ({
-      ...post,
-      url: post.url || post.route,
+    const entries = buildContext.contentIndex.getEntries
+      ? await buildContext.contentIndex.getEntries()
+      : (await buildContext.contentIndex.getPosts()).map((post) => ({
+          ...post,
+          kind: 'post' as const,
+        }));
+    return entries.map((entry) => ({
+      ...entry,
+      url: entry.url || entry.route,
     }));
   }
 
-  logger.warn('[Content Check Plugin] 未找到共享内容索引，跳过文章诊断');
+  logger.warn('[Content Check Plugin] 未找到共享内容索引，跳过内容诊断');
   return [];
 }
 
-async function readPostBody(config: CogitaPluginConfig, post: ContentPost): Promise<string> {
+async function readEntryBody(config: CogitaPluginConfig, entry: ContentEntry): Promise<string> {
   const buildContext = getCogitaBuildContext(config);
   if (buildContext.contentIndex?.getPostContent) {
-    return buildContext.contentIndex.getPostContent(post.filePath);
+    return buildContext.contentIndex.getPostContent(entry.filePath);
   }
-  return matter(await fs.promises.readFile(post.filePath, 'utf8')).content;
+  return matter(await fs.promises.readFile(entry.filePath, 'utf8')).content;
 }
 
 function checkRequiredFields(
   issues: ContentCheckIssue[],
-  post: ContentPost,
+  entry: ContentEntry,
   frontmatter: Record<string, unknown>,
   requiredFields: ContentCheckField[]
 ): void {
   for (const field of requiredFields) {
+    // 普通文档的创建时间可以由文件元数据提供，因此不强制要求 date frontmatter。
+    if (
+      field === 'date' &&
+      entry.kind === 'document' &&
+      !frontmatter.date &&
+      !frontmatter.createDate
+    ) {
+      continue;
+    }
     const value =
       field === 'date' ? (frontmatter.date ?? frontmatter.createDate) : frontmatter[field];
     if (typeof value === 'string' ? value.trim() : value !== undefined && value !== null) {
@@ -131,31 +147,31 @@ function checkRequiredFields(
       author: 'author',
       imageAlt: 'imageAlt',
     };
-    addIssue(issues, 'error', `missing-${field}`, post, `缺少必填 frontmatter：${labels[field]}`);
+    addIssue(issues, 'error', `missing-${field}`, entry, `缺少必填 frontmatter：${labels[field]}`);
   }
 }
 
 function checkCoverImage(
   issues: ContentCheckIssue[],
   root: string,
-  post: ContentPost,
+  entry: ContentEntry,
   checkImageAlt: boolean
 ): void {
-  if (!post.image || isExternalReference(post.image)) {
+  if (!entry.image || isExternalReference(entry.image)) {
     return;
   }
-  if (!hasLocalImage(root, post, post.image)) {
-    addIssue(issues, 'warning', 'missing-cover-image', post, `找不到文章封面：${post.image}`);
+  if (!hasLocalImage(root, entry, entry.image)) {
+    addIssue(issues, 'warning', 'missing-cover-image', entry, `找不到内容封面：${entry.image}`);
   }
-  if (checkImageAlt && !post.imageAlt?.trim()) {
-    addIssue(issues, 'warning', 'missing-cover-alt', post, '文章封面缺少 imageAlt');
+  if (checkImageAlt && !entry.imageAlt?.trim()) {
+    addIssue(issues, 'warning', 'missing-cover-alt', entry, '内容封面缺少 imageAlt');
   }
 }
 
 function checkBodyImages(
   issues: ContentCheckIssue[],
   root: string,
-  post: ContentPost,
+  entry: ContentEntry,
   body: string,
   checkImageAlt: boolean
 ): void {
@@ -165,11 +181,17 @@ function checkBodyImages(
     if (!reference || isExternalReference(reference)) {
       continue;
     }
-    if (!hasLocalImage(root, post, reference)) {
-      addIssue(issues, 'warning', 'missing-body-image', post, `找不到正文图片：${reference}`);
+    if (!hasLocalImage(root, entry, reference)) {
+      addIssue(issues, 'warning', 'missing-body-image', entry, `找不到正文图片：${reference}`);
     }
     if (checkImageAlt && !alt) {
-      addIssue(issues, 'warning', 'missing-body-image-alt', post, `正文图片缺少 alt：${reference}`);
+      addIssue(
+        issues,
+        'warning',
+        'missing-body-image-alt',
+        entry,
+        `正文图片缺少 alt：${reference}`
+      );
     }
   }
 }
@@ -187,10 +209,10 @@ function getRoutePath(reference: string, base?: string): string {
   return normalizeRoute(route);
 }
 
-function resolveMarkdownTarget(post: ContentPost, target: string): string[] {
+function resolveMarkdownTarget(entry: ContentEntry, target: string): string[] {
   const absoluteTarget = target.startsWith('/')
-    ? path.resolve(path.dirname(post.filePath), `.${target}`)
-    : path.resolve(path.dirname(post.filePath), target);
+    ? path.resolve(path.dirname(entry.filePath), `.${target}`)
+    : path.resolve(path.dirname(entry.filePath), target);
   const extension = path.extname(absoluteTarget).toLowerCase();
   if (extension) {
     return [absoluteTarget];
@@ -204,8 +226,8 @@ function resolveMarkdownTarget(post: ContentPost, target: string): string[] {
   ];
 }
 
-function hasLocalTarget(post: ContentPost, target: string): boolean {
-  return resolveMarkdownTarget(post, target).some((candidate) => fs.existsSync(candidate));
+function hasLocalTarget(entry: ContentEntry, target: string): boolean {
+  return resolveMarkdownTarget(entry, target).some((candidate) => fs.existsSync(candidate));
 }
 
 function stripFencedCode(body: string): string {
@@ -215,7 +237,7 @@ function stripFencedCode(body: string): string {
 function checkBodyLinks(
   issues: ContentCheckIssue[],
   config: CogitaPluginConfig,
-  post: ContentPost,
+  entry: ContentEntry,
   body: string,
   routes: ReadonlySet<string>
 ): void {
@@ -236,34 +258,34 @@ function checkBodyLinks(
 
     const route = getRoutePath(target, base);
     const routeExists = target.startsWith('/') && routes.has(route);
-    const fileExists = !target.startsWith('/') && hasLocalTarget(post, target);
+    const fileExists = !target.startsWith('/') && hasLocalTarget(entry, target);
     const publicFileExists = target.startsWith('/')
       ? fs.existsSync(path.resolve(getCogitaBuildContext(config).root, 'public', target.slice(1)))
       : false;
 
     if (!routeExists && !fileExists && !publicFileExists && route !== '/') {
-      addIssue(issues, 'warning', 'missing-link', post, `找不到本地链接目标：${reference}`);
+      addIssue(issues, 'warning', 'missing-link', entry, `找不到本地链接目标：${reference}`);
     }
   }
 }
 
 async function checkSourceParseErrors(
   config: CogitaPluginConfig,
-  posts: readonly ContentPost[]
+  entries: readonly ContentEntry[]
 ): Promise<ContentCheckIssue[]> {
   const buildContext = getCogitaBuildContext(config);
-  const postByFile = new Map(posts.map((post) => [path.resolve(post.filePath), post]));
+  const entryByFile = new Map(entries.map((entry) => [path.resolve(entry.filePath), entry]));
   const issues: ContentCheckIssue[] = [];
 
   for (const filePath of await collectSourceFiles(config)) {
     try {
       readFrontmatter(filePath);
     } catch (error) {
-      const post = postByFile.get(path.resolve(filePath));
+      const entry = entryByFile.get(path.resolve(filePath));
       issues.push({
         severity: 'error',
         code: 'invalid-frontmatter',
-        route: post?.route || `/${path.relative(buildContext.root, filePath).replace(/\\/g, '/')}`,
+        route: entry?.route || `/${path.relative(buildContext.root, filePath).replace(/\\/g, '/')}`,
         filePath,
         message: `Frontmatter 解析失败：${error instanceof Error ? error.message : String(error)}`,
       });
@@ -273,29 +295,37 @@ async function checkSourceParseErrors(
   return issues;
 }
 
-/** 收集文章源文件，用于诊断索引阶段无法暴露的 frontmatter 解析错误。 */
+/** 收集文章和普通文档源文件，用于诊断索引阶段无法暴露的 frontmatter 解析错误。 */
 async function collectSourceFiles(config: CogitaPluginConfig): Promise<string[]> {
   const buildContext = getCogitaBuildContext(config);
   const postsConfig = config.posts ?? {};
   const cwd = buildContext.cwd || process.cwd();
-  const postsDir = postsConfig.dir || 'posts';
+  const sourceDirectories = [postsConfig.dir || 'posts', config.contentDir].filter(
+    (directory): directory is string => Boolean(directory)
+  );
   const extensions = postsConfig.extensions?.length ? postsConfig.extensions : ['md', 'mdx'];
   const extensionPattern = extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0];
 
-  return glob(`${postsDir}/**/*.${extensionPattern}`, {
-    absolute: true,
-    cwd,
-    nodir: true,
-  });
+  const files = await Promise.all(
+    sourceDirectories.map((directory) =>
+      glob(`${directory}/**/*.${extensionPattern}`, {
+        absolute: true,
+        cwd,
+        nodir: true,
+      })
+    )
+  );
+  return Array.from(new Set(files.flat().map((filePath) => path.resolve(filePath))));
 }
 
-function createReport(postCount: number, issues: ContentCheckIssue[]): ContentCheckReport {
+function createReport(contentCount: number, issues: ContentCheckIssue[]): ContentCheckReport {
   return {
     schemaVersion: COGITA_QUALITY_REPORT_SCHEMA_VERSION,
     reportType: 'content-check',
     generatedAt: new Date().toISOString(),
-    itemCount: postCount,
-    postCount,
+    itemCount: contentCount,
+    // 保留 postCount 字段，兼容已有质量报告消费者；新消费者应使用 itemCount。
+    postCount: contentCount,
     errors: issues.filter((issue) => issue.severity === 'error').length,
     warnings: issues.filter((issue) => issue.severity === 'warning').length,
     issues,
@@ -338,7 +368,7 @@ function applyIssuePolicy(
 
 function formatReport(report: ContentCheckReport): string {
   const lines = [
-    `[Content Check Plugin] 检查完成：${report.postCount} 篇文章，${report.errors} 个错误，${report.warnings} 个警告`,
+    `[Content Check Plugin] 检查完成：${report.itemCount} 个内容条目，${report.errors} 个错误，${report.warnings} 个警告`,
   ];
   for (const issue of report.issues) {
     lines.push(
@@ -383,49 +413,49 @@ export function pluginContentCheck(config: CogitaPluginConfig): CogitaPlugin | n
     },
 
     async beforeBuild(rspressConfig: unknown) {
-      const posts = await collectPosts(config, logger);
-      const issues: ContentCheckIssue[] = await checkSourceParseErrors(config, posts);
-      const routes = new Map<string, ContentPost[]>();
+      const entries = await collectEntries(config, logger);
+      const issues: ContentCheckIssue[] = await checkSourceParseErrors(config, entries);
+      const routes = new Map<string, ContentEntry[]>();
 
-      for (const post of posts) {
-        const route = normalizeRoute(post.route);
-        const routePosts = routes.get(route) ?? [];
-        routePosts.push(post);
-        routes.set(route, routePosts);
+      for (const entry of entries) {
+        const route = normalizeRoute(entry.route);
+        const routeEntries = routes.get(route) ?? [];
+        routeEntries.push(entry);
+        routes.set(route, routeEntries);
       }
 
-      for (const post of posts) {
-        const frontmatter = readFrontmatter(post.filePath);
-        checkRequiredFields(issues, post, frontmatter, finalConfig.requiredFields);
+      for (const entry of entries) {
+        const frontmatter = readFrontmatter(entry.filePath);
+        checkRequiredFields(issues, entry, frontmatter, finalConfig.requiredFields);
 
         if (finalConfig.checkImages) {
-          checkCoverImage(issues, buildContext.root, post, finalConfig.checkImageAlt);
+          checkCoverImage(issues, buildContext.root, entry, finalConfig.checkImageAlt);
         }
 
-        const body = await readPostBody(config, post);
+        const body = await readEntryBody(config, entry);
         if (finalConfig.checkEmptyContent && !body.trim()) {
-          addIssue(issues, 'warning', 'empty-content', post, '文章正文为空');
+          addIssue(issues, 'warning', 'empty-content', entry, '内容正文为空');
         }
         if (finalConfig.checkImages) {
-          checkBodyImages(issues, buildContext.root, post, body, finalConfig.checkImageAlt);
+          checkBodyImages(issues, buildContext.root, entry, body, finalConfig.checkImageAlt);
         }
         if (finalConfig.checkLinks) {
-          checkBodyLinks(issues, config, post, body, new Set(routes.keys()));
+          checkBodyLinks(issues, config, entry, body, new Set(routes.keys()));
         }
       }
 
       if (finalConfig.checkRoutes) {
-        for (const [route, routePosts] of routes) {
-          if (routePosts.length < 2) {
+        for (const [route, routeEntries] of routes) {
+          if (routeEntries.length < 2) {
             continue;
           }
-          for (const post of routePosts) {
-            addIssue(issues, 'error', 'duplicate-route', post, `文章路由重复：${route}`);
+          for (const entry of routeEntries) {
+            addIssue(issues, 'error', 'duplicate-route', entry, `内容路由重复：${route}`);
           }
         }
       }
 
-      report = createReport(posts.length, applyIssuePolicy(issues, finalConfig));
+      report = createReport(entries.length, applyIssuePolicy(issues, finalConfig));
       logger.info(formatReport(report));
 
       reportFile = finalConfig.reportPath

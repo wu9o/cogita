@@ -80,7 +80,7 @@ cogita doctor
 cogita doctor --strict --json
 ```
 
-`doctor` is read-only: it does not modify dependencies or build artifacts. By default only errors fail the command; `--strict` also fails on warnings. The JSON report includes a stable `schemaVersion`, check codes, and details for deployment pipelines.
+`doctor` is read-only: it does not modify dependencies or build artifacts. By default only errors fail the command; `--strict` also fails on warnings. Sites inside a pnpm or npm workspace may use the workspace root lockfile. The JSON report includes a stable `schemaVersion`, check codes, and details for deployment pipelines.
 
 ## Available Commands
 

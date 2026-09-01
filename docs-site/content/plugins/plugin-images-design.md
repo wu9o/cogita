@@ -3,7 +3,7 @@
 **文档版本**: 1.1
 **创建日期**: 2026年8月21日
 **插件名称**: `@cogita/plugin-images`
-**状态**: 🚧 第一阶段已完成，第二阶段 A 开发中
+**状态**: 🚧 第一阶段已完成，第二阶段 B 开发中
 **依赖**: `@cogita/plugin-posts-frontmatter`、`@cogita/ui`（主题集成阶段）
 
 ## 一、背景与目标
@@ -467,7 +467,7 @@ export interface CogitaConfig {
 
 - [x] 通过 core 透传 Rspress 原生 `mediumZoom`，避免重复引入 Lightbox 依赖；
 - [x] 为正文单图和显式 `figure.cogita-image-figure` 提供统一视觉样式；
-- [ ] 从 Markdown 图片标题自动生成统一的 figure 说明文字；
+- [x] 从 Markdown 图片标题自动生成统一的 figure 说明文字；
 - [ ] 评估文章局部图片作为 React 封面的资源清单方案，不直接猜测 Rspress 构建后的文件名；
 
 ### Phase 3：图片优化

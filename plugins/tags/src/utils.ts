@@ -1,5 +1,5 @@
 import { createCogitaLogger, generateTagSlug } from '@cogita/shared';
-import type { CogitaLogger, ContentIndex, ContentPost } from '@cogita/shared';
+import type { CogitaLogger, ContentEntry, ContentIndex } from '@cogita/shared';
 import type { PostReference, TagData, TagStats, TagsConfig } from './types';
 
 // generateTagSlug 已统一到 @cogita/shared，此处 re-export 便于插件内部使用
@@ -18,12 +18,12 @@ export async function extractTagsFromPosts(
   _routePrefix = 'posts',
   contentIndex?: ContentIndex,
   logger: CogitaLogger = createCogitaLogger()
-): Promise<ContentPost[]> {
+): Promise<ContentEntry[]> {
   if (contentIndex) {
-    return (await contentIndex.getPosts()).map((post) => ({
-      ...post,
-      url: post.url || post.route,
-    }));
+    const entries = contentIndex.getEntries
+      ? await contentIndex.getEntries()
+      : (await contentIndex.getPosts()).map((post) => ({ ...post, kind: 'post' as const }));
+    return entries.map((entry) => ({ ...entry, url: entry.url || entry.route }));
   }
 
   logger.warn('[Tags Plugin] 未找到共享内容索引，跳过标签数据构建');
@@ -37,7 +37,7 @@ export async function extractTagsFromPosts(
  * @returns 标签数据和映射表
  */
 export function processTagsFromPosts(
-  postsData: ContentPost[],
+  postsData: ContentEntry[],
   config: Required<TagsConfig>,
   logger: CogitaLogger = createCogitaLogger()
 ): { tagsData: TagData[]; tagsMap: Map<string, TagData> } {
@@ -63,7 +63,7 @@ export function processTagsFromPosts(
       const postRef: PostReference = {
         title: post.title,
         route: post.route,
-        createDate: post.createDate,
+        createDate: post.createDate || post.updateDate,
         updateDate: post.updateDate,
         description: post.description,
         tags: post.tags,
@@ -174,7 +174,7 @@ export function getRelatedTags(currentTagName: string, allTags: TagData[], limit
  * @param postsData 文章数据
  * @returns 统计信息
  */
-export function calculateTagStats(tagsData: TagData[], postsData: ContentPost[]): TagStats {
+export function calculateTagStats(tagsData: TagData[], postsData: ContentEntry[]): TagStats {
   if (tagsData.length === 0) {
     return {
       totalTags: 0,

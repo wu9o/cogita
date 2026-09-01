@@ -31,6 +31,7 @@ export default defineConfig({
 | `@cogita/theme-docs` | Cogita 使用手册 | 文档导航、侧边栏与 API 阅读 |
 | `@cogita/theme-lucid` | 独立博客与内容站点 | 轻量 Hero、文章卡片与内容侧栏 |
 | `@cogita/theme-editorial` | 内容优先的技术博客 | 编辑感排版、主推文章与专题阅读 |
+| `@cogita/theme-knowledge` | 个人 Wiki、研究记录与混合知识库 | 统一内容、搜索、标签与反向链接 |
 
 主题是站点的渲染边界：Core 负责配置、路由和构建，插件负责数据，主题负责如何组织这些数据。新增主题时，应优先新增主题包和主题专属配置，不要把视觉判断下沉到 Core。
 
@@ -58,6 +59,19 @@ export default defineConfig({
 ~~~
 
 `heroEyebrow`、`heroCopy`、`postsTitle`、`showSidebar` 和 `featuredPost` 都是可选项。未配置时，Lucid 使用稳定默认值；标签、分类、合集、搜索等能力仍由对应插件决定。
+
+### Knowledge 主题配置
+
+Knowledge 将 `posts` 与 `contentDir` 纳入统一内容入口，并默认组合搜索、标签和内容关系能力，适合需要长期积累、交叉引用和持续回溯的知识库站点：
+
+~~~ts
+export default defineConfig({
+  contentDir: 'content',
+  theme: '@cogita/theme-knowledge',
+});
+~~~
+
+如果站点同时维护文章和普通文档，Knowledge 会在首页、搜索和内容关系区域中统一呈现两类内容。内容质量诊断仍需显式配置 `contentCheck` 才会启用。完整的信息架构说明请参考 [Knowledge 知识库主题](./themes/theme-knowledge-design.md)。
 
 ## 替换与扩展
 

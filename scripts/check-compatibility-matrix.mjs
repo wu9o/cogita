@@ -51,6 +51,12 @@ const matrixEntries = [
     '博客主题插件',
     '内容质量诊断',
   ],
+  [
+    '@cogita/plugin-content-relations',
+    'plugins/content-relations/package.json',
+    '知识库插件',
+    '本地链接、相关文章和反向链接',
+  ],
   ['@cogita/plugin-images', 'plugins/images/package.json', '博客主题插件', '公共图片和封面处理'],
   [
     '@cogita/plugin-posts-frontmatter',
@@ -72,6 +78,12 @@ const matrixEntries = [
   ['@cogita/theme-lucid', 'themes/lucid/package.json', '博客主题', '默认博客主题和完整插件集成'],
   ['@cogita/theme-editorial', 'themes/editorial/package.json', '博客主题', '编辑风格博客主题'],
   ['@cogita/theme-docs', 'themes/docs/package.json', '文档主题', '技术手册和文档站主题'],
+  [
+    '@cogita/theme-knowledge',
+    'themes/knowledge/package.json',
+    '知识库主题',
+    '统一内容、搜索、标签和反向链接',
+  ],
 ];
 
 function readPackage(relativePath) {
@@ -127,6 +139,7 @@ function validatePackageMatrix() {
     '@cogita/theme-lucid',
     '@cogita/theme-editorial',
     '@cogita/theme-docs',
+    '@cogita/theme-knowledge',
   ]) {
     const packageJson = matrixEntries.find(([name]) => name === themeName);
     const theme = readPackage(packageJson[1]);

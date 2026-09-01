@@ -522,7 +522,7 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
     ...cogitaConfig.posts,
   };
   const logger = createCogitaLogger();
-  const contentIndex = createContentIndex(root, posts, logger);
+  const contentIndex = createContentIndex(root, posts, logger, cogitaConfig.contentDir);
   const strict = cogitaConfig.strict !== false;
   const framework = {
     version: getPackageVersion(),

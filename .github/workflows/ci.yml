@@ -39,5 +39,8 @@ jobs:
       - name: Build documentation site
         run: pnpm --filter docs-site build
 
+      - name: Build theme demos
+        run: pnpm run build:demos
+
       - name: Test
         run: pnpm run test

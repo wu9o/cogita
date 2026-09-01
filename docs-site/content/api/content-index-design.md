@@ -11,12 +11,13 @@ core 在创建主题插件之前，为每次构建注入一个惰性 `ContentInd
 ```ts
 interface ContentIndex {
   getPosts(): Promise<readonly ContentPost[]>;
+  getEntries?(): Promise<readonly ContentEntry[]>;
   getPostContent?(filePath: string): Promise<string>;
   invalidate?(): void;
 }
 ```
 
-索引只在第一个插件调用 `getPosts()` 时扫描，后续插件复用同一个 Promise。正文通过 `getPostContent(filePath)` 按需读取并缓存，搜索、RSS 等需要全文的插件不再各自重复读取同一文件。core 会在重新触发构建期插件钩子前调用 `invalidate()`，让下一轮构建重新读取文章。该方法和正文读取方法都是可选的，以保持第三方插件自行实现 `ContentIndex` 时的兼容性。索引使用与 `posts-frontmatter` 一致的路由规则，并根据 `posts.dir`、`posts.routePrefix` 和 `posts.extensions` 生成文章数据。
+索引只在第一个插件调用 `getEntries()` 或 `getPosts()` 时扫描，后续插件复用同一个 Promise。`getEntries()` 返回文章和 `contentDir` 文档，`getPosts()` 保持只返回文章的旧行为。正文通过 `getPostContent(filePath)` 按需读取并缓存，搜索、RSS 等需要全文的插件不再各自重复读取同一文件。core 会在重新触发构建期插件钩子前调用 `invalidate()`，让下一轮构建重新读取文章和文档。`getEntries()` 和正文读取方法都是可选的，以保持第三方插件自行实现 `ContentIndex` 时的兼容性。索引使用与 `posts-frontmatter` 一致的文章路由规则，并根据 `contentDir` 生成普通文档路由。
 
 插件工厂收到的配置现在还包含 `buildContext`。它集中承载 `root`、`cwd`、`contentIndex`、主题布局路径和构建元数据等框架内部状态。旧版插件仍可读取同名顶层字段；新插件应通过 `getCogitaBuildContext(config)` 获取上下文，避免继续扩展配置对象的内部字段。
 
@@ -28,6 +29,26 @@ interface ContentIndex {
 
 聚合插件统一使用 `@cogita/shared` 导出的 `ContentPostReference`，不再各自复制文章引用字段；依赖文章能力的插件也只消费 Core 注入的 `ContentIndex`，不再直接依赖文章扫描插件包。
 文章运行时虚拟模块 `virtual-posts-data` 额外暴露 `contentDataVersion`，外部主题可据此拒绝不兼容的数据契约。
+
+## 内容关系数据
+
+`@cogita/plugin-content-relations` 是第一个建立在共享索引之上的知识库基础插件。它按需读取
+文章正文，提取站内 Markdown 文本链接，并通过 `virtual-content-relations-data` 暴露出链、反向链接
+和相关文章查询。插件只消费 `ContentIndex`，不会再次扫描文章目录，也不绑定具体主题的页面布局。
+
+```ts
+import {
+  getBacklinks,
+  getRelatedContent,
+} from 'virtual-content-relations-data';
+
+const backlinks = getBacklinks('/posts/current');
+const related = getRelatedContent('/posts/current');
+```
+
+当前实现的索引对象已经覆盖文章和 `contentDir` 普通文档页，但知识条目的关系类型、来源位置和主题
+展示仍未完成。因此它是知识库主题的第一层数据基础，不代表统一知识库主题已经完成；下一步由主题
+组合搜索、标签、关系和文档导航。
 
 ## 公共契约版本策略
 
@@ -82,5 +103,6 @@ return {
 1. ✅ 开发服务器现在监听文章目录、公共资源目录和 Cogita 配置文件。变更发生后会关闭旧 Rspress 实例，重新加载配置并重新执行插件工厂、`beforeBuild`、`addPages` 和 `addRuntimeModules`，因此新增文章、筛选路由和聚合数据可以同步更新。普通正文编辑仍可由 Rspress HMR 处理，完整重建只针对需要重新生成 Cogita 页面数据的输入。
 2. ✅ 需要正文的内置插件复用 `getPostContent`，并为第三方索引实现保留摘要降级行为。
 3. ✅ 依赖文章能力的内置插件已移除对 `plugin-posts-frontmatter` 的直接依赖；后续只需在发布前持续验证独立消费者构建。
+4. ✅ 内容关系插件复用共享索引，提供稳定的 `content.relations` 能力和 `virtual-content-relations-data` 模块。
 
 迁移完成后，主题仍负责声明文章插件，内容消费者插件只依赖共享能力契约；独立插件若要兼容旧版 Core，应自行提供适配层，而不应把旧文章解析实现重新带入核心插件包。

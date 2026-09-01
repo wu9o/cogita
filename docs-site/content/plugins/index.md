@@ -27,10 +27,11 @@ Cogita 插件以工厂函数形式接收增强配置，并通过 Rspress 插件�
 - [Code Copy](./plugin-code-copy-design.md)
 - [Comments](./plugin-comments-design.md)
 - [内容检查](./plugin-content-check-design.md)
+- [内容关系](./plugin-content-relations-design.md)
 
 ## 内置插件状态
 
-当前内置插件覆盖文章索引、订阅、图片、站点地图、SEO、列表、搜索、分类、阅读进度、代码复制、评论和内容检查。每个插件的实现状态以对应设计文档和包目录为准；文档不再把个人博客内容作为插件能力的一部分。
+当前内置插件覆盖文章索引、订阅、图片、站点地图、SEO、列表、搜索、分类、阅读进度、代码复制、评论、内容检查和内容关系。每个插件的实现状态以对应设计文档和包目录为准；文档不再把个人博客内容作为插件能力的一部分。
 
 ## 相关入口
 

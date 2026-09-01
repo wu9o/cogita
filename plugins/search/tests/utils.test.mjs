@@ -99,4 +99,45 @@ describe('搜索索引工具函数', () => {
     );
     assert.equal(documents[0].description, '来自索引');
   });
+
+  it('存在统一内容索引时应同时生成文章和文档搜索条目', async () => {
+    const documents = await extractSearchDocuments(
+      'missing-posts',
+      process.cwd(),
+      'posts',
+      ['md'],
+      resolveSearchConfig(),
+      {
+        getPosts: async () => [],
+        getEntries: async () => [
+          {
+            kind: 'post',
+            title: '文章条目',
+            filePath: '/missing-posts/article.md',
+            route: '/posts/article',
+            createDate: '2026-08-24',
+            updateDate: '2026-08-24',
+            url: '/posts/article',
+          },
+          {
+            kind: 'document',
+            title: '文档条目',
+            filePath: '/missing-content/guide.md',
+            route: '/guide',
+            updateDate: '2026-08-25',
+            url: '/guide',
+          },
+        ],
+      }
+    );
+
+    assert.deepEqual(
+      documents.map((document) => [document.kind, document.route]),
+      [
+        ['document', '/guide'],
+        ['post', '/posts/article'],
+      ]
+    );
+    assert.equal(documents[0].createDate, '2026-08-25');
+  });
 });

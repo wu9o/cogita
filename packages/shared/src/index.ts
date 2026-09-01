@@ -23,6 +23,7 @@ export const COGITA_VIRTUAL_MODULE_SCHEMA_VERSION = 1 as const;
  */
 export const COGITA_CAPABILITIES = {
   CONTENT_POSTS: 'content.posts',
+  CONTENT_RELATIONS: 'content.relations',
   CONTENT_IMAGES: 'content.images',
   CONTENT_COLLECTIONS: 'content.collections',
   CONTENT_BLOG_LIST: 'content.blog-list',
@@ -41,6 +42,7 @@ export const COGITA_CAPABILITIES = {
 /** Cogita 公开虚拟运行时模块的稳定模块 ID。 */
 export const COGITA_VIRTUAL_MODULE_IDS = {
   POSTS_DATA: 'virtual-posts-data',
+  CONTENT_RELATIONS_DATA: 'virtual-content-relations-data',
   TAGS_DATA: 'virtual-tags-data',
   COLLECTIONS_DATA: 'virtual-collections-data',
   CATEGORIES_DATA: 'virtual-categories-data',
@@ -234,6 +236,30 @@ export interface ContentPostReference {
   url?: string;
 }
 
+/** 统一内容条目的来源类型。 */
+export type ContentEntryKind = 'post' | 'document';
+
+/** 供知识库主题和内容关系插件消费的统一内容条目。 */
+export interface ContentEntry {
+  /** 内容来源类型；Core 原生索引总会提供该字段。 */
+  kind: ContentEntryKind;
+  title: string;
+  description?: string;
+  excerpt?: string;
+  author?: string;
+  filePath: string;
+  route: string;
+  /** 普通文档可以没有创建时间，文章仍保持原有必填时间契约。 */
+  createDate?: string;
+  updateDate: string;
+  tags?: string[];
+  categories?: string[];
+  image?: string;
+  imageAlt?: string;
+  imageCaption?: string;
+  url: string;
+}
+
 /** 内容质量与构建诊断支持检查的 frontmatter 字段。 */
 export type ContentCheckField = 'title' | 'description' | 'date' | 'author' | 'imageAlt';
 
@@ -276,12 +302,20 @@ export interface ContentCheckConfig {
   ignores?: ContentCheckIgnore[];
 }
 
+/** 内容关系插件配置。 */
+export interface ContentRelationsConfig {
+  /** 是否启用内容关系数据。 */
+  enabled?: boolean;
+}
+
 /** 构建期共享内容索引。索引采用惰性加载，只有被插件消费时才扫描文章。 */
 export interface ContentIndex {
   /** 内容索引契约版本，第三方兼容实现可以省略以保持旧版兼容。 */
   readonly contractVersion?: typeof COGITA_CONTENT_INDEX_VERSION;
   /** 获取当前构建周期内的文章元数据。 */
   getPosts(): Promise<readonly ContentPost[]>;
+  /** 获取文章和 contentDir 文档组成的统一内容条目；旧版索引可以不实现。 */
+  getEntries?(): Promise<readonly ContentEntry[]>;
   /** 按需读取并缓存单篇文章正文，避免需要全文的插件重复读取文件。 */
   getPostContent?(filePath: string): Promise<string>;
   /** 在重新触发构建期插件钩子前清理缓存。 */
@@ -341,6 +375,8 @@ export interface CogitaBuildContext {
 export interface CogitaPluginConfig {
   root: string;
   cwd: string;
+  /** 文档 Markdown 源目录，供需要统一内容模型的插件读取。 */
+  contentDir?: string;
   /**
    * 由 core 注入的共享文章索引，避免各插件重复扫描和解析文章。
    * 该字段只存在于构建期插件配置，不会进入浏览器运行时。
@@ -373,6 +409,7 @@ export interface CogitaPluginConfig {
     failOnMissing?: boolean;
     warnOnMissingAlt?: boolean;
   };
+  contentRelations?: ContentRelationsConfig;
   contentCheck?: ContentCheckConfig;
   sitemap?: {
     enabled?: boolean;

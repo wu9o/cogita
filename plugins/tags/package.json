@@ -1,7 +1,7 @@
 {
   "name": "@cogita/plugin-tags",
   "version": "1.0.5",
-  "description": "标签系统插件，为 Cogita 博客提供完整的标签管理、标签页面生成和标签云功能。",
+  "description": "标签系统插件，为 Cogita 内容站点提供标签管理、标签页面生成和标签云功能。",
   "keywords": [
     "cogita",
     "plugin",

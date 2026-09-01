@@ -71,6 +71,17 @@ pnpm exec cogita dev
 
 **完整文档：** [📖 在线使用手册](https://wu9o.github.io/cogita/) • [📚 文档源码](./docs-site/content/overview.md) • [🗺️ 包与能力地图](./docs-site/content/package-map.md) • [📄 English Documentation](./README.en.md)
 
+### 🎭 主题 Demo
+
+仓库提供四个彼此独立的主题 Demo，每个 Demo 都有自己的配置和自定义内容，可直接查看主题如何接入：
+
+```bash
+pnpm install
+pnpm run demo
+```
+
+打开 <http://localhost:3100/> 查看主题总览，或阅读 [`demos/README.md`](./demos/README.md) 了解单独启动方式。Demo 不使用 `blog/` 中的内容，适合贡献者和 GitHub 访客快速体验 Docs、Lucid、Editorial 与 Knowledge。
+
 ## 🏗️ 技术架构
 
 ```

@@ -148,6 +148,50 @@ describe('构建期内容索引', () => {
     }
   });
 
+  it('应将 contentDir 文档纳入统一条目，并保持 getPosts 只返回文章', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'cogita-unified-index-'));
+    const postsDir = path.join(root, 'posts');
+    const contentDir = path.join(root, 'content');
+    fs.mkdirSync(postsDir, { recursive: true });
+    fs.mkdirSync(path.join(contentDir, 'guides'), { recursive: true });
+    fs.writeFileSync(
+      path.join(postsDir, 'article.md'),
+      '---\ntitle: 文章\ndate: 2026-08-24\n---\n正文\n'
+    );
+    fs.writeFileSync(path.join(contentDir, 'index.md'), '---\ntitle: 文档首页\n---\n# 文档首页\n');
+    fs.writeFileSync(
+      path.join(contentDir, 'guides', 'start.md'),
+      '---\ntitle: 开始指南\ntags: [入门]\n---\n指南正文\n'
+    );
+
+    try {
+      const index = createContentIndex(
+        root,
+        { dir: 'posts', routePrefix: 'posts', extensions: ['md', 'mdx'] },
+        undefined,
+        'content'
+      );
+      const entries = await index.getEntries();
+      const posts = await index.getPosts();
+
+      assert.deepEqual(
+        entries.map((entry) => [entry.kind, entry.title, entry.route]),
+        [
+          ['post', '文章', '/posts/article'],
+          ['document', '文档首页', '/'],
+          ['document', '开始指南', '/guides/start'],
+        ]
+      );
+      assert.deepEqual(
+        posts.map((post) => post.title),
+        ['文章']
+      );
+      assert.deepEqual(entries.find((entry) => entry.route === '/guides/start')?.tags, ['入门']);
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
   it('应为文章列表生成筛选路由，并让父分类覆盖子分类', () => {
     const posts = [
       { createDate: '2026-08-24', tags: ['Git'], categories: ['工程实践/Git'] },

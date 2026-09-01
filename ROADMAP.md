@@ -45,13 +45,20 @@
 - [x] 提供第三方插件与主题 starter，并补充最小可运行示例。
 - [x] 统一首次构建、配置错误和能力缺失时的错误提示。
 - [x] 提供只读的 `cogita doctor` 站点自检，并在真实消费者发布验证中执行。
-- [ ] 将 `doctor --strict` 接入独立站点的日常部署工作流，形成升级前检查习惯。
+- [x] 将 `doctor --strict` 接入独立站点的日常部署工作流，形成升级前检查习惯。
 
 ### P1：内容质量工程
 
 - [x] 稳定 `content-check` 与 SEO audit 的 JSON 报告 schema。
 - [x] 提供 GitHub Actions annotation 和 warning/error 门禁配置。
 - [x] 将链接、图片、路由、metadata 检查接入真实站点的发布流程。
+
+### P1：知识库内容基础
+
+- [x] 将文章和文档页纳入统一内容索引，知识条目扩展保留为下一步。
+- [x] 提供 `@cogita/plugin-content-relations`，生成站内出链、相关文章和反向链接数据。
+- [x] 开发 `@cogita/theme-knowledge`，把搜索、标签和内容关系组合成知识库信息架构。
+- [x] 用独立知识库消费者验证根路径、子路径、断链诊断和长期升级流程。
 
 ### P2：规模化性能基线
 
@@ -249,7 +256,7 @@ interface CogitaTheme {
   - [x] 封面缺少 alt 的非阻断警告
   - [x] 图片封面使用统计与未使用图片查询
   - [x] 正文图片基础样式与 Rspress medium-zoom 透传
-  - [ ] 正文图片 figure 与说明文字自动化
+  - [x] 正文图片 figure 与说明文字自动化
   - [ ] 独立图片优化插件
 
 #### SEO 与发现插件

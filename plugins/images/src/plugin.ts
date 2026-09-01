@@ -11,6 +11,7 @@ import {
   getCogitaLogger,
 } from '@cogita/shared';
 import { glob } from 'glob';
+import { rehypeImageFigure } from './rehype-image-figure';
 import type { ImageData, ImageUsage, ResolvedImage, ResolvedImagesConfig } from './types';
 import {
   createExternalImage,
@@ -132,6 +133,9 @@ export function pluginImages(config: CogitaPluginConfig): CogitaPlugin | null {
 
   return {
     name: '@cogita/plugin-images',
+    markdown: {
+      rehypePlugins: [rehypeImageFigure],
+    },
     cogita: {
       providesCapabilities: [COGITA_CAPABILITIES.CONTENT_IMAGES],
       requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],

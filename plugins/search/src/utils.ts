@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import { createCogitaLogger } from '@cogita/shared';
-import type { CogitaLogger, ContentIndex, ContentPost } from '@cogita/shared';
+import type { CogitaLogger, ContentEntry, ContentIndex } from '@cogita/shared';
 import type {
   ResolvedSearchAnalyticsConfig,
   ResolvedSearchConfig,
@@ -81,24 +81,25 @@ function getContent(
 }
 
 function toSearchDocument(
-  post: ContentPost,
+  entry: ContentEntry,
   config: ResolvedSearchConfig,
   logger: CogitaLogger
 ): SearchDocument {
   return {
-    id: post.route,
-    title: post.title,
-    route: post.route,
-    url: post.url || post.route,
-    description: config.fields.description ? post.description : undefined,
-    excerpt: config.fields.excerpt ? post.excerpt : undefined,
-    tags: config.fields.tags ? post.tags : undefined,
-    categories: config.fields.categories ? post.categories : undefined,
-    content: getContent(post.filePath, config, logger),
-    createDate: post.createDate,
-    updateDate: post.updateDate,
-    image: post.image,
-    imageAlt: post.imageAlt,
+    id: entry.route,
+    kind: entry.kind,
+    title: entry.title,
+    route: entry.route,
+    url: entry.url || entry.route,
+    description: config.fields.description ? entry.description : undefined,
+    excerpt: config.fields.excerpt ? entry.excerpt : undefined,
+    tags: config.fields.tags ? entry.tags : undefined,
+    categories: config.fields.categories ? entry.categories : undefined,
+    content: getContent(entry.filePath, config, logger),
+    createDate: entry.createDate || entry.updateDate,
+    updateDate: entry.updateDate,
+    image: entry.image,
+    imageAlt: entry.imageAlt,
   };
 }
 
@@ -113,9 +114,11 @@ export async function extractSearchDocuments(
   logger: CogitaLogger = createCogitaLogger()
 ): Promise<SearchDocument[]> {
   if (contentIndex) {
-    const posts = await contentIndex.getPosts();
-    return posts
-      .map((post) => toSearchDocument({ ...post, url: post.url || post.route }, config, logger))
+    const entries = contentIndex.getEntries
+      ? await contentIndex.getEntries()
+      : (await contentIndex.getPosts()).map((post) => ({ ...post, kind: 'post' as const }));
+    return entries
+      .map((entry) => toSearchDocument({ ...entry, url: entry.url || entry.route }, config, logger))
       .sort((a, b) => a.route.localeCompare(b.route));
   }
 

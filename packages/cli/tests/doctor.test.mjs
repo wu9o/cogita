@@ -34,12 +34,17 @@ test('doctor 应通过真实 docs-site 的配置、依赖和主题检查', async
   assert.ok(report.checks.some((check) => check.code === 'COGITA_DOCTOR_THEME_OK'));
 });
 
-test('doctor --strict 应将真实 docs-site 的 warning 纳入失败', async () => {
+test('doctor --strict 应通过使用 workspace lockfile 的真实 docs-site', async () => {
   const result = await runDoctor(docsRoot, '--strict', '--json');
-  assert.equal(result.code, 1);
+  assert.equal(result.code, 0);
   const report = JSON.parse(result.stdout);
   assert.equal(report.ok, true);
-  assert.ok(report.warnings > 0);
+  assert.equal(report.warnings, 0);
+  assert.ok(
+    report.checks.some(
+      (check) => check.code === 'COGITA_DOCTOR_LOCKFILE_OK' && check.details?.scope === 'workspace'
+    )
+  );
 });
 
 test('doctor 应为缺少配置的目录输出稳定错误码', async () => {

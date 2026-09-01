@@ -3,4 +3,5 @@ packages:
   - 'docs-site'
   - 'plugins/*'
   - 'themes/*'
+  - 'demos/*'
   - 'scripts/config'

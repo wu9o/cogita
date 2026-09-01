@@ -1,7 +1,10 @@
 declare module 'virtual-search-data' {
+  import type { ContentEntryKind } from '@cogita/shared';
+
   export const cogitaVirtualModuleVersion: 1;
   interface SearchDocument {
     id: string;
+    kind?: ContentEntryKind;
     title: string;
     route: string;
     url: string;

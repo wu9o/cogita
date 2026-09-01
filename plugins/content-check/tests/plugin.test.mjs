@@ -180,3 +180,45 @@ test('内容诊断插件应支持规则级别覆盖和问题忽略', async () =>
     await rm(root, { recursive: true, force: true });
   }
 });
+
+test('内容诊断插件应检查统一内容索引中的普通文档', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'cogita-content-check-'));
+  const postPath = path.join(root, 'posts', 'test.md');
+  const documentPath = path.join(root, 'content', 'guides', 'start.md');
+  await mkdir(path.dirname(postPath), { recursive: true });
+  await mkdir(path.dirname(documentPath), { recursive: true });
+  await writeFile(postPath, '---\ntitle: 测试文章\ndate: 2026-08-24\n---\n正文内容\n', 'utf8');
+  await writeFile(documentPath, '---\ntitle: 开始指南\n---\n文档正文\n', 'utf8');
+
+  try {
+    const post = { ...createPost(postPath, '/posts/test'), kind: 'post' };
+    const document = {
+      kind: 'document',
+      title: '开始指南',
+      filePath: documentPath,
+      route: '/guides/start',
+      updateDate: '2026-08-24T00:00:00.000Z',
+      url: '/guides/start',
+    };
+    const config = createConfig(root, post, '正文内容');
+    config.contentDir = 'content';
+    config.buildContext.contentIndex.getEntries = async () => [post, document];
+    config.buildContext.contentIndex.getPostContent = async (filePath) =>
+      filePath === documentPath ? '[不存在](./missing.md)' : '正文内容';
+    const plugin = pluginContentCheck(config);
+    assert.ok(plugin);
+
+    await plugin.beforeBuild({ output: { path: path.join(root, 'doc_build') } });
+    const report = JSON.parse(
+      await readFile(path.join(root, 'doc_build', 'content-report.json'), 'utf8')
+    );
+    assert.equal(report.itemCount, 2);
+    assert.equal(report.postCount, 2);
+    assert.equal(report.errors, 0);
+    assert.equal(report.warnings, 1);
+    assert.equal(report.issues[0].route, '/guides/start');
+    assert.equal(report.issues[0].code, 'missing-link');
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});

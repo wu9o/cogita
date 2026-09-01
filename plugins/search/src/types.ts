@@ -1,3 +1,5 @@
+import type { ContentEntryKind } from '@cogita/shared';
+
 /** 搜索字段开关。 */
 export interface SearchFieldsConfig {
   title?: boolean;
@@ -68,6 +70,8 @@ export interface ResolvedSearchConfig {
 /** 供主题运行时消费的搜索文档。 */
 export interface SearchDocument {
   id: string;
+  /** 内容来源类型，便于知识库主题区分文章与文档。 */
+  kind?: ContentEntryKind;
   title: string;
   route: string;
   url: string;
