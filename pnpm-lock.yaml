@@ -62,6 +62,9 @@ importers:
       '@cogita/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@cogita/plugin-content-source-json':
+        specifier: workspace:*
+        version: link:../../plugins/content-source-json
       '@cogita/theme-knowledge':
         specifier: workspace:*
         version: link:../../themes/knowledge
@@ -369,6 +372,25 @@ importers:
       '@rspress/core':
         specifier: ^1.45.1
         version: 1.45.1(webpack@5.101.2)
+    devDependencies:
+      '@rslib/core':
+        specifier: 0.11.2
+        version: 0.11.2(@microsoft/api-extractor@7.52.10(@types/node@18.19.123))(typescript@5.9.2)
+      '@types/node':
+        specifier: ^18.11.17
+        version: 18.19.123
+      rsbuild-plugin-publint:
+        specifier: ^0.3.3
+        version: 0.3.3(@rsbuild/core@1.4.15)
+      typescript:
+        specifier: ^5.0.4
+        version: 5.9.2
+
+  plugins/content-source-json:
+    dependencies:
+      '@cogita/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
     devDependencies:
       '@rslib/core':
         specifier: 0.11.2

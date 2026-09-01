@@ -18,7 +18,7 @@ pnpm run demo
 | `/demos/docs/` | `@cogita/theme-docs` | Northstar 工程手册 |
 | `/demos/lucid/` | `@cogita/theme-lucid` | Field Notes 实践笔记 |
 | `/demos/editorial/` | `@cogita/theme-editorial` | The Small Systems Review |
-| `/demos/knowledge/` | `@cogita/theme-knowledge` | Atlas of Practice 知识库 |
+| `/demos/knowledge/` | `@cogita/theme-knowledge` | Atlas of Practice 知识库与 JSON 内容源 |
 
 `pnpm run demo` 会先构建 Core、插件、主题和四个 Demo，再启动一个静态预览服务。只想构建而不启动服务时执行 `pnpm run build:demos`。
 

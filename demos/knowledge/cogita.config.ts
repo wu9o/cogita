@@ -1,4 +1,5 @@
 import { defineConfig } from '@cogita/core';
+import { createJsonContentSource } from '@cogita/plugin-content-source-json';
 
 const demoPrefix = (process.env.COGITA_DEMO_PREFIX || '').replace(/\/$/, '');
 const demoBase = `${demoPrefix}/demos/knowledge/`;
@@ -10,6 +11,12 @@ export default defineConfig({
     base: demoBase,
   },
   contentDir: 'content',
+  contentSources: [
+    createJsonContentSource({
+      id: 'field-notes-export',
+      file: 'content/field-notes.json',
+    }),
+  ],
   theme: '@cogita/theme-knowledge',
   posts: {
     dir: 'posts',

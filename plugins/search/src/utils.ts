@@ -65,26 +65,31 @@ export function cleanMarkdownContent(markdown: string, maxLength: number): strin
   return maxLength > 0 ? content.slice(0, maxLength) : '';
 }
 
-function getContent(
+async function getContent(
   filePath: string,
   config: ResolvedSearchConfig,
-  logger: CogitaLogger
-): string | undefined {
+  logger: CogitaLogger,
+  contentIndex?: ContentIndex
+): Promise<string | undefined> {
   if (!config.includeContent || !config.fields.content) return undefined;
 
   try {
-    return cleanMarkdownContent(fs.readFileSync(filePath, 'utf8'), config.maxContentLength);
+    const markdown = contentIndex?.getPostContent
+      ? await contentIndex.getPostContent(filePath)
+      : fs.readFileSync(filePath, 'utf8');
+    return cleanMarkdownContent(markdown, config.maxContentLength);
   } catch (error) {
     logger.warn(`[Search Plugin] 读取正文失败：${filePath}`, error);
     return undefined;
   }
 }
 
-function toSearchDocument(
+async function toSearchDocument(
   entry: ContentEntry,
   config: ResolvedSearchConfig,
-  logger: CogitaLogger
-): SearchDocument {
+  logger: CogitaLogger,
+  contentIndex?: ContentIndex
+): Promise<SearchDocument> {
   return {
     id: entry.route,
     kind: entry.kind,
@@ -95,7 +100,7 @@ function toSearchDocument(
     excerpt: config.fields.excerpt ? entry.excerpt : undefined,
     tags: config.fields.tags ? entry.tags : undefined,
     categories: config.fields.categories ? entry.categories : undefined,
-    content: getContent(entry.filePath, config, logger),
+    content: await getContent(entry.filePath, config, logger, contentIndex),
     createDate: entry.createDate || entry.updateDate,
     updateDate: entry.updateDate,
     image: entry.image,
@@ -117,9 +122,12 @@ export async function extractSearchDocuments(
     const entries = contentIndex.getEntries
       ? await contentIndex.getEntries()
       : (await contentIndex.getPosts()).map((post) => ({ ...post, kind: 'post' as const }));
-    return entries
-      .map((entry) => toSearchDocument({ ...entry, url: entry.url || entry.route }, config, logger))
-      .sort((a, b) => a.route.localeCompare(b.route));
+    const documents = await Promise.all(
+      entries.map((entry) =>
+        toSearchDocument({ ...entry, url: entry.url || entry.route }, config, logger, contentIndex)
+      )
+    );
+    return documents.sort((a, b) => a.route.localeCompare(b.route));
   }
 
   logger.warn('[Search Plugin] 未找到共享内容索引，跳过搜索数据构建');

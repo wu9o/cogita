@@ -32,6 +32,7 @@ Cogita 把框架能力拆成可以独立发布的包。站点项目只需要安�
 | --- | --- |
 | 文章元数据和内容索引 | `@cogita/plugin-posts-frontmatter` |
 | 内容关系和反向链接 | `@cogita/plugin-content-relations` |
+| 外部 JSON 内容源 | `@cogita/plugin-content-source-json` |
 | 文章列表和归档 | `@cogita/plugin-blog-list` |
 | 标签、分类和合集 | `@cogita/plugin-tags`、`@cogita/plugin-categories`、`@cogita/plugin-collections` |
 | 搜索、阅读进度和代码复制 | `@cogita/plugin-search`、`@cogita/plugin-reading-progress`、`@cogita/plugin-code-copy` |
@@ -44,6 +45,6 @@ Cogita 把框架能力拆成可以独立发布的包。站点项目只需要安�
 
 - 做项目手册：安装 `@cogita/theme-docs`，配置 `contentDir`。
 - 做个人博客：安装 `@cogita/theme-lucid`，配置 `posts` 和文章相关插件。
-- 做知识库：安装 `@cogita/theme-knowledge`，按需配置 `posts` 和 `contentDir`。
+- 做知识库：安装 `@cogita/theme-knowledge`，按需配置 `posts`、`contentDir` 和内容源适配器。
 - 做定制站点：选择一个主题作为基础，再通过站点插件和主题扩展补充能力。
 - 开发公共能力：优先创建独立插件，不要把站点业务逻辑写进主题或 Core。
