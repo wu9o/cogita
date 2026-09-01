@@ -1,4 +1,6 @@
 :root {
+  --rp-sidebar-width: 0px;
+  --rp-nav-width: 0px;
   --cogita-knowledge-bg: #f4f6f2;
   --cogita-knowledge-surface: #ffffff;
   --cogita-knowledge-border: #dce4dc;
@@ -7,6 +9,26 @@
   --cogita-knowledge-accent: #276749;
   --cogita-knowledge-accent-soft: #dcefe4;
   --cogita-knowledge-shadow: 0 20px 60px rgba(35, 65, 46, 0.08);
+}
+
+/* 知识库没有默认文档侧栏，首页、搜索和标签页应占用完整内容宽度。 */
+.rspress-doc:has(.knowledge-home),
+.rspress-doc:has(.knowledge-search),
+.rspress-doc:has(.knowledge-tag-page) {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: clip;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (min-width: 801px) {
+  aside.rspress-sidebar {
+    display: none !important;
+  }
 }
 
 html,
