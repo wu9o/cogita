@@ -4,7 +4,7 @@ title: JSON 内容源适配器
 
 # JSON 内容源适配器
 
-`@cogita/plugin-content-source-json` 是一个构建期内容源适配器示例。它读取站点仓库中的 JSON 快照，
+`@cogita/plugin-content-source-json` 是一个构建期内容源适配器示例。它读取本地或远程 JSON 快照，
 将文章或普通文档转换为统一 `ContentIndex` 条目，并在记录包含 `content` 时提供正文读取能力。
 
 ## 配置
@@ -26,6 +26,20 @@ export default defineConfig({
 JSON 可以是记录数组，也可以是 `{ "entries": [] }`。记录至少需要 `kind`、`title`、`route` 和
 `updateDate`；`post` 还需要 `createDate`。`id` 用于生成缺省的稳定 `source://` 标识，`content` 用于
 提供 Markdown 正文。
+
+## 远程 JSON
+
+将 `file` 替换为 `url` 即可从 GitHub Raw、对象存储或知识库导出 API 读取同一格式的 JSON：
+
+~~~ts
+createJsonContentSource({
+  id: 'team-notes',
+  url: process.env.TEAM_NOTES_URL,
+  headers: { Authorization: `Bearer ${process.env.TEAM_NOTES_TOKEN}` },
+});
+~~~
+
+请求发生在构建期，支持自定义请求头和超时，不会在浏览器运行时暴露认证信息。适配器只处理单次快照；分页、增量同步、重试和复杂认证应由站点自定义 `ContentSource` 实现。
 
 ## Demo
 

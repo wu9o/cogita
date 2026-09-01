@@ -1,6 +1,6 @@
 # @cogita/plugin-content-source-json
 
-将 JSON 导出内容接入 Cogita 的统一 `ContentIndex`，适合作为 Git、API 或其他知识库导出的稳定快照适配器。
+将本地或远程 JSON 导出内容接入 Cogita 的统一 `ContentIndex`，适合作为 Git、GitHub Raw、API 或其他知识库导出的稳定快照适配器。
 
 ## 使用
 
@@ -22,6 +22,22 @@ export default defineConfig({
 });
 ```
 
+也可以在构建期读取远程 JSON。请求只发生在 Node.js 构建环境，不会把认证信息或 API 请求带到浏览器：
+
+```ts
+createJsonContentSource({
+  id: 'remote-research-notes',
+  url: process.env.RESEARCH_NOTES_URL,
+  headers: process.env.RESEARCH_NOTES_TOKEN
+    ? { Authorization: `Bearer ${process.env.RESEARCH_NOTES_TOKEN}` }
+    : undefined,
+  timeoutMs: 10_000,
+});
+```
+
+`file` 和 `url` 必须二选一。远程请求失败、返回非 2xx 或超时会阻断当前构建，并保留原始异常作为
+`cause`，便于 CI 诊断；请求头不会写入错误信息。
+
 JSON 可以是数组，也可以是 `{ "entries": [] }`。每条记录至少包含 `kind`、`title`、`route` 和 `updateDate`；
 `post` 还需要 `createDate`。`filePath` 可选，缺省时会生成 `source://<source-id>/<id>`；`content` 是可选的
 Markdown 正文，提供后即可被搜索全文和内容关系插件读取。
@@ -40,5 +56,5 @@ Markdown 正文，提供后即可被搜索全文和内容关系插件读取。
 ]
 ```
 
-这是一个构建期适配器，不会在浏览器中请求 JSON。需要实时拉取 API 时，可以复用同一个 `ContentSource`
-契约实现自己的网络适配器，并在构建环境中管理认证和缓存。
+这是一个构建期适配器，不会在浏览器中请求 JSON。需要分页、增量同步或复杂认证时，可以复用同一个
+`ContentSource` 契约实现自己的网络适配器，并在构建环境中管理认证和缓存。
