@@ -51,6 +51,9 @@ pnpm run preview
 # 使用独立博客仓库的内容预览 Lucid 主题
 pnpm run preview:lucid
 
+# 构建并预览所有主题 Demo
+pnpm run demo
+
 # 运行代码检查和格式化检查
 pnpm run check
 
@@ -67,6 +70,25 @@ pnpm run check:release
 `COGITA_BLOG_DIR=/path/to/cogita-blog pnpm run preview:lucid` 指定内容仓库。
 该命令会复制文章和公共资源到临时预览目录，使用当前工作区源码构建包和 Lucid 主题，
 并以根路径启动本地预览。生产环境的 `site.base` 仍应按实际部署地址配置。
+
+## 主题 Demo 展示
+
+仓库中的 `demos/` 不是已有博客的镜像，而是四个独立的 Cogita 消费者项目。每个目录都包含自己的 `package.json`、`cogita.config.ts` 和自定义 Markdown 内容，用来说明一个主题从配置到构建的完整接入方式：
+
+| Demo | 主题 | 内容定位 |
+| --- | --- | --- |
+| `demos/docs` | `@cogita/theme-docs` | Northstar 工程手册 |
+| `demos/lucid` | `@cogita/theme-lucid` | Field Notes 实践笔记 |
+| `demos/editorial` | `@cogita/theme-editorial` | Small Systems Review 专题刊物 |
+| `demos/knowledge` | `@cogita/theme-knowledge` | Atlas of Practice 知识库 |
+
+执行 `pnpm run demo` 会先运行包构建，再构建四个 Demo，并在 `http://localhost:3100/` 提供总览页。也可以只构建 Demo：
+
+```bash
+pnpm run build:demos
+```
+
+如果要单独开发某个主题，可以在仓库根目录执行 `pnpm --filter @cogita/demo-knowledge dev`，将其中的包名替换为目标 Demo。新增内置主题时，应同时增加对应 Demo 和总览入口；这样贡献者可以从独立消费者验证主题配置，而不必依赖真实博客内容。
 
 ## 工作区结构
 

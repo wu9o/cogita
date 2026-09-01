@@ -15,7 +15,7 @@ Cogita 的主题不是单纯的颜色和字体。主题包负责页面布局、�
 | **Editorial** | 专题站点、深度文章、编辑型内容 | 大标题、精选内容、杂志式节奏 | `@cogita/theme-editorial` |
 | **Knowledge** | 个人 Wiki、研究记录、混合知识库 | 统一内容、搜索、标签、反向链接 | `@cogita/theme-knowledge` |
 
-下面介绍当前提供的四个主题。它们共享 Cogita 的 Core、插件和内容索引，但在信息架构和阅读节奏上做了不同取舍。前三个主题已有当前仓库源码构建后的本地预览页面。
+下面介绍当前提供的四个主题。它们共享 Cogita 的 Core、插件和内容索引，但在信息架构和阅读节奏上做了不同取舍。仓库的 [`demos/`](https://github.com/wu9o/cogita/tree/main/demos) 目录为每个主题提供了独立的站点消费者和自定义示例内容；执行 `pnpm run demo` 即可在本地打开主题总览。
 
 ## Docs：技术文档主题
 

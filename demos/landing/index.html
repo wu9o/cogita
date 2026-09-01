@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cogita Theme Demos</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #172033;
+        --muted: #68738a;
+        --line: #dfe5ef;
+        --paper: #f8fafc;
+        --blue: #2868e8;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      a { color: inherit; text-decoration: none; }
+      .shell { max-width: 1160px; margin: 0 auto; padding: 32px 24px 72px; }
+      .topbar { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+      .brand { display: flex; align-items: center; gap: 12px; font-weight: 750; letter-spacing: -0.02em; }
+      .mark { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 12px; color: white; background: var(--blue); box-shadow: 0 8px 22px #2868e83d; }
+      .toplink { color: var(--muted); font-size: 14px; }
+      .hero { padding: 112px 0 72px; max-width: 780px; }
+      .eyebrow { color: var(--blue); font-size: 13px; font-weight: 800; letter-spacing: 0.16em; }
+      h1 { margin: 18px 0 22px; font-size: clamp(42px, 7vw, 78px); line-height: 0.98; letter-spacing: -0.065em; }
+      .hero p { margin: 0; color: var(--muted); font-size: clamp(18px, 2.4vw, 24px); line-height: 1.55; }
+      .intro { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 22px; }
+      .intro h2 { margin: 0; font-size: 28px; letter-spacing: -0.04em; }
+      .intro p { margin: 0; color: var(--muted); font-size: 14px; }
+      .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+      .card { position: relative; min-height: 286px; padding: 28px; overflow: hidden; border: 1px solid var(--line); border-radius: 24px; background: white; transition: transform 180ms ease, box-shadow 180ms ease; }
+      .card:hover { transform: translateY(-4px); box-shadow: 0 18px 42px #17203314; }
+      .card::after { position: absolute; right: -42px; bottom: -64px; width: 190px; height: 190px; border-radius: 50%; background: var(--wash); content: ""; }
+      .number { color: var(--muted); font: 700 13px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .card h3 { margin: 48px 0 10px; font-size: 30px; letter-spacing: -0.05em; }
+      .card p { max-width: 390px; margin: 0; color: var(--muted); line-height: 1.65; }
+      .pill { display: inline-block; margin-top: 22px; padding: 7px 10px; border-radius: 8px; color: var(--ink); background: #f1f4f8; font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .arrow { position: absolute; right: 28px; bottom: 24px; z-index: 1; color: var(--accent); font-size: 24px; }
+      .docs { --accent: #2868e8; --wash: #e7efff; }
+      .lucid { --accent: #d66b42; --wash: #fff0e8; }
+      .editorial { --accent: #8d5bd4; --wash: #f1eaff; }
+      .knowledge { --accent: #159a83; --wash: #e3f7f1; }
+      .footer { display: flex; justify-content: space-between; gap: 24px; margin-top: 54px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+      @media (max-width: 720px) {
+        .shell { padding: 24px 18px 48px; }
+        .hero { padding: 82px 0 56px; }
+        .grid { grid-template-columns: 1fr; }
+        .intro, .footer { align-items: start; flex-direction: column; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a class="brand" href="/"><span class="mark">C</span><span>Cogita Theme Demos</span></a>
+        <a class="toplink" href="https://github.com/wu9o/cogita">View source on GitHub ↗</a>
+      </header>
+      <section class="hero">
+        <div class="eyebrow">THEME-DRIVEN STATIC SITES</div>
+        <h1>同一套框架，四种内容节奏。</h1>
+        <p>这里的每个 Demo 都是一个独立的站点消费者。打开它们，感受主题如何组织内容，也直接查看最小接入配置。</p>
+      </section>
+      <section>
+        <div class="intro"><h2>选择一个主题开始</h2><p>每个入口都指向独立构建产物</p></div>
+        <div class="grid">
+          <a class="card docs" href="/demos/docs/"><span class="number">01 · REFERENCE</span><h3>Docs</h3><p>面向查阅的工程手册，把导航、正文和页面目录组织成清晰的阅读路径。</p><span class="pill">@cogita/theme-docs</span><span class="arrow">↗</span></a>
+          <a class="card lucid" href="/demos/lucid/"><span class="number">02 · FLOW</span><h3>Lucid</h3><p>面向持续写作的实践笔记，强调文章归档、标签、搜索和轻量阅读体验。</p><span class="pill">@cogita/theme-lucid</span><span class="arrow">↗</span></a>
+          <a class="card editorial" href="/demos/editorial/"><span class="number">03 · FEATURE</span><h3>Editorial</h3><p>面向专题叙事的编辑型刊物，用更强的标题层级和精选内容突出观点。</p><span class="pill">@cogita/theme-editorial</span><span class="arrow">↗</span></a>
+          <a class="card knowledge" href="/demos/knowledge/"><span class="number">04 · CONNECTION</span><h3>Knowledge</h3><p>面向长期积累的知识空间，把文章、手册、搜索和内容关系放在一起回溯。</p><span class="pill">@cogita/theme-knowledge</span><span class="arrow">↗</span></a>
+        </div>
+      </section>
+      <footer class="footer"><span>Built with Cogita · independent theme consumers</span><span>pnpm run demo</span></footer>
+    </main>
+  </body>
+</html>

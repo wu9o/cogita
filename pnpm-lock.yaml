@@ -30,6 +30,54 @@ importers:
         specifier: ^5.0.4
         version: 5.9.2
 
+  demos/docs:
+    devDependencies:
+      '@cogita/cli':
+        specifier: workspace:*
+        version: link:../../packages/cli
+      '@cogita/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@cogita/theme-docs':
+        specifier: workspace:*
+        version: link:../../themes/docs
+
+  demos/editorial:
+    devDependencies:
+      '@cogita/cli':
+        specifier: workspace:*
+        version: link:../../packages/cli
+      '@cogita/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@cogita/theme-editorial':
+        specifier: workspace:*
+        version: link:../../themes/editorial
+
+  demos/knowledge:
+    devDependencies:
+      '@cogita/cli':
+        specifier: workspace:*
+        version: link:../../packages/cli
+      '@cogita/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@cogita/theme-knowledge':
+        specifier: workspace:*
+        version: link:../../themes/knowledge
+
+  demos/lucid:
+    devDependencies:
+      '@cogita/cli':
+        specifier: workspace:*
+        version: link:../../packages/cli
+      '@cogita/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@cogita/theme-lucid':
+        specifier: workspace:*
+        version: link:../../themes/lucid
+
   docs-site:
     devDependencies:
       '@cogita/cli':
