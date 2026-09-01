@@ -50,8 +50,10 @@ const Relations: React.FC = () => {
         <span>Knowledge graph</span>
         <strong>继续探索</strong>
       </div>
-      <RelationList title="本文链接到" items={outbound} base={base} />
-      <RelationList title="反向链接" items={inbound} base={base} />
+      <div className="knowledge-relations-groups">
+        <RelationList title="本文链接到" items={outbound} base={base} />
+        <RelationList title="反向链接" items={inbound} base={base} />
+      </div>
     </aside>
   );
 };

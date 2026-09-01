@@ -14,6 +14,11 @@ test('Knowledge 主题应移除无内容文档侧栏的宽度占位', () => {
     themeCss,
     /\.rspress-doc:has\(\.knowledge-home\)[\s\S]*?max-width:\s*none\s*!important;/
   );
-  assert.match(themeCss, /\.knowledge-relations\s*\{[\s\S]*?grid-template-columns:/);
+  assert.match(themeCss, /\.rspress-doc\s*\{[\s\S]*?min-height:\s*0 !important;/);
+  assert.match(
+    themeCss,
+    /\.knowledge-relations\s*\{[\s\S]*?grid-template-columns:\s*minmax\(220px, 0\.7fr\) minmax\(0, 1\.3fr\);/
+  );
+  assert.match(themeCss, /\.knowledge-relations-groups\s*\{[\s\S]*?auto-fit/);
   assert.match(themeCss, /\.knowledge-relations-section ul\s*\{[\s\S]*?list-style:\s*none;/);
 });

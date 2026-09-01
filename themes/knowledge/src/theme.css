@@ -25,6 +25,11 @@
   box-shadow: none;
 }
 
+/* 知识库内容页按实际内容收缩，避免短文章被默认视口高度撑出大块空白。 */
+.rspress-doc {
+  min-height: 0 !important;
+}
+
 @media (min-width: 801px) {
   aside.rspress-sidebar {
     display: none !important;
@@ -277,7 +282,7 @@ body {
 /* 关系组件位于 Rspress 文档容器之外，需要独立建立与主题一致的内容宽度和层级。 */
 .knowledge-relations {
   display: grid;
-  grid-template-columns: minmax(180px, 0.7fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.3fr);
   gap: 32px;
   max-width: 1180px;
   margin: 64px auto 0;
@@ -303,6 +308,12 @@ body {
 .knowledge-relations-heading strong {
   font-size: 24px;
   letter-spacing: -0.04em;
+}
+
+.knowledge-relations-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 32px;
 }
 
 .knowledge-relations-section {
@@ -489,6 +500,11 @@ body {
     gap: 28px;
     margin-top: 48px;
     padding-top: 28px;
+  }
+
+  .knowledge-relations-groups {
+    grid-template-columns: 1fr;
+    gap: 28px;
   }
 
   .knowledge-relations-section {
