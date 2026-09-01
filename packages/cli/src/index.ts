@@ -88,11 +88,20 @@ program
           core: readPackageVersion('../core/package.json', '0.12.3'),
           theme: ['docs', 'documentation'].includes(options.template.trim().toLowerCase())
             ? readPackageVersion('../../themes/docs/package.json', '0.2.0')
-            : ['knowledge', 'knowledge-base', 'wiki'].includes(
-                  options.template.trim().toLowerCase()
-                )
+            : [
+                  'knowledge',
+                  'knowledge-base',
+                  'wiki',
+                  'knowledge-external',
+                  'knowledge-git',
+                  'external-knowledge',
+                ].includes(options.template.trim().toLowerCase())
               ? readPackageVersion('../../themes/knowledge/package.json', '0.2.0')
               : readPackageVersion('../../themes/lucid/package.json', '0.11.2'),
+          contentSourceGit: readPackageVersion(
+            '../../plugins/content-source-git/package.json',
+            '0.1.0'
+          ),
         },
       });
 

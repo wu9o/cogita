@@ -46,6 +46,9 @@ cogita create my-docs --template docs
 # 创建知识库
 cogita create my-knowledge --template knowledge
 
+# 创建带独立 Git 内容仓库接入和 Pages 工作流的知识库
+cogita create my-knowledge --template knowledge-external
+
 # 跳过依赖安装和 Git 初始化，适合先检查生成文件
 cogita create my-blog --template blog --no-install --no-git
 ```
@@ -94,7 +97,7 @@ cogita doctor --strict --json
 创建新的 Cogita 博客、文档或知识库项目。
 
 **选项：**
-- `-t, --template <name>` - 使用的模板（`blog`、`docs` 或 `knowledge`，默认：`blog`）
+- `-t, --template <name>` - 使用的模板（`blog`、`docs`、`knowledge` 或 `knowledge-external`，默认：`blog`）
 - `-p, --package-manager <pm>` - 包管理器（npm|yarn|pnpm）
 - `--no-git` - 跳过 Git 初始化
 - `--no-install` - 跳过依赖安装
@@ -104,6 +107,7 @@ cogita doctor --strict --json
 - `blog` - Lucid 博客模板，包含文章、搜索、标签、分类、归档和 RSS 配置
 - `docs` - Docs 文档站模板，包含 Markdown 内容目录、导航和侧边栏
 - `knowledge` - Knowledge 知识库模板，把 `posts/` 与 `content/` 纳入统一搜索、标签和内容关系
+- `knowledge-external` - Knowledge 知识库模板，额外接入独立 Git Markdown 内容仓库，并附带 GitHub Pages 工作流
 
 `basic`、`minimal`、`tech` 和 `personal` 仍作为博客模板别名保留。
 

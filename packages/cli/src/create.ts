@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process';
 import { access, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-type TemplateName = 'blog' | 'docs' | 'knowledge';
+type TemplateName = 'blog' | 'docs' | 'knowledge' | 'knowledge-external';
 
 const TEMPLATE_ALIASES: Record<string, TemplateName> = {
   basic: 'blog',
@@ -15,6 +15,9 @@ const TEMPLATE_ALIASES: Record<string, TemplateName> = {
   knowledge: 'knowledge',
   'knowledge-base': 'knowledge',
   wiki: 'knowledge',
+  'knowledge-external': 'knowledge-external',
+  'knowledge-git': 'knowledge-external',
+  'external-knowledge': 'knowledge-external',
 };
 
 const PACKAGE_MANAGERS = new Set(['pnpm', 'npm', 'yarn']);
@@ -31,6 +34,7 @@ export interface CreateProjectOptions {
     cli: string;
     core: string;
     theme: string;
+    contentSourceGit: string;
   };
 }
 
@@ -66,7 +70,7 @@ function createSiteTitle(packageName: string): string {
 function resolveTemplate(template: string): TemplateName {
   const normalized = TEMPLATE_ALIASES[template.trim().toLowerCase()];
   if (!normalized) {
-    throw new Error(`未知模板：${template}。可用模板：blog、docs、knowledge。`);
+    throw new Error(`未知模板：${template}。可用模板：blog、docs、knowledge、knowledge-external。`);
   }
 
   return normalized;
@@ -141,6 +145,7 @@ export async function createProject(options: CreateProjectOptions): Promise<Crea
     CLI_VERSION: options.packageVersions.cli,
     CORE_VERSION: options.packageVersions.core,
     THEME_VERSION: options.packageVersions.theme,
+    CONTENT_SOURCE_GIT_VERSION: options.packageVersions.contentSourceGit,
   });
 
   if (options.install) {
@@ -155,5 +160,5 @@ export async function createProject(options: CreateProjectOptions): Promise<Crea
 }
 
 export function getSupportedTemplates(): string[] {
-  return ['blog', 'docs', 'knowledge'];
+  return ['blog', 'docs', 'knowledge', 'knowledge-external'];
 }

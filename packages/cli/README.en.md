@@ -48,6 +48,9 @@ cogita create my-blog --template minimal
 
 # Create a knowledge base
 cogita create my-knowledge --template knowledge
+
+# Create a knowledge site with an external Git content repository
+cogita create my-knowledge --template knowledge-external
 ```
 
 ### Development
@@ -92,7 +95,7 @@ cogita doctor --strict --json
 Create a new Cogita blog, documentation, or knowledge project.
 
 **Options:**
-- `-t, --template <name>` - Template to use (`blog`, `docs`, or `knowledge`; default: `blog`)
+- `-t, --template <name>` - Template to use (`blog`, `docs`, `knowledge`, or `knowledge-external`; default: `blog`)
 - `-p, --package-manager <pm>` - Package manager (npm|yarn|pnpm)
 - `--no-git` - Skip Git initialization
 - `--no-install` - Skip dependency installation
@@ -102,6 +105,7 @@ Create a new Cogita blog, documentation, or knowledge project.
 - `blog` - Lucid blog template with posts, search, tags, categories, archives, and RSS
 - `docs` - Docs template with Markdown content, navigation, and sidebar
 - `knowledge` - Knowledge template combining `posts/` and `content/` for search, tags, and relations
+- `knowledge-external` - Knowledge template with an external Git Markdown repository and a GitHub Pages workflow
 
 ### `cogita dev`
 
