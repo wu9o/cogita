@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Cogita theme-driven static sites</title>
+  <desc id="desc">A theme-driven static site framework for blogs, documentation and knowledge bases.</desc>
+  <rect width="1200" height="630" fill="#f8fafc"/>
+  <circle cx="1020" cy="78" r="250" fill="#e7efff"/>
+  <circle cx="1150" cy="570" r="220" fill="#e3f7f1"/>
+  <rect x="78" y="78" width="76" height="76" rx="22" fill="#2868e8"/>
+  <text x="116" y="132" fill="#fff" font-family="Arial, sans-serif" font-size="44" font-weight="700" text-anchor="middle">C</text>
+  <text x="78" y="246" fill="#2868e8" font-family="Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="4">THEME-DRIVEN STATIC SITES</text>
+  <text x="78" y="332" fill="#172033" font-family="Arial, sans-serif" font-size="58" font-weight="700">一套框架，构建博客、</text>
+  <text x="78" y="404" fill="#172033" font-family="Arial, sans-serif" font-size="58" font-weight="700">文档和知识库。</text>
+  <text x="78" y="490" fill="#68738a" font-family="Arial, sans-serif" font-size="25">Themes as ecosystems · Plugins by capability · Real demos</text>
+  <rect x="78" y="548" width="240" height="6" rx="3" fill="#159a83"/>
+  <rect x="338" y="548" width="160" height="6" rx="3" fill="#2868e8"/>
+</svg>

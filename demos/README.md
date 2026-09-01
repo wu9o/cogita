@@ -13,6 +13,8 @@ pnpm run demo
 
 然后打开 <http://localhost:3100/>。落地页会链接到四个独立 Demo：
 
+推荐浏览顺序：先看 `Knowledge` 了解 Cogita 的长期知识库方向，再看 `Docs`、`Lucid` 和 `Editorial` 对比不同内容节奏。落地页还包含一条可以直接复制的 CLI 启动命令，适合用来向新用户展示从模板到站点的完整路径。
+
 | Demo | 主题 | 示例内容 |
 | --- | --- | --- |
 | `/demos/docs/` | `@cogita/theme-docs` | Northstar 工程手册 |

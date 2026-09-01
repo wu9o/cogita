@@ -21,6 +21,9 @@ test('每个内置主题都有独立 Demo 消费者', () => {
 
 test('主题 Demo 落地页链接到所有内置主题', () => {
   const landing = readFileSync(path.join(demosRoot, 'landing', 'index.html'), 'utf8');
+  assert.ok(existsSync(path.join(demosRoot, 'landing', 'social-card.svg')));
+  assert.match(landing, /property="og:image"/);
+  assert.match(landing, /name="twitter:card"/);
   for (const slug of expectedSlugs) {
     assert.match(landing, new RegExp(`/demos/${slug}/`));
   }
