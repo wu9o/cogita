@@ -2,7 +2,9 @@ import { spawnSync } from 'node:child_process';
 import { access, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const TEMPLATE_ALIASES: Record<string, 'blog' | 'docs'> = {
+type TemplateName = 'blog' | 'docs' | 'knowledge';
+
+const TEMPLATE_ALIASES: Record<string, TemplateName> = {
   basic: 'blog',
   blog: 'blog',
   minimal: 'blog',
@@ -10,6 +12,9 @@ const TEMPLATE_ALIASES: Record<string, 'blog' | 'docs'> = {
   tech: 'blog',
   docs: 'docs',
   documentation: 'docs',
+  knowledge: 'knowledge',
+  'knowledge-base': 'knowledge',
+  wiki: 'knowledge',
 };
 
 const PACKAGE_MANAGERS = new Set(['pnpm', 'npm', 'yarn']);
@@ -32,7 +37,7 @@ export interface CreateProjectOptions {
 export interface CreatedProject {
   targetDir: string;
   packageName: string;
-  template: 'blog' | 'docs';
+  template: TemplateName;
 }
 
 function normalizeProjectName(name: string): string {
@@ -58,10 +63,10 @@ function createSiteTitle(packageName: string): string {
     .join(' ');
 }
 
-function resolveTemplate(template: string): 'blog' | 'docs' {
+function resolveTemplate(template: string): TemplateName {
   const normalized = TEMPLATE_ALIASES[template.trim().toLowerCase()];
   if (!normalized) {
-    throw new Error(`未知模板：${template}。可用模板：blog、docs。`);
+    throw new Error(`未知模板：${template}。可用模板：blog、docs、knowledge。`);
   }
 
   return normalized;
@@ -150,5 +155,5 @@ export async function createProject(options: CreateProjectOptions): Promise<Crea
 }
 
 export function getSupportedTemplates(): string[] {
-  return ['blog', 'docs'];
+  return ['blog', 'docs', 'knowledge'];
 }

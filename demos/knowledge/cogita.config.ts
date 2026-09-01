@@ -1,10 +1,13 @@
 import { defineConfig } from '@cogita/core';
 
+const demoPrefix = (process.env.COGITA_DEMO_PREFIX || '').replace(/\/$/, '');
+const demoBase = `${demoPrefix}/demos/knowledge/`;
+
 export default defineConfig({
   site: {
     title: 'Atlas of Practice',
     description: '把文章、手册和相互连接的线索放进同一个长期知识空间。',
-    base: '/demos/knowledge/',
+    base: demoBase,
   },
   contentDir: 'content',
   theme: '@cogita/theme-knowledge',
@@ -27,6 +30,6 @@ export default defineConfig({
     },
   },
   builderConfig: {
-    output: { assetPrefix: '/demos/knowledge/' },
+    output: { assetPrefix: demoBase },
   },
 });

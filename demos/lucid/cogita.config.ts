@@ -1,10 +1,13 @@
 import { defineConfig } from '@cogita/core';
 
+const demoPrefix = (process.env.COGITA_DEMO_PREFIX || '').replace(/\/$/, '');
+const demoBase = `${demoPrefix}/demos/lucid/`;
+
 export default defineConfig({
   site: {
     title: 'Field Notes',
     description: '把日常实验、产品观察和代码实践整理成可复用的笔记。',
-    base: '/demos/lucid/',
+    base: demoBase,
   },
   theme: '@cogita/theme-lucid',
   posts: {
@@ -41,6 +44,6 @@ export default defineConfig({
     },
   },
   builderConfig: {
-    output: { assetPrefix: '/demos/lucid/' },
+    output: { assetPrefix: demoBase },
   },
 });

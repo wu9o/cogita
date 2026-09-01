@@ -79,16 +79,24 @@
       <footer class="footer"><span>Built with Cogita · independent theme consumers</span><span>pnpm run demo</span></footer>
     </main>
     <script>
+      const sitePrefix = window.location.pathname.startsWith('/cogita/') ? '/cogita' : '';
+      const demoLinks = document.querySelectorAll('a[href^="/demos/"]');
       if (window.location.protocol === 'file:') {
         const previewOrigin = 'http://localhost:3100';
-        document.querySelectorAll('a[href^="/demos/"]').forEach((link) => {
+        demoLinks.forEach((link) => {
           link.href = `${previewOrigin}${link.getAttribute('href')}`;
         });
         const notice = document.createElement('div');
         notice.textContent = '当前通过文件打开，请先在仓库根目录运行 pnpm run demo，再点击主题入口。';
         notice.style = 'position:fixed;left:20px;right:20px;bottom:20px;z-index:5;padding:14px 18px;border:1px solid #b8cdf8;border-radius:14px;color:#173b82;background:#eef4ff;font:14px/1.5 sans-serif;box-shadow:0 10px 30px #1720331a;';
         document.body.append(notice);
+      } else {
+        demoLinks.forEach((link) => {
+          link.href = `${sitePrefix}${link.getAttribute('href')}`;
+        });
       }
+      document.querySelector('.brand').href =
+        window.location.protocol === 'file:' ? 'http://localhost:3100/' : `${sitePrefix}/demos/`;
     </script>
   </body>
 </html>

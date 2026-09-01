@@ -13,9 +13,12 @@ Cogita 是一个基于 Rspress 的主题驱动静态站点框架。站点项目�
 ~~~bash
 pnpm dlx @cogita/cli create my-blog --template blog
 pnpm dlx @cogita/cli create my-docs --template docs
+pnpm dlx @cogita/cli create my-knowledge --template knowledge
 ~~~
 
-博客模板使用 Lucid 主题和 `posts/` 目录；文档模板使用 Docs 主题和 `content/` 目录。生成后进入项目并运行 `pnpm run dev` 即可开始开发。
+博客模板使用 Lucid 主题和 `posts/` 目录；文档模板使用 Docs 主题和 `content/` 目录；Knowledge 模板把两类内容统一纳入搜索、标签和内容关系。生成后进入项目并运行 `pnpm run dev` 即可开始开发。
+
+主题 Demo 总览可以在本地通过 `pnpm run demo` 打开，也可以直接查看[线上主题 Demo](./themes.md#主题-demo)。
 
 ## 安装
 

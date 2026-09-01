@@ -26,7 +26,8 @@ pnpm run build:docs
 1. 安装 Node.js 和 pnpm；
 2. 构建工作区包；
 3. 构建 `docs-site`；
-4. 将 `docs-site/doc_build` 上传到 GitHub Pages。
+4. 构建四个主题 Demo，并合并到 `docs-site/doc_build/demos/`；
+5. 将 `docs-site/doc_build` 上传到 GitHub Pages。
 
 使用时需要在仓库设置中将 **Pages / Build and deployment / Source** 设置为 **GitHub Actions**，然后推送到 `main` 分支。
 
@@ -42,6 +43,8 @@ export default defineConfig({
 ```
 
 如果使用自定义域名，通常把 `base` 改为 `/`，并同步更新 `url`。
+
+部署完成后，使用手册位于 `/cogita/`，主题 Demo 总览位于 `/cogita/demos/`，四个独立主题 Demo 位于其下的主题目录。Demo 构建会使用与 Pages 一致的 `/cogita/` 前缀；本地 `pnpm run demo` 仍使用 `/demos/` 前缀。
 
 ### 独立站点仓库
 

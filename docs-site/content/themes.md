@@ -17,6 +17,10 @@ Cogita 的主题不是单纯的颜色和字体。主题包负责页面布局、�
 
 下面介绍当前提供的四个主题。它们共享 Cogita 的 Core、插件和内容索引，但在信息架构和阅读节奏上做了不同取舍。仓库的 [`demos/`](https://github.com/wu9o/cogita/tree/main/demos) 目录为每个主题提供了独立的站点消费者和自定义示例内容；执行 `pnpm run demo` 即可在本地打开主题总览。
 
+## 主题 Demo
+
+每个主题都有独立的构建产物，可以直接查看真实页面和接入配置：[打开主题 Demo 总览](https://wu9o.github.io/cogita/demos/)。
+
 ## Docs：技术文档主题
 
 ![Docs 技术文档主题真实渲染](./theme-previews/docs.png)

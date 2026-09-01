@@ -1,10 +1,13 @@
 import { defineConfig } from '@cogita/core';
 
+const demoPrefix = (process.env.COGITA_DEMO_PREFIX || '').replace(/\/$/, '');
+const demoBase = `${demoPrefix}/demos/editorial/`;
+
 export default defineConfig({
   site: {
     title: 'The Small Systems Review',
     description: '关于小系统、好工具和长期主义的编辑型技术刊物。',
-    base: '/demos/editorial/',
+    base: demoBase,
   },
   theme: '@cogita/theme-editorial',
   posts: {
@@ -34,6 +37,6 @@ export default defineConfig({
     },
   },
   builderConfig: {
-    output: { assetPrefix: '/demos/editorial/' },
+    output: { assetPrefix: demoBase },
   },
 });

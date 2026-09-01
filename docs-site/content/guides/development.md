@@ -11,9 +11,10 @@ title: 开发指南
 ```bash
 pnpm dlx @cogita/cli create my-blog --template blog
 pnpm dlx @cogita/cli create my-docs --template docs
+pnpm dlx @cogita/cli create my-knowledge --template knowledge
 ```
 
-博客模板从 `posts/` 读取文章，文档模板从 `content/` 读取 Markdown 页面。生成项目后执行 `pnpm run dev` 即可启动开发服务器。
+博客模板从 `posts/` 读取文章，文档模板从 `content/` 读取 Markdown 页面，Knowledge 模板同时读取两类内容。生成项目后执行 `pnpm run dev` 即可启动开发服务器。
 
 本指南面向 Cogita 框架、插件和主题的贡献者，说明本地开发、质量检查、测试和发布前验证流程。
 

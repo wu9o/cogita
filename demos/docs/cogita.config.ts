@@ -1,10 +1,13 @@
 import { defineConfig } from '@cogita/core';
 
+const demoPrefix = (process.env.COGITA_DEMO_PREFIX || '').replace(/\/$/, '');
+const demoBase = `${demoPrefix}/demos/docs/`;
+
 export default defineConfig({
   site: {
     title: 'Northstar Handbook',
     description: '一个面向产品团队的工程手册。',
-    base: '/demos/docs/',
+    base: demoBase,
   },
   contentDir: 'content',
   theme: '@cogita/theme-docs',
@@ -27,6 +30,6 @@ export default defineConfig({
     },
   },
   builderConfig: {
-    output: { assetPrefix: '/demos/docs/' },
+    output: { assetPrefix: demoBase },
   },
 });

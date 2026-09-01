@@ -51,7 +51,8 @@ async function verifyTemplate(template, expectedTheme) {
 try {
   await verifyTemplate('blog', 'lucid');
   await verifyTemplate('docs', 'docs');
-  console.log('[Template Check] blog/docs 模板创建与构建通过');
+  await verifyTemplate('knowledge', 'knowledge');
+  console.log('[Template Check] blog/docs/knowledge 模板创建与构建通过');
 } finally {
   await rm(tempRoot, { recursive: true, force: true });
 }

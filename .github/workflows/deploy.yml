@@ -51,6 +51,14 @@ jobs:
       - name: 构建使用手册
         run: pnpm --filter docs-site build
 
+      - name: 构建主题 Demo
+        run: pnpm run build:demos
+        env:
+          COGITA_DEMO_PREFIX: /cogita
+
+      - name: 合并主题 Demo 到 Pages 产物
+        run: node scripts/stage-pages.mjs
+
       - name: 配置 GitHub Pages
         uses: actions/configure-pages@v5
         with:

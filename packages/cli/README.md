@@ -9,7 +9,7 @@
 
 ## 这是什么？
 
-`@cogita/cli` 提供了一套简单而强大的命令来创建、开发和构建 Cogita 站点项目。通过模板和开发工具，可以快速开始博客、文档或其他内容站点。
+`@cogita/cli` 提供了一套简单而强大的命令来创建、开发和构建 Cogita 站点项目。通过模板和开发工具，可以快速开始博客、文档或知识库站点。
 
 ## 安装
 
@@ -42,6 +42,9 @@ cogita create my-blog --template blog
 
 # 创建文档站
 cogita create my-docs --template docs
+
+# 创建知识库
+cogita create my-knowledge --template knowledge
 
 # 跳过依赖安装和 Git 初始化，适合先检查生成文件
 cogita create my-blog --template blog --no-install --no-git
@@ -88,10 +91,10 @@ cogita doctor --strict --json
 
 ### `cogita create [name]`
 
-创建新的 Cogita 博客或文档项目。
+创建新的 Cogita 博客、文档或知识库项目。
 
 **选项：**
-- `-t, --template <name>` - 使用的模板（`blog` 或 `docs`，默认：`blog`）
+- `-t, --template <name>` - 使用的模板（`blog`、`docs` 或 `knowledge`，默认：`blog`）
 - `-p, --package-manager <pm>` - 包管理器（npm|yarn|pnpm）
 - `--no-git` - 跳过 Git 初始化
 - `--no-install` - 跳过依赖安装
@@ -100,6 +103,7 @@ cogita doctor --strict --json
 **模板：**
 - `blog` - Lucid 博客模板，包含文章、搜索、标签、分类、归档和 RSS 配置
 - `docs` - Docs 文档站模板，包含 Markdown 内容目录、导航和侧边栏
+- `knowledge` - Knowledge 知识库模板，把 `posts/` 与 `content/` 纳入统一搜索、标签和内容关系
 
 `basic`、`minimal`、`tech` 和 `personal` 仍作为博客模板别名保留。
 

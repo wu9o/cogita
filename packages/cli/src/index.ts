@@ -50,7 +50,7 @@ function readPackageVersion(relativePath: string, fallback: string): string {
 
 program
   .command('create [name]')
-  .description('Create a new Cogita blog or documentation site')
+  .description('Create a new Cogita blog, documentation, or knowledge site')
   .option(
     '-t, --template <template>',
     `template name (${getSupportedTemplates().join('|')})`,
@@ -88,7 +88,11 @@ program
           core: readPackageVersion('../core/package.json', '0.12.3'),
           theme: ['docs', 'documentation'].includes(options.template.trim().toLowerCase())
             ? readPackageVersion('../../themes/docs/package.json', '0.2.0')
-            : readPackageVersion('../../themes/lucid/package.json', '0.11.2'),
+            : ['knowledge', 'knowledge-base', 'wiki'].includes(
+                  options.template.trim().toLowerCase()
+                )
+              ? readPackageVersion('../../themes/knowledge/package.json', '0.2.0')
+              : readPackageVersion('../../themes/lucid/package.json', '0.11.2'),
         },
       });
 
