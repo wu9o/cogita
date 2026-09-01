@@ -10,6 +10,7 @@ import {
   getCategoryBySlug,
 } from 'virtual-categories-data';
 import { PostCardList } from '../components/PostCard';
+import { t } from '../i18n';
 import { getBase, getPageRoute } from '../utils';
 
 /** 分类索引和层级分类详情页面。 */
@@ -28,10 +29,17 @@ const CategoryLayout: React.FC<LayoutProps> = () => {
       <div className="editorial-index-page">
         <header className="editorial-page-header">
           <p className="editorial-eyebrow">Categories</p>
-          <h1>文章分类</h1>
-          <p>共 {allCategories.length} 个分类</p>
+          <h1>{t('editorial.category.title', 'Article categories')}</h1>
+          <p>
+            {t('editorial.category.total', `${allCategories.length} categories`, {
+              count: allCategories.length,
+            })}
+          </p>
         </header>
-        <nav className="editorial-category-tree" aria-label="文章分类列表">
+        <nav
+          className="editorial-category-tree"
+          aria-label={t('editorial.category.list', 'Article category list')}
+        >
           {allCategories.map((category) => (
             <a
               key={category.path}
@@ -39,7 +47,11 @@ const CategoryLayout: React.FC<LayoutProps> = () => {
               style={{ paddingLeft: `${1 + category.depth * 1.25}rem` }}
             >
               <span>{category.title}</span>
-              <small>{category.count} 篇</small>
+              <small>
+                {t('editorial.category.count', `${category.count} posts`, {
+                  count: category.count,
+                })}
+              </small>
             </a>
           ))}
         </nav>
@@ -51,8 +63,8 @@ const CategoryLayout: React.FC<LayoutProps> = () => {
   if (!category) {
     return (
       <div className="editorial-index-page">
-        <a href={categoriesHref}>← 返回分类</a>
-        <p className="editorial-empty">分类不存在。</p>
+        <a href={categoriesHref}>← {t('editorial.category.back', 'Back to categories')}</a>
+        <p className="editorial-empty">{t('editorial.category.notFound', 'Category not found.')}</p>
       </div>
     );
   }
@@ -66,8 +78,11 @@ const CategoryLayout: React.FC<LayoutProps> = () => {
   return (
     <div className="editorial-index-page">
       <header className="editorial-page-header">
-        <nav className="editorial-breadcrumbs" aria-label="分类面包屑">
-          <a href={categoriesHref}>全部分类</a>
+        <nav
+          className="editorial-breadcrumbs"
+          aria-label={t('editorial.category.breadcrumbs', 'Category breadcrumbs')}
+        >
+          <a href={categoriesHref}>{t('editorial.category.all', 'All categories')}</a>
           {breadcrumbs.map((breadcrumb) => (
             <Fragment key={breadcrumb.path}>
               <span>/</span>
@@ -78,7 +93,7 @@ const CategoryLayout: React.FC<LayoutProps> = () => {
         <p className="editorial-eyebrow">Category</p>
         <h1>{category.title}</h1>
         {category.description && <p>{category.description}</p>}
-        <a href={categoriesHref}>返回分类索引</a>
+        <a href={categoriesHref}>{t('editorial.category.index', 'Back to category index')}</a>
       </header>
 
       {children.length > 0 && (
@@ -86,7 +101,9 @@ const CategoryLayout: React.FC<LayoutProps> = () => {
           {children.map((child) => (
             <a key={child.path} href={normalizeHrefInRuntime(`${base}${child.route}`)}>
               <strong>{child.title}</strong>
-              <span>{child.count} 篇文章</span>
+              <span>
+                {t('editorial.category.count', `${child.count} posts`, { count: child.count })}
+              </span>
             </a>
           ))}
         </section>

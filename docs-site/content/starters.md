@@ -1,25 +1,25 @@
 ---
-title: 第三方扩展 Starter
+title: Third-party extension starters
 ---
 
-# 第三方扩展 Starter
+# Third-party extension starters
 
-如果需要为多个站点复用能力，可以从仓库中的 starter 复制一个独立包：
+When a capability should be reused across multiple sites, copy an independent package from one of the repository starters:
 
-- [插件 starter](https://github.com/wu9o/cogita/tree/main/starters/plugin)：包含 `CogitaPluginFactory`、构建上下文、统一日志和能力声明。
-- [主题 starter](https://github.com/wu9o/cogita/tree/main/starters/theme)：包含 `CogitaTheme`、必需的首页布局和全局样式。
+- [Plugin starter](https://github.com/wu9o/cogita/tree/main/starters/plugin): includes `CogitaPluginFactory`, build context, unified logging, and capability declarations.
+- [Theme starter](https://github.com/wu9o/cogita/tree/main/starters/theme): includes `CogitaTheme`, the required home layout, and global styles.
 
-## 验证复制后的包
+## Verify a copied package
 
-复制 starter 后，先替换 `@your-scope` 占位包名，再安装依赖并构建：
+After copying a starter, replace the `@your-scope` placeholder package name, install dependencies, and build:
 
-```bash
+~~~bash
 pnpm install
 pnpm run build
-```
+~~~
 
-插件通过站点配置的 `plugins` 数组注册；主题通过 `theme` 包名消费。仓库会在发布检查中把两个 starter 复制到临时目录，并分别执行真实的包构建，确保模板不会因为内部 workspace 路径而只能在 Cogita 仓库中工作。
+Register plugins through the site's `plugins` array and consume themes by package name. Release checks copy both starters into a temporary directory and run real package builds to ensure the templates do not depend on internal workspace paths.
 
-## 下一步扩展
+## Extend from here
 
-插件需要配置时，优先使用工厂闭包传入选项，并在配置不满足时返回 `null`。需要页面时，在插件元数据中声明 `requiredLayouts`，同时在主题中提供对应的 `pageLayouts`。需要浏览器数据时，再增加带稳定版本标识的虚拟模块，并为独立消费者补充构建或浏览器验收。
+When a plugin needs configuration, prefer a factory closure that receives options and returns `null` when the configuration is not satisfied. When it needs a page, declare `requiredLayouts` in plugin metadata and provide the matching `pageLayouts` in the theme. Add a versioned virtual module only when browser data is required, and cover independent consumers with a build or browser acceptance check.

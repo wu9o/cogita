@@ -1,38 +1,38 @@
 ---
-title: Cogita 文档中心
+title: Cogita Documentation
 ---
 
-# Cogita 文档中心
+# Cogita Documentation
 
-Cogita 是一个主题驱动的静态站点框架。它把站点配置、主题、插件和内容索引拆成可独立复用的包，适合构建博客、项目文档和其他内容型站点。
+Cogita is a theme-driven static site framework. It separates site configuration, themes, plugins, and content indexes into reusable packages for blogs, project handbooks, and knowledge bases.
 
-## 推荐阅读路径
+## Recommended path
 
-如果你第一次使用 Cogita，建议按下面的顺序阅读：
+If you are new to Cogita, follow this order:
 
-1. [快速开始](./getting-started.md)：安装包并构建第一个站点。
-2. [配置指南](./configuration.md)：了解站点、主题和插件配置。
-3. [包与能力地图](./package-map.md)：选择适合站点的核心包、主题和插件。
-4. [架构设计](./api/architecture-design.md)：理解构建时与运行时的数据流。
-5. [插件开发指南](./plugins/plugin-development.md)：开发自己的构建插件。
-6. [主题开发指南](./theme-development.md)：创建独立的主题包。
+1. [Get started](./getting-started.md): create and build your first site.
+2. [Configuration](./configuration.md): understand site, theme, and plugin options.
+3. [Package map](./package-map.md): choose the packages and capabilities your site needs.
+4. [Architecture](./api/architecture-design.md): understand build-time and runtime data flow.
+5. [Plugin development](./plugins/plugin-development.md): create a reusable build extension.
+6. [Theme development](./theme-development.md): publish an independent theme package.
 
-## 文档分类
+## Documentation areas
 
-- [使用指南](./guides/)：开发、部署和项目组织。
-- [API 与架构](./api/)：核心配置、类型和框架设计。
-- [插件开发](./plugins/)：插件 API、设计文档和实现约束。
-- [主题使用与扩展](./theme-customization.md)：安装、配置和扩展主题。
-- [内容仓库迁移](./guides/migration.md)：将个人博客或其他内容站点迁移到独立仓库。
+- [Guides](./guides/): development, deployment, and long-term site maintenance.
+- [Architecture & API](./api/): framework contracts, types, and data flow.
+- [Plugin development](./plugins/): plugin APIs, design notes, and extension boundaries.
+- [Theme usage and extension](./theme-customization.md): install, configure, and extend themes.
+- [Content repository migration](./guides/migration.md): move site content into an independent repository.
 
-## 当前仓库的边界
+## Repository boundary
 
-本仓库维护 Cogita 的核心包、插件包、主题包和使用手册示例。个人博客文章属于独立的站点内容，不作为框架仓库的内置 Demo；文档站只保留用于说明框架能力的最小示例。
+This repository maintains Cogita's core, plugin, theme, and handbook packages. A site's posts and documents belong to that independent site; the repository demos use small custom datasets only to show how each theme is integrated.
 
-## 贡献与反馈
+## Contribute
 
-- [贡献指南](https://github.com/wu9o/cogita/blob/main/CONTRIBUTING.md)
-- [提交 Issue](https://github.com/wu9o/cogita/issues)
-- [参与 Discussions](https://github.com/wu9o/cogita/discussions)
+- [Contribution guide](https://github.com/wu9o/cogita/blob/main/CONTRIBUTING.md)
+- [Open an issue](https://github.com/wu9o/cogita/issues)
+- [Join the discussions](https://github.com/wu9o/cogita/discussions)
 
-文档与代码保持同步维护。如果某个示例无法按当前版本运行，请优先提交 Issue，并附上 Node.js、pnpm 和 Cogita 包版本。
+The handbook and implementation are maintained together. If an example does not work with the current release, include the Node.js, pnpm, and Cogita versions when reporting it.

@@ -1,5 +1,6 @@
 import { normalizeHrefInRuntime } from '@rspress/runtime';
 import type React from 'react';
+import { locale } from 'virtual-cogita-i18n-text';
 import type { Post } from '../../types';
 import { PostCover } from '../PostCover';
 import { TagList } from '../TagList';
@@ -41,7 +42,7 @@ const DefaultPostItem: React.FC<{ post: Post; showTags?: boolean; showCover?: bo
     <a href={normalizeHrefInRuntime(post.route)}>
       <h2 className={styles.title}>{post.title}</h2>
       <time dateTime={post.updateDate} className={styles.date}>
-        {new Date(post.updateDate).toLocaleDateString('zh-CN')}
+        {new Date(post.updateDate).toLocaleDateString(locale)}
       </time>
     </a>
 

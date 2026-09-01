@@ -1,5 +1,6 @@
 import { normalizeHrefInRuntime } from '@rspress/runtime';
 import type React from 'react';
+import { t } from 'virtual-cogita-i18n-text';
 import styles from './index.module.css';
 
 // 避免循环依赖，直接定义类型
@@ -89,7 +90,7 @@ export const TagCloud: React.FC<TagCloudProps> = ({
   if (displayTags.length === 0) {
     return (
       <div className={`${styles.tagCloudEmpty} ${className}`}>
-        <p>暂无标签</p>
+        <p>{t('ui.tagCloud.empty', 'No topics yet.')}</p>
       </div>
     );
   }
@@ -102,7 +103,10 @@ export const TagCloud: React.FC<TagCloudProps> = ({
           href={normalizeHrefInRuntime(tag.route)}
           className={styles.tagLink}
           style={getTagStyle(tag)}
-          title={`${tag.name} - ${tag.count} 篇文章`}
+          title={t('ui.tagCloud.title', `${tag.name} - ${tag.count} posts`, {
+            count: tag.count,
+            name: tag.name,
+          })}
           onClick={() => handleTagClick(tag)}
         >
           {tag.name}

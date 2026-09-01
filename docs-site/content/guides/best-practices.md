@@ -210,7 +210,7 @@ export default defineConfig({
   },
   i18n: {
     locale: 'en-US',
-    fallbackLocale: 'zh-CN',
+    fallbackLocale: 'en-US',
     messages: {
       'en-US': {
         'site.search': 'Search',
@@ -223,7 +223,7 @@ export default defineConfig({
 });
 ```
 
-`@cogita/plugin-i18n` 面向主题和插件提供界面文案翻译，不会自动翻译 Markdown 内容。运行时可从 `virtual-cogita-i18n-text` 导入 `t`，按完整语言标识、语言前缀和回退语言依次查找文案。模块名使用 Cogita 命名空间，避免与 Rspress 内置的 `virtual-i18n-text` 冲突。
+`@cogita/plugin-i18n` provides translated interface copy for themes and plugins; it does not translate Markdown content. Runtime code can import `t` from `virtual-cogita-i18n-text`, which checks the full locale, language prefix, and fallback locale in order. The Cogita namespace avoids a collision with Rspress's own `virtual-i18n-text` module.
 
 ## ✍️ 内容创作指南
 

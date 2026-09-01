@@ -1,5 +1,6 @@
 import { normalizeHrefInRuntime } from '@rspress/runtime';
 import type React from 'react';
+import { t } from 'virtual-cogita-i18n-text';
 import styles from './index.module.css';
 
 // generateTagSlug 本地实现（与 @cogita/shared 保持一致逻辑）
@@ -74,7 +75,7 @@ export const TagList: React.FC<TagListProps> = ({
 
   return (
     <div className={`${styles.tagList} ${styles[variant]} ${className}`}>
-      <span className={styles.tagLabel}>标签:</span>
+      <span className={styles.tagLabel}>{t('ui.tagList.label', 'Topics:')}</span>
       {displayTags.map((tag) => (
         <a
           key={tag}
@@ -86,7 +87,9 @@ export const TagList: React.FC<TagListProps> = ({
         </a>
       ))}
       {hasMore && limit && (
-        <span className={styles.moreIndicator}>+{tags.length - limit} 更多</span>
+        <span className={styles.moreIndicator}>
+          {t('ui.tagList.more', `+${tags.length - limit} more`, { count: tags.length - limit })}
+        </span>
       )}
     </div>
   );

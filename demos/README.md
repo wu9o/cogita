@@ -1,32 +1,32 @@
-# Cogita 主题 Demo
+# Cogita Theme Demos
 
-这里的每个目录都是一个独立的 Cogita 站点消费者，用自定义内容展示对应主题的接入方式。它们不依赖 `blog/`，也不复用外部内容站点，适合在 GitHub 上直接阅读配置并在本地查看效果。
+Each directory is an independent Cogita site consumer with custom sample content for one official theme. The demos do not depend on `blog/` or reuse an external content site, so they can be read on GitHub and previewed locally. Every demo uses English-first UI configuration.
 
-## 运行总览
+## Run the showcase
 
-在仓库根目录执行：
+From the repository root:
 
 ```bash
 pnpm install
 pnpm run demo
 ```
 
-然后打开 <http://localhost:3100/>。落地页会链接到四个独立 Demo：
+Open <http://localhost:3100/>. The landing page links to four independent demos:
 
-推荐浏览顺序：先看 `Knowledge` 了解 Cogita 的长期知识库方向，再看 `Docs`、`Lucid` 和 `Editorial` 对比不同内容节奏。落地页还包含一条可以直接复制的 CLI 启动命令，适合用来向新用户展示从模板到站点的完整路径。
+Start with `Knowledge` to see Cogita's long-term knowledge-base direction, then compare `Docs`, `Lucid`, and `Editorial` for different reading and publishing workflows. The landing page also includes a copyable CLI command that shows the path from a starter template to a working site.
 
-| Demo | 主题 | 示例内容 |
+| Demo | Theme | Sample content |
 | --- | --- | --- |
-| `/demos/docs/` | `@cogita/theme-docs` | Northstar 工程手册 |
-| `/demos/lucid/` | `@cogita/theme-lucid` | Field Notes 实践笔记 |
+| `/demos/docs/` | `@cogita/theme-docs` | Northstar Engineering Handbook |
+| `/demos/lucid/` | `@cogita/theme-lucid` | Field Notes practice journal |
 | `/demos/editorial/` | `@cogita/theme-editorial` | The Small Systems Review |
-| `/demos/knowledge/` | `@cogita/theme-knowledge` | Atlas of Practice 知识库、JSON 与 Git 内容源 |
+| `/demos/knowledge/` | `@cogita/theme-knowledge` | Atlas of Practice knowledge base with JSON and Git sources |
 
-`pnpm run demo` 会先构建 Core、插件、主题和四个 Demo，再启动一个静态预览服务。只想构建而不启动服务时执行 `pnpm run build:demos`。
+`pnpm run demo` builds Core, plugins, themes, and all four demos before starting a static preview server. Use `pnpm run build:demos` when you only need the build output.
 
-## 单独开发
+## Develop one demo
 
-每个 Demo 都支持独立开发服务器：
+Each demo also has an independent development server:
 
 ```bash
 pnpm --filter @cogita/demo-docs dev
@@ -35,4 +35,4 @@ pnpm --filter @cogita/demo-editorial dev
 pnpm --filter @cogita/demo-knowledge dev
 ```
 
-新增内置主题时，需要同步增加 `demos/<theme>/package.json`、`cogita.config.ts` 和自定义内容，并在 `scripts/serve-demos.mjs` 的总览提示与落地页中加入入口。结构测试会确保每个主题都有可读、可构建的 Demo。
+When adding an official theme, add `demos/<theme>/package.json`, `cogita.config.ts`, and custom content. Also add the entry to `scripts/serve-demos.mjs` and the landing page. Structural checks ensure that every official theme has a readable, buildable demo.

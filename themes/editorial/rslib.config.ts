@@ -16,6 +16,7 @@ const COMMON_EXTERNALS = [
   '@theme',
   /@theme-assets\//,
   'virtual-i18n-text',
+  'virtual-cogita-i18n-text',
   '@types/react',
 ];
 

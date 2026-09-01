@@ -40,10 +40,10 @@ export function pluginBlogList(config: CogitaPluginConfig): CogitaPlugin | null 
       providesCapabilities: [COGITA_CAPABILITIES.CONTENT_BLOG_LIST],
       requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
       requiredLayouts: [
-        { layout: 'blogList', label: '文章列表' },
+        { layout: 'blogList', label: 'Posts' },
         {
           layout: 'archive',
-          label: '归档',
+          label: 'Archive',
           when: (pluginConfig: CogitaPluginConfig) =>
             pluginConfig.blogList?.generateArchives === true,
         },

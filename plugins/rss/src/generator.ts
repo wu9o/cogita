@@ -20,7 +20,7 @@ export class RSSGenerator {
       title: config.title,
       description: config.description,
       link: config.link,
-      language: config.language || 'zh-CN',
+      language: config.language || 'en-US',
       copyright: config.copyright || '',
       managingEditor: config.managingEditor || '',
       webMaster: config.webMaster || '',

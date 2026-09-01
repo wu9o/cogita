@@ -6,6 +6,8 @@
 
 A theme-driven static site framework based on Rspress, designed for developers who want to quickly build and customize content sites.
 
+All official themes and demos are English-first by default. Configure `@cogita/plugin-i18n` when a site needs localized UI copy; your Markdown content remains in the language you choose.
+
 See it in action: [Theme demos](https://wu9o.github.io/cogita/demos/) · [Online documentation](https://wu9o.github.io/cogita/)
 
 [![npm version](https://badge.fury.io/js/@cogita%2Fcore.svg)](https://badge.fury.io/js/@cogita%2Fcore)

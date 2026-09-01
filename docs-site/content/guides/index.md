@@ -1,31 +1,24 @@
 ---
-title: 使用指南
+title: Guides
 ---
 
-# 使用指南
+# Guides
 
-本目录覆盖从创建站点到上线维护的日常工作流。
+This section covers the daily workflow from creating a site to maintaining it in production.
 
-## 指南列表
+## Guide list
 
-- [快速开始](../getting-started.md)：安装依赖并创建第一个站点。
-- [配置指南](../configuration.md)：配置站点、主题和插件。
-- [最佳实践](./best-practices.md)：组织内容、控制构建复杂度和优化性能。
-- [开发指南](./development.md)：本地开发、测试和代码规范。
-- [部署指南](./deployment.md)：构建产物和静态托管部署。
-- [站点升级与自检](./site-doctor.md)：使用 `cogita doctor` 管理真实站点的长期采用。
-- [内容仓库迁移](./migration.md)：将博客或知识库作为独立站点消费 Cogita 包。
-- [兼容性矩阵](./compatibility-matrix.md)：查看 Core、主题、插件和宿主运行时的支持组合。
-- [浏览器级验收](./browser-acceptance.md)：在根路径和子路径预览中验证真实页面运行时。
-- [主题使用与扩展](../theme-customization.md)：选择主题并覆盖主题配置。
+- [Get started](../getting-started.md): install dependencies and create a site.
+- [Configuration](../configuration.md): configure sites, themes, and plugins.
+- [Best practices](./best-practices.md): organize content and keep builds maintainable.
+- [Development guide](./development.md): local development, testing, and conventions.
+- [Deployment guide](./deployment.md): build output and static hosting.
+- [Site upgrade and doctor](./site-doctor.md): keep a real site adoptable over time.
+- [Content repository migration](./migration.md): consume Cogita packages from an independent site.
+- [Compatibility matrix](./compatibility-matrix.md): supported Core, theme, plugin, and runtime combinations.
+- [Browser acceptance](./browser-acceptance.md): verify root-path and subpath previews in a real browser.
+- [Theme usage and extension](../theme-customization.md): choose and extend a theme.
 
-## 推荐路径
+## Recommended paths
 
-内容创作者可以从[快速开始](../getting-started.md)和[最佳实践](./best-practices.md)开始；主题和插件开发者建议先阅读[架构设计](../api/architecture-design.md)，再进入对应的开发指南。
-
-## 相关入口
-
-- [返回文档中心](../)
-- [API 与架构](../api/)
-- [插件开发](../plugins/)
-- [项目主页](https://github.com/wu9o/cogita)
+Content authors should start with [Get started](../getting-started.md) and [Best practices](./best-practices.md). Theme and plugin developers should read [Architecture](../api/architecture-design.md) before entering the corresponding development guide.

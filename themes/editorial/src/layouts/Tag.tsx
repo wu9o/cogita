@@ -3,6 +3,7 @@ import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allTags, getRelatedTags, tagsConfig } from 'virtual-tags-data';
 import { PostCardList } from '../components/PostCard';
+import { t } from '../i18n';
 import { getBase, getPageRoute } from '../utils';
 
 /** 标签索引和标签详情页面。 */
@@ -18,8 +19,8 @@ const TagLayout: React.FC<LayoutProps> = () => {
       <div className="editorial-index-page">
         <header className="editorial-page-header">
           <p className="editorial-eyebrow">Topics</p>
-          <h1>文章标签</h1>
-          <p>共 {allTags.length} 个标签</p>
+          <h1>{t('editorial.tag.title', 'Article topics')}</h1>
+          <p>{t('editorial.tag.total', `${allTags.length} topics`, { count: allTags.length })}</p>
         </header>
         <div className="editorial-all-topics">
           {allTags.map((tag) => (
@@ -37,8 +38,10 @@ const TagLayout: React.FC<LayoutProps> = () => {
   if (!tag) {
     return (
       <div className="editorial-index-page">
-        <a href={normalizeHrefInRuntime(`${base}/${tagsConfig.routePrefix}`)}>← 返回标签</a>
-        <p className="editorial-empty">标签不存在。</p>
+        <a href={normalizeHrefInRuntime(`${base}/${tagsConfig.routePrefix}`)}>
+          ← {t('editorial.tag.back', 'Back to topics')}
+        </a>
+        <p className="editorial-empty">{t('editorial.tag.notFound', 'Topic not found.')}</p>
       </div>
     );
   }
@@ -51,8 +54,10 @@ const TagLayout: React.FC<LayoutProps> = () => {
       <header className="editorial-page-header">
         <p className="editorial-eyebrow">Topic</p>
         <h1>#{tag.name}</h1>
-        <p>{tag.count} 篇文章</p>
-        <a href={normalizeHrefInRuntime(`${base}/${tagsConfig.routePrefix}`)}>返回标签索引</a>
+        <p>{t('editorial.tag.count', `${tag.count} posts`, { count: tag.count })}</p>
+        <a href={normalizeHrefInRuntime(`${base}/${tagsConfig.routePrefix}`)}>
+          {t('editorial.tag.index', 'Back to topic index')}
+        </a>
       </header>
       <PostCardList posts={posts} />
       {relatedTags.length > 0 && (

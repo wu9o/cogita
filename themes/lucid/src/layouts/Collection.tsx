@@ -2,6 +2,7 @@ import type { LayoutProps } from '@cogita/shared';
 import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allCollections, collectionsConfig, getCollectionBySlug } from 'virtual-collections-data';
+import { t } from '../i18n';
 import { formatDate, getBase, getPageRoute } from '../utils';
 
 /**
@@ -26,12 +27,16 @@ const CollectionPageLayout: React.FC<LayoutProps> = () => {
     return (
       <div className="collection-page">
         <header className="collection-header">
-          <h1 className="collection-title">合集</h1>
-          <p className="collection-meta">共 {allCollections.length} 个合集</p>
+          <h1 className="collection-title">{t('lucid.collection.title', 'Collections')}</h1>
+          <p className="collection-meta">
+            {t('lucid.collection.total', `${allCollections.length} collections`, {
+              count: allCollections.length,
+            })}
+          </p>
         </header>
         <section className="collection-list-section">
           {allCollections.length === 0 ? (
-            <p className="collection-empty">暂无合集</p>
+            <p className="collection-empty">{t('lucid.collection.empty', 'No collections yet.')}</p>
           ) : (
             <div className="collection-cards">
               {allCollections.map((collection) => (
@@ -45,8 +50,11 @@ const CollectionPageLayout: React.FC<LayoutProps> = () => {
                     <p className="collection-card-desc">{collection.description}</p>
                   )}
                   <p className="collection-card-meta">
-                    {collection.count} 篇文章
-                    {collection.updatedDate && ` · 更新于 ${formatDate(collection.updatedDate)}`}
+                    {t('lucid.collection.count', `${collection.count} posts`, {
+                      count: collection.count,
+                    })}
+                    {collection.updatedDate &&
+                      ` · ${t('lucid.collection.updated', `Updated ${formatDate(collection.updatedDate)}`)}`}
                   </p>
                 </a>
               ))}
@@ -64,9 +72,11 @@ const CollectionPageLayout: React.FC<LayoutProps> = () => {
     return (
       <div className="collection-page">
         <a href={collectionsHref} className="collection-back">
-          ← 返回合集索引
+          ← {t('lucid.collection.back', 'Back to collection index')}
         </a>
-        <p className="collection-empty">合集不存在</p>
+        <p className="collection-empty">
+          {t('lucid.collection.notFound', 'Collection not found.')}
+        </p>
       </div>
     );
   }
@@ -75,14 +85,18 @@ const CollectionPageLayout: React.FC<LayoutProps> = () => {
     <div className="collection-page">
       <header className="collection-header">
         <a href={collectionsHref} className="collection-back">
-          ← 返回合集索引
+          ← {t('lucid.collection.back', 'Back to collection index')}
         </a>
         <h1 className="collection-title">{collection.title}</h1>
         {collection.description && (
           <p className="collection-description">{collection.description}</p>
         )}
         <p className="collection-meta">
-          {collection.count} 篇文章 · 创建于 {formatDate(collection.createdDate)}
+          {t(
+            'lucid.collection.meta',
+            `${collection.count} posts · Created ${formatDate(collection.createdDate)}`,
+            { count: collection.count }
+          )}
         </p>
       </header>
 

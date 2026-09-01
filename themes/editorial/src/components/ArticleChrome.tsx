@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { allPosts } from 'virtual-posts-data';
 import { getReadingStats } from 'virtual-reading-progress-data';
+import { t } from '../i18n';
 import {
   type EditorialPost,
   addPostCovers,
@@ -53,7 +54,13 @@ function ArticleHeader({ post }: { post: EditorialPost }) {
         <span>Article</span>
         <time dateTime={post.updateDate}>{formatDate(post.updateDate)}</time>
         {post.author && <span>{post.author}</span>}
-        {stats && <span>预计 {stats.readingTimeMinutes} 分钟阅读</span>}
+        {stats && (
+          <span>
+            {t('editorial.article.readingTime', `${stats.readingTimeMinutes} min read`, {
+              minutes: stats.readingTimeMinutes,
+            })}
+          </span>
+        )}
       </div>
       {post.image && (
         <figure className="editorial-article-cover">
@@ -67,7 +74,10 @@ function ArticleHeader({ post }: { post: EditorialPost }) {
         </figure>
       )}
       {post.tags && post.tags.length > 0 && (
-        <ul className="editorial-article-tags" aria-label="文章标签">
+        <ul
+          className="editorial-article-tags"
+          aria-label={t('editorial.article.tags', 'Article topics')}
+        >
           {post.tags.slice(0, 6).map((tag) => (
             <li key={tag}>#{tag}</li>
           ))}
@@ -83,7 +93,9 @@ function RelatedPosts({ posts }: { posts: EditorialPost[] }) {
       <div className="editorial-section-heading">
         <div>
           <p className="editorial-eyebrow">Continue reading</p>
-          <h2 id="editorial-related-title">继续阅读</h2>
+          <h2 id="editorial-related-title">
+            {t('editorial.article.continue', 'Continue reading')}
+          </h2>
         </div>
       </div>
       <PostCardList posts={posts} />

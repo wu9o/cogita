@@ -3,6 +3,7 @@ import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allArchives, blogListConfig, getArchive } from 'virtual-blog-list-data';
 import { PostCardList } from '../components/PostCard';
+import { t } from '../i18n';
 import { addPostCovers, getBase, getPageRoute } from '../utils';
 
 function getArchiveKey(route: string): string {
@@ -25,14 +26,16 @@ const ArchiveLayout: React.FC<LayoutProps> = () => {
       <div className="editorial-index-page">
         <header className="editorial-page-header">
           <p className="editorial-eyebrow">Archive</p>
-          <h1>时间归档</h1>
-          <p>共 {total} 篇文章</p>
+          <h1>{t('editorial.archive.title', 'Post archive')}</h1>
+          <p>{t('editorial.archive.total', `${total} posts`, { count: total })}</p>
         </header>
         <div className="editorial-archive-years">
           {allArchives.map((item) => (
             <a key={item.key} href={normalizeHrefInRuntime(`${base}${item.route}`)}>
               <strong>{item.label}</strong>
-              <span>{item.count} 篇</span>
+              <span>
+                {t('editorial.archive.count', `${item.count} posts`, { count: item.count })}
+              </span>
             </a>
           ))}
         </div>
@@ -43,8 +46,10 @@ const ArchiveLayout: React.FC<LayoutProps> = () => {
   if (!archive) {
     return (
       <div className="editorial-index-page">
-        <a href={normalizeHrefInRuntime(`${base}/${blogListConfig.archivePrefix}`)}>← 返回归档</a>
-        <p className="editorial-empty">归档不存在。</p>
+        <a href={normalizeHrefInRuntime(`${base}/${blogListConfig.archivePrefix}`)}>
+          ← {t('editorial.archive.back', 'Back to archive')}
+        </a>
+        <p className="editorial-empty">{t('editorial.archive.notFound', 'Archive not found.')}</p>
       </div>
     );
   }
@@ -54,10 +59,15 @@ const ArchiveLayout: React.FC<LayoutProps> = () => {
       <header className="editorial-page-header">
         <p className="editorial-eyebrow">Archive</p>
         <h1>{archive.label}</h1>
-        <p>共 {archive.count} 篇文章</p>
-        <a href={normalizeHrefInRuntime(`${base}/${blogListConfig.archivePrefix}`)}>返回归档</a>
+        <p>{t('editorial.archive.total', `${archive.count} posts`, { count: archive.count })}</p>
+        <a href={normalizeHrefInRuntime(`${base}/${blogListConfig.archivePrefix}`)}>
+          {t('editorial.archive.back', 'Back to archive')}
+        </a>
       </header>
-      <nav className="editorial-archive-years" aria-label="其他归档">
+      <nav
+        className="editorial-archive-years"
+        aria-label={t('editorial.archive.other', 'Other archives')}
+      >
         {allArchives.map((item) => (
           <a
             key={item.key}
@@ -65,7 +75,9 @@ const ArchiveLayout: React.FC<LayoutProps> = () => {
             className={item.key === archive.key ? 'is-active' : undefined}
           >
             <strong>{item.label}</strong>
-            <span>{item.count} 篇</span>
+            <span>
+              {t('editorial.archive.count', `${item.count} posts`, { count: item.count })}
+            </span>
           </a>
         ))}
       </nav>

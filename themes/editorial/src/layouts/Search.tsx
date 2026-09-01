@@ -3,6 +3,7 @@ import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { searchConfig, searchDocuments } from 'virtual-search-data';
+import { t } from '../i18n';
 import { formatDate, getBase } from '../utils';
 
 function highlight(value: string, query: string): React.ReactNode {
@@ -68,32 +69,47 @@ const SearchLayout: React.FC<LayoutProps> = () => {
     <div className="editorial-index-page editorial-search-page">
       <header className="editorial-page-header">
         <p className="editorial-eyebrow">Search</p>
-        <h1>搜索文章</h1>
-        <p>从标题、摘要、标签和正文中查找内容。</p>
+        <h1>{t('editorial.search.title', 'Search articles')}</h1>
+        <p>
+          {t(
+            'editorial.search.description',
+            'Find content across titles, summaries, tags, and full text.'
+          )}
+        </p>
       </header>
 
       <form className="editorial-search-form" method="get">
-        <label htmlFor="editorial-search-input">输入关键词</label>
+        <label htmlFor="editorial-search-input">
+          {t('editorial.search.inputLabel', 'Search term')}
+        </label>
         <div>
           <input
             id="editorial-search-input"
             name="q"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="例如：Git、React、架构"
+            placeholder={t('editorial.search.placeholder', 'Try: Git, React, architecture')}
             autoComplete="off"
           />
-          <button type="submit">搜索</button>
+          <button type="submit">{t('editorial.search.submit', 'Search')}</button>
         </div>
       </form>
 
       {!query.trim() ? (
-        <p className="editorial-search-hint">输入关键词开始探索。</p>
+        <p className="editorial-search-hint">
+          {t('editorial.search.startHint', 'Enter a term to start exploring.')}
+        </p>
       ) : results.length === 0 ? (
-        <p className="editorial-search-hint">没有找到匹配的文章。</p>
+        <p className="editorial-search-hint">
+          {t('editorial.search.noResults', 'No matching articles found.')}
+        </p>
       ) : (
         <section className="editorial-search-results" aria-live="polite">
-          <p className="editorial-result-count">找到 {results.length} 篇文章</p>
+          <p className="editorial-result-count">
+            {t('editorial.search.resultCount', `${results.length} articles found`, {
+              count: results.length,
+            })}
+          </p>
           {results.map(({ document }) => (
             <article key={document.route} className="editorial-search-result">
               <div className="editorial-post-card-meta">

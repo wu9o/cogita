@@ -6,6 +6,7 @@ import { pluginCodeCopy } from '@cogita/plugin-code-copy';
 import { pluginCollections } from '@cogita/plugin-collections';
 import { pluginComments } from '@cogita/plugin-comments';
 import { pluginContentCheck } from '@cogita/plugin-content-check';
+import { pluginI18n } from '@cogita/plugin-i18n';
 import { pluginImages } from '@cogita/plugin-images';
 import { pluginPostsFrontmatter } from '@cogita/plugin-posts-frontmatter';
 import { pluginReadingProgress } from '@cogita/plugin-reading-progress';
@@ -48,6 +49,7 @@ export function getThemeConfig(): CogitaTheme {
       path.resolve(__dirname, './components/Comments.js'),
     ],
     plugins: [
+      pluginI18n,
       pluginPostsFrontmatter,
       pluginImages,
       pluginContentCheck,

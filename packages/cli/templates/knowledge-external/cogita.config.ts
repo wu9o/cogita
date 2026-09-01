@@ -4,7 +4,8 @@ import { createGitContentSource } from '@cogita/plugin-content-source-git';
 export default defineConfig({
   site: {
     title: '__SITE_TITLE__',
-    description: '__SITE_TITLE__ 的长期知识库。',
+    description: 'A long-term knowledge base for __SITE_TITLE__.',
+    lang: 'en-US',
     base: '/',
     url: 'http://localhost:3030/',
   },
@@ -18,6 +19,10 @@ export default defineConfig({
     }),
   ],
   theme: '@cogita/theme-knowledge',
+  i18n: {
+    locale: 'en-US',
+    fallbackLocale: 'en-US',
+  },
   posts: {
     dir: 'posts',
     routePrefix: 'posts',
@@ -32,7 +37,7 @@ export default defineConfig({
   themeConfig: {
     knowledge: {
       title: '__SITE_TITLE__',
-      description: '连接站点文章、本地手册和独立内容仓库。',
+      description: 'Connect site posts, local handbooks, and independent content repositories.',
     },
   },
 });

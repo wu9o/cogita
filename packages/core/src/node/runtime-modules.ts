@@ -82,20 +82,20 @@ export const cogitaRuntimeDefaults: CogitaPlugin = {
         export function getReadingStats() { return undefined; }
       `),
       [COGITA_VIRTUAL_MODULE_IDS.CODE_COPY_DATA]: createCogitaVirtualModule(`
-        export const codeCopyConfig = { enabled: false, selector: '.rspress-doc pre', buttonLabel: '复制代码', selectionLabel: '复制选中代码', languageLabel: '复制 {language} 代码', copiedLabel: '已复制', errorLabel: '复制失败', resetDelay: 2000 };
+        export const codeCopyConfig = { enabled: false, selector: '.rspress-doc pre', buttonLabel: 'Copy code', selectionLabel: 'Copy selection', languageLabel: 'Copy {language} code', copiedLabel: 'Copied', errorLabel: 'Copy failed', resetDelay: 2000 };
       `),
       [COGITA_VIRTUAL_MODULE_IDS.COMMENTS_DATA]: createCogitaVirtualModule(`
         export const commentsConfig = {
           enabled: false,
           provider: 'giscus',
-          title: '评论',
-          giscus: { repo: '', repoId: '', category: '', categoryId: '', mapping: 'pathname', term: '', strict: false, reactionsEnabled: false, emitMetadata: false, inputPosition: 'bottom', theme: 'preferred_color_scheme', lang: 'zh-CN', loading: 'lazy' },
+          title: 'Comments',
+          giscus: { repo: '', repoId: '', category: '', categoryId: '', mapping: 'pathname', term: '', strict: false, reactionsEnabled: false, emitMetadata: false, inputPosition: 'bottom', theme: 'preferred_color_scheme', lang: 'en', loading: 'lazy' },
           utterances: { repo: '', issueTerm: 'pathname', term: '', label: '', theme: 'github-light' },
           postRoutes: []
         };
       `),
       [COGITA_VIRTUAL_MODULE_IDS.I18N_TEXT]: createCogitaVirtualModule(`
-        export const i18nConfig = { enabled: false, locale: 'zh-CN', fallbackLocale: 'zh-CN', messages: {} };
+        export const i18nConfig = { enabled: false, locale: 'en-US', fallbackLocale: 'en-US', messages: {} };
         export const locale = i18nConfig.locale;
         export const fallbackLocale = i18nConfig.fallbackLocale;
         export const messages = i18nConfig.messages;

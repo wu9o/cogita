@@ -2,6 +2,7 @@ import { usePageData } from '@rspress/runtime';
 import { useEffect, useRef, useState } from 'react';
 import type React from 'react';
 import { commentsConfig } from 'virtual-comments-data';
+import { t } from '../i18n';
 import { getBase, getPageRoute } from '../utils';
 
 function getGiscusAttributes() {
@@ -111,12 +112,15 @@ const Comments: React.FC = () => {
       </h2>
       {scriptState === 'loading' && (
         <output className="cogita-comments-status" aria-live="polite">
-          正在加载评论服务…
+          {t('lucid.comments.loading', 'Loading comments…')}
         </output>
       )}
       {scriptState === 'error' && (
         <p className="cogita-comments-status cogita-comments-status-error" role="alert">
-          评论服务暂时不可用，请稍后重试。
+          {t(
+            'lucid.comments.error',
+            'Comments are temporarily unavailable. Please try again later.'
+          )}
         </p>
       )}
       <div

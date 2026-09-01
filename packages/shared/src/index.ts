@@ -936,11 +936,11 @@ export function getRouteFromPageData(
   return getRouteFromPathname(resolvedPath, base);
 }
 
-/** 将 ISO 日期格式化为站点统一使用的中文日期。 */
-export function formatSiteDate(date: string | undefined): string {
-  if (!date) return '未标注日期';
+/** 将 ISO 日期格式化为站点界面使用的本地日期。 */
+export function formatSiteDate(date: string | undefined, locale = 'en-US'): string {
+  if (!date) return 'Undated';
   const parsed = new Date(date);
-  return Number.isNaN(parsed.getTime()) ? date : parsed.toLocaleDateString('zh-CN');
+  return Number.isNaN(parsed.getTime()) ? date : parsed.toLocaleDateString(locale);
 }
 
 /**

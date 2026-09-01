@@ -10,6 +10,7 @@ import {
   getCategoryBySlug,
 } from 'virtual-categories-data';
 import { PostCardList } from '../components/PostCard';
+import { t } from '../i18n';
 import { getBase, getPageRoute } from '../utils';
 
 function getCategorySlug(pageData: Parameters<typeof getPageRoute>[0], base: string): string {
@@ -33,15 +34,22 @@ const CategoryLayout: React.FC<LayoutProps> = () => {
     return (
       <div className="category-page">
         <header className="category-header">
-          <p className="blog-list-eyebrow">内容组织</p>
-          <h1 className="blog-list-title">文章分类</h1>
-          <p className="blog-list-meta">共 {allCategories.length} 个分类</p>
+          <p className="blog-list-eyebrow">{t('lucid.category.eyebrow', 'Content organization')}</p>
+          <h1 className="blog-list-title">{t('lucid.category.title', 'Article categories')}</h1>
+          <p className="blog-list-meta">
+            {t('lucid.category.total', `${allCategories.length} categories`, {
+              count: allCategories.length,
+            })}
+          </p>
         </header>
 
         {allCategories.length === 0 ? (
-          <p className="category-empty">暂无分类</p>
+          <p className="category-empty">{t('lucid.category.empty', 'No categories yet.')}</p>
         ) : (
-          <nav className="category-tree" aria-label="文章分类列表">
+          <nav
+            className="category-tree"
+            aria-label={t('lucid.category.list', 'Article category list')}
+          >
             {allCategories.map((category) => (
               <a
                 key={category.path}
@@ -50,7 +58,9 @@ const CategoryLayout: React.FC<LayoutProps> = () => {
                 style={{ paddingLeft: `${1 + category.depth * 1.25}rem` }}
               >
                 <span>{category.title}</span>
-                <span className="category-count">{category.count} 篇</span>
+                <span className="category-count">
+                  {t('lucid.category.count', `${category.count} posts`, { count: category.count })}
+                </span>
               </a>
             ))}
           </nav>
@@ -64,9 +74,9 @@ const CategoryLayout: React.FC<LayoutProps> = () => {
     return (
       <div className="category-page">
         <a href={categoriesHref} className="category-back">
-          ← 返回分类
+          ← {t('lucid.category.back', 'Back to categories')}
         </a>
-        <p className="category-empty">分类不存在</p>
+        <p className="category-empty">{t('lucid.category.notFound', 'Category not found.')}</p>
       </div>
     );
   }
@@ -79,8 +89,11 @@ const CategoryLayout: React.FC<LayoutProps> = () => {
   return (
     <div className="category-page">
       <header className="category-header">
-        <nav className="category-breadcrumbs" aria-label="分类面包屑">
-          <a href={categoriesHref}>全部分类</a>
+        <nav
+          className="category-breadcrumbs"
+          aria-label={t('lucid.category.breadcrumbs', 'Category breadcrumbs')}
+        >
+          <a href={categoriesHref}>{t('lucid.category.all', 'All categories')}</a>
           {breadcrumbs.map((breadcrumb) => (
             <Fragment key={breadcrumb.path}>
               <span aria-hidden="true">/</span>
@@ -90,12 +103,14 @@ const CategoryLayout: React.FC<LayoutProps> = () => {
         </nav>
         <h1 className="blog-list-title">{category.title}</h1>
         {category.description && <p className="category-description">{category.description}</p>}
-        <p className="blog-list-meta">共 {category.count} 篇文章</p>
+        <p className="blog-list-meta">
+          {t('lucid.category.count', `${category.count} posts`, { count: category.count })}
+        </p>
       </header>
 
       {children.length > 0 && (
         <section className="category-children" aria-labelledby="category-children-title">
-          <h2 id="category-children-title">子分类</h2>
+          <h2 id="category-children-title">{t('lucid.category.children', 'Subcategories')}</h2>
           <div className="category-child-list">
             {children.map((child) => (
               <a
@@ -104,7 +119,9 @@ const CategoryLayout: React.FC<LayoutProps> = () => {
                 className="category-child-card"
               >
                 <span>{child.title}</span>
-                <span className="category-count">{child.count} 篇文章</span>
+                <span className="category-count">
+                  {t('lucid.category.count', `${child.count} posts`, { count: child.count })}
+                </span>
               </a>
             ))}
           </div>
@@ -112,7 +129,7 @@ const CategoryLayout: React.FC<LayoutProps> = () => {
       )}
 
       <section className="category-posts" aria-labelledby="category-posts-title">
-        <h2 id="category-posts-title">文章</h2>
+        <h2 id="category-posts-title">{t('lucid.category.posts', 'Posts')}</h2>
         <PostCardList posts={toPostListPosts(category.posts)} />
       </section>
     </div>

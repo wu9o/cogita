@@ -30,7 +30,7 @@ export default function Footer() {
 
   const siteTitle = siteData?.title || 'Cogita';
   const year = new Date().getFullYear();
-  const message = footer?.message || `用心构建 · ${siteTitle}`;
+  const message = footer?.message || `Built with Cogita · ${siteTitle}`;
   const copyright = footer?.copyright || `© ${year} ${siteTitle}`;
 
   return (

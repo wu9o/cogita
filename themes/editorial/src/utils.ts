@@ -5,6 +5,7 @@ import {
   normalizeSiteBase,
 } from '@cogita/shared';
 import { normalizeHrefInRuntime } from '@rspress/runtime';
+import { locale } from 'virtual-cogita-i18n-text';
 import { postCovers } from 'virtual-images-data';
 
 export interface EditorialPost {
@@ -68,7 +69,7 @@ export function getEditorialConfig(pageData: EditorialPageData | undefined): Edi
     heroCopy:
       typeof editorial.heroCopy === 'string'
         ? editorial.heroCopy
-        : '一个内容优先的技术博客，记录构建、调试和持续思考的过程。',
+        : 'A content-first technical journal for building, debugging, and sustained thinking.',
     featuredPost: typeof editorial.featuredPost === 'string' ? editorial.featuredPost : undefined,
     relatedPosts: {
       enabled: relatedPosts.enabled !== false,
@@ -84,7 +85,7 @@ export function getRuntimeHref(base: string, route: string): string {
 }
 
 export function formatDate(date: string | undefined): string {
-  return formatSiteDate(date);
+  return formatSiteDate(date, locale);
 }
 
 export function getCurrentRoute(base: string, pathname?: string): string {

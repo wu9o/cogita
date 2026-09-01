@@ -1,9 +1,9 @@
 # __SITE_TITLE__
 
-这是一个由 Cogita `knowledge-external` 模板生成的知识库站点。
-它把站点文章、本地手册和独立 Git Markdown 内容仓库统一接入搜索、标签、内容关系和静态页面。
+This knowledge-base site was generated from the Cogita `knowledge-external` template.
+It brings site posts, local handbooks, and an independent Git Markdown repository into one search, topic, relation, and static-page system.
 
-## 本地开发
+## Local development
 
 ```bash
 pnpm install
@@ -11,16 +11,16 @@ pnpm run doctor
 pnpm run dev
 ```
 
-外部内容放在 `git-content/`，其中文件会映射到 `/notes/`。本地可以直接把内容仓库 checkout 到这个目录；模板自带的 `.gitkeep` 只用于保证首次构建目录存在。
+Put external content in `git-content/`; files are mapped to `/notes/`. You can check out the content repository directly into this directory. The included `.gitkeep` only keeps the directory present for the first build.
 
 ## GitHub Pages
 
-模板已经包含 `.github/workflows/deploy.yml`。在站点仓库中配置：
+The template includes `.github/workflows/deploy.yml`. Configure these values in the site repository:
 
-- Repository variable：`COGITA_CONTENT_REPOSITORY`，例如 `your-org/your-notes`；
-- 可选 Repository variable：`COGITA_CONTENT_REF`，用于固定分支、标签或 commit；
-- 私有内容仓库需要 Repository secret：`COGITA_CONTENT_TOKEN`。
+- Repository variable: `COGITA_CONTENT_REPOSITORY`, for example `your-org/your-notes`.
+- Optional repository variable: `COGITA_CONTENT_REF`, to pin a branch, tag, or commit.
+- Private content repositories require the `COGITA_CONTENT_TOKEN` repository secret.
 
-如果站点部署在 `https://example.github.io/repository/`，请把 `cogita.config.ts` 中的 `site.base` 和 `site.url` 改成对应路径，再提交生成的 `pnpm-lock.yaml`。
+If the site is deployed at `https://example.github.io/repository/`, update `site.base` and `site.url` in `cogita.config.ts`, then commit the generated `pnpm-lock.yaml`.
 
-工作流会先 checkout 站点，再把外部内容仓库 checkout 到 `git-content/`，最后执行 `pnpm exec cogita build` 并发布 `doc_build/`。
+The workflow checks out the site, checks out the external repository into `git-content/`, runs `pnpm exec cogita build`, and publishes `doc_build/`.

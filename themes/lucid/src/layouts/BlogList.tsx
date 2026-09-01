@@ -9,6 +9,7 @@ import {
 } from 'virtual-blog-list-data';
 import { postCovers } from 'virtual-images-data';
 import { PostCardList } from '../components/PostCard';
+import { t } from '../i18n';
 import { getBase, getPageRoute } from '../utils';
 
 function getPageNumber(route: string): number {
@@ -50,33 +51,39 @@ const BlogListLayout: React.FC<LayoutProps> = () => {
   const page = getBlogListPage(pageNumber, filterKey) || getBlogListPage(1, 'all');
 
   if (!page) {
-    return <p className="blog-list-empty">暂无文章</p>;
+    return <p className="blog-list-empty">{t('lucid.blogList.empty', 'No posts yet.')}</p>;
   }
 
   return (
     <div className="blog-list-page">
       <header className="blog-list-header">
         <div>
-          <p className="blog-list-eyebrow">文章归档</p>
+          <p className="blog-list-eyebrow">{t('lucid.blogList.eyebrow', 'Archive')}</p>
           <h1 className="blog-list-title">
             {page.filter
-              ? `${page.filter.kind === 'tag' ? '标签' : '分类'}：${page.filter.label}`
-              : '全部文章'}
+              ? `${page.filter.kind === 'tag' ? t('lucid.blogList.topic', 'Topic') : t('lucid.blogList.category', 'Category')}: ${page.filter.label}`
+              : t('lucid.blogList.allPosts', 'All posts')}
           </h1>
           <p className="blog-list-meta">
-            {page.filter ? `${page.filter.count} 篇文章 · ` : ''}第 {page.page} / {page.totalPages}{' '}
-            页
+            {page.filter ? `${page.filter.count} ${t('lucid.blogList.posts', 'posts')} · ` : ''}
+            {t('lucid.blogList.page', `Page ${page.page} of ${page.totalPages}`, {
+              page: page.page,
+              total: page.totalPages,
+            })}
           </p>
         </div>
-        <a href={normalizeHrefInRuntime(`${base}/`)}>返回首页</a>
+        <a href={normalizeHrefInRuntime(`${base}/`)}>{t('lucid.blogList.home', 'Back to home')}</a>
       </header>
 
-      <nav className="blog-list-filter-nav" aria-label="文章筛选">
+      <nav
+        className="blog-list-filter-nav"
+        aria-label={t('lucid.blogList.filters', 'Post filters')}
+      >
         <a
           href={normalizeHrefInRuntime(`${base}/${blogListConfig.routePrefix}`)}
           className={!page.filter ? 'blog-list-filter-active' : undefined}
         >
-          全部
+          {t('lucid.blogList.all', 'All')}
         </a>
         {allBlogListFilters.map((filter) => (
           <a
@@ -93,23 +100,32 @@ const BlogListLayout: React.FC<LayoutProps> = () => {
       {page.posts.length > 0 ? (
         <PostCardList posts={addPostCovers(page.posts)} />
       ) : (
-        <p className="blog-list-empty">暂无文章</p>
+        <p className="blog-list-empty">{t('lucid.blogList.empty', 'No posts yet.')}</p>
       )}
 
       {page.totalPages > 1 && (
-        <nav className="blog-pagination" aria-label="文章列表分页">
+        <nav
+          className="blog-pagination"
+          aria-label={t('lucid.blogList.pagination', 'Post pagination')}
+        >
           {page.previous ? (
-            <a href={normalizeHrefInRuntime(`${base}${page.previous}`)}>← 上一页</a>
+            <a href={normalizeHrefInRuntime(`${base}${page.previous}`)}>
+              ← {t('lucid.blogList.previous', 'Previous')}
+            </a>
           ) : (
-            <span className="blog-pagination-disabled">← 上一页</span>
+            <span className="blog-pagination-disabled">
+              ← {t('lucid.blogList.previous', 'Previous')}
+            </span>
           )}
           <span>
             {page.page} / {page.totalPages}
           </span>
           {page.next ? (
-            <a href={normalizeHrefInRuntime(`${base}${page.next}`)}>下一页 →</a>
+            <a href={normalizeHrefInRuntime(`${base}${page.next}`)}>
+              {t('lucid.blogList.next', 'Next')} →
+            </a>
           ) : (
-            <span className="blog-pagination-disabled">下一页 →</span>
+            <span className="blog-pagination-disabled">{t('lucid.blogList.next', 'Next')} →</span>
           )}
         </nav>
       )}

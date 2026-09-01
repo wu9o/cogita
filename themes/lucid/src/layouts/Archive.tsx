@@ -4,6 +4,7 @@ import type React from 'react';
 import { allArchives, blogListConfig, getArchive } from 'virtual-blog-list-data';
 import { postCovers } from 'virtual-images-data';
 import { PostCardList } from '../components/PostCard';
+import { t } from '../i18n';
 import { getBase, getPageRoute } from '../utils';
 
 function getArchiveKey(pageData: Parameters<typeof getPageRoute>[0], base: string): string {
@@ -42,15 +43,19 @@ const ArchiveLayout: React.FC<LayoutProps> = () => {
       <div className="archive-page">
         <header className="archive-header">
           <div>
-            <p className="blog-list-eyebrow">文章归档</p>
-            <h1 className="blog-list-title">时间归档</h1>
+            <p className="blog-list-eyebrow">{t('lucid.archive.eyebrow', 'Archive')}</p>
+            <h1 className="blog-list-title">{t('lucid.archive.title', 'Post archive')}</h1>
             <p className="blog-list-meta">
-              共 {allArchives.reduce((total, item) => total + item.count, 0)} 篇文章
+              {t(
+                'lucid.archive.total',
+                `${allArchives.reduce((total, item) => total + item.count, 0)} posts`,
+                { count: allArchives.reduce((total, item) => total + item.count, 0) }
+              )}
             </p>
           </div>
         </header>
 
-        <div className="archive-index" aria-label="文章归档列表">
+        <div className="archive-index" aria-label={t('lucid.archive.list', 'Post archive list')}>
           {allArchives.map((item) => (
             <a key={item.key} href={normalizeHrefInRuntime(`${base}${item.route}`)}>
               {item.label} ({item.count})
@@ -64,8 +69,10 @@ const ArchiveLayout: React.FC<LayoutProps> = () => {
   if (!archive) {
     return (
       <div className="archive-page">
-        <a href={normalizeHrefInRuntime(archiveIndex)}>← 返回归档</a>
-        <p className="blog-list-empty">归档不存在</p>
+        <a href={normalizeHrefInRuntime(archiveIndex)}>
+          ← {t('lucid.archive.back', 'Back to archive')}
+        </a>
+        <p className="blog-list-empty">{t('lucid.archive.notFound', 'Archive not found.')}</p>
       </div>
     );
   }
@@ -74,14 +81,18 @@ const ArchiveLayout: React.FC<LayoutProps> = () => {
     <div className="archive-page">
       <header className="archive-header">
         <div>
-          <a href={normalizeHrefInRuntime(archiveIndex)}>← 返回归档</a>
-          <p className="blog-list-eyebrow">时间归档</p>
+          <a href={normalizeHrefInRuntime(archiveIndex)}>
+            ← {t('lucid.archive.back', 'Back to archive')}
+          </a>
+          <p className="blog-list-eyebrow">{t('lucid.archive.eyebrow', 'Archive')}</p>
           <h1 className="blog-list-title">{archive.label}</h1>
-          <p className="blog-list-meta">共 {archive.count} 篇文章</p>
+          <p className="blog-list-meta">
+            {t('lucid.archive.total', `${archive.count} posts`, { count: archive.count })}
+          </p>
         </div>
       </header>
 
-      <div className="archive-index" aria-label="其他归档">
+      <div className="archive-index" aria-label={t('lucid.archive.other', 'Other archives')}>
         {allArchives.map((item) => (
           <a
             key={item.key}

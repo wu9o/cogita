@@ -4,6 +4,7 @@ import {
   getRouteFromPathname,
   normalizeSiteBase,
 } from '@cogita/shared';
+import { locale } from 'virtual-cogita-i18n-text';
 
 export interface LucidPageData {
   siteData?: {
@@ -39,7 +40,8 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 export function getSiteMetadata(pageData: LucidPageData | undefined) {
   return {
     title: pageData?.siteData?.title || 'Cogita',
-    description: pageData?.siteData?.description || '记录编码、创造与思考的过程。',
+    description:
+      pageData?.siteData?.description || 'A calm space for building, debugging, and thinking.',
   };
 }
 
@@ -55,8 +57,8 @@ export function getLucidConfig(pageData: LucidPageData | undefined): LucidThemeC
     heroCopy:
       typeof lucid.heroCopy === 'string'
         ? lucid.heroCopy
-        : '一份安静、清晰的技术写作空间，记录构建、调试和持续思考。',
-    postsTitle: typeof lucid.postsTitle === 'string' ? lucid.postsTitle : '最近更新',
+        : 'A clear technical writing space for building, debugging, and sustained thinking.',
+    postsTitle: typeof lucid.postsTitle === 'string' ? lucid.postsTitle : 'Latest notes',
     showSidebar: lucid.showSidebar !== false,
     featuredPost: typeof lucid.featuredPost === 'string' ? lucid.featuredPost : undefined,
   };
@@ -77,4 +79,4 @@ export function getPageRoute(
 }
 
 /** 格式化 Lucid 页面中展示的日期。 */
-export const formatDate = formatSiteDate;
+export const formatDate = (date: string | undefined): string => formatSiteDate(date, locale);

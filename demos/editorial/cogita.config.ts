@@ -6,10 +6,15 @@ const demoBase = `${demoPrefix}/demos/editorial/`;
 export default defineConfig({
   site: {
     title: 'The Small Systems Review',
-    description: '关于小系统、好工具和长期主义的编辑型技术刊物。',
+    description:
+      'An editorial technical journal about small systems, good tools, and long-term thinking.',
     base: demoBase,
   },
   theme: '@cogita/theme-editorial',
+  i18n: {
+    locale: 'en-US',
+    fallbackLocale: 'en-US',
+  },
   posts: {
     dir: 'posts',
     routePrefix: 'posts',
@@ -24,10 +29,10 @@ export default defineConfig({
   codeCopy: { enabled: true },
   themeConfig: {
     nav: [
-      { text: '首页', link: '/' },
-      { text: '档案', link: '/archive' },
-      { text: '专题', link: '/series' },
-      { text: '搜索', link: '/search' },
+      { text: 'Home', link: '/' },
+      { text: 'Archive', link: '/archive' },
+      { text: 'Series', link: '/series' },
+      { text: 'Search', link: '/search' },
     ],
     editorial: {
       heroEyebrow: 'THE SMALL SYSTEMS REVIEW',

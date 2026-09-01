@@ -1,5 +1,15 @@
 // 虚拟模块类型声明
 
+declare module 'virtual-cogita-i18n-text' {
+  export const locale: string;
+
+  export function t(
+    key: string,
+    fallback?: string,
+    values?: Record<string, string | number>
+  ): string;
+}
+
 declare module 'virtual-posts-data' {
   export const contentDataVersion: 1;
   interface Post {

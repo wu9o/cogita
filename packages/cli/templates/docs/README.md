@@ -1,6 +1,6 @@
 # __SITE_TITLE__
 
-这是一个由 Cogita `docs` 模板生成的技术文档站。
+This technical documentation site was generated from the Cogita `docs` template.
 
 ```bash
 pnpm install
@@ -8,6 +8,6 @@ pnpm run doctor
 pnpm run dev
 ```
 
-编辑 `content/` 中的 Markdown 文件即可扩展文档。
+Edit Markdown files in `content/` to extend the documentation.
 
-升级依赖或提交部署前，可以运行 `pnpm run doctor -- --strict` 检查配置、依赖、主题和内容目录。
+Before upgrading dependencies or deploying, run `pnpm run doctor -- --strict` to check configuration, dependencies, theme, and content directories.
