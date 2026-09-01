@@ -69,6 +69,11 @@ const server = http.createServer((request, response) => {
     return;
   }
 
+  if (pathname === '/social-card.svg') {
+    sendFile(response, path.join(demosRoot, 'landing', 'social-card.svg'));
+    return;
+  }
+
   const demoMatch = pathname.match(/^\/demos\/([^/]+)(\/.*)?$/);
   if (!demoMatch) {
     sendFile(response, null);

@@ -1,6 +1,7 @@
 import { usePageData } from '@rspress/runtime';
 import { useEffect, useState } from 'react';
 import { getReadingStats, readingProgressConfig } from 'virtual-reading-progress-data';
+import { t } from '../i18n';
 import { getBase, getPageRoute } from '../utils';
 
 const READING_TOC_SELECTOR = '.rspress-toc-link[href^="#"], .aside-link[href^="#"]';
@@ -157,21 +158,24 @@ export default function ReadingProgress() {
           aria-valuenow={Math.round(progress)}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label="文章阅读进度"
+          aria-label={t('editorial.readingProgress.label', 'Reading progress')}
         >
           <span style={{ width: `${progress}%` }} />
         </div>
       )}
       {readingProgressConfig.showReadingTime && (
         <div className="editorial-reading-time" aria-live="polite">
-          预计 {stats.readingTimeMinutes} 分钟阅读 · {Math.round(progress)}%
+          {t('editorial.readingProgress.time', `${stats.readingTimeMinutes} min read`, {
+            minutes: stats.readingTimeMinutes,
+          })}{' '}
+          · {Math.round(progress)}%
         </div>
       )}
       {positionRestored && (
         <output className="editorial-reading-restore">
-          <span>已恢复上次阅读位置</span>
+          <span>{t('editorial.readingProgress.restored', 'Reading position restored')}</span>
           <button type="button" onClick={returnToTop}>
-            回到顶部
+            {t('editorial.readingProgress.top', 'Back to top')}
           </button>
         </output>
       )}

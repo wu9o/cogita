@@ -1,48 +1,53 @@
 ---
-title: 快速开始
+title: Get started
 ---
 
-# 快速开始
+# Get started
 
-Cogita 是一个基于 Rspress 的主题驱动静态站点框架。站点项目只需要安装 Core、CLI 和一个主题包，就可以开始构建。
+Cogita is a theme-driven static site framework built on Rspress. A site needs the Core package, the CLI, and one theme package to get started.
 
-## 使用模板创建项目
+## Create a project from a template
 
-推荐直接使用 CLI 初始化项目：
+Initialize a site with the CLI:
 
 ~~~bash
 pnpm dlx @cogita/cli create my-blog --template blog
 pnpm dlx @cogita/cli create my-docs --template docs
+pnpm dlx @cogita/cli create my-knowledge --template knowledge
 ~~~
 
-博客模板使用 Lucid 主题和 `posts/` 目录；文档模板使用 Docs 主题和 `content/` 目录。生成后进入项目并运行 `pnpm run dev` 即可开始开发。
+The blog template uses the Lucid theme and a `posts/` directory. The docs template uses the Docs theme and a `content/` directory. The Knowledge template indexes both posts and documents for search, topics, and content relations. Enter the project and run `pnpm run dev`.
 
-## 安装
+The [theme demos](./themes.md#theme-demos) can be built locally with `pnpm run demo`.
+
+## Install manually
 
 ~~~bash
 pnpm add -D @cogita/cli @cogita/core @cogita/theme-docs
 ~~~
 
-## 创建配置
+## Create a configuration
 
 ~~~ts
 import { defineConfig } from '@cogita/core';
 
 export default defineConfig({
   site: {
-    title: '我的文档',
-    description: '项目使用手册',
+    title: 'My handbook',
+    description: 'A practical project handbook',
   },
   theme: '@cogita/theme-docs',
+  i18n: {
+    locale: 'en-US',
+    fallbackLocale: 'en-US',
+  },
 });
 ~~~
 
-## 构建站点
+## Build the site
 
 ~~~bash
 pnpm exec cogita build
 ~~~
 
-主题由消费方项目直接安装。Core 负责读取配置、解析主题并组装 Rspress，主题和插件各自维护自己的页面能力。
-
-如果要开发可复用的第三方扩展，可以直接复制[第三方扩展 Starter](./starters.md)，从最小可运行的插件或主题包开始。
+The consuming site installs the theme and its declared capabilities. Core loads the configuration, resolves the theme, and assembles Rspress while plugins provide build-time data and runtime modules.

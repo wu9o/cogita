@@ -2,6 +2,7 @@ import { usePageData } from '@rspress/runtime';
 import { useEffect, useState } from 'react';
 import type React from 'react';
 import { getReadingStats, readingProgressConfig } from 'virtual-reading-progress-data';
+import { t } from '../i18n';
 import { getBase, getPageRoute } from '../utils';
 
 const READING_TOC_SELECTOR = '.rspress-toc-link[href^="#"], .aside-link[href^="#"]';
@@ -167,7 +168,7 @@ const ReadingProgress: React.FC = () => {
           className="cogita-reading-progress"
           role="progressbar"
           tabIndex={-1}
-          aria-label="文章阅读进度"
+          aria-label={t('lucid.readingProgress.label', 'Reading progress')}
           aria-valuenow={Math.round(progress)}
           aria-valuemin={0}
           aria-valuemax={100}
@@ -177,16 +178,20 @@ const ReadingProgress: React.FC = () => {
       )}
       {readingProgressConfig.showReadingTime && (
         <div className="cogita-reading-time" aria-live="polite">
-          <span>预计 {stats.readingTimeMinutes} 分钟阅读</span>
+          <span>
+            {t('lucid.readingProgress.time', `${stats.readingTimeMinutes} min read`, {
+              minutes: stats.readingTimeMinutes,
+            })}
+          </span>
           <span aria-hidden="true">·</span>
           <span>{Math.round(progress)}%</span>
         </div>
       )}
       {positionRestored && (
         <output className="cogita-reading-restore">
-          <span>已恢复上次阅读位置</span>
+          <span>{t('lucid.readingProgress.restored', 'Reading position restored')}</span>
           <button type="button" onClick={returnToTop}>
-            回到顶部
+            {t('lucid.readingProgress.top', 'Back to top')}
           </button>
         </output>
       )}

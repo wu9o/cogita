@@ -7,6 +7,7 @@ import {
   type CogitaPlugin,
   type CogitaPluginConfig,
   type ContentEntry,
+  VIRTUAL_CONTENT_DIR,
   getCogitaBuildContext,
   getCogitaLogger,
 } from '@cogita/shared';
@@ -59,6 +60,24 @@ function readFrontmatter(filePath: string): Record<string, unknown> {
   return isRecord(parsed) ? parsed : {};
 }
 
+/** 使用统一条目元数据替代外部来源的本地 frontmatter。 */
+function readEntryFrontmatter(entry: ContentEntry): Record<string, unknown> {
+  if (!entry.sourceId) {
+    return readFrontmatter(entry.filePath);
+  }
+
+  return {
+    title: entry.title,
+    description: entry.description,
+    excerpt: entry.excerpt,
+    author: entry.author,
+    date: entry.createDate,
+    createDate: entry.createDate,
+    image: entry.image,
+    imageAlt: entry.imageAlt,
+  };
+}
+
 function resolveOutputDir(rspressConfig: unknown, root: string): string {
   const config = isRecord(rspressConfig) ? rspressConfig : {};
   const output = isRecord(config.output) ? config.output : {};
@@ -85,7 +104,19 @@ function resolveImageFile(root: string, entry: ContentEntry, reference: string):
 }
 
 function hasLocalImage(root: string, entry: ContentEntry, reference: string): boolean {
-  return fs.existsSync(resolveImageFile(root, entry, reference));
+  if (fs.existsSync(resolveImageFile(root, entry, reference))) {
+    return true;
+  }
+
+  const cleanReference = stripReferenceSuffix(reference).replace(/^[/\\]+/, '');
+  if (entry.sourceId && cleanReference.startsWith('external-content/')) {
+    // 外部内容源只有在资源清单匹配成功后才会改写为该命名空间，避免依赖插件钩子执行顺序。
+    return true;
+  }
+  return Boolean(
+    entry.sourceId &&
+      fs.existsSync(path.resolve(root, VIRTUAL_CONTENT_DIR, 'public', cleanReference))
+  );
 }
 
 /** 读取统一内容索引，兼容只提供旧版文章索引的第三方实现。 */
@@ -425,7 +456,7 @@ export function pluginContentCheck(config: CogitaPluginConfig): CogitaPlugin | n
       }
 
       for (const entry of entries) {
-        const frontmatter = readFrontmatter(entry.filePath);
+        const frontmatter = readEntryFrontmatter(entry);
         checkRequiredFields(issues, entry, frontmatter, finalConfig.requiredFields);
 
         if (finalConfig.checkImages) {

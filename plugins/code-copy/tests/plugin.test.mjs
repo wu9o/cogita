@@ -11,7 +11,7 @@ describe('代码复制插件', () => {
 
     assert.ok(plugin);
     assert.equal(plugin.name, '@cogita/plugin-code-copy');
-    assert.match(plugin.addRuntimeModules()['virtual-code-copy-data'], /复制代码/);
+    assert.match(plugin.addRuntimeModules()['virtual-code-copy-data'], /Copy code/);
   });
 
   it('关闭插件时应保留安全的运行时模块', () => {
@@ -37,7 +37,7 @@ describe('代码复制插件', () => {
   });
 
   it('应提供选中代码的默认提示', () => {
-    assert.equal(resolveCodeCopyConfig({}).selectionLabel, '复制选中代码');
+    assert.equal(resolveCodeCopyConfig({}).selectionLabel, 'Copy selection');
     assert.equal(
       resolveCodeCopyConfig({ selectionLabel: '复制选中部分' }).selectionLabel,
       '复制选中部分'

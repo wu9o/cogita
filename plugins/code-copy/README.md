@@ -1,26 +1,26 @@
 # @cogita/plugin-code-copy
 
-为 Cogita 文章页的代码块添加可访问的复制按钮。插件不依赖第三方服务，默认启用，并通过 `virtual-code-copy-data` 向主题暴露规范化配置。
+Add an accessible copy button to code blocks on Cogita article pages. The plugin has no third-party service dependency, is enabled by default, and exposes normalized configuration to themes through `virtual-code-copy-data`.
 
-## 配置
+## Configuration
 
 ```ts
 export default defineConfig({
   codeCopy: {
     enabled: true,
     selector: '.rspress-doc pre',
-    buttonLabel: '复制代码',
-    selectionLabel: '复制选中代码',
-    languageLabel: '复制 {language} 代码',
-    copiedLabel: '已复制',
-    errorLabel: '复制失败',
+    buttonLabel: 'Copy code',
+    selectionLabel: 'Copy selection',
+    languageLabel: 'Copy {language} code',
+    copiedLabel: 'Copied',
+    errorLabel: 'Copy failed',
     resetDelay: 2000,
   },
 });
 ```
 
-复制逻辑优先使用 `navigator.clipboard.writeText`，不可用时回退到临时文本框和浏览器原生复制命令。选中代码块中的部分内容后，按钮会优先复制选中内容；没有选中内容时仍复制完整代码块。按钮会提供 `aria-label`，并通过状态文案反馈成功或失败。`selectionLabel` 用于提示当前可以复制选中内容。
+The copy logic prefers `navigator.clipboard.writeText` and falls back to a temporary textarea and the browser's native copy command when unavailable. When part of a code block is selected, the button copies the selection; otherwise it copies the complete block. The button includes an `aria-label` and reports success or failure through status copy. `selectionLabel` indicates that selected text can be copied.
 
-Lucid 主题会自动识别 Rspress 标准代码块已有的复制操作，避免重复渲染，并根据 `language-xxx` 类名补充语言级提示；自定义代码块没有原生复制按钮时，才由插件补充按钮。`languageLabel` 支持 `{language}` 占位符。
+The Lucid theme recognizes the copy action already provided by standard Rspress code blocks to avoid duplicate controls. It adds a language-specific label based on the `language-xxx` class and only adds a button when a custom code block has no native copy control. `languageLabel` supports the `{language}` placeholder.
 
-将 `enabled` 设为 `false` 后，插件仍提供关闭状态的空运行时模块，主题可以安全静态导入。
+When `enabled` is `false`, the plugin still provides a disabled runtime module so themes can import it safely.

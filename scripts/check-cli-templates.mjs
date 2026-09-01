@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtemp, readFile, rm, symlink } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -19,7 +19,29 @@ function runCli(args, cwd) {
   });
 }
 
-async function verifyTemplate(template, expectedTheme) {
+async function linkConsumerDependencies(projectRoot) {
+  const nodeModules = path.join(projectRoot, 'node_modules');
+  const cogitaModules = path.join(nodeModules, '@cogita');
+  await mkdir(path.join(nodeModules, '.pnpm'), { recursive: true });
+  await mkdir(cogitaModules, { recursive: true });
+  await symlink(workspaceModules, path.join(nodeModules, '.pnpm/node_modules'), 'dir');
+
+  const packageNames = new Set(await readdir(path.join(workspaceModules, '@cogita')));
+  packageNames.add('plugin-content-source-git');
+  const packageDirectories = Object.fromEntries(
+    [...packageNames].map((packageName) => [
+      packageName,
+      packageName === 'plugin-content-source-git'
+        ? path.join(repositoryRoot, 'plugins/content-source-git')
+        : path.join(workspaceModules, '@cogita', packageName),
+    ])
+  );
+  for (const [packageName, packageDirectory] of Object.entries(packageDirectories)) {
+    await symlink(packageDirectory, path.join(cogitaModules, packageName), 'dir');
+  }
+}
+
+async function verifyTemplate(template, expectedTheme, expectedContentSource) {
   const projectRoot = path.join(tempRoot, `${template}-site`);
   const createResult = runCli(
     ['create', projectRoot, '--template', template, '--no-install', '--no-git'],
@@ -32,8 +54,22 @@ async function verifyTemplate(template, expectedTheme) {
   const config = await readFile(path.join(projectRoot, 'cogita.config.ts'), 'utf8');
   assert.equal(config.includes(`@cogita/theme-${expectedTheme}`), true);
   assert.equal(config.includes('__SITE_TITLE__'), false);
+  if (expectedContentSource) {
+    assert.equal(
+      packageJson.devDependencies['@cogita/plugin-content-source-git'] !== undefined,
+      true
+    );
+    assert.equal(config.includes('createGitContentSource'), true);
+    const workflow = await readFile(path.join(projectRoot, '.github/workflows/deploy.yml'), 'utf8');
+    assert.equal(workflow.includes('COGITA_CONTENT_REPOSITORY'), true);
+    assert.equal(workflow.includes('pnpm exec cogita doctor --strict --json'), true);
+    await writeFile(
+      path.join(projectRoot, 'git-content', 'external-note.md'),
+      '---\ntitle: 外部模板笔记\ntags: [外部内容]\n---\n\n这篇页面来自外部内容仓库。\n'
+    );
+  }
 
-  await symlink(workspaceModules, path.join(projectRoot, 'node_modules'), 'dir');
+  await linkConsumerDependencies(projectRoot);
   const buildResult = runCli(['build'], projectRoot);
   assert.equal(buildResult.status, 0, `${template} 模板构建失败`);
 
@@ -46,12 +82,22 @@ async function verifyTemplate(template, expectedTheme) {
 
   const indexPath = path.join(projectRoot, 'doc_build/index.html');
   assert.equal((await readFile(indexPath, 'utf8')).length > 0, true);
+  if (expectedContentSource) {
+    const externalPage = await readFile(
+      path.join(projectRoot, 'doc_build/notes/external-note.html'),
+      'utf8'
+    );
+    assert.equal(externalPage.includes('外部模板笔记'), true);
+    assert.equal(externalPage.includes('来自外部内容仓库'), true);
+  }
 }
 
 try {
   await verifyTemplate('blog', 'lucid');
   await verifyTemplate('docs', 'docs');
-  console.log('[Template Check] blog/docs 模板创建与构建通过');
+  await verifyTemplate('knowledge', 'knowledge');
+  await verifyTemplate('knowledge-external', 'knowledge', true);
+  console.log('[Template Check] blog/docs/knowledge/knowledge-external 模板创建与构建通过');
 } finally {
   await rm(tempRoot, { recursive: true, force: true });
 }

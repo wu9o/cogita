@@ -28,7 +28,7 @@
 
 ### P0：稳定公共契约
 
-- [ ] 固化 `ContentIndex`、`CogitaBuildContext` 和虚拟模块的数据身份与版本策略。
+- [x] 固化 `ContentIndex`、`CogitaBuildContext` 和虚拟模块的数据身份与版本策略。
 - [x] 统一内置能力标识，并校验同一能力不能出现多个 provider。
 - [x] 建立 Core、CLI、主题和插件的兼容版本矩阵与迁移说明。
 - [x] 为能力缺失、能力 provider 冲突、布局缺失、运行时模块冲突提供稳定的诊断格式。
@@ -59,6 +59,8 @@
 - [x] 提供 `@cogita/plugin-content-relations`，生成站内出链、相关文章和反向链接数据。
 - [x] 开发 `@cogita/theme-knowledge`，把搜索、标签和内容关系组合成知识库信息架构。
 - [x] 用独立知识库消费者验证根路径、子路径、断链诊断和长期升级流程。
+- [x] 提供 `ContentSource` 适配契约，让 Git、API 或其他知识库可以接入统一内容索引。
+- [x] 提供一个官方文件/JSON 内容源适配器和对应 Demo，支持本地快照与构建期远程 JSON 来源。
 
 ### P2：规模化性能基线
 
@@ -368,13 +370,12 @@ interface CogitaTheme {
 
 #### 高级插件
 
-- [ ] `@cogita/plugin-i18n` 📋
-  - [ ] 多语言内容支持
-  - [ ] 自动语言检测
-  - [ ] 翻译工作流集成
+- [x] `@cogita/plugin-i18n`：界面文案国际化基础
+  - [x] 主题和插件共享 `virtual-cogita-i18n-text` 文案契约
+  - [x] 完整语言标识、语言前缀和回退语言匹配
+  - [x] Knowledge 主题英文优先 Demo
+  - [ ] 多语言内容路由与翻译工作流
   - [ ] RTL 语言支持
-  - [ ] 特定语言路由
-  - [ ] 翻译记忆系统
 
 - [ ] `@cogita/plugin-pwa` 📋
   - [ ] 渐进式 Web 应用功能

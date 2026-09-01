@@ -43,9 +43,44 @@ for (const slug of expectedSlugs) {
   if (!html.includes('<html')) {
     throw new Error(`${manifest.name} 的首页不是有效 HTML。`);
   }
+  const config = readFileSync(path.join(demoRoot, 'cogita.config.ts'), 'utf8');
+  if (!config.includes("locale: 'en-US'") || !config.includes("fallbackLocale: 'en-US'")) {
+    throw new Error(`${manifest.name} 未将英文设置为默认界面语言。`);
+  }
+}
+
+const expectedEnglishCopy = {
+  docs: ['Get started', 'Explore the architecture'],
+  editorial: ['Browse all posts', 'Search articles'],
+  lucid: ['Browse all posts', 'Search articles'],
+  knowledge: ['Search knowledge', 'Browse tags'],
+};
+for (const [slug, phrases] of Object.entries(expectedEnglishCopy)) {
+  const html = readFileSync(path.join(demosRoot, slug, 'doc_build', 'index.html'), 'utf8');
+  for (const phrase of phrases) {
+    if (!html.includes(phrase)) {
+      throw new Error(`${slug} Demo 未输出英文优先界面文案：${phrase}。`);
+    }
+  }
+}
+
+const knowledgeHome = readFileSync(
+  path.join(demosRoot, 'knowledge', 'doc_build', 'index.html'),
+  'utf8'
+);
+for (const phrase of ['Search knowledge', 'Browse tags', 'Recently updated']) {
+  if (!knowledgeHome.includes(phrase)) {
+    throw new Error(`Knowledge Demo 未输出英文优先界面文案：${phrase}。`);
+  }
 }
 
 const landing = readFileSync(path.join(demosRoot, 'landing', 'index.html'), 'utf8');
+if (!existsSync(path.join(demosRoot, 'landing', 'social-card.svg'))) {
+  throw new Error('主题 Demo 落地页缺少 social-card.svg。');
+}
+if (!landing.includes('og:image') || !landing.includes('twitter:card')) {
+  throw new Error('主题 Demo 落地页缺少社交分享元数据。');
+}
 for (const slug of expectedSlugs) {
   if (!landing.includes(`/demos/${slug}/`)) {
     throw new Error(`主题 Demo 落地页缺少 ${slug} 链接。`);

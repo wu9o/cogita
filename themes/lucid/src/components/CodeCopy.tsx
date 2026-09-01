@@ -66,7 +66,7 @@ async function copyText(text: string): Promise<void> {
 
   try {
     if (!document.execCommand('copy')) {
-      throw new Error('浏览器拒绝执行复制命令');
+      throw new Error('The browser rejected the copy command');
     }
   } finally {
     textarea.remove();

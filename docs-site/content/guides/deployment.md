@@ -26,7 +26,8 @@ pnpm run build:docs
 1. 安装 Node.js 和 pnpm；
 2. 构建工作区包；
 3. 构建 `docs-site`；
-4. 将 `docs-site/doc_build` 上传到 GitHub Pages。
+4. 构建四个主题 Demo，并合并到 `docs-site/doc_build/demos/`；
+5. 将 `docs-site/doc_build` 上传到 GitHub Pages。
 
 使用时需要在仓库设置中将 **Pages / Build and deployment / Source** 设置为 **GitHub Actions**，然后推送到 `main` 分支。
 
@@ -43,6 +44,8 @@ export default defineConfig({
 
 如果使用自定义域名，通常把 `base` 改为 `/`，并同步更新 `url`。
 
+部署完成后，使用手册位于 `/cogita/`，主题 Demo 总览位于 `/cogita/demos/`，四个独立主题 Demo 位于其下的主题目录。Demo 构建会使用与 Pages 一致的 `/cogita/` 前缀；本地 `pnpm run demo` 仍使用 `/demos/` 前缀。
+
 ### 独立站点仓库
 
 独立站点可以复用同样的工作流，只需要把构建命令和发布目录改成该项目的目录：
@@ -55,6 +58,20 @@ export default defineConfig({
 ```
 
 不要把框架仓库的 `docs-site` 路径复制到独立站点中；发布目录应该始终以实际构建产物为准。
+
+如果内容存放在另一个 Git 仓库，可以在构建站点前增加第二次 `actions/checkout`，将它放到
+`cogita.config.ts` 中 `createGitContentSource` 指定的目录。可直接复制仓库中的
+[`examples/github-actions/external-content-deploy.yml`](https://github.com/wu9o/cogita/blob/main/examples/github-actions/external-content-deploy.yml)。
+公共内容仓库可以使用默认的 `github.token`；私有仓库应通过仓库变量
+`COGITA_CONTENT_REPOSITORY`、可选的 `COGITA_CONTENT_REF` 和 Secrets 中的
+`COGITA_CONTENT_TOKEN` 管理来源，不要把凭据放进站点配置或工作流明文。
+
+如果内容存放在另一个 Git 仓库，可以在构建站点前增加第二次 `actions/checkout`，将它放到
+`cogita.config.ts` 中 `createGitContentSource` 指定的目录。可直接复制仓库中的
+[`examples/github-actions/external-content-deploy.yml`](https://github.com/wu9o/cogita/blob/main/examples/github-actions/external-content-deploy.yml)。
+公共内容仓库可以使用默认的 `github.token`；私有仓库应通过仓库变量
+`COGITA_CONTENT_REPOSITORY`、可选的 `COGITA_CONTENT_REF` 和 Secrets 中的
+`COGITA_CONTENT_TOKEN` 管理来源，不要把凭据放进站点配置或工作流明文。
 
 ## Vercel
 

@@ -222,3 +222,35 @@ test('内容诊断插件应检查统一内容索引中的普通文档', async ()
     await rm(root, { recursive: true, force: true });
   }
 });
+
+test('内容诊断插件应使用外部内容源的统一元数据和正文读取器', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'cogita-content-check-'));
+
+  try {
+    const externalEntry = {
+      kind: 'document',
+      sourceId: 'research-notes',
+      title: '远程笔记',
+      filePath: 'source://research-notes/remote-note',
+      route: '/notes/remote-note',
+      updateDate: '2026-08-25T00:00:00.000Z',
+      url: '/notes/remote-note',
+    };
+    const config = createConfig(root, { ...externalEntry, kind: 'post' }, '外部正文');
+    config.buildContext.contentIndex.getEntries = async () => [externalEntry];
+    config.buildContext.contentIndex.getPostContent = async () => '外部正文';
+    config.contentCheck.checkLinks = false;
+    const plugin = pluginContentCheck(config);
+    assert.ok(plugin);
+
+    await plugin.beforeBuild({ output: { path: path.join(root, 'doc_build') } });
+    const report = JSON.parse(
+      await readFile(path.join(root, 'doc_build', 'content-report.json'), 'utf8')
+    );
+    assert.equal(report.itemCount, 1);
+    assert.equal(report.errors, 0);
+    assert.equal(report.warnings, 0);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});

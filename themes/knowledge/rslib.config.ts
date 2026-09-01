@@ -9,7 +9,7 @@ const COMMON_EXTERNALS = [
   'virtual-site-data',
   'virtual-global-styles',
   'virtual-global-components',
-  'virtual-i18n-text',
+  'virtual-cogita-i18n-text',
   'virtual-search-data',
   'virtual-tags-data',
   'virtual-content-relations-data',

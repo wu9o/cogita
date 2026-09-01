@@ -15,7 +15,12 @@ import { fileURLToPath } from 'node:url';
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(scriptDirectory, '..');
 const packageRoots = ['packages', 'plugins', 'themes'];
-const requiredPackages = ['@cogita/cli', '@cogita/core', '@cogita/theme-knowledge'];
+const requiredPackages = [
+  '@cogita/cli',
+  '@cogita/core',
+  '@cogita/plugin-content-source-git',
+  '@cogita/theme-knowledge',
+];
 
 /** 获取当前工作区中可以参与独立消费者验证的发布包。 */
 function getPackageDirectories() {
@@ -83,6 +88,7 @@ function createConsumerProject(consumerRoot, archives, base) {
   writeFileSync(
     path.join(consumerRoot, 'cogita.config.ts'),
     `import { defineConfig } from '@cogita/core';
+import { createGitContentSource } from '@cogita/plugin-content-source-git';
 
 export default defineConfig({
   site: {
@@ -92,6 +98,14 @@ export default defineConfig({
   },
   posts: { dir: 'posts', routePrefix: 'posts', extensions: ['md'] },
   contentDir: 'content',
+  contentSources: [
+    createGitContentSource({
+      id: 'external-notes',
+      directory: 'git-content',
+      kind: 'document',
+      routePrefix: 'external',
+    }),
+  ],
   contentCheck: {
     enabled: true,
     reportPath: 'content-report.json',
@@ -137,6 +151,24 @@ tags: [实践]
 [尚未完成的页面](/guides/missing)
 `
   );
+  writeFileSync(
+    path.join(consumerRoot, 'git-content', 'architecture.md'),
+    `---
+title: 外部架构笔记
+tags: [知识库, 架构]
+---
+
+这篇文档来自独立 checkout 的内容仓库。
+
+[回到知识库首页](/)
+
+![外部架构示意图](./assets/diagram.svg)
+`
+  );
+  writeFileSync(
+    path.join(consumerRoot, 'git-content', 'assets', 'diagram.svg'),
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="8" fill="#dff4ea"/><text x="60" y="25" text-anchor="middle" fill="#176b4d">content source</text></svg>\n'
+  );
 }
 
 /** 执行一次独立消费者构建并返回关键首页内容。 */
@@ -175,6 +207,8 @@ try {
   mkdirSync(packageCache, { recursive: true });
   mkdirSync(path.join(consumerRoot, 'posts'), { recursive: true });
   mkdirSync(path.join(consumerRoot, 'content', 'guides'), { recursive: true });
+  mkdirSync(path.join(consumerRoot, 'git-content'), { recursive: true });
+  mkdirSync(path.join(consumerRoot, 'git-content', 'assets'), { recursive: true });
   const archives = packWorkspacePackages(getPackageDirectories(), packageCache);
   createConsumerProject(consumerRoot, archives, '/knowledge/');
 
@@ -208,13 +242,32 @@ try {
     readFileSync(path.join(consumerRoot, 'doc_build/content-report.json'), 'utf8')
   );
   if (
-    contentReport.itemCount !== 3 ||
+    contentReport.itemCount !== 4 ||
     contentReport.errors !== 0 ||
     !contentReport.issues.some(
       (issue) => issue.code === 'missing-link' && issue.route === '/guides/start'
     )
   ) {
     throw new Error(`统一内容断链诊断结果不符合预期：${JSON.stringify(contentReport)}`);
+  }
+
+  const externalPage = readFileSync(
+    path.join(consumerRoot, 'doc_build/external/architecture.html'),
+    'utf8'
+  );
+  if (!externalPage.includes('外部架构笔记') || !externalPage.includes('来自独立 checkout')) {
+    throw new Error('独立 Git 内容源没有生成可访问的静态页面。');
+  }
+  const externalAssetRoot = path.join(consumerRoot, 'doc_build', 'external-content');
+  const assetSourceDirectory = readdirSync(externalAssetRoot).find((entry) =>
+    entry.startsWith('external-notes-')
+  );
+  if (
+    !assetSourceDirectory ||
+    !existsSync(path.join(externalAssetRoot, assetSourceDirectory, 'assets', 'diagram.svg')) ||
+    !externalPage.includes('diagram.svg')
+  ) {
+    throw new Error('独立 Git 内容源没有发布正文引用的静态资源。');
   }
 
   createConsumerProject(consumerRoot, archives, '/');

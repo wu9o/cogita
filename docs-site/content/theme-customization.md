@@ -1,18 +1,18 @@
 ---
-title: 主题使用与扩展
+title: Theme usage and extension
 ---
 
-# 主题使用与扩展
+# Theme usage and extension
 
-主题是一个独立的 npm 包，除了视觉样式，还可以声明自己需要的插件和页面布局。站点通过配置选择主题，主题包由站点项目直接安装。
+A theme is an independent npm package. In addition to visual styling, it can declare the plugins and page layouts it needs. A site selects the theme in its configuration and installs the theme package directly.
 
-## 安装主题
+## Install a theme
 
 ~~~bash
 pnpm add -D @cogita/theme-docs
 ~~~
 
-然后在 `cogita.config.ts` 中指定：
+Then select it in `cogita.config.ts`:
 
 ~~~ts
 export default defineConfig({
@@ -20,37 +20,37 @@ export default defineConfig({
 });
 ~~~
 
-## 主题配置
+## Theme configuration
 
-主题可以通过 `themeConfig` 接收站点级选项。导航、侧边栏和主题专属选项都应该集中放在这里，不要把主题实现细节写入 Core 配置。
+Themes receive site-level options through `themeConfig`. Keep navigation, sidebars, and theme-specific options there instead of putting theme implementation details into Core configuration.
 
-## 内置主题概览
+## Official themes
 
-| 主题包 | 适用场景 | 视觉定位 |
+| Theme package | Best for | Visual position |
 | --- | --- | --- |
-| `@cogita/theme-docs` | Cogita 使用手册 | 文档导航、侧边栏与 API 阅读 |
-| `@cogita/theme-lucid` | 独立博客与内容站点 | 轻量 Hero、文章卡片与内容侧栏 |
-| `@cogita/theme-editorial` | 内容优先的技术博客 | 编辑感排版、主推文章与专题阅读 |
-| `@cogita/theme-knowledge` | 个人 Wiki、研究记录与混合知识库 | 统一内容、搜索、标签与反向链接 |
+| `@cogita/theme-docs` | Cogita handbooks | Documentation navigation, sidebars, and API reading |
+| `@cogita/theme-lucid` | Independent blogs and content sites | Lightweight hero, post cards, and content sidebar |
+| `@cogita/theme-editorial` | Content-first technical publishing | Editorial typography, featured posts, and focused reading |
+| `@cogita/theme-knowledge` | Personal wikis, research notes, and mixed knowledge bases | Unified content, search, topics, and backlinks |
 
-主题是站点的渲染边界：Core 负责配置、路由和构建，插件负责数据，主题负责如何组织这些数据。新增主题时，应优先新增主题包和主题专属配置，不要把视觉判断下沉到 Core。
+A theme is the site's rendering boundary: Core handles configuration, routes, and builds; plugins provide data; the theme decides how to organize that data. When adding a theme, add a theme package and theme-specific configuration before changing Core.
 
-### Lucid 主题配置
+### Lucid configuration
 
-Lucid 从 `site.title`、`site.description` 读取站点品牌信息，并通过 `themeConfig.lucid` 接收自身配置：
+Lucid reads site branding from `site.title` and `site.description`, and accepts its own options through `themeConfig.lucid`:
 
 ~~~ts
 export default defineConfig({
   theme: '@cogita/theme-lucid',
   site: {
-    title: '我的技术笔记',
-    description: '记录构建、调试和持续思考的过程。',
+    title: 'My technical notes',
+    description: 'A record of building, debugging, and sustained thinking.',
   },
   themeConfig: {
     lucid: {
       heroEyebrow: 'My Notes',
-      heroCopy: '把长期实践整理成可复用的文章。',
-      postsTitle: '最近更新',
+      heroCopy: 'Turn long-term practice into reusable writing.',
+      postsTitle: 'Recently updated',
       showSidebar: true,
       featuredPost: '/posts/introducing-cogita',
     },
@@ -58,11 +58,11 @@ export default defineConfig({
 });
 ~~~
 
-`heroEyebrow`、`heroCopy`、`postsTitle`、`showSidebar` 和 `featuredPost` 都是可选项。未配置时，Lucid 使用稳定默认值；标签、分类、合集、搜索等能力仍由对应插件决定。
+`heroEyebrow`, `heroCopy`, `postsTitle`, `showSidebar`, and `featuredPost` are optional. Lucid uses stable English-first defaults when they are omitted; topics, categories, collections, and search remain provided by their respective plugins.
 
-### Knowledge 主题配置
+### Knowledge configuration
 
-Knowledge 将 `posts` 与 `contentDir` 纳入统一内容入口，并默认组合搜索、标签和内容关系能力，适合需要长期积累、交叉引用和持续回溯的知识库站点：
+Knowledge puts `posts` and `contentDir` behind one content entry point and combines search, topics, and content relations by default. It is designed for knowledge bases that need long-term accumulation, cross-references, and revisiting:
 
 ~~~ts
 export default defineConfig({
@@ -71,10 +71,10 @@ export default defineConfig({
 });
 ~~~
 
-如果站点同时维护文章和普通文档，Knowledge 会在首页、搜索和内容关系区域中统一呈现两类内容。内容质量诊断仍需显式配置 `contentCheck` 才会启用。完整的信息架构说明请参考 [Knowledge 知识库主题](./themes/theme-knowledge-design.md)。
+When a site maintains both posts and ordinary documents, Knowledge presents both content types on the home page, in search, and in content relations. Content quality diagnostics remain opt-in through `contentCheck`. See the complete information architecture in the [Knowledge theme guide](./themes/theme-knowledge-design.md).
 
-## 替换与扩展
+## Replace and extend
 
-如果需要改变页面结构，可以创建自己的主题包，复用共享类型和 UI 组件，并在主题包内声明所需插件。站点只需要把 `theme` 切换为新包即可；文章内容和框架包不需要迁移。
+If the page structure needs to change, create your own theme package, reuse the shared types and UI components, and declare the required plugins inside that theme. The site only needs to switch the `theme` package; its content and framework packages do not need to migrate.
 
-主题的布局契约、插件依赖和解析流程详见[主题开发指南](./theme-development.md)与[架构设计](./api/architecture-design.md)。
+See the [theme development guide](./theme-development.md) and [architecture design](./api/architecture-design.md) for layout contracts, plugin dependencies, and theme resolution.

@@ -1,28 +1,28 @@
 ---
-title: Knowledge 知识库主题
+title: Knowledge theme
 ---
 
-# Knowledge 知识库主题
+# Knowledge theme
 
-`@cogita/theme-knowledge` 面向个人 Wiki、技术研究记录以及同时包含文章和手册的长期知识库。它的目标不是再提供一套博客皮肤，而是把内容和内容之间的连接组织成可持续浏览的入口。
+`@cogita/theme-knowledge` is designed for personal wikis, technical research notes, and long-term knowledge bases that combine posts with handbooks. Its goal is not to provide another blog skin, but to turn connections between pieces of content into a durable browsing entry point.
 
-## 最小配置
+## Minimal configuration
 
-```ts
+~~~ts
 import { defineConfig } from '@cogita/core';
 
 export default defineConfig({
   contentDir: 'content',
   theme: '@cogita/theme-knowledge',
 });
-```
+~~~
 
-主题默认启用本地搜索、标签和内容关系，并声明可选的内容质量诊断。`posts` 与 `contentDir` 都存在时，首页和搜索页会展示两类内容，内容页尾部会展示出链和反向链接；显式配置 `contentCheck` 后，文章和普通文档会共同生成质量报告。
+The theme enables local search, topics, and content relations by default, and declares content quality diagnostics as an optional capability. When both `posts` and `contentDir` exist, the home and search pages show both content types; content pages show outgoing and incoming links at the bottom. When `contentCheck` is configured explicitly, posts and ordinary documents produce one shared quality report.
 
-## 与其他主题的边界
+## Boundary with other themes
 
-- `@cogita/theme-docs` 优先解决目录导航和文档阅读；
-- `@cogita/theme-lucid` 优先解决持续发布和博客归档；
-- `@cogita/theme-knowledge` 优先解决跨来源内容发现和知识回溯。
+- `@cogita/theme-docs` focuses on directory navigation and document reading.
+- `@cogita/theme-lucid` focuses on continuous publishing and blog archives.
+- `@cogita/theme-knowledge` focuses on cross-source discovery and knowledge recall.
 
-主题消费 `virtual-search-data`、`virtual-tags-data` 和 `virtual-content-relations-data`，不直接扫描文件。需要扩展知识来源时，应先扩展 `ContentIndex` 或独立插件，再由主题消费新的稳定数据契约。
+The theme consumes `virtual-search-data`, `virtual-tags-data`, and `virtual-content-relations-data`; it does not scan files directly. To extend knowledge sources, add them through `contentSources` or an independent plugin that feeds the shared `ContentIndex`, then let the theme consume the stable data contract.

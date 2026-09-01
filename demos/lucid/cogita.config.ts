@@ -1,12 +1,19 @@
 import { defineConfig } from '@cogita/core';
 
+const demoPrefix = (process.env.COGITA_DEMO_PREFIX || '').replace(/\/$/, '');
+const demoBase = `${demoPrefix}/demos/lucid/`;
+
 export default defineConfig({
   site: {
     title: 'Field Notes',
-    description: '把日常实验、产品观察和代码实践整理成可复用的笔记。',
-    base: '/demos/lucid/',
+    description: 'Reusable notes from daily experiments, product observations, and code practice.',
+    base: demoBase,
   },
   theme: '@cogita/theme-lucid',
+  i18n: {
+    locale: 'en-US',
+    fallbackLocale: 'en-US',
+  },
   posts: {
     dir: 'posts',
     routePrefix: 'posts',
@@ -27,10 +34,10 @@ export default defineConfig({
   codeCopy: { enabled: true },
   themeConfig: {
     nav: [
-      { text: '首页', link: '/' },
-      { text: '文章', link: '/archive' },
-      { text: '搜索', link: '/search' },
-      { text: '标签', link: '/tags' },
+      { text: 'Home', link: '/' },
+      { text: 'Posts', link: '/archive' },
+      { text: 'Search', link: '/search' },
+      { text: 'Topics', link: '/tags' },
     ],
     lucid: {
       heroEyebrow: 'FIELD NOTES · LUCID DEMO',
@@ -41,6 +48,6 @@ export default defineConfig({
     },
   },
   builderConfig: {
-    output: { assetPrefix: '/demos/lucid/' },
+    output: { assetPrefix: demoBase },
   },
 });

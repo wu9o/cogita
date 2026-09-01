@@ -6,6 +6,8 @@
 
 一个基于 Rspress 的**主题驱动静态站点框架**，专为希望快速搭建和定制内容站点的开发者设计。
 
+先看真实效果：[主题 Demo 总览](https://wu9o.github.io/cogita/demos/) · [在线使用手册](https://wu9o.github.io/cogita/)
+
 [![npm version](https://badge.fury.io/js/@cogita%2Fcore.svg)](https://badge.fury.io/js/@cogita%2Fcore)
 [![GitHub](https://img.shields.io/github/license/wu9o/cogita)](https://github.com/wu9o/cogita/blob/main/LICENSE)
 [![CI](https://github.com/wu9o/cogita/workflows/CI/badge.svg)](https://github.com/wu9o/cogita/actions/workflows/ci.yml)
@@ -18,10 +20,23 @@
 - ⚡ **高性能**: 基于现代化 Rspress 框架，构建速度极快
 - 📝 **Markdown 优先**: 纯粹的 Markdown 写作体验，专注内容创作
 - 🛡️ **类型安全**: 完整的 TypeScript 支持，开发体验卓越
+- 🔎 **真实 Demo**: 四个独立站点消费者，直接展示主题接入和内容组织方式
 
 ## 🚀 快速开始
 
-### 三步启动站点
+### 最快路径：用模板启动
+
+如果你想先得到一个能运行的站点，直接选择模板：
+
+```bash
+pnpm dlx @cogita/cli create my-site --template knowledge
+cd my-site
+pnpm dev
+```
+
+可用模板包括 `blog`、`docs`、`knowledge` 和 `knowledge-external`。其中 `knowledge-external` 用于把 JSON 或 Git 内容源接入知识库。
+
+### 自定义配置：三步启动站点
 
 ```bash
 # 1. 安装依赖
@@ -63,11 +78,15 @@ pnpm exec cogita dev
 **核心包：**
 - [`@cogita/core`](./packages/core) - 智能核心引擎
 - [`@cogita/cli`](./packages/cli) - 命令行工具  
-- [`@cogita/theme-lucid`](./themes/lucid) - 官方博客主题
+- [`@cogita/theme-lucid`](./themes/lucid) - 实践博客主题
 - [`@cogita/theme-editorial`](./themes/editorial) - 编辑型内容主题
 - [`@cogita/theme-docs`](./themes/docs) - 技术文档主题
+- [`@cogita/theme-knowledge`](./themes/knowledge) - 长期知识库主题
+- [`@cogita/plugin-i18n`](./plugins/i18n) - 英文优先的界面文案国际化
 - [`@cogita/plugin-rss`](./plugins/rss) - RSS 订阅插件
-- [`@cogita/plugin-tags`](./plugins/tags) - 标签管理与标签云插件
+- [`@cogita/plugin-seo`](./plugins/seo) - SEO、Open Graph 和 Twitter Card 元数据
+- [`@cogita/plugin-content-source-json`](./plugins/content-source-json) - JSON 内容源
+- [`@cogita/plugin-content-source-git`](./plugins/content-source-git) - Git Markdown 内容源
 
 **完整文档：** [📖 在线使用手册](https://wu9o.github.io/cogita/) • [📚 文档源码](./docs-site/content/overview.md) • [🗺️ 包与能力地图](./docs-site/content/package-map.md) • [📄 English Documentation](./README.en.md)
 

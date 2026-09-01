@@ -1,32 +1,39 @@
 import { defineConfig } from '@cogita/core';
 
+const demoPrefix = (process.env.COGITA_DEMO_PREFIX || '').replace(/\/$/, '');
+const demoBase = `${demoPrefix}/demos/docs/`;
+
 export default defineConfig({
   site: {
     title: 'Northstar Handbook',
-    description: '一个面向产品团队的工程手册。',
-    base: '/demos/docs/',
+    description: 'A practical engineering handbook for product teams.',
+    base: demoBase,
   },
   contentDir: 'content',
   theme: '@cogita/theme-docs',
+  i18n: {
+    locale: 'en-US',
+    fallbackLocale: 'en-US',
+  },
   themeConfig: {
     nav: [
-      { text: '首页', link: '/' },
-      { text: '原则', link: '/principles' },
-      { text: '交付流程', link: '/delivery' },
+      { text: 'Home', link: '/' },
+      { text: 'Principles', link: '/principles' },
+      { text: 'Delivery', link: '/delivery' },
     ],
     sidebar: {
       '/': [
         {
           text: 'Northstar Handbook',
           items: [
-            { text: '工程原则', link: '/principles' },
-            { text: '交付流程', link: '/delivery' },
+            { text: 'Engineering principles', link: '/principles' },
+            { text: 'Delivery workflow', link: '/delivery' },
           ],
         },
       ],
     },
   },
   builderConfig: {
-    output: { assetPrefix: '/demos/docs/' },
+    output: { assetPrefix: demoBase },
   },
 });

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 180" role="img" aria-labelledby="title desc">
+  <title id="title">外部内容源示意图</title>
+  <desc id="desc">内容仓库、统一索引和知识主题之间的连接。</desc>
+  <rect width="640" height="180" rx="28" fill="#e7f2ec"/>
+  <path d="M180 90h280" stroke="#2e7657" stroke-width="6" stroke-linecap="round" stroke-dasharray="12 12"/>
+  <circle cx="120" cy="90" r="54" fill="#2e7657"/>
+  <circle cx="520" cy="90" r="54" fill="#214f3d"/>
+  <text x="120" y="98" fill="#fff" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">Git</text>
+  <text x="520" y="98" fill="#fff" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">主题</text>
+  <text x="320" y="78" fill="#214f3d" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">ContentIndex</text>
+  <text x="320" y="110" fill="#577466" font-family="Arial, sans-serif" font-size="16" text-anchor="middle">可回溯的知识连接</text>
+</svg>

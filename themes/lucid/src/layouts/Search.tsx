@@ -4,6 +4,7 @@ import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { searchConfig, searchDocuments, searchIndexHash } from 'virtual-search-data';
+import { t } from '../i18n';
 import { formatDate, getBase } from '../utils';
 
 interface SearchResult {
@@ -253,15 +254,19 @@ const SearchLayout: React.FC<LayoutProps> = () => {
     <div className="search-page">
       <header className="search-header">
         <div>
-          <p className="blog-list-eyebrow">文章探索</p>
-          <h1 className="blog-list-title">搜索文章</h1>
-          <p className="blog-list-meta">共 {searchDocuments.length} 篇文章可搜索</p>
+          <p className="blog-list-eyebrow">{t('lucid.search.eyebrow', 'Explore')}</p>
+          <h1 className="blog-list-title">{t('lucid.search.title', 'Search articles')}</h1>
+          <p className="blog-list-meta">
+            {t('lucid.search.total', `${searchDocuments.length} searchable posts`, {
+              count: searchDocuments.length,
+            })}
+          </p>
         </div>
-        <a href={getRuntimeHref(base, '/')}>返回首页</a>
+        <a href={getRuntimeHref(base, '/')}>{t('lucid.search.home', 'Back to home')}</a>
       </header>
 
       <label className="search-input-label" htmlFor="cogita-search-input">
-        输入关键词
+        {t('lucid.search.inputLabel', 'Search term')}
       </label>
       <div className="search-input-row">
         <input
@@ -269,21 +274,24 @@ const SearchLayout: React.FC<LayoutProps> = () => {
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="搜索标题、摘要、正文、标签或分类"
+          placeholder={t(
+            'lucid.search.placeholder',
+            'Search titles, summaries, text, topics, or categories'
+          )}
           autoComplete="off"
         />
         {query && (
           <button type="button" onClick={() => setQuery('')}>
-            清空
+            {t('lucid.search.clear', 'Clear')}
           </button>
         )}
       </div>
 
-      <div className="search-filter-row" aria-label="搜索筛选条件">
+      <div className="search-filter-row" aria-label={t('lucid.search.filters', 'Search filters')}>
         <label>
-          标签
+          {t('lucid.search.topic', 'Topic')}
           <select value={selectedTag} onChange={(event) => setSelectedTag(event.target.value)}>
-            <option value="">全部标签</option>
+            <option value="">{t('lucid.search.allTopics', 'All topics')}</option>
             {tagOptions.map((tag) => (
               <option key={tag} value={tag}>
                 {tag}
@@ -292,12 +300,12 @@ const SearchLayout: React.FC<LayoutProps> = () => {
           </select>
         </label>
         <label>
-          分类
+          {t('lucid.search.category', 'Category')}
           <select
             value={selectedCategory}
             onChange={(event) => setSelectedCategory(event.target.value)}
           >
-            <option value="">全部分类</option>
+            <option value="">{t('lucid.search.allCategories', 'All categories')}</option>
             {categoryOptions.map((category) => (
               <option key={category} value={category}>
                 {category}
@@ -314,21 +322,39 @@ const SearchLayout: React.FC<LayoutProps> = () => {
               setSelectedCategory('');
             }}
           >
-            清除筛选
+            {t('lucid.search.clearFilters', 'Clear filters')}
           </button>
         )}
       </div>
 
       <div className="search-results" aria-live="polite">
         {!trimmedQuery && !hasFilters ? (
-          <p className="search-empty">请输入至少 {searchConfig.minQueryLength} 个字符开始搜索。</p>
+          <p className="search-empty">
+            {t(
+              'lucid.search.minLength',
+              `Enter at least ${searchConfig.minQueryLength} characters to search.`,
+              { count: searchConfig.minQueryLength }
+            )}
+          </p>
         ) : trimmedQuery && !hasValidQuery ? (
-          <p className="search-empty">请输入至少 {searchConfig.minQueryLength} 个字符开始搜索。</p>
+          <p className="search-empty">
+            {t(
+              'lucid.search.minLength',
+              `Enter at least ${searchConfig.minQueryLength} characters to search.`,
+              { count: searchConfig.minQueryLength }
+            )}
+          </p>
         ) : results.length === 0 ? (
-          <p className="search-empty">没有找到匹配的文章。</p>
+          <p className="search-empty">
+            {t('lucid.search.noResults', 'No matching articles found.')}
+          </p>
         ) : (
           <>
-            <p className="search-result-count">找到 {results.length} 篇文章</p>
+            <p className="search-result-count">
+              {t('lucid.search.resultCount', `${results.length} articles found`, {
+                count: results.length,
+              })}
+            </p>
             {results.map(({ document }) => {
               const summary = getSearchResultSummary(document, trimmedQuery);
               return (

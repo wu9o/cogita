@@ -3,25 +3,29 @@ import { defineConfig } from '@cogita/core';
 export default defineConfig({
   site: {
     title: '__SITE_TITLE__',
-    description: '__SITE_TITLE__ 的项目文档。',
-    lang: 'zh-CN',
+    description: 'Project documentation for __SITE_TITLE__.',
+    lang: 'en-US',
     base: '/',
     url: 'http://localhost:3030/',
   },
   contentDir: 'content',
   theme: '@cogita/theme-docs',
+  i18n: {
+    locale: 'en-US',
+    fallbackLocale: 'en-US',
+  },
   themeConfig: {
     nav: [
-      { text: '首页', link: '/' },
-      { text: '指南', link: '/guide' },
+      { text: 'Home', link: '/' },
+      { text: 'Guide', link: '/guide' },
     ],
     sidebar: {
       '/': [
         {
-          text: '文档',
+          text: 'Documentation',
           items: [
-            { text: '首页', link: '/' },
-            { text: '指南', link: '/guide' },
+            { text: 'Home', link: '/' },
+            { text: 'Guide', link: '/guide' },
           ],
         },
       ],

@@ -5,11 +5,11 @@
 
 [中文](./README.md) | **English**
 
-> Command line interface for creating and managing Cogita blogs.
+> Command line interface for creating and managing Cogita sites.
 
 ## What is it?
 
-`@cogita/cli` provides a simple yet powerful set of commands to create, develop, and build Cogita blog projects. Get started in seconds with built-in templates and development tools.
+`@cogita/cli` provides a simple yet powerful set of commands to create, develop, and build Cogita sites. Get started in seconds with built-in templates and development tools.
 
 ## Installation
 
@@ -34,7 +34,7 @@ npx @cogita/cli --help
 
 ## Quick Start
 
-### Create a New Blog
+### Create a New Site
 
 ```bash
 # Interactive creation
@@ -45,6 +45,12 @@ cogita create my-blog
 
 # Create with template
 cogita create my-blog --template minimal
+
+# Create a knowledge base
+cogita create my-knowledge --template knowledge
+
+# Create a knowledge site with an external Git content repository
+cogita create my-knowledge --template knowledge-external
 ```
 
 ### Development
@@ -86,20 +92,20 @@ cogita doctor --strict --json
 
 ### `cogita create [name]`
 
-Create a new Cogita blog project.
+Create a new Cogita blog, documentation, or knowledge project.
 
 **Options:**
-- `-t, --template <name>` - Template to use (default: "basic")  
+- `-t, --template <name>` - Template to use (`blog`, `docs`, `knowledge`, or `knowledge-external`; default: `blog`)
 - `-p, --package-manager <pm>` - Package manager (npm|yarn|pnpm)
 - `--no-git` - Skip Git initialization
 - `--no-install` - Skip dependency installation
 - `-f, --force` - Overwrite existing directory
 
 **Templates:**
-- `basic` - Full-featured blog template (default)
-- `minimal` - Minimal setup with essential features
-- `tech` - Developer-focused template with code highlighting
-- `personal` - Personal blog template with social integration
+- `blog` - Lucid blog template with posts, search, tags, categories, archives, and RSS
+- `docs` - Docs template with Markdown content, navigation, and sidebar
+- `knowledge` - Knowledge template combining `posts/` and `content/` for search, tags, and relations
+- `knowledge-external` - Knowledge template with an external Git Markdown repository and a GitHub Pages workflow
 
 ### `cogita dev`
 

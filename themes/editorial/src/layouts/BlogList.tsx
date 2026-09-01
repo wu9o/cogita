@@ -3,6 +3,7 @@ import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allBlogListFilters, blogListConfig, getBlogListPage } from 'virtual-blog-list-data';
 import { PostCardList } from '../components/PostCard';
+import { t } from '../i18n';
 import { addPostCovers, getBase, getPageRoute } from '../utils';
 
 function getPageNumber(route: string): number {
@@ -26,7 +27,8 @@ const BlogListLayout: React.FC<LayoutProps> = () => {
   const filterKey = getFilterKey(route);
   const page = getBlogListPage(pageNumber, filterKey) || getBlogListPage(1, 'all');
 
-  if (!page) return <p className="editorial-empty">暂无文章。</p>;
+  if (!page)
+    return <p className="editorial-empty">{t('editorial.blogList.empty', 'No posts yet.')}</p>;
 
   return (
     <div className="editorial-index-page">
@@ -34,21 +36,30 @@ const BlogListLayout: React.FC<LayoutProps> = () => {
         <p className="editorial-eyebrow">Archive</p>
         <h1>
           {page.filter
-            ? `${page.filter.kind === 'tag' ? '标签' : '分类'}：${page.filter.label}`
-            : '全部文章'}
+            ? `${page.filter.kind === 'tag' ? t('editorial.blogList.topic', 'Topic') : t('editorial.blogList.category', 'Category')}: ${page.filter.label}`
+            : t('editorial.blogList.allPosts', 'All posts')}
         </h1>
         <p>
-          {page.filter ? `${page.filter.count} 篇文章 · ` : ''}第 {page.page} / {page.totalPages} 页
+          {page.filter ? `${page.filter.count} ${t('editorial.blogList.posts', 'posts')} · ` : ''}
+          {t('editorial.blogList.page', `Page ${page.page} of ${page.totalPages}`, {
+            page: page.page,
+            total: page.totalPages,
+          })}
         </p>
-        <a href={normalizeHrefInRuntime(`${base}/`)}>返回首页</a>
+        <a href={normalizeHrefInRuntime(`${base}/`)}>
+          {t('editorial.blogList.home', 'Back to home')}
+        </a>
       </header>
 
-      <nav className="editorial-filter-nav" aria-label="文章筛选">
+      <nav
+        className="editorial-filter-nav"
+        aria-label={t('editorial.blogList.filters', 'Post filters')}
+      >
         <a
           href={normalizeHrefInRuntime(`${base}/${blogListConfig.routePrefix}`)}
           className={!page.filter ? 'is-active' : undefined}
         >
-          全部
+          {t('editorial.blogList.all', 'All')}
         </a>
         {allBlogListFilters.map((filter) => (
           <a
@@ -65,13 +76,18 @@ const BlogListLayout: React.FC<LayoutProps> = () => {
       {page.posts.length > 0 ? (
         <PostCardList posts={addPostCovers(page.posts)} />
       ) : (
-        <p className="editorial-empty">暂无文章。</p>
+        <p className="editorial-empty">{t('editorial.blogList.empty', 'No posts yet.')}</p>
       )}
 
       {page.totalPages > 1 && (
-        <nav className="editorial-pagination" aria-label="文章列表分页">
+        <nav
+          className="editorial-pagination"
+          aria-label={t('editorial.blogList.pagination', 'Post pagination')}
+        >
           {page.previous ? (
-            <a href={normalizeHrefInRuntime(`${base}${page.previous}`)}>← 上一页</a>
+            <a href={normalizeHrefInRuntime(`${base}${page.previous}`)}>
+              ← {t('editorial.blogList.previous', 'Previous')}
+            </a>
           ) : (
             <span />
           )}
@@ -79,7 +95,9 @@ const BlogListLayout: React.FC<LayoutProps> = () => {
             {page.page} / {page.totalPages}
           </span>
           {page.next ? (
-            <a href={normalizeHrefInRuntime(`${base}${page.next}`)}>下一页 →</a>
+            <a href={normalizeHrefInRuntime(`${base}${page.next}`)}>
+              {t('editorial.blogList.next', 'Next')} →
+            </a>
           ) : (
             <span />
           )}

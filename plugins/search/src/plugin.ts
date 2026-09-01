@@ -30,7 +30,7 @@ export function pluginSearch(config: CogitaPluginConfig): CogitaPlugin | null {
     cogita: {
       providesCapabilities: [COGITA_CAPABILITIES.DISCOVERY_SEARCH],
       requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
-      requiredLayouts: [{ layout: 'search', label: '搜索' }],
+      requiredLayouts: [{ layout: 'search', label: 'Search' }],
     },
 
     async beforeBuild() {

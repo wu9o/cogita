@@ -1,6 +1,7 @@
 import { usePageData } from '@rspress/runtime';
 import { useEffect, useRef, useState } from 'react';
 import { commentsConfig } from 'virtual-comments-data';
+import { t } from '../i18n';
 import { getBase, getPageRoute } from '../utils';
 
 /** 在文章页加载配置好的 Giscus 或 Utterances 评论组件。 */
@@ -51,8 +52,15 @@ export default function Comments() {
   return (
     <section className="editorial-comments" aria-labelledby="editorial-comments-title">
       <h2 id="editorial-comments-title">{commentsConfig.title}</h2>
-      {state === 'loading' && <p>正在加载评论服务…</p>}
-      {state === 'error' && <p role="alert">评论服务暂时不可用，请稍后重试。</p>}
+      {state === 'loading' && <p>{t('editorial.comments.loading', 'Loading comments…')}</p>}
+      {state === 'error' && (
+        <p role="alert">
+          {t(
+            'editorial.comments.error',
+            'Comments are temporarily unavailable. Please try again later.'
+          )}
+        </p>
+      )}
       <div ref={containerRef} />
     </section>
   );

@@ -4,6 +4,7 @@ import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { allTags, getRelatedTags, tagsConfig } from 'virtual-tags-data';
 import { PostCardList } from '../components/PostCard';
+import { t } from '../i18n';
 import { formatDate, getBase, getPageRoute } from '../utils';
 
 /**
@@ -31,8 +32,10 @@ const TagPageLayout: React.FC<LayoutProps> = () => {
     return (
       <div className="tag-page">
         <header className="tag-header">
-          <h1 className="tag-title">标签云</h1>
-          <p className="tag-meta">共 {allTags.length} 个标签</p>
+          <h1 className="tag-title">{t('lucid.tag.title', 'Topic cloud')}</h1>
+          <p className="tag-meta">
+            {t('lucid.tag.total', `${allTags.length} topics`, { count: allTags.length })}
+          </p>
         </header>
         <section className="tag-cloud-section">
           <TagCloud tags={allTags} config={tagsConfig.tagCloud} className="lucid-tag-cloud" />
@@ -48,9 +51,9 @@ const TagPageLayout: React.FC<LayoutProps> = () => {
     return (
       <div className="tag-page">
         <a href={tagsHref} className="tag-back">
-          ← 返回标签索引
+          ← {t('lucid.tag.back', 'Back to topic index')}
         </a>
-        <p className="tag-empty">标签不存在</p>
+        <p className="tag-empty">{t('lucid.tag.notFound', 'Topic not found.')}</p>
       </div>
     );
   }
@@ -63,11 +66,15 @@ const TagPageLayout: React.FC<LayoutProps> = () => {
     <div className="tag-page">
       <header className="tag-header">
         <a href={tagsHref} className="tag-back">
-          ← 返回标签索引
+          ← {t('lucid.tag.back', 'Back to topic index')}
         </a>
         <h1 className="tag-title">#{tag.name}</h1>
         <p className="tag-meta">
-          {tag.count} 篇文章 · 最近更新 {formatDate(tag.posts[0]?.createDate)}
+          {t(
+            'lucid.tag.meta',
+            `${tag.count} posts · Updated ${formatDate(tag.posts[0]?.createDate)}`,
+            { count: tag.count }
+          )}
         </p>
       </header>
 
@@ -77,7 +84,7 @@ const TagPageLayout: React.FC<LayoutProps> = () => {
 
       {relatedTags.length > 0 && (
         <section className="tag-related">
-          <h2 className="tag-section-title">相关标签</h2>
+          <h2 className="tag-section-title">{t('lucid.tag.related', 'Related topics')}</h2>
           <TagList tags={relatedTags.map((t) => t.name)} variant="compact" />
         </section>
       )}

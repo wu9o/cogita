@@ -1,0 +1,22 @@
+[
+  {
+    "id": "field-notes-remote",
+    "kind": "document",
+    "title": "从外部来源回到现场",
+    "description": "这条知识来自一个外部 JSON 导出，仍然可以和站内文章建立关系。",
+    "route": "/notes/field-notes-remote",
+    "updateDate": "2026-08-29T09:00:00.000Z",
+    "tags": ["研究", "内容源"],
+    "content": "# 从外部来源回到现场\n\n这是一条由 JSON 内容源接入的知识条目。\n\n它继续指向[决策记录](/posts/decision-records)，展示外部来源如何进入同一个知识关系图。"
+  },
+  {
+    "id": "field-notes-practice",
+    "kind": "document",
+    "title": "把来源变成可回溯的实践",
+    "description": "外部导出不应该成为孤岛，而应该保留稳定路由和正文入口。",
+    "route": "/notes/field-notes-practice",
+    "updateDate": "2026-08-28T09:00:00.000Z",
+    "tags": ["内容源", "实践"],
+    "content": "# 把来源变成可回溯的实践\n\n内容源适配器负责发现条目，Knowledge 主题负责把它们呈现为可以继续探索的上下文。"
+  }
+]

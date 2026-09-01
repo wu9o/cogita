@@ -14,6 +14,8 @@ import jiti from 'jiti';
 import * as mlly from 'mlly';
 import type { CogitaConfig, CogitaFullConfig, PostsConfig } from '../types';
 import { createContentIndex } from './content-index';
+import { createContentSourceAssetsPlugin } from './content-source-assets';
+import { createContentSourcePagesPlugin } from './content-source-pages';
 import {
   createCoreDiagnostic,
   createCoreDiagnosticError,
@@ -522,7 +524,13 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
     ...cogitaConfig.posts,
   };
   const logger = createCogitaLogger();
-  const contentIndex = createContentIndex(root, posts, logger, cogitaConfig.contentDir);
+  const contentIndex = createContentIndex(
+    root,
+    posts,
+    logger,
+    cogitaConfig.contentDir,
+    cogitaConfig.contentSources
+  );
   const strict = cogitaConfig.strict !== false;
   const framework = {
     version: getPackageVersion(),
@@ -600,11 +608,11 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
     codeCopy: {
       enabled: true,
       selector: '.rspress-doc pre',
-      buttonLabel: '复制代码',
-      selectionLabel: '复制选中代码',
-      languageLabel: '复制 {language} 代码',
-      copiedLabel: '已复制',
-      errorLabel: '复制失败',
+      buttonLabel: 'Copy code',
+      selectionLabel: 'Copy selection',
+      languageLabel: 'Copy {language} code',
+      copiedLabel: 'Copied',
+      errorLabel: 'Copy failed',
       resetDelay: 2000,
       ...cogitaConfig.codeCopy,
     },
@@ -612,7 +620,7 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
     comments: {
       enabled: false,
       provider: 'giscus' as const,
-      title: '评论',
+      title: 'Comments',
       ...cogitaConfig.comments,
       giscus: {
         repo: '',
@@ -625,7 +633,7 @@ function createFullConfig(cogitaConfig: CogitaConfig, root: string): CogitaFullC
         emitMetadata: false,
         inputPosition: 'bottom' as const,
         theme: 'preferred_color_scheme',
-        lang: 'zh-CN',
+        lang: 'en',
         loading: 'lazy' as const,
         ...cogitaConfig.comments?.giscus,
       },
@@ -815,6 +823,14 @@ export async function createRspressConfig(
       },
       {
         plugin: cogitaRuntimeDefaults,
+        source: 'core',
+      },
+      {
+        plugin: createContentSourcePagesPlugin(pluginConfig),
+        source: 'core',
+      },
+      {
+        plugin: createContentSourceAssetsPlugin(pluginConfig),
         source: 'core',
       },
       ...(loadedTheme

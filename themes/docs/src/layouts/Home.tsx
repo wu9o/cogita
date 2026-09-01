@@ -1,96 +1,155 @@
 import type { LayoutProps } from '@cogita/shared';
 import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
+import { t } from 'virtual-cogita-i18n-text';
 
 /** 技术文档首页，提供手册入口和框架定位说明。 */
 const HomeLayout: React.FC<LayoutProps> = () => {
   const pageData = usePageData();
   const base = pageData?.siteData?.base || '';
   const title = pageData?.siteData?.title || 'Cogita';
-  const description = pageData?.siteData?.description || '主题驱动的静态站点框架。';
+  const description = pageData?.siteData?.description || 'A theme-driven static site framework.';
   const link = (path: string) =>
     normalizeHrefInRuntime(`${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`);
 
   return (
     <main className="docs-home">
       <section className="docs-home-hero">
-        <p className="docs-home-eyebrow">{title} · 技术文档</p>
+        <p className="docs-home-eyebrow">
+          {title} · {t('docs.home.eyebrow', 'Documentation')}
+        </p>
         <h1>{description}</h1>
         <p className="docs-home-lead">
-          从配置、主题到插件，了解如何用约定优于配置的方式构建可维护的静态站点。
+          {t(
+            'docs.home.lead',
+            'Learn how to build maintainable static sites with conventions across configuration, themes, and plugins.'
+          )}
         </p>
         <div className="docs-home-actions">
-          <a href={link('/getting-started')}>开始使用</a>
-          <a href={link('/api/architecture-design')}>了解架构</a>
+          <a href={link('/getting-started')}>{t('docs.home.getStarted', 'Get started')}</a>
+          <a href={link('/api/architecture-design')}>
+            {t('docs.home.architecture', 'Explore the architecture')}
+          </a>
         </div>
       </section>
 
-      <section className="docs-home-grid" aria-label="文档入口">
+      <section
+        className="docs-home-grid"
+        aria-label={t('docs.home.entryPoints', 'Documentation entry points')}
+      >
         <a href={link('/getting-started')} className="docs-home-card">
           <span>01</span>
-          <strong>快速开始</strong>
-          <small>从安装、配置到部署，快速构建第一个站点。</small>
+          <strong>{t('docs.home.quickstart.title', 'Quick start')}</strong>
+          <small>
+            {t(
+              'docs.home.quickstart.description',
+              'Build your first site from installation to deployment.'
+            )}
+          </small>
         </a>
         <a href={link('/api/architecture-design')} className="docs-home-card">
           <span>02</span>
-          <strong>架构设计</strong>
-          <small>掌握 Core、主题和插件的公共接口。</small>
+          <strong>{t('docs.home.architecture.title', 'Architecture')}</strong>
+          <small>
+            {t(
+              'docs.home.architecture.description',
+              'Understand the public contracts between Core, themes, and plugins.'
+            )}
+          </small>
         </a>
         <a href={link('/plugins/plugin-api-specification')} className="docs-home-card">
           <span>03</span>
-          <strong>插件开发</strong>
-          <small>为站点增加构建能力、数据处理和运行时功能。</small>
+          <strong>{t('docs.home.plugins.title', 'Plugin development')}</strong>
+          <small>
+            {t(
+              'docs.home.plugins.description',
+              'Add build capabilities, data processing, and runtime features to your site.'
+            )}
+          </small>
         </a>
       </section>
 
-      <section className="docs-home-system" aria-label="框架能力">
+      <section
+        className="docs-home-system"
+        aria-label={t('docs.home.system.label', 'Framework model')}
+      >
         <div className="docs-home-system-copy">
-          <p className="docs-home-section-label">清晰边界</p>
-          <h2>站点内容与框架能力，各自独立演进。</h2>
+          <p className="docs-home-section-label">
+            {t('docs.home.boundaries.label', 'Clear boundaries')}
+          </p>
+          <h2>
+            {t(
+              'docs.home.boundaries.title',
+              'Site content and framework capabilities evolve independently.'
+            )}
+          </h2>
           <p>
-            Cogita 仓库维护可复用的 Core、主题和插件；博客、知识库与项目手册作为独立站点安装这些包。
+            {t(
+              'docs.home.boundaries.description',
+              'The Cogita repository maintains reusable Core, themes, and plugins. Blogs, knowledge bases, and handbooks consume them as independent sites.'
+            )}
           </p>
         </div>
-        <div className="docs-home-flow" aria-label="构建流程">
-          <span>配置</span>
+        <div className="docs-home-flow" aria-label={t('docs.home.flow.label', 'Build flow')}>
+          <span>{t('docs.home.flow.config', 'Config')}</span>
           <span className="docs-home-flow-arrow">→</span>
-          <span>主题</span>
+          <span>{t('docs.home.flow.theme', 'Theme')}</span>
           <span className="docs-home-flow-arrow">→</span>
-          <span>插件</span>
+          <span>{t('docs.home.flow.plugin', 'Plugin')}</span>
           <span className="docs-home-flow-arrow">→</span>
-          <span>静态输出</span>
+          <span>{t('docs.home.flow.output', 'Static output')}</span>
         </div>
       </section>
 
-      <section className="docs-home-themes" aria-label="主题展示">
+      <section
+        className="docs-home-themes"
+        aria-label={t('docs.home.themes.label', 'Theme showcase')}
+      >
         <div className="docs-home-themes-heading">
           <div>
-            <p className="docs-home-section-label">主题选择</p>
-            <h2>同一套框架，适配不同内容形态。</h2>
+            <p className="docs-home-section-label">
+              {t('docs.home.themes.eyebrow', 'Choose a theme')}
+            </p>
+            <h2>{t('docs.home.themes.title', 'One framework for many content shapes.')}</h2>
           </div>
-          <a href={link('/themes')}>查看主题总览 →</a>
+          <a href={link('/themes')}>{t('docs.home.themes.viewAll', 'View all themes →')}</a>
         </div>
         <div className="docs-home-theme-list">
           <a href={link('/themes')} className="docs-home-theme-card docs-home-theme-card-docs">
             <span>DOCS</span>
-            <strong>技术文档主题</strong>
-            <small>适合项目手册、API 文档和知识库。</small>
+            <strong>{t('docs.home.themes.docs.title', 'Documentation theme')}</strong>
+            <small>
+              {t(
+                'docs.home.themes.docs.description',
+                'For project handbooks, API references, and knowledge bases.'
+              )}
+            </small>
           </a>
           <a
             href="https://github.com/wu9o/cogita/tree/main/themes/lucid"
             className="docs-home-theme-card docs-home-theme-card-lucid"
           >
             <span>LUCID</span>
-            <strong>内容型博客主题</strong>
-            <small>适合个人博客、文章列表和归档浏览。</small>
+            <strong>{t('docs.home.themes.lucid.title', 'Content-focused blog theme')}</strong>
+            <small>
+              {t(
+                'docs.home.themes.lucid.description',
+                'For personal blogs, article lists, and archives.'
+              )}
+            </small>
           </a>
           <a
             href="https://github.com/wu9o/cogita/tree/main/themes/editorial"
             className="docs-home-theme-card docs-home-theme-card-editorial"
           >
             <span>EDITORIAL</span>
-            <strong>编辑感主题</strong>
-            <small>适合强调阅读节奏和内容呈现的站点。</small>
+            <strong>{t('docs.home.themes.editorial.title', 'Editorial theme')}</strong>
+            <small>
+              {t(
+                'docs.home.themes.editorial.description',
+                'For sites that prioritize reading rhythm and presentation.'
+              )}
+            </small>
           </a>
         </div>
       </section>

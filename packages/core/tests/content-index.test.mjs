@@ -192,6 +192,96 @@ describe('构建期内容索引', () => {
     }
   });
 
+  it('应将外部内容源合并到统一索引，并复用来源正文读取器', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'cogita-content-source-'));
+    let loadCount = 0;
+    let contentReadCount = 0;
+    const source = {
+      id: 'research-notes',
+      async load(context) {
+        loadCount += 1;
+        assert.equal(context.root, root);
+        return [
+          {
+            kind: 'document',
+            sourceId: 'ignored-by-core',
+            title: '远程笔记',
+            filePath: 'source://research-notes/remote-note',
+            route: '/notes/remote-note',
+            updateDate: '2026-08-25T00:00:00.000Z',
+            url: '/notes/remote-note',
+          },
+          {
+            kind: 'post',
+            title: '远程文章',
+            filePath: 'source://research-notes/remote-post',
+            route: '/posts/remote-post',
+            createDate: '2026-08-26T00:00:00.000Z',
+            updateDate: '2026-08-26T00:00:00.000Z',
+            url: '/posts/remote-post',
+          },
+        ];
+      },
+      async getContent(entry) {
+        contentReadCount += 1;
+        return `# ${entry.title}\n\n来自外部内容源的正文。`;
+      },
+    };
+
+    try {
+      const index = createContentIndex(
+        root,
+        { dir: 'posts', routePrefix: 'posts', extensions: ['md', 'mdx'] },
+        undefined,
+        undefined,
+        [source]
+      );
+      const entries = await index.getEntries();
+      const posts = await index.getPosts();
+
+      assert.equal(loadCount, 1);
+      assert.deepEqual(
+        entries
+          .filter((entry) => entry.sourceId)
+          .map((entry) => [entry.sourceId, entry.kind, entry.title, entry.route]),
+        [
+          ['research-notes', 'document', '远程笔记', '/notes/remote-note'],
+          ['research-notes', 'post', '远程文章', '/posts/remote-post'],
+        ]
+      );
+      assert.equal(posts[0].title, '远程文章');
+
+      const firstBody = index.getPostContent('source://research-notes/remote-note');
+      const secondBody = index.getPostContent('source://research-notes/remote-note');
+      assert.strictEqual(firstBody, secondBody);
+      assert.equal((await firstBody).includes('远程笔记'), true);
+      assert.equal(contentReadCount, 1);
+
+      index.invalidate();
+      await index.getEntries();
+      assert.equal(loadCount, 2);
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('应拒绝重复的外部内容源 id', () => {
+    assert.throws(
+      () =>
+        createContentIndex(
+          '/project',
+          { dir: 'posts', routePrefix: 'posts', extensions: ['md', 'mdx'] },
+          undefined,
+          undefined,
+          [
+            { id: 'duplicate', load: async () => [] },
+            { id: 'duplicate', load: async () => [] },
+          ]
+        ),
+      /内容源 id 重复：duplicate/
+    );
+  });
+
   it('应为文章列表生成筛选路由，并让父分类覆盖子分类', () => {
     const posts = [
       { createDate: '2026-08-24', tags: ['Git'], categories: ['工程实践/Git'] },

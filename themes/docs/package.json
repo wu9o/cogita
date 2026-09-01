@@ -32,6 +32,9 @@
     "build": "rslib build",
     "dev": "rslib build -w"
   },
+  "dependencies": {
+    "@cogita/plugin-i18n": "workspace:*"
+  },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",

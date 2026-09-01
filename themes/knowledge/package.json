@@ -55,6 +55,7 @@
   "dependencies": {
     "@cogita/plugin-content-check": "workspace:*",
     "@cogita/plugin-content-relations": "workspace:*",
+    "@cogita/plugin-i18n": "workspace:*",
     "@cogita/plugin-posts-frontmatter": "workspace:*",
     "@cogita/plugin-search": "workspace:*",
     "@cogita/plugin-tags": "workspace:*",

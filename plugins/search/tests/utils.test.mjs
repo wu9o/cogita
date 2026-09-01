@@ -140,4 +140,34 @@ describe('搜索索引工具函数', () => {
     );
     assert.equal(documents[0].createDate, '2026-08-25');
   });
+
+  it('全文搜索应通过统一内容索引读取外部来源正文', async () => {
+    const documents = await extractSearchDocuments(
+      'missing-posts',
+      process.cwd(),
+      'posts',
+      ['md'],
+      resolveSearchConfig({ includeContent: true }),
+      {
+        getPosts: async () => [],
+        getEntries: async () => [
+          {
+            kind: 'document',
+            sourceId: 'json-export',
+            title: '外部笔记',
+            filePath: 'source://json-export/external-note',
+            route: '/notes/external-note',
+            updateDate: '2026-08-25',
+            url: '/notes/external-note',
+          },
+        ],
+        getPostContent: async (filePath) => {
+          assert.equal(filePath, 'source://json-export/external-note');
+          return '# 外部笔记\n\n这段正文来自内容源。';
+        },
+      }
+    );
+
+    assert.equal(documents[0].content, '外部笔记 这段正文来自内容源。');
+  });
 });

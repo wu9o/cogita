@@ -3,12 +3,16 @@ import { defineConfig } from '@cogita/core';
 export default defineConfig({
   site: {
     title: '__SITE_TITLE__',
-    description: '__SITE_TITLE__ 的技术文章与实践记录。',
-    lang: 'zh-CN',
+    description: 'Technical writing and practice notes from __SITE_TITLE__.',
+    lang: 'en-US',
     base: '/',
     url: 'http://localhost:3030/',
   },
   theme: '@cogita/theme-lucid',
+  i18n: {
+    locale: 'en-US',
+    fallbackLocale: 'en-US',
+  },
   posts: {
     dir: 'posts',
     routePrefix: 'posts',
@@ -30,8 +34,8 @@ export default defineConfig({
   },
   rss: {
     title: '__SITE_TITLE__ RSS',
-    description: '__SITE_TITLE__ 的订阅源。',
-    language: 'zh-CN',
+    description: '__SITE_TITLE__ subscription feed.',
+    language: 'en-US',
     formats: ['rss', 'atom', 'json'],
   },
   contentCheck: {
@@ -43,11 +47,11 @@ export default defineConfig({
   },
   themeConfig: {
     nav: [
-      { text: '首页', link: '/' },
-      { text: '全部文章', link: '/archive' },
-      { text: '搜索', link: '/search' },
-      { text: '标签', link: '/tags' },
-      { text: '分类', link: '/categories' },
+      { text: 'Home', link: '/' },
+      { text: 'All posts', link: '/archive' },
+      { text: 'Search', link: '/search' },
+      { text: 'Topics', link: '/tags' },
+      { text: 'Categories', link: '/categories' },
     ],
   },
 });

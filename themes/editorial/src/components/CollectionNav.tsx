@@ -1,5 +1,6 @@
 import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import { getCollectionByPostRoute } from 'virtual-collections-data';
+import { t } from '../i18n';
 import { getBase, getPageRoute } from '../utils';
 
 /** 在合集文章底部提供系列信息和前后文章导航。 */
@@ -17,7 +18,10 @@ export default function CollectionNav() {
   const next = collection.posts[currentIndex + 1];
 
   return (
-    <section className="editorial-collection-nav" aria-label="合集导航">
+    <section
+      className="editorial-collection-nav"
+      aria-label={t('editorial.collection.navigation', 'Collection navigation')}
+    >
       <div>
         <a
           href={normalizeHrefInRuntime(`${base}${collection.route}`)}
@@ -26,7 +30,10 @@ export default function CollectionNav() {
           {collection.title}
         </a>
         <span>
-          第 {currentIndex + 1} / {collection.count} 篇
+          {t('editorial.collection.progress', `${currentIndex + 1} of ${collection.count}`, {
+            current: currentIndex + 1,
+            total: collection.count,
+          })}
         </span>
       </div>
       <nav className="editorial-collection-links">

@@ -23,7 +23,7 @@ function resolveGiscusConfig(config?: GiscusConfig): ResolvedGiscusConfig {
     emitMetadata: config?.emitMetadata === true,
     inputPosition: config?.inputPosition || 'bottom',
     theme: config?.theme || 'preferred_color_scheme',
-    lang: config?.lang || 'zh-CN',
+    lang: config?.lang || 'en',
     loading: config?.loading || 'lazy',
   };
 }
@@ -47,7 +47,7 @@ export function resolveCommentsConfig(
   return {
     enabled: config?.enabled === true,
     provider: config?.provider === 'utterances' ? 'utterances' : 'giscus',
-    title: config?.title || '评论',
+    title: config?.title || 'Comments',
     giscus: resolveGiscusConfig(config?.giscus),
     utterances: resolveUtterancesConfig(config?.utterances),
     postRoutes: [...new Set(postRoutes)].sort(),

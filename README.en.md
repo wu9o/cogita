@@ -6,6 +6,10 @@
 
 A theme-driven static site framework based on Rspress, designed for developers who want to quickly build and customize content sites.
 
+All official themes and demos are English-first by default. Configure `@cogita/plugin-i18n` when a site needs localized UI copy; your Markdown content remains in the language you choose.
+
+See it in action: [Theme demos](https://wu9o.github.io/cogita/demos/) · [Online documentation](https://wu9o.github.io/cogita/)
+
 [![npm version](https://badge.fury.io/js/@cogita%2Fcore.svg)](https://badge.fury.io/js/@cogita%2Fcore)
 [![GitHub](https://img.shields.io/github/license/wu9o/cogita)](https://github.com/wu9o/cogita/blob/main/LICENSE)
 [![CI](https://github.com/wu9o/cogita/workflows/CI/badge.svg)](https://github.com/wu9o/cogita/actions/workflows/ci.yml)
@@ -18,6 +22,7 @@ A theme-driven static site framework based on Rspress, designed for developers w
 - ⚡ **High Performance**: Built on modern Rspress framework with blazing fast builds
 - 📝 **Markdown First**: Pure Markdown writing experience, focus on content creation
 - 🛡️ **Type Safe**: Full TypeScript support with excellent developer experience
+- 🔎 **Real Demos**: Four independent site consumers show how themes are integrated
 
 ## 🏗️ Unique Architecture
 
@@ -42,7 +47,17 @@ Traditional Approach:
 
 ## 🚀 Quick Start
 
-### Get Started in 3 Steps
+### Fastest path: start from a template
+
+```bash
+pnpm dlx @cogita/cli create my-site --template knowledge
+cd my-site
+pnpm dev
+```
+
+Available templates include `blog`, `docs`, `knowledge`, and `knowledge-external`. Use `knowledge-external` when JSON or Git content sources should join the knowledge base.
+
+### Custom setup in 3 steps
 
 1. **📦 Install Dependencies**
    ```bash
@@ -123,6 +138,9 @@ Traditional Approach:
 | Theme | Description | Features |
 |-------|-------------|----------|
 | [@cogita/theme-lucid](./themes/lucid) | Clean and elegant default theme | Responsive design, RSS support, dark mode |
+| [@cogita/theme-editorial](./themes/editorial) | Editorial publishing theme | Feature-led layouts and topic reading |
+| [@cogita/theme-docs](./themes/docs) | Documentation theme | Structured navigation and reference reading |
+| [@cogita/theme-knowledge](./themes/knowledge) | Knowledge base theme | Search, tags, relations, JSON and Git sources |
 
 ### 🔌 Functional Plugins
 
@@ -130,11 +148,12 @@ Traditional Approach:
 |--------|-------------|--------|
 | [@cogita/plugin-posts-frontmatter](./plugins/posts-frontmatter) | Post data extraction and route generation | ✅ Complete |
 | [@cogita/plugin-rss](./plugins/rss) | RSS/Atom/JSON Feed subscription generation | ✅ Complete |
-| @cogita/plugin-tags | Tag system and tag pages | 🚧 In Development |
-| @cogita/plugin-categories | Category system and category pages | 📋 Planned |
-| @cogita/plugin-search | Local full-text search functionality | 📋 Planned |
-| @cogita/plugin-comments | Comment system integration (Giscus/Gitalk) | 📋 Planned |
-| @cogita/plugin-analytics | Website analytics integration | 📋 Planned |
+| [@cogita/plugin-tags](./plugins/tags) | Tag system and tag pages | ✅ |
+| [@cogita/plugin-search](./plugins/search) | Local content search | ✅ |
+| [@cogita/plugin-i18n](./plugins/i18n) | Locale-aware UI copy through a virtual runtime module | ✅ |
+| [@cogita/plugin-seo](./plugins/seo) | SEO, Open Graph and Twitter Card metadata | ✅ |
+| [@cogita/plugin-content-source-json](./plugins/content-source-json) | JSON content source integration | ✅ |
+| [@cogita/plugin-content-source-git](./plugins/content-source-git) | Git Markdown content source integration | ✅ |
 
 ## 🎯 Advanced Configuration
 
@@ -272,12 +291,13 @@ boundary for third-party themes and plugins.
 - [ ] **Full-text Search**: Algolia/local search based search functionality
 - [ ] **SEO Optimization**: Auto sitemap, meta tags, structured data
 - [ ] **Social Integration**: Auto sharing, comment systems, social login
-- [ ] **Internationalization**: Multi-language blog support and i18n toolchain
+- [x] **Internationalization foundation**: Locale-aware UI copy through `@cogita/plugin-i18n`
 
 ## 📊 Project Stats
 
 - 🏗️ **Architecture**: Monorepo + TypeScript + pnpm workspace
-- 📦 **Package Count**: 7 core packages + 2 plugins + 1 theme
+- 🎨 **Official Themes**: Docs, Lucid, Editorial and Knowledge
+- 🔌 **Extension Model**: Themes as ecosystems, plugins by capability
 - 🧪 **Code Quality**: Biome + TypeScript + Publint
 - 🚀 **Automation**: GitHub Actions + Changesets
 - 📝 **Documentation**: 90%+ API documentation coverage

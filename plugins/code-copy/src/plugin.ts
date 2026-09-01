@@ -16,11 +16,11 @@ export function resolveCodeCopyConfig(config?: CodeCopyConfig): ResolvedCodeCopy
   return {
     enabled: config?.enabled !== false,
     selector: config?.selector || '.rspress-doc pre',
-    buttonLabel: config?.buttonLabel || '复制代码',
-    selectionLabel: config?.selectionLabel || '复制选中代码',
-    languageLabel: config?.languageLabel || '复制 {language} 代码',
-    copiedLabel: config?.copiedLabel || '已复制',
-    errorLabel: config?.errorLabel || '复制失败',
+    buttonLabel: config?.buttonLabel || 'Copy code',
+    selectionLabel: config?.selectionLabel || 'Copy selection',
+    languageLabel: config?.languageLabel || 'Copy {language} code',
+    copiedLabel: config?.copiedLabel || 'Copied',
+    errorLabel: config?.errorLabel || 'Copy failed',
     resetDelay,
   };
 }

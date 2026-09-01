@@ -1,5 +1,6 @@
 import type { Post } from '@cogita/ui';
 import { normalizeHrefInRuntime, normalizeImagePath, usePageData } from '@rspress/runtime';
+import { t } from '../i18n';
 import { formatDate, getBase } from '../utils';
 
 interface PostCardProps {
@@ -11,7 +12,7 @@ function PostTags({ tags = [] }: { tags?: string[] }) {
   if (tags.length === 0) return null;
 
   return (
-    <ul className="lucid-post-tags" aria-label="文章标签">
+    <ul className="lucid-post-tags" aria-label={t('lucid.article.tags', 'Article topics')}>
       {tags.slice(0, 4).map((tag) => (
         <li key={tag}>#{tag}</li>
       ))}
@@ -27,7 +28,11 @@ export function PostCard({ post, featured = false }: PostCardProps) {
   return (
     <article className={`lucid-post-card${featured ? ' lucid-post-card-featured' : ''}`}>
       {post.image && (
-        <a className="lucid-post-card-cover" href={postHref} aria-label={`阅读：${post.title}`}>
+        <a
+          className="lucid-post-card-cover"
+          href={postHref}
+          aria-label={t('lucid.post.read', `Read ${post.title}`, { title: post.title })}
+        >
           <img
             src={normalizeImagePath(post.image)}
             alt={post.imageAlt || post.title}

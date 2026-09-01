@@ -17,7 +17,7 @@ async function copyText(text: string): Promise<void> {
   textarea.select();
 
   try {
-    if (!document.execCommand('copy')) throw new Error('复制失败');
+    if (!document.execCommand('copy')) throw new Error('Copy failed');
   } finally {
     textarea.remove();
   }

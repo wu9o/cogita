@@ -12,6 +12,7 @@ import { allPosts } from 'virtual-posts-data';
 import { searchConfig } from 'virtual-search-data';
 import { allTags, tagsConfig } from 'virtual-tags-data';
 import { PostCard, PostCardList } from '../components/PostCard';
+import { t } from '../i18n';
 import { getBase, getLucidConfig, getSiteMetadata } from '../utils';
 
 /**
@@ -54,23 +55,28 @@ const HomeLayout: React.FC<LayoutProps> = () => {
           <p className="lucid-eyebrow">{lucidConfig.heroEyebrow}</p>
           <h1>{site.description}</h1>
           <p className="lucid-hero-description">{lucidConfig.heroCopy}</p>
-          <nav className="lucid-hero-actions" aria-label="博客导航">
+          <nav
+            className="lucid-hero-actions"
+            aria-label={t('lucid.home.navigation', 'Blog navigation')}
+          >
             <a className="lucid-action-primary" href={normalizeHrefInRuntime(`${base}/archive`)}>
-              浏览全部文章
+              {t('lucid.home.allPosts', 'Browse all posts')}
             </a>
             {searchConfig.enabled && (
               <a className="lucid-action-secondary" href={normalizeHrefInRuntime(`${base}/search`)}>
-                搜索文章
+                {t('lucid.home.search', 'Search articles')}
               </a>
             )}
           </nav>
         </div>
-        <div className="lucid-hero-panel" aria-label="站点概览">
+        <div className="lucid-hero-panel" aria-label={t('lucid.home.overview', 'Site overview')}>
           <span className="lucid-hero-panel-label">{site.title}</span>
           <strong>{allPosts.length}</strong>
-          <span>篇文章，持续记录中</span>
+          <span>{t('lucid.home.postCount', 'posts and counting')}</span>
           <div className="lucid-hero-panel-line" />
-          <span>{allTags.length} 个主题标签</span>
+          <span>
+            {t('lucid.home.tagCount', `${allTags.length} topics`, { count: allTags.length })}
+          </span>
         </div>
       </section>
 
@@ -79,7 +85,7 @@ const HomeLayout: React.FC<LayoutProps> = () => {
           <div className="lucid-section-heading">
             <div>
               <p className="lucid-eyebrow">Featured</p>
-              <h2 id="lucid-featured-title">值得先读</h2>
+              <h2 id="lucid-featured-title">{t('lucid.home.featured', 'Featured reading')}</h2>
             </div>
           </div>
           <PostCard post={featured as Post} featured />
@@ -92,13 +98,13 @@ const HomeLayout: React.FC<LayoutProps> = () => {
         {lucidConfig.showSidebar && (
           <aside className="home-sidebar">
             <section className="sidebar-section">
-              <h2 className="sidebar-title">标签</h2>
+              <h2 className="sidebar-title">{t('lucid.home.topics', 'Topics')}</h2>
               <TagCloud tags={allTags} config={tagsConfig.tagCloud} className="lucid-tag-cloud" />
             </section>
             <section className="sidebar-section">
-              <h2 className="sidebar-title">分类</h2>
+              <h2 className="sidebar-title">{t('lucid.home.categories', 'Categories')}</h2>
               {allCategories.length === 0 ? (
-                <p className="sidebar-hint">暂无分类</p>
+                <p className="sidebar-hint">{t('lucid.home.noCategories', 'No categories yet.')}</p>
               ) : (
                 <>
                   <ul className="sidebar-categories">
@@ -122,16 +128,18 @@ const HomeLayout: React.FC<LayoutProps> = () => {
                       href={normalizeHrefInRuntime(`${base}/${categoriesConfig.routePrefix}`)}
                       className="view-all-link"
                     >
-                      全部分类 →
+                      {t('lucid.home.allCategories', 'All categories →')}
                     </a>
                   </div>
                 </>
               )}
             </section>
             <section className="sidebar-section">
-              <h2 className="sidebar-title">合集</h2>
+              <h2 className="sidebar-title">{t('lucid.home.collections', 'Collections')}</h2>
               {allCollections.length === 0 ? (
-                <p className="sidebar-hint">暂无合集</p>
+                <p className="sidebar-hint">
+                  {t('lucid.home.noCollections', 'No collections yet.')}
+                </p>
               ) : (
                 <ul className="sidebar-collections">
                   {allCollections.slice(0, 5).map((collection, index) => (
@@ -149,7 +157,11 @@ const HomeLayout: React.FC<LayoutProps> = () => {
                             </span>
                           )}
                         </span>
-                        <span className="sidebar-collection-count">{collection.count} 篇</span>
+                        <span className="sidebar-collection-count">
+                          {t('lucid.home.collectionCount', `${collection.count} posts`, {
+                            count: collection.count,
+                          })}
+                        </span>
                       </a>
                     </li>
                   ))}
@@ -166,13 +178,13 @@ const HomeLayout: React.FC<LayoutProps> = () => {
               <h2 className="blog-title">{lucidConfig.postsTitle}</h2>
             </div>
             <a href={normalizeHrefInRuntime(`${base}/${blogListConfig.routePrefix}`)}>
-              查看全部文章 →
+              {t('lucid.home.viewAll', 'View all posts →')}
             </a>
           </header>
           {recentPosts.length > 0 ? (
             <PostCardList posts={recentPosts as Post[]} />
           ) : (
-            <p className="sidebar-hint">暂时还没有更多文章。</p>
+            <p className="sidebar-hint">{t('lucid.home.empty', 'There are no more posts yet.')}</p>
           )}
         </main>
       </div>

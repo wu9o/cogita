@@ -1,5 +1,6 @@
 import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import { getCollectionByPostRoute } from 'virtual-collections-data';
+import { t } from '../i18n';
 import { getBase, getPageRoute } from '../utils';
 
 /**
@@ -38,7 +39,10 @@ export default function CollectionNav() {
           {collection.title}
         </a>
         <span className="collection-nav-progress">
-          第 {currentIndex + 1} / {collection.count} 篇
+          {t('lucid.collection.progress', `${currentIndex + 1} of ${collection.count}`, {
+            current: currentIndex + 1,
+            total: collection.count,
+          })}
         </span>
       </div>
       {(prevPost || nextPost) && (
@@ -48,7 +52,9 @@ export default function CollectionNav() {
               href={normalizeHrefInRuntime(`${base}${prevPost.route}`)}
               className="collection-nav-btn collection-nav-prev"
             >
-              <span className="collection-nav-btn-label">上一篇</span>
+              <span className="collection-nav-btn-label">
+                {t('lucid.collection.previous', 'Previous')}
+              </span>
               <span className="collection-nav-btn-title">
                 {prevPost.collectionTitle || prevPost.title}
               </span>
@@ -61,7 +67,7 @@ export default function CollectionNav() {
               href={normalizeHrefInRuntime(`${base}${nextPost.route}`)}
               className="collection-nav-btn collection-nav-next"
             >
-              <span className="collection-nav-btn-label">下一篇</span>
+              <span className="collection-nav-btn-label">{t('lucid.collection.next', 'Next')}</span>
               <span className="collection-nav-btn-title">
                 {nextPost.collectionTitle || nextPost.title}
               </span>
@@ -72,7 +78,7 @@ export default function CollectionNav() {
         </nav>
       )}
       <div className="collection-nav-breadcrumb">
-        <a href={collectionsHref}>全部合集</a>
+        <a href={collectionsHref}>{t('lucid.collection.all', 'All collections')}</a>
         <span className="separator">/</span>
         <a href={collectionHref}>{collection.title}</a>
       </div>

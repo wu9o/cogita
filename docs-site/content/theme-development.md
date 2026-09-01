@@ -1,12 +1,12 @@
 ---
-title: 主题开发指南
+title: Theme development guide
 ---
 
-# 主题开发指南
+# Theme development guide
 
-主题包负责页面布局、主题样式和主题级插件声明。它不应该在布局组件中重新实现文章扫描、评论或搜索等业务逻辑。
+A theme package owns page layouts, theme styles, and theme-level plugin declarations. It should not reimplement business logic such as post scanning, comments, or search inside layout components.
 
-## 主题包结构
+## Theme package structure
 
 ~~~text
 themes/my-theme/
@@ -18,7 +18,7 @@ themes/my-theme/
     └── theme.css
 ~~~
 
-## 导出主题配置
+## Export the theme configuration
 
 ~~~ts
 import type { CogitaTheme } from '@cogita/shared';
@@ -34,15 +34,15 @@ export function getThemeConfig(): CogitaTheme {
 }
 ~~~
 
-主题包只负责声明能力。插件工厂负责校验自己的配置，主题通过 `plugins` 声明需要的插件；Core 会校验主题首页和插件声明的布局契约。
+A theme package only declares capabilities. Plugin factories validate their own configuration, while themes declare the plugins they need through `plugins`. Core validates the theme home layout and plugin layout contracts.
 
-## 发布与消费
+## Publish and consume
 
-主题包应拥有独立的 `package.json`、构建配置和版本。消费方项目直接安装主题包，并在配置中使用包名。Core 不再绑定某个具体主题，这保证了主题数量增长时不会持续修改框架核心。
+A theme package should have its own `package.json`, build configuration, and version. Consumer projects install the package directly and reference its package name. Core does not bind to a specific theme, so the ecosystem can grow without continuously changing the framework core.
 
-如果希望从可运行骨架开始，可以复制仓库中的[主题 starter](https://github.com/wu9o/cogita/tree/main/starters/theme)。它已经包含 `pageLayouts.home`、React 布局、全局样式和独立包构建配置。
+To start from a runnable skeleton, copy the [theme starter](https://github.com/wu9o/cogita/tree/main/starters/theme). It includes `pageLayouts.home`, a React layout, global styles, and an independent package build configuration.
 
-## 验证主题
+## Verify a theme
 
 ~~~bash
 pnpm --filter @cogita/theme-my-theme build
@@ -50,4 +50,4 @@ pnpm run build:packages
 pnpm exec cogita build
 ~~~
 
-更完整的接口说明请参考 [API 参考](./api/api-reference.md) 和 [插件 API 规范](./plugins/plugin-api-specification.md)。
+See the [API reference](./api/api-reference.md) and [plugin API specification](./plugins/plugin-api-specification.md) for the complete contracts.

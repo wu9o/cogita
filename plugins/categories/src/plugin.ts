@@ -38,7 +38,7 @@ export function pluginCategories(config: CogitaPluginConfig): CogitaPlugin | nul
     cogita: {
       providesCapabilities: [COGITA_CAPABILITIES.DISCOVERY_CATEGORIES],
       requiresCapabilities: [COGITA_CAPABILITIES.CONTENT_POSTS],
-      requiredLayouts: [{ layout: 'category', label: '分类' }],
+      requiredLayouts: [{ layout: 'category', label: 'Categories' }],
     },
 
     async beforeBuild() {
