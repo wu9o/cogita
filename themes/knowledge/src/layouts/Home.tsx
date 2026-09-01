@@ -1,6 +1,7 @@
 import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { useMemo } from 'react';
+import { t } from 'virtual-cogita-i18n-text';
 import { contentRelations } from 'virtual-content-relations-data';
 import { searchConfig, searchDocuments } from 'virtual-search-data';
 import { allTags, tagsConfig } from 'virtual-tags-data';
@@ -28,28 +29,31 @@ const HomeLayout: React.FC = () => {
         <div>
           <p className="knowledge-eyebrow">{copy.title} · KNOWLEDGE BASE</p>
           <h1>{copy.description}</h1>
-          <p className="knowledge-lead">
-            用统一内容索引连接文章与文档，让每一次阅读都能自然抵达下一条相关知识。
-          </p>
-          <nav className="knowledge-actions" aria-label="知识库导航">
-            <a href={normalizeHrefInRuntime(getHref(base, '/search'))}>搜索知识</a>
+          <p className="knowledge-lead">{copy.lead}</p>
+          <nav
+            className="knowledge-actions"
+            aria-label={t('knowledge.home.navigation', '知识库导航')}
+          >
+            <a href={normalizeHrefInRuntime(getHref(base, '/search'))}>
+              {t('knowledge.home.search', '搜索知识')}
+            </a>
             <a href={normalizeHrefInRuntime(getHref(base, `/${tagsConfig.routePrefix}`))}>
-              浏览标签
+              {t('knowledge.home.tags', '浏览标签')}
             </a>
           </nav>
         </div>
-        <div className="knowledge-stats" aria-label="知识库统计">
+        <div className="knowledge-stats" aria-label={t('knowledge.home.stats', '知识库统计')}>
           <div>
             <strong>{searchDocuments.length}</strong>
-            <span>内容条目</span>
+            <span>{t('knowledge.home.contentEntries', '内容条目')}</span>
           </div>
           <div>
             <strong>{allTags.length}</strong>
-            <span>主题标签</span>
+            <span>{t('knowledge.home.topicTags', '主题标签')}</span>
           </div>
           <div>
             <strong>{relationCount}</strong>
-            <span>内容连接</span>
+            <span>{t('knowledge.home.contentLinks', '内容连接')}</span>
           </div>
         </div>
       </section>
@@ -58,10 +62,14 @@ const HomeLayout: React.FC = () => {
         <section className="knowledge-recent" aria-labelledby="knowledge-recent-title">
           <div className="knowledge-section-heading">
             <div>
-              <p className="knowledge-section-label">Recently updated</p>
-              <h2 id="knowledge-recent-title">最近更新</h2>
+              <p className="knowledge-section-label">
+                {t('knowledge.home.recentLabel', 'Recently updated')}
+              </p>
+              <h2 id="knowledge-recent-title">{t('knowledge.home.recentTitle', '最近更新')}</h2>
             </div>
-            <a href={normalizeHrefInRuntime(getHref(base, '/search'))}>查看全部 →</a>
+            <a href={normalizeHrefInRuntime(getHref(base, '/search'))}>
+              {t('knowledge.home.viewAll', '查看全部 →')}
+            </a>
           </div>
           <div className="knowledge-entry-list">
             {recentEntries.map((entry) => (
@@ -71,10 +79,16 @@ const HomeLayout: React.FC = () => {
                 className="knowledge-entry-card"
               >
                 <span className="knowledge-entry-kind">
-                  {entry.kind === 'document' ? '文档' : '文章'}
+                  {entry.kind === 'document'
+                    ? t('knowledge.home.document', '文档')
+                    : t('knowledge.home.post', '文章')}
                 </span>
                 <strong>{entry.title}</strong>
-                <p>{entry.description || entry.excerpt || '打开条目继续阅读。'}</p>
+                <p>
+                  {entry.description ||
+                    entry.excerpt ||
+                    t('knowledge.home.openEntry', '打开条目继续阅读。')}
+                </p>
                 <small>{entry.updateDate.slice(0, 10)}</small>
               </a>
             ))}
@@ -86,7 +100,7 @@ const HomeLayout: React.FC = () => {
             <div className="knowledge-section-heading compact">
               <div>
                 <p className="knowledge-section-label">Explore</p>
-                <h2>按主题探索</h2>
+                <h2>{t('knowledge.home.explore', '按主题探索')}</h2>
               </div>
               <span>{allTags.length}</span>
             </div>
@@ -100,11 +114,17 @@ const HomeLayout: React.FC = () => {
             </div>
           </section>
           <section className="knowledge-discovery-card knowledge-search-card">
-            <p className="knowledge-section-label">Find anything</p>
-            <h2>从一个关键词开始。</h2>
-            <p>全文索引 {searchDocuments.length} 个内容条目。</p>
+            <p className="knowledge-section-label">
+              {t('knowledge.home.findAnything', 'Find anything')}
+            </p>
+            <h2>{t('knowledge.home.findStart', '从一个关键词开始。')}</h2>
+            <p>
+              {t('knowledge.home.searchCount', '全文索引 {{count}} 个内容条目。', {
+                count: searchDocuments.length,
+              })}
+            </p>
             <a href={normalizeHrefInRuntime(getHref(base, `/${searchConfig.routePrefix}`))}>
-              打开搜索 →
+              {t('knowledge.home.openSearch', '打开搜索 →')}
             </a>
           </section>
         </aside>

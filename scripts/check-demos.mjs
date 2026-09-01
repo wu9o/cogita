@@ -45,6 +45,16 @@ for (const slug of expectedSlugs) {
   }
 }
 
+const knowledgeHome = readFileSync(
+  path.join(demosRoot, 'knowledge', 'doc_build', 'index.html'),
+  'utf8'
+);
+for (const phrase of ['Search knowledge', 'Browse tags', 'Recently updated']) {
+  if (!knowledgeHome.includes(phrase)) {
+    throw new Error(`Knowledge Demo 未输出英文优先界面文案：${phrase}。`);
+  }
+}
+
 const landing = readFileSync(path.join(demosRoot, 'landing', 'index.html'), 'utf8');
 if (!existsSync(path.join(demosRoot, 'landing', 'social-card.svg'))) {
   throw new Error('主题 Demo 落地页缺少 social-card.svg。');

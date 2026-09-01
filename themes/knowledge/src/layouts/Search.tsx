@@ -1,6 +1,7 @@
 import { normalizeHrefInRuntime, usePageData } from '@rspress/runtime';
 import type React from 'react';
 import { useMemo, useState } from 'react';
+import { t } from 'virtual-cogita-i18n-text';
 import { searchConfig, searchDocuments } from 'virtual-search-data';
 import { getBase, getHref, getKnowledgeCopy } from '../utils';
 
@@ -38,15 +39,19 @@ const SearchLayout: React.FC = () => {
   return (
     <main className="knowledge-search">
       <header className="knowledge-search-header">
-        <p className="knowledge-eyebrow">{copy.title} · SEARCH</p>
-        <h1>找到下一条相关知识。</h1>
-        <p>搜索文章、文档、标签和正文内容。</p>
+        <p className="knowledge-eyebrow">
+          {copy.title} · {t('knowledge.search.eyebrow', 'SEARCH')}
+        </p>
+        <h1>{t('knowledge.search.title', '找到下一条相关知识。')}</h1>
+        <p>{t('knowledge.search.description', '搜索文章、文档、标签和正文内容。')}</p>
         <input
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder={`至少输入 ${searchConfig.minQueryLength} 个字符`}
-          aria-label="搜索知识库"
+          placeholder={t('knowledge.search.placeholder', '至少输入 {{count}} 个字符', {
+            count: searchConfig.minQueryLength,
+          })}
+          aria-label={t('knowledge.search.ariaLabel', '搜索知识库')}
         />
       </header>
 
@@ -54,16 +59,24 @@ const SearchLayout: React.FC = () => {
         {!meetsMinimumLength && (
           <p className="knowledge-empty">
             {normalizedQuery
-              ? `请输入至少 ${searchConfig.minQueryLength} 个字符。`
-              : '输入关键词开始探索。'}
+              ? t('knowledge.search.minLength', '请输入至少 {{count}} 个字符。', {
+                  count: searchConfig.minQueryLength,
+                })
+              : t('knowledge.search.empty', '输入关键词开始探索。')}
           </p>
         )}
         {meetsMinimumLength && results.length === 0 && (
-          <p className="knowledge-empty">没有找到匹配的内容。</p>
+          <p className="knowledge-empty">
+            {t('knowledge.search.noResults', '没有找到匹配的内容。')}
+          </p>
         )}
         {results.map(({ entry }) => (
           <article key={entry.route} className="knowledge-search-result">
-            <span>{entry.kind === 'document' ? '文档' : '文章'}</span>
+            <span>
+              {entry.kind === 'document'
+                ? t('knowledge.search.document', '文档')
+                : t('knowledge.search.post', '文章')}
+            </span>
             <h2>
               <a href={normalizeHrefInRuntime(getHref(base, entry.route))}>{entry.title}</a>
             </h2>

@@ -197,31 +197,33 @@ export default defineConfig({
 });
 ```
 
-### 多语言配置
+### 界面文案国际化
 
 ```typescript
+import { defineConfig } from '@cogita/core';
+
 export default defineConfig({
   site: {
     title: 'My Blog',
     description: 'A bilingual blog',
+    lang: 'en-US',
   },
-  
-  // 多语言支持（计划中的功能）
   i18n: {
-    defaultLocale: 'zh-CN',
-    locales: {
-      'zh-CN': {
-        title: '我的博客',
-        description: '双语博客',
-      },
+    locale: 'en-US',
+    fallbackLocale: 'zh-CN',
+    messages: {
       'en-US': {
-        title: 'My Blog',
-        description: 'A bilingual blog',
+        'site.search': 'Search',
+      },
+      'zh-CN': {
+        'site.search': '搜索',
       },
     },
   },
 });
 ```
+
+`@cogita/plugin-i18n` 面向主题和插件提供界面文案翻译，不会自动翻译 Markdown 内容。运行时可从 `virtual-cogita-i18n-text` 导入 `t`，按完整语言标识、语言前缀和回退语言依次查找文案。模块名使用 Cogita 命名空间，避免与 Rspress 内置的 `virtual-i18n-text` 冲突。
 
 ## ✍️ 内容创作指南
 

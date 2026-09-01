@@ -8,6 +8,7 @@ import type {
   ContentSource,
   ContentSourceContext,
   ContentSourceEntry,
+  I18nConfig,
   LayoutProps,
 } from '@cogita/shared';
 import type { UserConfig } from '@rspress/core';
@@ -21,6 +22,7 @@ export type {
   LayoutProps,
   ContentSourceContext,
   ContentSourceEntry,
+  I18nConfig,
 };
 
 export type ThemeConfig = UserConfig['themeConfig'];
@@ -487,6 +489,9 @@ export interface SearchConfig {
 export interface CogitaConfig {
   site?: SiteConfig;
   theme?: string;
+
+  /** 站点界面文案的语言和字典配置。 */
+  i18n?: I18nConfig;
 
   /**
    * 文档 Markdown 源目录，相对于站点根目录；未配置时不复制普通文档。

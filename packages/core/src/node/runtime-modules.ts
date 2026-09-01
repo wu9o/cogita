@@ -94,6 +94,17 @@ export const cogitaRuntimeDefaults: CogitaPlugin = {
           postRoutes: []
         };
       `),
+      [COGITA_VIRTUAL_MODULE_IDS.I18N_TEXT]: createCogitaVirtualModule(`
+        export const i18nConfig = { enabled: false, locale: 'zh-CN', fallbackLocale: 'zh-CN', messages: {} };
+        export const locale = i18nConfig.locale;
+        export const fallbackLocale = i18nConfig.fallbackLocale;
+        export const messages = i18nConfig.messages;
+        export function t(_key, fallback, values) {
+          const text = fallback || _key;
+          return Object.entries(values || {}).reduce((result, [name, value]) => result.split('{{' + name + '}}').join(String(value)), text);
+        }
+        export const translate = t;
+      `),
     };
   },
 };

@@ -82,6 +82,7 @@ pnpm exec cogita dev
 - [`@cogita/theme-editorial`](./themes/editorial) - 编辑型内容主题
 - [`@cogita/theme-docs`](./themes/docs) - 技术文档主题
 - [`@cogita/theme-knowledge`](./themes/knowledge) - 长期知识库主题
+- [`@cogita/plugin-i18n`](./plugins/i18n) - 英文优先的界面文案国际化
 - [`@cogita/plugin-rss`](./plugins/rss) - RSS 订阅插件
 - [`@cogita/plugin-seo`](./plugins/seo) - SEO、Open Graph 和 Twitter Card 元数据
 - [`@cogita/plugin-content-source-json`](./plugins/content-source-json) - JSON 内容源

@@ -370,13 +370,12 @@ interface CogitaTheme {
 
 #### 高级插件
 
-- [ ] `@cogita/plugin-i18n` 📋
-  - [ ] 多语言内容支持
-  - [ ] 自动语言检测
-  - [ ] 翻译工作流集成
+- [x] `@cogita/plugin-i18n`：界面文案国际化基础
+  - [x] 主题和插件共享 `virtual-cogita-i18n-text` 文案契约
+  - [x] 完整语言标识、语言前缀和回退语言匹配
+  - [x] Knowledge 主题英文优先 Demo
+  - [ ] 多语言内容路由与翻译工作流
   - [ ] RTL 语言支持
-  - [ ] 特定语言路由
-  - [ ] 翻译记忆系统
 
 - [ ] `@cogita/plugin-pwa` 📋
   - [ ] 渐进式 Web 应用功能

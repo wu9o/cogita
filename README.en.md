@@ -148,6 +148,7 @@ Available templates include `blog`, `docs`, `knowledge`, and `knowledge-external
 | [@cogita/plugin-rss](./plugins/rss) | RSS/Atom/JSON Feed subscription generation | ✅ Complete |
 | [@cogita/plugin-tags](./plugins/tags) | Tag system and tag pages | ✅ |
 | [@cogita/plugin-search](./plugins/search) | Local content search | ✅ |
+| [@cogita/plugin-i18n](./plugins/i18n) | Locale-aware UI copy through a virtual runtime module | ✅ |
 | [@cogita/plugin-seo](./plugins/seo) | SEO, Open Graph and Twitter Card metadata | ✅ |
 | [@cogita/plugin-content-source-json](./plugins/content-source-json) | JSON content source integration | ✅ |
 | [@cogita/plugin-content-source-git](./plugins/content-source-git) | Git Markdown content source integration | ✅ |
@@ -288,7 +289,7 @@ boundary for third-party themes and plugins.
 - [ ] **Full-text Search**: Algolia/local search based search functionality
 - [ ] **SEO Optimization**: Auto sitemap, meta tags, structured data
 - [ ] **Social Integration**: Auto sharing, comment systems, social login
-- [ ] **Internationalization**: Multi-language blog support and i18n toolchain
+- [x] **Internationalization foundation**: Locale-aware UI copy through `@cogita/plugin-i18n`
 
 ## 📊 Project Stats
 

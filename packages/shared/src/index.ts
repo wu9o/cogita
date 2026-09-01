@@ -37,6 +37,7 @@ export const COGITA_CAPABILITIES = {
   UI_READING_PROGRESS: 'ui.reading-progress',
   UI_CODE_COPY: 'ui.code-copy',
   QUALITY_CONTENT_CHECK: 'quality.content-check',
+  UI_I18N: 'ui.i18n',
 } as const;
 
 /** Cogita 公开虚拟运行时模块的稳定模块 ID。 */
@@ -53,6 +54,7 @@ export const COGITA_VIRTUAL_MODULE_IDS = {
   COMMENTS_DATA: 'virtual-comments-data',
   IMAGES_DATA: 'virtual-images-data',
   RSS_META: 'virtual-rss-meta',
+  I18N_TEXT: 'virtual-cogita-i18n-text',
 } as const;
 
 export type CogitaBuiltinCapability =
@@ -344,6 +346,18 @@ export interface ContentRelationsConfig {
   enabled?: boolean;
 }
 
+/** 站点界面文案国际化配置。 */
+export interface I18nConfig {
+  /** 是否启用国际化运行时模块。 */
+  enabled?: boolean;
+  /** 当前界面语言，例如 `en-US` 或 `zh-CN`。 */
+  locale?: string;
+  /** 找不到当前语言文案时使用的回退语言。 */
+  fallbackLocale?: string;
+  /** 按语言组织的界面文案字典。 */
+  messages?: Readonly<Record<string, Readonly<Record<string, string>>>>;
+}
+
 /** 构建期共享内容索引。索引采用惰性加载，只有被插件消费时才扫描文章。 */
 export interface ContentIndex {
   /** 内容索引契约版本，第三方兼容实现可以省略以保持旧版兼容。 */
@@ -430,10 +444,12 @@ export interface CogitaPluginConfig {
   site?: {
     title?: string;
     description?: string;
+    lang?: string;
     icon?: string;
     base?: string;
     url?: string;
   };
+  i18n?: I18nConfig;
   posts?: {
     dir?: string;
     routePrefix?: string;
