@@ -25,4 +25,4 @@ export default defineConfig({
 - `@cogita/theme-lucid` 优先解决持续发布和博客归档；
 - `@cogita/theme-knowledge` 优先解决跨来源内容发现和知识回溯。
 
-主题消费 `virtual-search-data`、`virtual-tags-data` 和 `virtual-content-relations-data`，不直接扫描文件。需要扩展知识来源时，应先扩展 `ContentIndex` 或独立插件，再由主题消费新的稳定数据契约。
+主题消费 `virtual-search-data`、`virtual-tags-data` 和 `virtual-content-relations-data`，不直接扫描文件。需要扩展知识来源时，应先通过 `contentSources` 或独立插件接入统一 `ContentIndex`，再由主题消费新的稳定数据契约。

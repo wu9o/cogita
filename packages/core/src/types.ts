@@ -5,6 +5,9 @@ import type {
   ContentCheckConfig,
   ContentIndex,
   ContentRelationsConfig,
+  ContentSource,
+  ContentSourceContext,
+  ContentSourceEntry,
   LayoutProps,
 } from '@cogita/shared';
 import type { UserConfig } from '@rspress/core';
@@ -12,9 +15,12 @@ import type { UserConfig } from '@rspress/core';
 export type {
   CogitaPluginFactory,
   CogitaTheme,
+  ContentSource,
   ContentCheckConfig,
   ContentRelationsConfig,
   LayoutProps,
+  ContentSourceContext,
+  ContentSourceEntry,
 };
 
 export type ThemeConfig = UserConfig['themeConfig'];
@@ -487,6 +493,9 @@ export interface CogitaConfig {
    * 文章站点可以继续只使用 posts 和插件生成页面，文档站点则可以显式配置此目录。
    */
   contentDir?: string;
+
+  /** 显式注册的外部内容源，Core 会将其合并进统一内容索引。 */
+  contentSources?: readonly ContentSource[];
 
   /** 用户额外注册的插件工厂，按数组顺序在主题插件之后加载。 */
   plugins?: CogitaPluginFactory[];

@@ -192,6 +192,8 @@ export interface ContentPostSEO {
 
 /** 内容索引中的统一文章数据。 */
 export interface ContentPost {
+  /** 外部内容源的稳定标识；文件系统文章默认不设置。 */
+  sourceId?: string;
   title: string;
   description?: string;
   excerpt?: string;
@@ -243,6 +245,8 @@ export type ContentEntryKind = 'post' | 'document';
 export interface ContentEntry {
   /** 内容来源类型；Core 原生索引总会提供该字段。 */
   kind: ContentEntryKind;
+  /** 外部内容源的稳定标识；文件系统内容默认不设置。 */
+  sourceId?: string;
   title: string;
   description?: string;
   excerpt?: string;
@@ -258,6 +262,28 @@ export interface ContentEntry {
   imageAlt?: string;
   imageCaption?: string;
   url: string;
+}
+
+/** 外部内容源返回的条目，来源标识和 URL 由 Core 统一补齐。 */
+export interface ContentSourceEntry extends Omit<ContentEntry, 'sourceId' | 'url'> {
+  url?: string;
+}
+
+/** 内容源加载时可以使用的构建期上下文。 */
+export interface ContentSourceContext {
+  root: string;
+  cwd: string;
+  logger: CogitaLogger;
+}
+
+/** 将外部内容映射到统一 ContentIndex 的适配器。 */
+export interface ContentSource {
+  /** 在一个站点内必须唯一，用于诊断和正文读取路由。 */
+  readonly id: string;
+  /** 加载本次构建需要的内容条目；适配器不应修改返回条目。 */
+  load(context: ContentSourceContext): Promise<readonly ContentSourceEntry[]>;
+  /** 按需读取外部条目的正文；未提供时仅支持元数据消费。 */
+  getContent?(entry: ContentEntry, context: ContentSourceContext): Promise<string>;
 }
 
 /** 内容质量与构建诊断支持检查的 frontmatter 字段。 */
@@ -377,6 +403,8 @@ export interface CogitaPluginConfig {
   cwd: string;
   /** 文档 Markdown 源目录，供需要统一内容模型的插件读取。 */
   contentDir?: string;
+  /** 显式注册的外部内容源，Core 会将其合并进统一内容索引。 */
+  contentSources?: readonly ContentSource[];
   /**
    * 由 core 注入的共享文章索引，避免各插件重复扫描和解析文章。
    * 该字段只存在于构建期插件配置，不会进入浏览器运行时。

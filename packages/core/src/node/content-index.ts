@@ -7,6 +7,8 @@ import type {
   ContentIndex,
   ContentPost,
   ContentPostSEO,
+  ContentSource,
+  ContentSourceContext,
 } from '@cogita/shared';
 import { glob } from 'glob';
 import matter from 'gray-matter';
@@ -16,7 +18,73 @@ interface ContentIndexOptions {
   root: string;
   posts: Required<Pick<PostsConfig, 'dir' | 'routePrefix' | 'extensions'>>;
   contentDir?: string;
+  contentSources: readonly ContentSource[];
   logger: CogitaLogger;
+}
+
+/** 校验并规范化外部内容源的配置，避免来源身份在构建中漂移。 */
+function normalizeContentSources(
+  contentSources: readonly ContentSource[] | undefined
+): readonly ContentSource[] {
+  const sources = contentSources || [];
+  const ids = new Set<string>();
+
+  for (const source of sources) {
+    const id = typeof source?.id === 'string' ? source.id.trim() : '';
+    if (!id || typeof source.load !== 'function') {
+      throw new Error('[Cogita] 内容源必须提供唯一 id 和 load 函数');
+    }
+    if (ids.has(id)) {
+      throw new Error(`[Cogita] 内容源 id 重复：${id}`);
+    }
+    ids.add(id);
+  }
+
+  return sources;
+}
+
+/** 读取并校验外部内容源条目，确保它们可以被现有插件安全消费。 */
+async function loadContentSources(options: ContentIndexOptions): Promise<readonly ContentEntry[]> {
+  if (options.contentSources.length === 0) {
+    return [];
+  }
+
+  const context: ContentSourceContext = {
+    root: options.root,
+    cwd: options.root,
+    logger: options.logger,
+  };
+  const entries: ContentEntry[] = [];
+
+  for (const source of options.contentSources) {
+    const sourceId = source.id.trim();
+    const loadedEntries = await source.load(context);
+    if (!Array.isArray(loadedEntries)) {
+      throw new Error(`[Cogita] 内容源 ${sourceId} 的 load 必须返回条目数组`);
+    }
+
+    for (const entry of loadedEntries) {
+      if (
+        !entry ||
+        (entry.kind !== 'post' && entry.kind !== 'document') ||
+        typeof entry.title !== 'string' ||
+        typeof entry.filePath !== 'string' ||
+        typeof entry.route !== 'string' ||
+        typeof entry.updateDate !== 'string' ||
+        (entry.kind === 'post' && typeof entry.createDate !== 'string')
+      ) {
+        throw new Error(`[Cogita] 内容源 ${sourceId} 返回了无效内容条目`);
+      }
+
+      entries.push({
+        ...entry,
+        sourceId,
+        url: entry.url || entry.route,
+      });
+    }
+  }
+
+  return entries;
 }
 
 /** 将文章路由前缀规范化为不带首尾斜杠的形式。 */
@@ -222,14 +290,24 @@ async function scanDocuments(options: ContentIndexOptions): Promise<readonly Con
 /** 扫描文章和普通文档，建立统一内容条目索引。 */
 async function scanEntries(
   options: ContentIndexOptions,
-  posts: readonly ContentPost[]
+  posts: readonly ContentPost[],
+  sourceEntries: readonly ContentEntry[]
 ): Promise<readonly ContentEntry[]> {
   const documents = await scanDocuments(options);
   const postPaths = new Set(posts.map((post) => path.normalize(post.filePath)));
   const uniqueDocuments = documents.filter(
     (document) => !postPaths.has(path.normalize(document.filePath))
   );
-  const entries = [...posts.map(toContentEntry), ...uniqueDocuments];
+  const filesystemEntries = [...posts.map(toContentEntry), ...uniqueDocuments];
+  const occupiedRoutes = new Set(filesystemEntries.map((entry) => entry.route));
+  const uniqueSourceEntries = sourceEntries.filter((entry) => {
+    if (occupiedRoutes.has(entry.route)) {
+      throw new Error(`[Cogita] 内容源 ${entry.sourceId} 的路由冲突：${entry.route}`);
+    }
+    occupiedRoutes.add(entry.route);
+    return true;
+  });
+  const entries = [...filesystemEntries, ...uniqueSourceEntries];
 
   options.logger.info(`[Cogita] 统一内容索引已建立，共 ${entries.length} 个内容条目`);
   return Object.freeze(entries);
@@ -240,18 +318,72 @@ export function createContentIndex(
   root: string,
   posts: Required<Pick<PostsConfig, 'dir' | 'routePrefix' | 'extensions'>>,
   logger: CogitaLogger = createCogitaLogger(),
-  contentDir?: string
+  contentDir?: string,
+  contentSources?: readonly ContentSource[]
 ): ContentIndex {
+  const normalizedContentSources = normalizeContentSources(contentSources);
   let entriesPromise: Promise<readonly ContentEntry[]> | undefined;
   let postsPromise: Promise<readonly ContentPost[]> | undefined;
+  let sourceEntriesPromise: Promise<readonly ContentEntry[]> | undefined;
   const contentPromises = new Map<string, Promise<string>>();
+  const sourceByFilePath = new Map<string, { source: ContentSource; entry: ContentEntry }>();
+  const sourceById = new Map(
+    normalizedContentSources.map((source) => [source.id.trim(), source] as const)
+  );
+  const sourceContext: ContentSourceContext = { root, cwd: root, logger };
   const getPosts = () => {
-    postsPromise ??= scanPosts({ root, posts, logger });
+    postsPromise ??= Promise.all([
+      scanPosts({ root, posts, logger, contentSources: normalizedContentSources }),
+      getSourceEntries(),
+    ]).then(([filesystemPosts, sourceEntries]) => {
+      const posts = [
+        ...filesystemPosts,
+        ...sourceEntries
+          .filter((entry) => entry.kind === 'post')
+          .map(({ kind: _kind, ...post }) => post as ContentPost),
+      ];
+      posts.sort((left, right) => {
+        const leftTime = new Date(left.createDate).getTime();
+        const rightTime = new Date(right.createDate).getTime();
+        return rightTime - leftTime;
+      });
+      return Object.freeze(posts);
+    });
     return postsPromise;
   };
+  const getSourceEntries = () => {
+    sourceEntriesPromise ??= loadContentSources({
+      root,
+      posts,
+      contentDir,
+      contentSources: normalizedContentSources,
+      logger,
+    }).then((entries) => {
+      for (const entry of entries) {
+        if (sourceByFilePath.has(entry.filePath)) {
+          throw new Error(`[Cogita] 内容源条目标识重复：${entry.filePath}`);
+        }
+        const source = entry.sourceId ? sourceById.get(entry.sourceId) : undefined;
+        if (!source) {
+          throw new Error(`[Cogita] 找不到内容源：${entry.sourceId || '(未提供)'}`);
+        }
+        sourceByFilePath.set(entry.filePath, {
+          source,
+          entry,
+        });
+      }
+      return entries;
+    });
+    return sourceEntriesPromise;
+  };
   const getEntries = () => {
-    entriesPromise ??= getPosts().then((postEntries) =>
-      scanEntries({ root, posts, contentDir, logger }, postEntries)
+    entriesPromise ??= Promise.all([getPosts(), getSourceEntries()]).then(
+      ([postEntries, sourceEntries]) =>
+        scanEntries(
+          { root, posts, contentDir, contentSources: normalizedContentSources, logger },
+          postEntries.filter((entry) => !entry.sourceId),
+          sourceEntries
+        )
     );
     return entriesPromise;
   };
@@ -263,9 +395,12 @@ export function createContentIndex(
     getPostContent(filePath) {
       let contentPromise = contentPromises.get(filePath);
       if (!contentPromise) {
-        contentPromise = fs.promises
-          .readFile(filePath, 'utf8')
-          .then((fileContent) => matter(fileContent).content);
+        const sourceEntry = sourceByFilePath.get(filePath);
+        contentPromise = sourceEntry?.source.getContent
+          ? sourceEntry.source.getContent(sourceEntry.entry, sourceContext)
+          : fs.promises
+              .readFile(filePath, 'utf8')
+              .then((fileContent) => matter(fileContent).content);
         contentPromises.set(filePath, contentPromise);
       }
       return contentPromise;
@@ -273,6 +408,8 @@ export function createContentIndex(
     invalidate() {
       entriesPromise = undefined;
       postsPromise = undefined;
+      sourceEntriesPromise = undefined;
+      sourceByFilePath.clear();
       contentPromises.clear();
     },
   };

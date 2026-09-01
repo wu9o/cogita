@@ -26,6 +26,7 @@ export default defineConfig({
 - `theme`：由消费方项目直接安装的主题包名称或本地路径。
 - `themeConfig`：传给主题的展示配置，例如导航和侧边栏。
 - `plugins`：站点额外注册的插件工厂。
+- `contentSources`：将 Git、API 或其他知识库适配为统一内容条目的来源列表。
 - `builderConfig`：透传给 Rspress 的构建配置。
 
 完整字段和类型请参考 [API 参考](./api/api-reference.md)。

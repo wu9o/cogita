@@ -80,7 +80,7 @@ console.log(config.site?.title);
 
 ## ⚙️ 配置接口
 
-文档站点可以通过 `contentDir` 指定普通 Markdown 的源目录。Core 会在构建和开发服务器启动时把该目录同步到内部虚拟文档目录；博客项目若只使用 `posts` 和插件生成页面，则无需配置它。
+文档站点可以通过 `contentDir` 指定普通 Markdown 的源目录。Core 会在构建和开发服务器启动时把该目录同步到内部虚拟文档目录；博客项目若只使用 `posts` 和插件生成页面，则无需配置它。需要接入 Git、API 或其他知识库时，可以通过 `contentSources` 注册内容源适配器，让外部条目进入统一 `ContentIndex`。
 
 ### `CogitaConfig`
 
@@ -90,11 +90,17 @@ console.log(config.site?.title);
 interface CogitaConfig {
   site?: SiteConfig;
   theme?: string;
+  contentDir?: string;
+  contentSources?: readonly ContentSource[];
   plugins?: CogitaPluginFactory[];
   themeConfig?: ThemeConfig;
   builderConfig?: BuilderConfig;
 }
 ```
+
+`ContentSource` 至少需要提供站点内唯一的 `id` 和 `load` 函数。条目必须包含 `kind`、`title`、
+`filePath`、`route` 和 `updateDate`；`url` 缺省时由 Core 使用 `route` 补齐。实现 `getContent` 后，
+搜索全文、内容关系等需要正文的插件也可以消费该来源。
 
 #### `SiteConfig`
 

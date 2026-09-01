@@ -17,7 +17,44 @@ interface ContentIndex {
 }
 ```
 
-索引只在第一个插件调用 `getEntries()` 或 `getPosts()` 时扫描，后续插件复用同一个 Promise。`getEntries()` 返回文章和 `contentDir` 文档，`getPosts()` 保持只返回文章的旧行为。正文通过 `getPostContent(filePath)` 按需读取并缓存，搜索、RSS 等需要全文的插件不再各自重复读取同一文件。core 会在重新触发构建期插件钩子前调用 `invalidate()`，让下一轮构建重新读取文章和文档。`getEntries()` 和正文读取方法都是可选的，以保持第三方插件自行实现 `ContentIndex` 时的兼容性。索引使用与 `posts-frontmatter` 一致的文章路由规则，并根据 `contentDir` 生成普通文档路由。
+索引只在第一个插件调用 `getEntries()` 或 `getPosts()` 时扫描，后续插件复用同一个 Promise。`getEntries()` 返回文章、`contentDir` 文档和显式内容源条目，`getPosts()` 保持只返回文章的旧行为，同时包含内容源声明的 `post` 条目。正文通过 `getPostContent(filePath)` 按需读取并缓存，搜索、RSS 等需要全文的插件不再各自重复读取同一文件。core 会在重新触发构建期插件钩子前调用 `invalidate()`，让下一轮构建重新读取文章、文档和内容源。`getEntries()` 和正文读取方法都是可选的，以保持第三方插件自行实现 `ContentIndex` 时的兼容性。索引使用与 `posts-frontmatter` 一致的文章路由规则，并根据 `contentDir` 生成普通文档路由。
+
+### 外部内容源适配
+
+站点可以通过 `contentSources` 显式注册第三方内容源。适配器只负责把外部数据转换为统一的
+`ContentSourceEntry`，不需要依赖某个主题，也不应该直接修改 `ContentIndex`。`sourceId` 和缺省的
+`url` 会由 Core 统一补齐：
+
+```ts
+import type { ContentSource } from '@cogita/core';
+
+const researchNotes: ContentSource = {
+  id: 'research-notes',
+  async load() {
+    return [
+      {
+        kind: 'document',
+        title: '远程笔记',
+        filePath: 'source://research-notes/remote-note',
+        route: '/notes/remote-note',
+        updateDate: '2026-08-25T00:00:00.000Z',
+      },
+    ];
+  },
+  async getContent(entry) {
+    return `# ${entry.title}\n\n从外部知识源读取的正文。`;
+  },
+};
+
+export default defineConfig({
+  contentSources: [researchNotes],
+});
+```
+
+`id` 在一个站点内必须唯一，`filePath` 是条目的稳定标识，不要求一定是本地文件路径；如果要让
+搜索全文和内容关系插件读取外部正文，适配器必须实现 `getContent`。没有正文读取器时，条目仍可被
+Knowledge 主题的元数据、标签和搜索结果消费，但全文搜索和关系提取会按现有能力降级。内容源的
+路由不能与 `posts`、`contentDir` 或其他内容源重复，避免同一个 URL 对应多个内容实体。
 
 插件工厂收到的配置现在还包含 `buildContext`。它集中承载 `root`、`cwd`、`contentIndex`、主题布局路径和构建元数据等框架内部状态。旧版插件仍可读取同名顶层字段；新插件应通过 `getCogitaBuildContext(config)` 获取上下文，避免继续扩展配置对象的内部字段。
 
@@ -46,9 +83,9 @@ const backlinks = getBacklinks('/posts/current');
 const related = getRelatedContent('/posts/current');
 ```
 
-当前实现的索引对象已经覆盖文章和 `contentDir` 普通文档页，但知识条目的关系类型、来源位置和主题
-展示仍未完成。因此它是知识库主题的第一层数据基础，不代表统一知识库主题已经完成；下一步由主题
-组合搜索、标签、关系和文档导航。
+当前实现的索引对象已经覆盖文章、`contentDir` 普通文档页和显式内容源条目，但知识条目的关系类型、
+来源位置和主题展示仍未完成。因此它是知识库主题和第三方内容适配的第一层数据基础，不代表统一知识库
+主题已经完成；下一步由主题组合搜索、标签、关系和文档导航，并继续补充真实来源适配器。
 
 ## 公共契约版本策略
 
