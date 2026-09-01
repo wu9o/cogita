@@ -1,5 +1,14 @@
 # @cogita/shared
 
+## 0.13.0
+
+### Minor Changes
+
+- 657fc43: 增加 `ContentSource` 适配契约，允许外部内容源通过统一 `ContentIndex` 提供文章、文档和按需正文。
+- 53e62d8: 为外部内容源增加静态资源发布契约，Git Markdown 内容源会自动发布并改写正文中的相对图片和资源引用。
+- b8cf7c8: 将官方主题、CLI Starter、共享日期格式和常用插件默认界面统一为英文优先，并让所有官方主题消费统一的 i18n 运行时契约。
+- d270384: 增加英文优先的界面文案国际化插件和 `virtual-i18n-text` 运行时契约，并让 Knowledge 主题可以通过语言字典切换界面文案。
+
 ## 0.12.1
 
 ### Patch Changes

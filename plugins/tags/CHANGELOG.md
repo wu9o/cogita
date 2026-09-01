@@ -1,5 +1,15 @@
 # @cogita/plugin-tags
 
+## 1.0.7
+
+### Patch Changes
+
+- Updated dependencies [657fc43]
+- Updated dependencies [53e62d8]
+- Updated dependencies [b8cf7c8]
+- Updated dependencies [d270384]
+  - @cogita/shared@0.13.0
+
 ## 1.0.6
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @cogita/plugin-rss
 
+## 1.0.7
+
+### Patch Changes
+
+- b8cf7c8: 将官方主题、CLI Starter、共享日期格式和常用插件默认界面统一为英文优先，并让所有官方主题消费统一的 i18n 运行时契约。
+- Updated dependencies [657fc43]
+- Updated dependencies [53e62d8]
+- Updated dependencies [b8cf7c8]
+- Updated dependencies [d270384]
+  - @cogita/shared@0.13.0
+
 ## 1.0.6
 
 ### Patch Changes

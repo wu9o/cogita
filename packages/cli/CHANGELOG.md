@@ -1,5 +1,23 @@
 # @cogita/cli
 
+## 0.3.0
+
+### Minor Changes
+
+- b8cf7c8: 将官方主题、CLI Starter、共享日期格式和常用插件默认界面统一为英文优先，并让所有官方主题消费统一的 i18n 运行时契约。
+- 065862a: 增加 `knowledge` CLI 项目模板，为文章与 `contentDir` 文档提供统一的知识库起步项目。
+- b6a13a5: 新增 `knowledge-external` 站点模板，预配置独立 Git Markdown 内容源和 GitHub Pages 部署工作流。
+
+### Patch Changes
+
+- Updated dependencies [657fc43]
+- Updated dependencies [53e62d8]
+- Updated dependencies [41a83c6]
+- Updated dependencies [b8cf7c8]
+- Updated dependencies [d270384]
+  - @cogita/shared@0.13.0
+  - @cogita/core@0.14.0
+
 ## 0.2.1
 
 ### Patch Changes

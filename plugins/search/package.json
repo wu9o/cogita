@@ -1,6 +1,6 @@
 {
   "name": "@cogita/plugin-search",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "本地内容搜索索引与搜索页面插件，为 Cogita 提供可复用的搜索数据能力。",
   "keywords": ["cogita", "plugin", "search", "markdown", "rspress"],
   "author": "wu9o <https://github.com/wu9o>",

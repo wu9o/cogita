@@ -1,5 +1,35 @@
 # @cogita/theme-lucid
 
+## 0.12.0
+
+### Minor Changes
+
+- b8cf7c8: 将官方主题、CLI Starter、共享日期格式和常用插件默认界面统一为英文优先，并让所有官方主题消费统一的 i18n 运行时契约。
+
+### Patch Changes
+
+- Updated dependencies [657fc43]
+- Updated dependencies [53e62d8]
+- Updated dependencies [b8cf7c8]
+- Updated dependencies [d270384]
+  - @cogita/shared@0.13.0
+  - @cogita/plugin-content-check@0.2.5
+  - @cogita/ui@0.1.2
+  - @cogita/plugin-blog-list@0.3.5
+  - @cogita/plugin-categories@0.2.7
+  - @cogita/plugin-code-copy@0.2.6
+  - @cogita/plugin-comments@0.2.7
+  - @cogita/plugin-rss@1.0.7
+  - @cogita/plugin-search@0.2.7
+  - @cogita/plugin-i18n@0.2.0
+  - @cogita/plugin-collections@1.0.7
+  - @cogita/plugin-images@1.0.7
+  - @cogita/plugin-posts-frontmatter@0.1.6
+  - @cogita/plugin-reading-progress@0.3.7
+  - @cogita/plugin-seo@1.3.7
+  - @cogita/plugin-sitemap@1.3.7
+  - @cogita/plugin-tags@1.0.7
+
 ## 0.11.4
 
 ### Patch Changes
