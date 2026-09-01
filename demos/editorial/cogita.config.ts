@@ -33,4 +33,7 @@ export default defineConfig({
       relatedPosts: { enabled: true, limit: 3 },
     },
   },
+  builderConfig: {
+    output: { assetPrefix: '/demos/editorial/' },
+  },
 });

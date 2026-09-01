@@ -40,4 +40,7 @@ export default defineConfig({
       featuredPost: '/posts/slow-software',
     },
   },
+  builderConfig: {
+    output: { assetPrefix: '/demos/lucid/' },
+  },
 });

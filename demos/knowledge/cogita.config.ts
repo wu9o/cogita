@@ -26,4 +26,7 @@ export default defineConfig({
       description: '一个连接研究、决策与实践的个人知识库。',
     },
   },
+  builderConfig: {
+    output: { assetPrefix: '/demos/knowledge/' },
+  },
 });

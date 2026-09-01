@@ -26,4 +26,7 @@ export default defineConfig({
       ],
     },
   },
+  builderConfig: {
+    output: { assetPrefix: '/demos/docs/' },
+  },
 });
