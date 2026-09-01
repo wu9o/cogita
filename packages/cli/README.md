@@ -82,7 +82,7 @@ cogita doctor
 cogita doctor --strict --json
 ```
 
-`doctor` 是只读检查，不会修改依赖或构建产物。默认只有 error 会导致失败；`--strict` 会将 warning 也作为失败。`--json` 的报告包含稳定的 `schemaVersion`、检查码和详情，适合接入部署流水线。
+`doctor` 是只读检查，不会修改依赖或构建产物。默认只有 error 会导致失败；`--strict` 会将 warning 也作为失败。站点位于 pnpm 或 npm workspace 时，也可以使用 workspace 根目录的 lockfile。`--json` 的报告包含稳定的 `schemaVersion`、检查码和详情，适合接入部署流水线。
 
 ## 可用命令
 

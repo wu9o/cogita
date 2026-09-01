@@ -45,6 +45,9 @@ jobs:
       - name: 构建工作区包
         run: pnpm run build:packages
 
+      - name: 部署前站点自检
+        run: pnpm --filter docs-site exec cogita doctor --strict --json
+
       - name: 构建使用手册
         run: pnpm --filter docs-site build
 

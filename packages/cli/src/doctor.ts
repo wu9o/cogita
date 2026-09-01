@@ -136,6 +136,40 @@ function resolveInstalledPackage(root: string, name: string): InstalledPackage {
   return { entryPath };
 }
 
+function hasWorkspaceManifest(root: string): boolean {
+  if (fs.existsSync(path.join(root, 'pnpm-workspace.yaml'))) {
+    return true;
+  }
+
+  const manifest = readManifest(root);
+  return Boolean(manifest?.workspaces);
+}
+
+function findLockfile(root: string): { path: string; scope: 'site' | 'workspace' } | undefined {
+  const directLockfile = LOCK_FILES.find((fileName) => fs.existsSync(path.join(root, fileName)));
+  if (directLockfile) {
+    return { path: path.join(root, directLockfile), scope: 'site' };
+  }
+
+  let currentDirectory = path.dirname(root);
+  while (currentDirectory !== path.dirname(currentDirectory)) {
+    if (hasWorkspaceManifest(currentDirectory)) {
+      const workspaceLockfile = LOCK_FILES.find((fileName) =>
+        fs.existsSync(path.join(currentDirectory, fileName))
+      );
+      if (workspaceLockfile) {
+        return {
+          path: path.join(currentDirectory, workspaceLockfile),
+          scope: 'workspace',
+        };
+      }
+    }
+    currentDirectory = path.dirname(currentDirectory);
+  }
+
+  return undefined;
+}
+
 function checkProjectManifest(
   root: string,
   checks: CogitaDoctorCheck[]
@@ -164,7 +198,8 @@ function checkProjectManifest(
     }
   );
 
-  if (!LOCK_FILES.some((fileName) => fs.existsSync(path.join(root, fileName)))) {
+  const lockfile = findLockfile(root);
+  if (!lockfile) {
     addCheck(
       checks,
       'warning',
@@ -173,7 +208,16 @@ function checkProjectManifest(
       '提交 pnpm-lock.yaml、package-lock.json 或 yarn.lock，保证部署环境安装到可复现的依赖版本。'
     );
   } else {
-    addCheck(checks, 'info', 'COGITA_DOCTOR_LOCKFILE_OK', '站点存在包管理器 lockfile。');
+    addCheck(
+      checks,
+      'info',
+      'COGITA_DOCTOR_LOCKFILE_OK',
+      lockfile.scope === 'workspace'
+        ? '站点使用 workspace 根目录的包管理器 lockfile。'
+        : '站点存在包管理器 lockfile。',
+      undefined,
+      { lockfilePath: lockfile.path, scope: lockfile.scope }
+    );
   }
 
   const buildScript = manifest.scripts?.build;
