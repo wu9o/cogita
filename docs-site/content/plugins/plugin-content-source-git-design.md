@@ -39,7 +39,7 @@ export default defineConfig({
 
 Knowledge Demo 使用 `demos/knowledge/git-content` 模拟一个独立 checkout，访问 `/demos/knowledge/` 可以看到它和本地文章、普通文档及 JSON 来源一起进入知识库。
 
-如果自定义 `ContentSource` 也需要发布资源，可以实现可选的 `getAssets`：返回 `{ filePath, publicPath }` 数组。`filePath` 是构建机上的文件路径，`publicPath` 必须是相对于公共目录的正斜杠路径；Core 会在每轮构建前复制这些文件，并清理上一轮的 `external-content` 命名空间。
+如果自定义 `ContentSource` 也需要发布资源，可以实现可选的 `getAssets`：返回 `{ filePath, publicPath }` 数组。`filePath` 是构建机上的文件路径，`publicPath` 必须是相对于公共目录的正斜杠路径；Core 会在每轮构建前复制这些文件，并清理上一轮的 `external-content` 命名空间。适配器的 `load`、`getContent` 和 `getAssets` 应该支持 Core 的并行调用；Git 适配器会在首次读取时建立快照，并在下一轮显式 `load` 时刷新。
 
 ## GitHub Actions 接入
 

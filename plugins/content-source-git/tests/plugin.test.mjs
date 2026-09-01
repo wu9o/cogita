@@ -30,12 +30,25 @@ test('Git 内容源应扫描独立目录、生成路由并提供正文', async (
   await writeFile(path.join(directory, 'assets', 'diagram.svg'), '<svg></svg>\n', 'utf8');
 
   try {
+    const context = { root, cwd: root, logger };
+    const earlySource = createGitContentSource({
+      id: 'team-notes',
+      directory: 'team-notes',
+      routePrefix: 'notes',
+    });
+    const earlyAssets = await earlySource.getAssets(context);
+    assert.equal(earlyAssets.length, 1);
+    assert.match(
+      await earlySource.getContent({ filePath: 'source://team-notes/guides/start.mdx' }, context),
+      /\/external-content\/team-notes-[a-z0-9]+\/assets\/diagram\.svg/
+    );
+
     const source = createGitContentSource({
       id: 'team-notes',
       directory: 'team-notes',
       routePrefix: 'notes',
     });
-    const entries = await source.load({ root, cwd: root, logger });
+    const entries = await source.load(context);
 
     assert.deepEqual(
       entries.map((entry) => [entry.kind, entry.title, entry.route]),
@@ -46,7 +59,7 @@ test('Git 内容源应扫描独立目录、生成路由并提供正文', async (
     );
     assert.deepEqual(entries[0].tags, ['研究']);
     assert.equal(
-      (await source.getContent({ ...entries[1], url: entries[1].route })).trim(),
+      (await source.getContent({ ...entries[1], url: entries[1].route }, context)).trim(),
       `---\ntitle: 开始指南\nupdateDate: 2026-08-27\n---\n开始正文\n\n![流程图](/${(await source.getAssets())[0].publicPath})`
     );
     const assets = await source.getAssets();
@@ -56,6 +69,10 @@ test('Git 内容源应扫描独立目录、生成路由并提供正文', async (
       assets[0].publicPath,
       /^external-content\/team-notes-[a-z0-9]+\/assets\/diagram\.svg$/
     );
+
+    await writeFile(path.join(directory, 'assets', 'notes.txt'), '补充资料\n', 'utf8');
+    await source.load(context);
+    assert.equal((await source.getAssets(context)).length, 2);
   } finally {
     await rm(root, { recursive: true, force: true });
   }

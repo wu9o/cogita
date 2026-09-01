@@ -194,62 +194,97 @@ export function createGitContentSource(options: GitContentSourceOptions): Conten
   let assets: ContentSourceAsset[] = [];
   const assetsByRelativePath = new Map<string, string>();
   const assetPrefix = getAssetPrefix(id);
+  let loaded = false;
+  let loading: Promise<readonly ContentSourceEntry[]> | undefined;
+
+  /** 扫描一次 checkout，并同时建立正文和资源的关联快照。 */
+  async function loadSnapshot(
+    context: ContentSourceContext
+  ): Promise<readonly ContentSourceEntry[]> {
+    const absoluteDirectory = path.isAbsolute(directory)
+      ? directory
+      : path.resolve(context.root, directory);
+    const stats = await fs.stat(absoluteDirectory).catch((error: unknown) => {
+      const reason = error instanceof Error ? error.message : String(error);
+      throw new Error(`[Cogita Git Content Source] 读取目录 ${absoluteDirectory} 失败：${reason}`);
+    });
+    if (!stats.isDirectory()) {
+      throw new Error(`[Cogita Git Content Source] directory 不是目录：${absoluteDirectory}`);
+    }
+
+    contentByFilePath.clear();
+    relativePathByFilePath.clear();
+    assets = [];
+    assetsByRelativePath.clear();
+    const extensionPattern = extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0];
+    const filePaths = await glob(`**/*.${extensionPattern}`, {
+      absolute: true,
+      cwd: absoluteDirectory,
+      nodir: true,
+    });
+    const assetFilePaths = await glob('**/*', {
+      absolute: true,
+      cwd: absoluteDirectory,
+      dot: false,
+      ignore: ['**/.git/**'],
+      nodir: true,
+    });
+    assets = assetFilePaths
+      .filter((filePath) => !isContentFile(filePath, extensions))
+      .map((filePath) => {
+        const relativePath = path.relative(absoluteDirectory, filePath).split(path.sep).join('/');
+        const publicPath = `${assetPrefix}/${relativePath}`;
+        assetsByRelativePath.set(relativePath, publicPath);
+        return { filePath, publicPath };
+      });
+    const entries = await Promise.all(
+      filePaths.map((filePath) =>
+        readEntry(
+          filePath,
+          absoluteDirectory,
+          { kind, routePrefix, sourceId: id },
+          contentByFilePath,
+          relativePathByFilePath
+        )
+      )
+    );
+    entries.sort((left, right) => left.route.localeCompare(right.route));
+    return entries;
+  }
+
+  /** 在正文或资源读取早于 load 时，等待同一轮 checkout 扫描完成。 */
+  async function ensureLoaded(context: ContentSourceContext): Promise<void> {
+    if (loaded) {
+      return;
+    }
+    if (!loading) {
+      loading = loadSnapshot(context);
+    }
+    try {
+      await loading;
+      loaded = true;
+    } finally {
+      loading = undefined;
+    }
+  }
+
   return {
     id,
     async load(context: ContentSourceContext) {
-      const absoluteDirectory = path.isAbsolute(directory)
-        ? directory
-        : path.resolve(context.root, directory);
-      const stats = await fs.stat(absoluteDirectory).catch((error: unknown) => {
-        const reason = error instanceof Error ? error.message : String(error);
-        throw new Error(
-          `[Cogita Git Content Source] 读取目录 ${absoluteDirectory} 失败：${reason}`
-        );
-      });
-      if (!stats.isDirectory()) {
-        throw new Error(`[Cogita Git Content Source] directory 不是目录：${absoluteDirectory}`);
+      loaded = false;
+      if (!loading) {
+        loading = loadSnapshot(context);
       }
-
-      contentByFilePath.clear();
-      relativePathByFilePath.clear();
-      assets = [];
-      assetsByRelativePath.clear();
-      const extensionPattern = extensions.length > 1 ? `{${extensions.join(',')}}` : extensions[0];
-      const filePaths = await glob(`**/*.${extensionPattern}`, {
-        absolute: true,
-        cwd: absoluteDirectory,
-        nodir: true,
-      });
-      const assetFilePaths = await glob('**/*', {
-        absolute: true,
-        cwd: absoluteDirectory,
-        dot: false,
-        ignore: ['**/.git/**'],
-        nodir: true,
-      });
-      assets = assetFilePaths
-        .filter((filePath) => !isContentFile(filePath, extensions))
-        .map((filePath) => {
-          const relativePath = path.relative(absoluteDirectory, filePath).split(path.sep).join('/');
-          const publicPath = `${assetPrefix}/${relativePath}`;
-          assetsByRelativePath.set(relativePath, publicPath);
-          return { filePath, publicPath };
-        });
-      const entries = await Promise.all(
-        filePaths.map((filePath) =>
-          readEntry(
-            filePath,
-            absoluteDirectory,
-            { kind, routePrefix, sourceId: id },
-            contentByFilePath,
-            relativePathByFilePath
-          )
-        )
-      );
-      entries.sort((left, right) => left.route.localeCompare(right.route));
-      return entries;
+      try {
+        const entries = await loading;
+        loaded = true;
+        return entries;
+      } finally {
+        loading = undefined;
+      }
     },
-    async getContent(entry) {
+    async getContent(entry, context) {
+      await ensureLoaded(context);
       const content = contentByFilePath.get(entry.filePath);
       if (content === undefined) {
         throw new Error(`[Cogita Git Content Source] 条目正文不存在：${entry.filePath}`);
@@ -259,7 +294,8 @@ export function createGitContentSource(options: GitContentSourceOptions): Conten
         ? rewriteAssetReferences(content, relativePath, assetsByRelativePath)
         : content;
     },
-    async getAssets() {
+    async getAssets(context) {
+      await ensureLoaded(context);
       return assets;
     },
   };

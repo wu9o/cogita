@@ -28,7 +28,7 @@
 
 ### P0：稳定公共契约
 
-- [ ] 固化 `ContentIndex`、`CogitaBuildContext` 和虚拟模块的数据身份与版本策略。
+- [x] 固化 `ContentIndex`、`CogitaBuildContext` 和虚拟模块的数据身份与版本策略。
 - [x] 统一内置能力标识，并校验同一能力不能出现多个 provider。
 - [x] 建立 Core、CLI、主题和插件的兼容版本矩阵与迁移说明。
 - [x] 为能力缺失、能力 provider 冲突、布局缺失、运行时模块冲突提供稳定的诊断格式。
