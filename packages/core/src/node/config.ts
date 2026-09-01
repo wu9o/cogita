@@ -14,6 +14,7 @@ import jiti from 'jiti';
 import * as mlly from 'mlly';
 import type { CogitaConfig, CogitaFullConfig, PostsConfig } from '../types';
 import { createContentIndex } from './content-index';
+import { createContentSourcePagesPlugin } from './content-source-pages';
 import {
   createCoreDiagnostic,
   createCoreDiagnosticError,
@@ -821,6 +822,10 @@ export async function createRspressConfig(
       },
       {
         plugin: cogitaRuntimeDefaults,
+        source: 'core',
+      },
+      {
+        plugin: createContentSourcePagesPlugin(pluginConfig),
         source: 'core',
       },
       ...(loadedTheme

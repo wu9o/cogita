@@ -100,7 +100,8 @@ interface CogitaConfig {
 
 `ContentSource` 至少需要提供站点内唯一的 `id` 和 `load` 函数。条目必须包含 `kind`、`title`、
 `filePath`、`route` 和 `updateDate`；`url` 缺省时由 Core 使用 `route` 补齐。实现 `getContent` 后，
-搜索全文、内容关系等需要正文的插件也可以消费该来源。
+搜索全文、内容关系等需要正文的插件也可以消费该来源，Core 还会为有正文的外部条目生成静态页面。
+没有正文读取器的条目仍可进入统一索引，但不会生成空页面。
 
 #### `SiteConfig`
 

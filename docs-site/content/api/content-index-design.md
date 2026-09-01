@@ -54,7 +54,9 @@ export default defineConfig({
 `id` 在一个站点内必须唯一，`filePath` 是条目的稳定标识，不要求一定是本地文件路径；如果要让
 搜索全文和内容关系插件读取外部正文，适配器必须实现 `getContent`。没有正文读取器时，条目仍可被
 Knowledge 主题的元数据、标签和搜索结果消费，但全文搜索和关系提取会按现有能力降级。内容源的
-路由不能与 `posts`、`contentDir` 或其他内容源重复，避免同一个 URL 对应多个内容实体。
+路由不能与 `posts`、`contentDir` 或其他内容源重复，避免同一个 URL 对应多个内容实体。实现
+`getContent` 后，Core 会把返回的 Markdown 正文作为附加页面生成；这使 Git checkout 和 JSON 快照都能
+在站点中拥有真正可访问的内容入口，而不是只出现在搜索索引中。
 
 插件工厂收到的配置现在还包含 `buildContext`。它集中承载 `root`、`cwd`、`contentIndex`、主题布局路径和构建元数据等框架内部状态。旧版插件仍可读取同名顶层字段；新插件应通过 `getCogitaBuildContext(config)` 获取上下文，避免继续扩展配置对象的内部字段。
 
@@ -83,9 +85,9 @@ const backlinks = getBacklinks('/posts/current');
 const related = getRelatedContent('/posts/current');
 ```
 
-当前实现的索引对象已经覆盖文章、`contentDir` 普通文档页和显式内容源条目，但知识条目的关系类型、
-来源位置和主题展示仍未完成。因此它是知识库主题和第三方内容适配的第一层数据基础，不代表统一知识库
-主题已经完成；下一步由主题组合搜索、标签、关系和文档导航，并继续补充真实来源适配器。
+当前实现的索引对象已经覆盖文章、`contentDir` 普通文档页和显式内容源条目；Knowledge 主题组合搜索、
+标签、关系和文档导航，带正文的外部条目还会由 Core 生成静态页面。第三方适配器仍应围绕稳定的条目
+元数据、正文读取和来源版本策略进行扩展。
 
 ## 公共契约版本策略
 

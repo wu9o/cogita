@@ -28,4 +28,4 @@ export default defineConfig({
 
 Markdown 文件支持 `title`、`description`、`excerpt`、`author`、`date`、`createDate`、`updateDate`、`tags`、`categories`、`image` 和 `imageAlt` 等 frontmatter 字段。`kind: 'post'` 时必须提供 `date` 或 `createDate`。
 
-正文会通过 `ContentIndex.getPostContent()` 按需提供给搜索和内容关系插件，因此外部文件不会被这些插件重复扫描。
+正文会通过 `ContentIndex.getPostContent()` 按需提供给搜索和内容关系插件，因此外部文件不会被这些插件重复扫描。Core 也会根据正文自动生成对应的静态 Markdown 页面；例如 `routePrefix: 'notes'` 下的 `architecture.md` 会生成 `/notes/architecture`。
