@@ -1,6 +1,6 @@
 {
   "name": "@cogita/plugin-content-relations",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "从 Markdown 本地链接生成相关文章和反向链接数据。",
   "keywords": ["cogita", "plugin", "content", "relations", "backlinks", "knowledge-base"],
   "author": "wu9o <https://github.com/wu9o>",

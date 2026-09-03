@@ -7,31 +7,31 @@
 <!-- compatibility-matrix:start -->
 | 包 | 当前版本 | 兼容轨道 | 角色 |
 | --- | --- | --- | --- |
-| `@cogita/shared` | 0.12.1 | Core 平台 | 公共类型、能力和版本契约 |
-| `@cogita/core` | 0.13.1 | Core 平台 | 配置编排、插件注册和构建生命周期 |
-| `@cogita/cli` | 0.2.1 | Core 平台 | 站点初始化、开发和构建入口 |
-| `@cogita/ui` | 0.1.1 | 主题生态 | 主题共享 UI 组件 |
-| `@cogita/plugin-blog-list` | 0.3.4 | 博客主题插件 | 列表、筛选、分页和归档 |
-| `@cogita/plugin-categories` | 0.2.6 | 博客主题插件 | 分类聚合和页面 |
-| `@cogita/plugin-code-copy` | 0.2.5 | 博客主题插件 | 代码复制运行时增强 |
-| `@cogita/plugin-collections` | 1.0.6 | 博客主题插件 | 合集聚合和页面 |
-| `@cogita/plugin-comments` | 0.2.6 | 博客主题插件 | 评论配置和文章路由 |
-| `@cogita/plugin-content-check` | 0.2.4 | 博客主题插件 | 内容质量诊断 |
-| `@cogita/plugin-content-relations` | 0.2.0 | 知识库插件 | 本地链接、相关文章和反向链接 |
-| `@cogita/plugin-content-source-json` | 0.1.0 | 知识库插件 | JSON 导出内容源适配 |
-| `@cogita/plugin-content-source-git` | 0.1.0 | 知识库插件 | 独立 Git Markdown 内容源适配 |
-| `@cogita/plugin-images` | 1.0.6 | 博客主题插件 | 公共图片和封面处理 |
-| `@cogita/plugin-posts-frontmatter` | 0.1.5 | 博客主题插件 | 文章索引和文章页面 |
-| `@cogita/plugin-reading-progress` | 0.3.6 | 博客主题插件 | 阅读时间和阅读进度 |
-| `@cogita/plugin-rss` | 1.0.6 | 博客主题插件 | RSS、Atom 和 JSON Feed |
-| `@cogita/plugin-search` | 0.2.6 | 博客主题插件 | 本地搜索索引和页面 |
-| `@cogita/plugin-seo` | 1.3.6 | 博客主题插件 | 页面 SEO 元数据和审计 |
-| `@cogita/plugin-sitemap` | 1.3.6 | 博客主题插件 | 站点地图生成 |
-| `@cogita/plugin-tags` | 1.0.6 | 博客主题插件 | 标签聚合和页面 |
-| `@cogita/theme-lucid` | 0.11.4 | 博客主题 | 默认博客主题和完整插件集成 |
-| `@cogita/theme-editorial` | 0.2.10 | 博客主题 | 编辑风格博客主题 |
-| `@cogita/theme-docs` | 0.2.2 | 文档主题 | 技术手册和文档站主题 |
-| `@cogita/theme-knowledge` | 0.2.0 | 知识库主题 | 统一内容、搜索、标签和反向链接 |
+| `@cogita/shared` | 0.13.0 | Core 平台 | 公共类型、能力和版本契约 |
+| `@cogita/core` | 0.14.0 | Core 平台 | 配置编排、插件注册和构建生命周期 |
+| `@cogita/cli` | 0.3.0 | Core 平台 | 站点初始化、开发和构建入口 |
+| `@cogita/ui` | 0.1.2 | 主题生态 | 主题共享 UI 组件 |
+| `@cogita/plugin-blog-list` | 0.3.5 | 博客主题插件 | 列表、筛选、分页和归档 |
+| `@cogita/plugin-categories` | 0.2.7 | 博客主题插件 | 分类聚合和页面 |
+| `@cogita/plugin-code-copy` | 0.2.6 | 博客主题插件 | 代码复制运行时增强 |
+| `@cogita/plugin-collections` | 1.0.7 | 博客主题插件 | 合集聚合和页面 |
+| `@cogita/plugin-comments` | 0.2.7 | 博客主题插件 | 评论配置和文章路由 |
+| `@cogita/plugin-content-check` | 0.2.5 | 博客主题插件 | 内容质量诊断 |
+| `@cogita/plugin-content-relations` | 0.2.1 | 知识库插件 | 本地链接、相关文章和反向链接 |
+| `@cogita/plugin-content-source-json` | 0.2.0 | 知识库插件 | JSON 导出内容源适配 |
+| `@cogita/plugin-content-source-git` | 0.2.0 | 知识库插件 | 独立 Git Markdown 内容源适配 |
+| `@cogita/plugin-images` | 1.0.7 | 博客主题插件 | 公共图片和封面处理 |
+| `@cogita/plugin-posts-frontmatter` | 0.1.6 | 博客主题插件 | 文章索引和文章页面 |
+| `@cogita/plugin-reading-progress` | 0.3.7 | 博客主题插件 | 阅读时间和阅读进度 |
+| `@cogita/plugin-rss` | 1.0.7 | 博客主题插件 | RSS、Atom 和 JSON Feed |
+| `@cogita/plugin-search` | 0.2.7 | 博客主题插件 | 本地搜索索引和页面 |
+| `@cogita/plugin-seo` | 1.3.7 | 博客主题插件 | 页面 SEO 元数据和审计 |
+| `@cogita/plugin-sitemap` | 1.3.7 | 博客主题插件 | 站点地图生成 |
+| `@cogita/plugin-tags` | 1.0.7 | 博客主题插件 | 标签聚合和页面 |
+| `@cogita/theme-lucid` | 0.12.0 | 博客主题 | 默认博客主题和完整插件集成 |
+| `@cogita/theme-editorial` | 0.3.0 | 博客主题 | 编辑风格博客主题 |
+| `@cogita/theme-docs` | 0.3.0 | 文档主题 | 技术手册和文档站主题 |
+| `@cogita/theme-knowledge` | 0.3.0 | 知识库主题 | 统一内容、搜索、标签和反向链接 |
 <!-- compatibility-matrix:end -->
 
 ## 兼容轨道

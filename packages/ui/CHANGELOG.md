@@ -1,5 +1,11 @@
 # @cogita/ui
 
+## 0.1.2
+
+### Patch Changes
+
+- b8cf7c8: 将官方主题、CLI Starter、共享日期格式和常用插件默认界面统一为英文优先，并让所有官方主题消费统一的 i18n 运行时契约。
+
 ## 0.1.1
 
 ### Patch Changes

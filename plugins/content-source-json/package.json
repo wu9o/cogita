@@ -1,6 +1,6 @@
 {
   "name": "@cogita/plugin-content-source-json",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "将 JSON 导出内容接入 Cogita 统一内容索引。",
   "keywords": ["cogita", "plugin", "content-source", "json", "knowledge-base"],
   "author": "wu9o <https://github.com/wu9o>",

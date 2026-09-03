@@ -1,6 +1,6 @@
 {
   "name": "@cogita/plugin-i18n",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "为 Cogita 主题提供英文优先的界面文案国际化能力。",
   "keywords": ["cogita", "plugin", "i18n", "internationalization", "localization", "rspress"],
   "author": "wu9o <https://github.com/wu9o>",

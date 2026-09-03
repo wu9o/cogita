@@ -1,6 +1,6 @@
 {
   "name": "@cogita/plugin-sitemap",
-  "version": "1.3.6",
+  "version": "1.3.7",
   "description": "构建期生成 XML 站点地图的 Cogita 插件。",
   "keywords": ["cogita", "plugin", "sitemap", "seo", "rspress"],
   "author": "wu9o <https://github.com/wu9o>",

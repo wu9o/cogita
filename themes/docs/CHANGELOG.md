@@ -1,5 +1,16 @@
 # @cogita/theme-docs
 
+## 0.3.0
+
+### Minor Changes
+
+- b8cf7c8: 将官方主题、CLI Starter、共享日期格式和常用插件默认界面统一为英文优先，并让所有官方主题消费统一的 i18n 运行时契约。
+
+### Patch Changes
+
+- Updated dependencies [d270384]
+  - @cogita/plugin-i18n@0.2.0
+
 ## 0.2.2
 
 ### Patch Changes

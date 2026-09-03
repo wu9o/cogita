@@ -1,5 +1,15 @@
 # @cogita/plugin-reading-progress
 
+## 0.3.7
+
+### Patch Changes
+
+- Updated dependencies [657fc43]
+- Updated dependencies [53e62d8]
+- Updated dependencies [b8cf7c8]
+- Updated dependencies [d270384]
+  - @cogita/shared@0.13.0
+
 ## 0.3.6
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @cogita/plugin-content-check
 
+## 0.2.5
+
+### Patch Changes
+
+- 657fc43: 增加 `ContentSource` 适配契约，允许外部内容源通过统一 `ContentIndex` 提供文章、文档和按需正文。
+- 53e62d8: 为外部内容源增加静态资源发布契约，Git Markdown 内容源会自动发布并改写正文中的相对图片和资源引用。
+- Updated dependencies [657fc43]
+- Updated dependencies [53e62d8]
+- Updated dependencies [b8cf7c8]
+- Updated dependencies [d270384]
+  - @cogita/shared@0.13.0
+
 ## 0.2.4
 
 ### Patch Changes
