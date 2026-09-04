@@ -5,7 +5,6 @@ export default defineConfig({
   site: {
     title: '__SITE_TITLE__',
     description: 'A long-term knowledge base for __SITE_TITLE__.',
-    lang: 'en-US',
     base: '/',
     url: 'http://localhost:3030/',
   },

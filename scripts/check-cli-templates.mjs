@@ -56,6 +56,9 @@ async function verifyTemplate(template, expectedTheme, expectedContentSource) {
   const config = await readFile(path.join(projectRoot, 'cogita.config.ts'), 'utf8');
   assert.equal(config.includes(`@cogita/theme-${expectedTheme}`), true);
   assert.equal(config.includes('__SITE_TITLE__'), false);
+  if (expectedTheme === 'knowledge') {
+    assert.doesNotMatch(config, /^\s+lang:/m);
+  }
   if (expectedContentSource) {
     assert.equal(
       packageJson.devDependencies['@cogita/plugin-content-source-git'] !== undefined,
