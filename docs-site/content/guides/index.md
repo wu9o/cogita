@@ -17,6 +17,7 @@ This section covers the daily workflow from creating a site to maintaining it in
 - [Content repository migration](./migration.md): consume Cogita packages from an independent site.
 - [Compatibility matrix](./compatibility-matrix.md): supported Core, theme, plugin, and runtime combinations.
 - [Browser acceptance](./browser-acceptance.md): verify root-path and subpath previews in a real browser.
+- [Launch kit](./launch.md): public positioning, Demo order, Quick Start, and launch copy.
 - [Theme usage and extension](../theme-customization.md): choose and extend a theme.
 
 ## Recommended paths

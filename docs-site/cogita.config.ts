@@ -46,6 +46,7 @@ export default defineConfig({
             { text: 'Deployment guide', link: '/guides/deployment' },
             { text: 'Site upgrade and doctor', link: '/guides/site-doctor' },
             { text: 'Content repository migration', link: '/guides/migration' },
+            { text: 'Launch kit', link: '/guides/launch' },
             { text: 'Theme usage and extension', link: '/theme-customization' },
           ],
         },
