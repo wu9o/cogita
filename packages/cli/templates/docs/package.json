@@ -2,7 +2,7 @@
   "name": "__PACKAGE_NAME__",
   "version": "0.0.0",
   "private": true,
-  "description": "__SITE_TITLE__ 的 Cogita 文档站。",
+  "description": "A Cogita documentation site for __SITE_TITLE__.",
   "type": "module",
   "scripts": {
     "dev": "cogita dev",

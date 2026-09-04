@@ -50,6 +50,8 @@ async function verifyTemplate(template, expectedTheme, expectedContentSource) {
   assert.equal(createResult.status, 0, `${template} 模板创建失败`);
 
   const packageJson = JSON.parse(await readFile(path.join(projectRoot, 'package.json'), 'utf8'));
+  assert.match(packageJson.description, /[A-Za-z]/, `${template} 模板描述应使用英文`);
+  assert.doesNotMatch(packageJson.description, /[㐀-鿿]/, `${template} 模板描述不应包含中文`);
   assert.equal(packageJson.devDependencies[`@cogita/theme-${expectedTheme}`] !== undefined, true);
   const config = await readFile(path.join(projectRoot, 'cogita.config.ts'), 'utf8');
   assert.equal(config.includes(`@cogita/theme-${expectedTheme}`), true);
