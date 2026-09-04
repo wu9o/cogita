@@ -1,15 +1,15 @@
 ---
-title: 架构现场笔记
+title: Architecture field notes
 updateDate: 2026-08-28
 tags:
-  - Git 来源
-  - 架构
+  - Git source
+  - architecture
 ---
 
-# 架构现场笔记
+# Architecture field notes
 
-这份内容来自独立 Git 仓库的 Markdown checkout。站点只关心统一的条目、路由和正文，不需要知道原始仓库如何组织提交。
+This entry comes from a Markdown checkout in an independent Git repository. The site only needs the unified entry, route, and body; it does not need to know how the source repository organizes commits.
 
-它和[外部来源回到现场](/demos/knowledge/notes/field-notes-remote)共享同一套搜索、标签和关系入口。
+It shares the same search, topic, and relation entry points as [Returning from an external source](/notes/field-notes-remote).
 
-![知识来源示意图](./assets/content-source.svg)
+![Knowledge source diagram](./assets/content-source.svg)

@@ -1,15 +1,15 @@
 ---
-title: 把零散线索连接成一条可回溯的路径
+title: Connect scattered clues into a path you can revisit
 date: 2026-08-26
-description: 知识库的价值不只在于保存内容，更在于下一次能从相关线索重新抵达它。
+description: A knowledge base is valuable not only for saving content, but for reaching it again through related clues.
 author: Atlas
 tags:
-  - 知识系统
-  - 连接
+  - knowledge systems
+  - connections
 ---
 
-# 把零散线索连接成一条可回溯的路径
+# Connect scattered clues into a path you can revisit
 
-一篇文章记录结论，一份文档记录约束，而内容关系记录它们为什么应该一起出现。
+An article records a conclusion, a document records a constraint, and a content relation records why they belong together.
 
-在 [统一内容入口](../content/guides/content-model.md) 中，我们把文章和普通文档作为同一知识空间里的不同内容类型；在 [检索与回溯](../content/guides/retrieval.md) 中，则把搜索、标签和关系串成一条发现路径。
+In [One content model](../content/guides/content-model.md), articles and ordinary documents become different content types in one knowledge space. In [Retrieval and backtracking](../content/guides/retrieval.md), search, topics, and relations become one discovery path.

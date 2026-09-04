@@ -1,20 +1,20 @@
 ---
-title: 维护不是成本，是产品的一部分
+title: Maintenance is part of the product
 date: 2026-08-19
-description: 一个系统能否被持续理解，决定了它能否被持续使用。
+description: A system stays useful only when people can keep understanding it.
 author: Lin
 tags:
-  - 维护
-  - 产品
+  - maintenance
+  - product
 categories:
-  - 系统
-  - 长期主义
+  - systems
+  - long-term thinking
 collection: tools-and-judgement
 collectionTitle: Tools & Judgement
 ---
 
-# 维护不是成本，是产品的一部分
+# Maintenance is part of the product
 
-新功能让系统被选择，持续维护让系统值得信任。依赖升级、错误提示、迁移路径和文档，都属于用户真正使用到的产品表面。
+New features make a system attractive; sustained maintenance makes it trustworthy. Dependency upgrades, error messages, migration paths, and documentation are all product surfaces that users actually experience.
 
-当一篇文章和另一篇文章共享同一个主题时，Editorial 会把它们组织成专题，让观点不再是孤立的页面。
+When two articles share a theme, Editorial groups them into a series so that ideas do not remain isolated pages.

@@ -1,20 +1,20 @@
 ---
-title: 阅读一个界面，而不是操作一个界面
+title: Read an interface, do not just operate it
 date: 2026-08-21
-description: 界面设计的第一层不是按钮，而是读者如何判断下一步去哪里。
+description: The first layer of interface design is how a reader decides where to go next, not the buttons themselves.
 author: Mira
 tags:
-  - 设计
-  - 写作
+  - design
+  - writing
 categories:
-  - 观察
-  - 设计
+  - observation
+  - design
 collection: field-notes
 collectionTitle: Field Notes
 ---
 
-# 阅读一个界面，而不是操作一个界面
+# Read an interface, do not just operate it
 
-我们常说“操作路径”，但真正重要的往往是阅读路径：标题是否说明了上下文，卡片是否暗示了优先级，链接是否让人放心离开当前页面。
+We often talk about an interaction path, but the reading path is usually more important: does the title explain the context, does the card signal priority, and does the link make it safe to leave the current page?
 
-Lucid 通过内容卡片、侧栏标签和归档入口，把这种连续浏览变成默认体验。
+Lucid makes this continuous browsing experience the default through content cards, sidebar topics, and archive entry points.

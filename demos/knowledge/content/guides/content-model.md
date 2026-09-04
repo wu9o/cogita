@@ -1,12 +1,12 @@
 ---
-title: 统一内容入口
-description: Atlas 如何把文章和普通文档放进同一个内容模型。
+title: One content model
+description: How Atlas puts articles and ordinary documents into one content model.
 ---
 
-# 统一内容入口
+# One content model
 
-Knowledge Demo 使用 `posts/` 保存带日期的文章，使用 `content/` 保存不要求日期的普通文档。两者通过统一内容索引进入搜索、标签和关系模块。
+The Knowledge Demo uses `posts/` for dated articles and `content/` for ordinary documents that do not require dates. Both enter search, topics, and relations through one content index.
 
-它们不是被复制成同一种内容，而是在同一空间中保留各自的语义。文章更适合记录变化，文档更适合表达稳定约束。
+They are not copied into one content type. Each keeps its meaning in the same space: articles record change, while documents express stable constraints.
 
-下一步可以阅读[检索与回溯](./retrieval.md)，查看这些条目如何通过链接建立关系。
+Next, read [Retrieval and backtracking](./retrieval.md) to see how links establish relations between entries.

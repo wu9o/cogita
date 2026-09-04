@@ -1,11 +1,11 @@
 ---
-title: 版本化决策日志
+title: Versioned decision log
 updateDate: 2026-08-27
 tags:
-  - Git 来源
-  - 决策
+  - Git source
+  - decisions
 ---
 
-# 版本化决策日志
+# Versioned decision log
 
-Git 内容源的价值不是让主题执行 Git 命令，而是让内容仓库和站点仓库可以独立演进，同时仍然在构建时形成一个可追踪的知识入口。
+The value of a Git content source is not making a theme run Git commands. It lets the content repository and site repository evolve independently while still producing a traceable knowledge entry at build time.
