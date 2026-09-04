@@ -1,6 +1,6 @@
 # Cogita
 
-[中文文档](./README.md) • **English Documentation**
+[中文文档](https://wu9o.github.io/cogita/zh-CN/) • **English Documentation**
 
 📖 [Online User Manual](https://wu9o.github.io/cogita/)
 

@@ -1,32 +1,34 @@
 # Cogita
 
-[**中文文档**](./docs-site/content/overview.md) • [English Documentation](./README.en.md)
+**A theme-driven static site framework for blogs, docs, and knowledge bases.**
 
-📖 [在线使用手册](https://wu9o.github.io/cogita/)
+[Online handbook](https://wu9o.github.io/cogita/) · [Theme demos](https://wu9o.github.io/cogita/demos/) · [中文文档](https://wu9o.github.io/cogita/zh-CN/)
 
-一个基于 Rspress 的**主题驱动静态站点框架**，专为希望快速搭建和定制内容站点的开发者设计。
+Cogita turns themes into complete content ecosystems. A theme defines the reading experience, plugins provide capabilities, and the site owns its content and configuration.
 
-先看真实效果：[主题 Demo 总览](https://wu9o.github.io/cogita/demos/) · [在线使用手册](https://wu9o.github.io/cogita/)
+Choose a site shape first:
 
-[![npm version](https://badge.fury.io/js/@cogita%2Fcore.svg)](https://badge.fury.io/js/@cogita%2Fcore)
+- [Docs](https://wu9o.github.io/cogita/demos/docs/) for handbooks and API references.
+- [Lucid](https://wu9o.github.io/cogita/demos/lucid/) for personal notes and publishing archives.
+- [Editorial](https://wu9o.github.io/cogita/demos/editorial/) for feature-led technical writing.
+- [Knowledge](https://wu9o.github.io/cogita/demos/knowledge/) for connected content from posts, JSON, and Git sources.
+
+[![npm version](https://badge.fury.io/js/@cogita%2Fcore.svg)](https://badge.fury.io/js/@cogita/core)
 [![GitHub](https://img.shields.io/github/license/wu9o/cogita)](https://github.com/wu9o/cogita/blob/main/LICENSE)
 [![CI](https://github.com/wu9o/cogita/workflows/CI/badge.svg)](https://github.com/wu9o/cogita/actions/workflows/ci.yml)
 
-## ✨ 核心特性
+## Why Cogita
 
-- 🚀 **真正开箱即用**: 零配置启动，数秒内拥有功能完备的博客
-- 🎨 **主题驱动架构**: 主题不仅是皮肤，更是完整的功能生态系统
-- 🔧 **渐进增强**: 从零配置到完全自定义的平滑过渡体验
-- ⚡ **高性能**: 基于现代化 Rspress 框架，构建速度极快
-- 📝 **Markdown 优先**: 纯粹的 Markdown 写作体验，专注内容创作
-- 🛡️ **类型安全**: 完整的 TypeScript 支持，开发体验卓越
-- 🔎 **真实 Demo**: 四个独立站点消费者，直接展示主题接入和内容组织方式
+- **Theme-driven**: choose a complete site experience instead of assembling unrelated plugins.
+- **Progressive**: start with a small config and add only the capabilities your site needs.
+- **Composable**: themes declare their plugin dependencies and plugins communicate through public contracts.
+- **Content-first**: write Markdown, connect content sources, and keep site code separate from framework packages.
+- **Type-safe**: use TypeScript configuration and shared public types.
+- **English-first**: official themes, demos, onboarding, and documentation entry points are ready for public evaluation.
 
-## 🚀 快速开始
+## Quick start
 
-### 最快路径：用模板启动
-
-如果你想先得到一个能运行的站点，直接选择模板：
+Start from an official template:
 
 ```bash
 pnpm dlx @cogita/cli create my-site --template knowledge
@@ -34,121 +36,94 @@ cd my-site
 pnpm dev
 ```
 
-可用模板包括 `blog`、`docs`、`knowledge` 和 `knowledge-external`。其中 `knowledge-external` 用于把 JSON 或 Git 内容源接入知识库。
+Available templates include `blog`, `docs`, `knowledge`, and `knowledge-external`. The last one connects JSON or Git content sources to a Knowledge site.
 
-### 自定义配置：三步启动站点
+For a custom site:
 
 ```bash
-# 1. 安装依赖
 pnpm add -D @cogita/cli @cogita/core @cogita/theme-lucid
+```
 
-# 2. 创建配置文件 cogita.config.ts
-echo 'import { defineConfig } from "@cogita/core";
+```ts
+import { defineConfig } from '@cogita/core';
 
 export default defineConfig({
   site: {
-    title: "我的博客",
-    description: "记录思考与成长",
-    url: "https://yourdomain.com",
+    title: 'My Site',
+    description: 'A site built with Cogita.',
+    url: 'https://example.com',
   },
-  posts: { dir: "posts" },
-  rss: { 
-    title: "我的博客 RSS", 
-    description: "最新文章订阅" 
-  },
-  theme: "@cogita/theme-lucid",
-});' > cogita.config.ts
-
-# 3. 创建第一篇文章
-mkdir posts && echo '---
-title: "Hello Cogita"
-date: "2025-01-01"
----
-
-# 欢迎使用 Cogita
-
-开始你的博客之旅！' > posts/hello.md
-
-# 启动开发服务器
-pnpm exec cogita dev
+  posts: { dir: 'posts' },
+  theme: '@cogita/theme-lucid',
+});
 ```
 
-### 📦 生态系统
+Then run `pnpm exec cogita dev` and add Markdown under `posts/` or `content/`.
 
-**核心包：**
-- [`@cogita/core`](./packages/core) - 智能核心引擎
-- [`@cogita/cli`](./packages/cli) - 命令行工具  
-- [`@cogita/theme-lucid`](./themes/lucid) - 实践博客主题
-- [`@cogita/theme-editorial`](./themes/editorial) - 编辑型内容主题
-- [`@cogita/theme-docs`](./themes/docs) - 技术文档主题
-- [`@cogita/theme-knowledge`](./themes/knowledge) - 长期知识库主题
-- [`@cogita/plugin-i18n`](./plugins/i18n) - 英文优先的界面文案国际化
-- [`@cogita/plugin-rss`](./plugins/rss) - RSS 订阅插件
-- [`@cogita/plugin-seo`](./plugins/seo) - SEO、Open Graph 和 Twitter Card 元数据
-- [`@cogita/plugin-content-source-json`](./plugins/content-source-json) - JSON 内容源
-- [`@cogita/plugin-content-source-git`](./plugins/content-source-git) - Git Markdown 内容源
+## Official themes
 
-**完整文档：** [📖 在线使用手册](https://wu9o.github.io/cogita/) • [📚 文档源码](./docs-site/content/overview.md) • [🗺️ 包与能力地图](./docs-site/content/package-map.md) • [📄 English Documentation](./README.en.md)
+| Theme | Best for | Main strengths |
+| --- | --- | --- |
+| [`@cogita/theme-docs`](./themes/docs) | Handbooks and references | Navigation, sidebars, focused reading |
+| [`@cogita/theme-lucid`](./themes/lucid) | Blogs and notes | Lightweight publishing, topics, archives |
+| [`@cogita/theme-editorial`](./themes/editorial) | Feature writing | Strong hierarchy, series, curated stories |
+| [`@cogita/theme-knowledge`](./themes/knowledge) | Wikis and research notes | Search, topics, backlinks, mixed sources |
 
-### 🎭 主题 Demo
-
-仓库提供四个彼此独立的主题 Demo，每个 Demo 都有自己的配置和自定义内容，可直接查看主题如何接入：
+Every official theme has an independent consumer under [`demos/`](./demos/). Build all four demos locally with:
 
 ```bash
 pnpm install
 pnpm run demo
 ```
 
-打开 <http://localhost:3100/> 查看主题总览，或阅读 [`demos/README.md`](./demos/README.md) 了解单独启动方式。Demo 不使用 `blog/` 中的内容，适合贡献者和 GitHub 访客快速体验 Docs、Lucid、Editorial 与 Knowledge。
+Open `http://localhost:3100/` to compare the four site shapes. Each demo uses its own configuration and sample content; none depends on the personal `blog/` project.
 
-## 🏗️ 技术架构
+## Plugin ecosystem
 
+Cogita includes plugins for posts, RSS, topics, categories, collections, search, SEO, sitemaps, images, reading progress, code copying, comments, content checks, and JSON or Git content sources. [`@cogita/plugin-i18n`](./plugins/i18n) provides locale-aware UI copy with English as the safe fallback.
+
+The extension boundary is intentionally simple:
+
+```text
+site config → Core → theme → plugins → static output
 ```
-用户配置 → 框架核心 → 主题生态 → 插件体系 → UI组件 → Rspress
-```
 
-Cogita 采用**主题驱动架构**，主题自动加载所需插件，实现真正的开箱即用。
+Themes own page composition. Plugins own capabilities and their configuration namespaces. Site-specific rules remain in the site repository.
 
-## 🛠️ 开发
+## Documentation
+
+- [Online handbook](https://wu9o.github.io/cogita/)
+- [Getting started](./docs-site/content/getting-started.md)
+- [Best practices](./docs-site/content/guides/best-practices.md)
+- [Deployment guide](./docs-site/content/guides/deployment.md)
+- [Plugin development](./docs-site/content/plugins/plugin-development.md)
+- [API reference](./docs-site/content/api/api-reference.md)
+- [Architecture design](./docs-site/content/api/architecture-design.md)
+- [Roadmap](./ROADMAP.md)
+
+The handbook also provides a native `English / 中文` route switcher. The Chinese entry point is available at [`/zh-CN/`](./docs-site/content/zh-CN/index.md); pages without a completed translation safely fall back to the English source.
+
+## Development
+
+Requirements: Node.js 18 or newer and pnpm 9 or newer.
 
 ```bash
-# 安装依赖
 pnpm install
-
-# 构建所有包
 pnpm run build:packages
-
-# 启动框架使用手册
-pnpm run dev
-
-# 代码检查
+pnpm run test
 pnpm run check
 ```
 
-## 🗺️ 当前发展方向
+Use [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution conventions. Published package changes should include a Changeset.
 
-- **✅ 核心基础**：主题驱动架构、配置流和插件系统已经完成。
-- **🚧 产品化与长期采用**：持续收口公共契约、升级诊断、独立站点部署和第三方扩展边界。
-- **📋 需求驱动扩展**：在现有契约稳定后，再根据真实站点需求增加主题和插件。
+## Project status
 
-详细路线图请查看 [ROADMAP.md](./ROADMAP.md)
+The core architecture, official themes, plugin library, independent demos, English-first public surfaces, and adoption checks are in place. The next improvements will be driven by real user feedback: starter templates, examples, and the first community-requested theme or plugin.
 
-## 🤝 贡献
+## Community and license
 
-欢迎贡献！请查看 [贡献指南](./CONTRIBUTING.md)
-
-## 📄 许可证
+- [Issues](https://github.com/wu9o/cogita/issues)
+- [Discussions](https://github.com/wu9o/cogita/discussions)
+- [Contributing guide](./CONTRIBUTING.md)
 
 MIT © [wu9o](https://github.com/wu9o)
-
----
-
-<div align="center">
-
-**🌟 如果 Cogita 对你有帮助，请给我们一个 Star！**
-
-*让更多开发者发现这个优雅的博客解决方案*
-
-[⭐ Star this project](https://github.com/wu9o/cogita) • [📖 在线手册](https://wu9o.github.io/cogita/) • [💬 加入讨论](https://github.com/wu9o/cogita/discussions)
-
-</div>
