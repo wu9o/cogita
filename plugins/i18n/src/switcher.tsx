@@ -8,7 +8,7 @@ const localeLabels: Record<string, string> = {
   'zh-CN': '中文',
 };
 
-/** 在启用多个语言字典时提供全站语言切换。 */
+/** 在启用多个语言字典时提供全站运行时语言切换。 */
 export default function LanguageSwitcher() {
   const [currentLocale, setCurrentLocale] = useState(getLocale);
 

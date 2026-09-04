@@ -1,4 +1,7 @@
 import assert from 'node:assert/strict';
+import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 import { describe, it } from 'node:test';
 import { pluginI18n } from '../dist/index.js';
 import { resolveI18nConfig, resolveMessage } from '../dist/index.js';
@@ -48,5 +51,32 @@ describe('国际化插件', () => {
     assert.match(source, /export function getLocale/);
     assert.match(source, /export function setLocale/);
     assert.match(source, /export function t/);
+  });
+
+  it('应为缺少翻译的内容生成默认语言回退路由', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'cogita-i18n-'));
+    const contentDir = path.join(root, 'content');
+    await mkdir(contentDir, { recursive: true });
+    await writeFile(path.join(contentDir, 'index.md'), '# Home\n', 'utf8');
+
+    const plugin = pluginI18n({
+      root,
+      cwd: root,
+      contentDir: 'content',
+      locales: [
+        { lang: 'en-US', label: 'English' },
+        { lang: 'zh-CN', label: '中文' },
+      ],
+      site: { lang: 'en-US' },
+      i18n: {
+        contentFallback: true,
+        messages: { 'en-US': { 'i18n.switcher.label': 'Language' } },
+      },
+    });
+
+    const pages = await plugin?.addPages?.({}, true);
+    assert.deepEqual(pages, [
+      { routePath: '/zh-CN/', filepath: path.join(contentDir, 'index.md') },
+    ]);
   });
 });

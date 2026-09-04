@@ -438,6 +438,9 @@ importers:
       '@cogita/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      glob:
+        specifier: ^11.0.3
+        version: 11.0.3
     devDependencies:
       '@rslib/core':
         specifier: 0.11.2

@@ -8,6 +8,7 @@ export type I18nMessages = Readonly<Record<string, Readonly<Record<string, strin
 /** 规范化后的国际化配置。 */
 export interface ResolvedI18nConfig {
   enabled: boolean;
+  showSwitcher: boolean;
   locale: string;
   fallbackLocale: string;
   messages: I18nMessages;

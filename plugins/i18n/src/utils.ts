@@ -30,6 +30,7 @@ export function resolveI18nConfig(config?: I18nConfig, siteLocale?: string): Res
   const fallbackLocale = normalizeLocale(config?.fallbackLocale, 'en-US');
   return {
     enabled: config?.enabled !== false,
+    showSwitcher: config?.showSwitcher !== false,
     locale: normalizeLocale(config?.locale, normalizeLocale(siteLocale, 'en-US')),
     fallbackLocale,
     messages: normalizeMessages(config?.messages),

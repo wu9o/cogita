@@ -350,6 +350,10 @@ export interface ContentRelationsConfig {
 export interface I18nConfig {
   /** 是否启用国际化运行时模块。 */
   enabled?: boolean;
+  /** 是否显示插件自带的运行时语言切换器；Rspress 原生多语言站点可以关闭它。 */
+  showSwitcher?: boolean;
+  /** 是否为尚未提供翻译的内容页面生成默认语言回退路由。 */
+  contentFallback?: boolean;
   /** 当前界面语言，例如 `en-US` 或 `zh-CN`。 */
   locale?: string;
   /** 找不到当前语言文案时使用的回退语言。 */
@@ -449,6 +453,8 @@ export interface CogitaPluginConfig {
     base?: string;
     url?: string;
   };
+  /** Rspress 原生站点语言列表，供内容路由插件使用。 */
+  locales?: readonly { lang: string; label?: string }[];
   i18n?: I18nConfig;
   posts?: {
     dir?: string;

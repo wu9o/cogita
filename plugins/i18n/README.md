@@ -35,4 +35,8 @@ const label = t('knowledge.home.search', 'Search knowledge');
 
 When two or more message dictionaries are configured, the plugin adds a small global language switcher. The selected locale is stored in the browser and mirrored in the `lang` query parameter so a preview can be shared.
 
+Set `showSwitcher: false` when the host theme already renders a native locale menu, such as an Rspress documentation site. For a site that publishes localized content incrementally, set `contentFallback: true` together with the Rspress `locales` config. Missing localized Markdown routes then reuse the default-language source until a file such as `content/zh-CN/guides/intro.md` is added. Existing localized files always win over the fallback route.
+
 Locale resolution checks the full identifier first (for example, `en-US`), then the language prefix (for example, `en`), and finally `fallbackLocale`. When no message is found, the caller-provided fallback is used, so older sites remain safe when the plugin is not enabled.
+
+The content fallback only keeps locale routes reachable; it does not claim that the fallback page is translated. Article titles, Markdown, and user-provided metadata remain site-level content.
