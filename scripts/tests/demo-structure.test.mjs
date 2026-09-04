@@ -35,3 +35,14 @@ test('主题 Demo 落地页链接到所有内置主题', () => {
     assert.match(landing, new RegExp(`/demos/${slug}/`));
   }
 });
+
+test('Pages 发布校验脚本存在并接入工作流', () => {
+  const packageJson = JSON.parse(readFileSync(path.join(repositoryRoot, 'package.json'), 'utf8'));
+  const workflow = readFileSync(path.join(repositoryRoot, '.github/workflows/deploy.yml'), 'utf8');
+  assert.ok(existsSync(path.join(repositoryRoot, 'scripts/check-pages-artifact.mjs')));
+  assert.equal(
+    packageJson.scripts['check:pages-artifact'],
+    'node scripts/check-pages-artifact.mjs'
+  );
+  assert.match(workflow, /pnpm run check:pages-artifact/);
+});

@@ -16,6 +16,7 @@
     "build:docs": "pnpm run build:packages && pnpm --filter docs-site build",
     "build:demos": "pnpm run build:packages && node scripts/build-demos.mjs",
     "check:demos": "pnpm run build:demos && node scripts/check-demos.mjs",
+    "check:pages-artifact": "node scripts/check-pages-artifact.mjs",
     "build:packages": "pnpm --filter \"@cogita/*\" --filter \"!@cogita/demo-*\" build",
     "build:plugin": "pnpm --filter @cogita/plugin-posts-frontmatter build",
     "check:package-boundary": "pnpm run build:packages && node scripts/check-package-boundary.mjs",
