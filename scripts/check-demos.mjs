@@ -81,6 +81,9 @@ if (!existsSync(path.join(demosRoot, 'landing', 'social-card.svg'))) {
 if (!landing.includes('og:image') || !landing.includes('twitter:card')) {
   throw new Error('主题 Demo 落地页缺少社交分享元数据。');
 }
+if (!landing.includes('data-copy-text') || !landing.includes('Copy commands')) {
+  throw new Error('主题 Demo 落地页缺少可复制的 Quick Start 命令。');
+}
 for (const slug of expectedSlugs) {
   if (!landing.includes(`/demos/${slug}/`)) {
     throw new Error(`主题 Demo 落地页缺少 ${slug} 链接。`);
