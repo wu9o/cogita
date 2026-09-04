@@ -44,6 +44,9 @@ describe('国际化插件', () => {
     const source = plugin?.addRuntimeModules?.()['virtual-cogita-i18n-text'];
     assert.match(source, /export const i18nConfig/);
     assert.match(source, /home\.title/);
+    assert.match(source, /export const supportedLocales/);
+    assert.match(source, /export function getLocale/);
+    assert.match(source, /export function setLocale/);
     assert.match(source, /export function t/);
   });
 });

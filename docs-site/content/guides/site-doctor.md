@@ -1,34 +1,33 @@
 ---
-title: 站点升级与自检
-description: 使用 cogita doctor 在升级和部署前检查真实站点的长期采用条件。
+title: Site upgrade and doctor
+description: Use cogita doctor to check long-term site adoption conditions before upgrades and deployments.
 ---
 
-# 站点升级与自检
+# Site upgrade and doctor
 
-真实站点长期使用 Cogita 时，最常见的问题不是框架能否完成一次构建，而是升级后配置、依赖、主题和内容目录是否仍然处于可支持状态。`cogita doctor` 提供一个只读的升级前检查入口。
+For a real site that uses Cogita over time, the main risk is not whether one build can finish. It is whether configuration, dependencies, the theme, and content directories remain supportable after an upgrade. `cogita doctor` provides a read-only pre-upgrade check.
 
-## 基本用法
+## Basic usage
 
-在站点根目录执行：
+Run this from the site root:
 
 ```bash
 pnpm exec cogita doctor
 ```
 
-如果站点的 `package.json` 已经包含 `"doctor": "cogita doctor"`，也可以使用
-`pnpm run doctor`。CLI 模板会默认生成这个 script。
+If the site's `package.json` contains `"doctor": "cogita doctor"`, you can also run `pnpm run doctor`. CLI templates generate this script by default.
 
-它会检查：
+The command checks:
 
-- Cogita 配置文件是否存在且可以加载；
-- `package.json`、lockfile 和 `cogita build` 脚本；
-- `@cogita/cli`、`@cogita/core` 和配置主题是否已声明并可解析；
-- 主题是否导出有效的 `getThemeConfig`；
-- `contentDir` 或 `posts.dir` 指向的目录是否存在。
+- whether the Cogita config exists and can be loaded;
+- `package.json`, the lockfile, and the `cogita build` script;
+- whether `@cogita/cli`, `@cogita/core`, and the configured theme are declared and resolvable;
+- whether the theme exports a valid `getThemeConfig`;
+- whether the directory referenced by `contentDir` or `posts.dir` exists.
 
-## 接入部署流水线
+## Add it to a deployment pipeline
 
-建议将自检放在生产构建之前：
+Run the check before the production build:
 
 ```yaml
 - run: pnpm install --frozen-lockfile
@@ -36,14 +35,14 @@ pnpm exec cogita doctor
 - run: pnpm run build
 ```
 
-`doctor` 默认只会因为 error 退出失败；`--strict` 会将 warning 也视为失败。对于部署流水线，推荐使用 `--strict --json`，这样可以保留稳定的 `schemaVersion`、检查码和详情，后续可以由 CI 生成自己的摘要或注释。
+By default, `doctor` exits unsuccessfully only for errors. `--strict` also treats warnings as failures. For deployment pipelines, use `--strict --json` to preserve a stable `schemaVersion`, check codes, and details that CI can turn into a summary or annotation.
 
-## 如何处理结果
+## Interpret results
 
-- `COGITA_DOCTOR_CONFIG_NOT_FOUND`：在站点根目录创建 `cogita.config.ts`，或使用 `cogita create` 初始化。
-- `COGITA_DOCTOR_DEPENDENCY_UNRESOLVED`：重新安装依赖，并确认 lockfile 与 `package.json` 一致。
-- `COGITA_DOCTOR_THEME_CONTRACT_INVALID`：检查主题版本和 `getThemeConfig` 返回的布局契约。
-- `COGITA_DOCTOR_CONTENT_DIR_NOT_FOUND`：创建内容目录，或修正配置中的路径。
-- `COGITA_DOCTOR_LOCKFILE_MISSING`：将站点使用的 lockfile 提交到版本库，保证部署依赖可复现。
+- `COGITA_DOCTOR_CONFIG_NOT_FOUND`: create `cogita.config.ts` at the site root or initialize the site with `cogita create`.
+- `COGITA_DOCTOR_DEPENDENCY_UNRESOLVED`: reinstall dependencies and make sure the lockfile matches `package.json`.
+- `COGITA_DOCTOR_THEME_CONTRACT_INVALID`: check the theme version and the layout contract returned by `getThemeConfig`.
+- `COGITA_DOCTOR_CONTENT_DIR_NOT_FOUND`: create the content directory or correct the configured path.
+- `COGITA_DOCTOR_LOCKFILE_MISSING`: commit the site's lockfile so deployment dependencies remain reproducible.
 
-该命令不会自动升级版本、修改依赖或执行完整生产构建。它的职责是尽早指出“站点当前是否适合继续构建”，构建产物和页面行为仍应由后续的真实站点构建与浏览器验收负责。
+The command does not upgrade versions, modify dependencies, or run a full production build. Its job is to identify early whether the site is ready to build; the resulting artifacts and page behavior still require a real site build and browser acceptance.

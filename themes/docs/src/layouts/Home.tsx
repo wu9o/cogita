@@ -91,13 +91,13 @@ const HomeLayout: React.FC<LayoutProps> = () => {
           </p>
         </div>
         <div className="docs-home-flow" aria-label={t('docs.home.flow.label', 'Build flow')}>
-          <span>{t('docs.home.flow.config', 'Config')}</span>
+          <span className="docs-home-flow-node">{t('docs.home.flow.config', 'Config')}</span>
           <span className="docs-home-flow-arrow">→</span>
-          <span>{t('docs.home.flow.theme', 'Theme')}</span>
+          <span className="docs-home-flow-node">{t('docs.home.flow.theme', 'Theme')}</span>
           <span className="docs-home-flow-arrow">→</span>
-          <span>{t('docs.home.flow.plugin', 'Plugin')}</span>
+          <span className="docs-home-flow-node">{t('docs.home.flow.plugin', 'Plugin')}</span>
           <span className="docs-home-flow-arrow">→</span>
-          <span>{t('docs.home.flow.output', 'Static output')}</span>
+          <span className="docs-home-flow-node">{t('docs.home.flow.output', 'Static output')}</span>
         </div>
       </section>
 

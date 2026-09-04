@@ -1,3 +1,5 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   COGITA_CAPABILITIES,
   COGITA_VIRTUAL_MODULE_IDS,
@@ -16,6 +18,7 @@ export function pluginI18n(config: CogitaPluginConfig): CogitaPlugin | null {
   }
 
   const finalConfig = resolveI18nConfig(config.i18n, config.site?.lang);
+  const pluginDirectory = path.dirname(fileURLToPath(import.meta.url));
   logger.info(
     `[I18n Plugin] 使用 ${finalConfig.locale} 界面文案，回退语言为 ${finalConfig.fallbackLocale}`
   );
@@ -25,6 +28,7 @@ export function pluginI18n(config: CogitaPluginConfig): CogitaPlugin | null {
     cogita: {
       providesCapabilities: [COGITA_CAPABILITIES.UI_I18N],
     },
+    globalUIComponents: [path.resolve(pluginDirectory, './switcher.js')],
 
     addRuntimeModules() {
       return {

@@ -40,9 +40,33 @@ export function resolveI18nConfig(config?: I18nConfig, siteLocale?: string): Res
 export function createI18nRuntimeModule(config: ResolvedI18nConfig): string {
   const serializedConfig = JSON.stringify(config);
   return `export const i18nConfig = ${serializedConfig};
-export const locale = i18nConfig.locale;
 export const fallbackLocale = i18nConfig.fallbackLocale;
 export const messages = i18nConfig.messages;
+export const supportedLocales = Object.keys(messages);
+const localeStorageKey = 'cogita-locale';
+
+function normalizeRuntimeLocale(value) {
+  return typeof value === 'string' ? value.trim().replace(/_/g, '-') : '';
+}
+
+function isSupportedLocale(value) {
+  return supportedLocales.includes(value);
+}
+
+export function getLocale() {
+  if (typeof window === 'undefined') return i18nConfig.locale;
+  const queryLocale = normalizeRuntimeLocale(new URLSearchParams(window.location.search).get('lang'));
+  if (isSupportedLocale(queryLocale)) return queryLocale;
+  try {
+    const storedLocale = normalizeRuntimeLocale(window.localStorage.getItem(localeStorageKey));
+    if (isSupportedLocale(storedLocale)) return storedLocale;
+  } catch {
+    // 浏览器禁用存储时继续使用构建期语言。
+  }
+  return i18nConfig.locale;
+}
+
+export const locale = getLocale();
 
 function getLocaleCandidates(value) {
   return value ? [value, value.split('-')[0]] : [];
@@ -57,12 +81,25 @@ function getMessage(key, candidates) {
 }
 
 export function t(key, fallback, values) {
-  const candidates = [...getLocaleCandidates(locale), ...getLocaleCandidates(fallbackLocale)];
+  const candidates = [...getLocaleCandidates(getLocale()), ...getLocaleCandidates(fallbackLocale)];
   let text = getMessage(key, candidates) || fallback || key;
   for (const [name, value] of Object.entries(values || {})) {
     text = text.split('{{' + name + '}}').join(String(value));
   }
   return text;
+}
+
+export function setLocale(nextLocale) {
+  const normalizedLocale = normalizeRuntimeLocale(nextLocale);
+  if (!isSupportedLocale(normalizedLocale) || typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(localeStorageKey, normalizedLocale);
+  } catch {
+    // 浏览器禁用存储时仍然通过 URL 参数完成本次切换。
+  }
+  const url = new URL(window.location.href);
+  url.searchParams.set('lang', normalizedLocale);
+  window.location.assign(url.href);
 }
 
 export const translate = t;

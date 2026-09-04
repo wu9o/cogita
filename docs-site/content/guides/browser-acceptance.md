@@ -1,49 +1,49 @@
 ---
-title: 浏览器级验收
+title: Browser acceptance
 ---
 
-# 浏览器级验收
+# Browser acceptance
 
-发布前需要在真实浏览器中打开构建后的站点，确认静态 HTML、运行时脚本、页面导航和搜索交互同时可用。验收应使用独立的 `cogita-blog` 内容仓库，避免只验证框架仓库内的空壳页面。
+Before a release, open the built site in a real browser and verify static HTML, runtime scripts, navigation, and search interactions together. Use an independent `cogita-blog` content repository so the check exercises a real consumer rather than an empty framework fixture.
 
-## 启动预览
+## Start a preview
 
-在 Cogita 仓库根目录执行：
+Run this from the Cogita repository root:
 
 ```bash
 pnpm run preview:lucid
 ```
 
-默认地址是 `http://localhost:3034/`。如果要模拟 GitHub Pages 的子路径部署，可以另开终端执行：
+The default URL is `http://localhost:3034/`. To simulate a GitHub Pages subpath, run this in another terminal:
 
 ```bash
 BASE_PATH=/cogita-blog/ PORT=3035 pnpm run preview:lucid
 ```
 
-子路径预览地址是 `http://localhost:3035/cogita-blog/`。`BASE_PATH` 会同步替换站点配置、内部链接和本地预览地址。
+The subpath preview is available at `http://localhost:3035/cogita-blog/`. `BASE_PATH` updates the site configuration, internal links, and local preview URL together.
 
-## 验收清单
+## Acceptance checklist
 
-根路径和子路径都需要覆盖以下场景：
+Cover the following scenarios at both the root path and the subpath:
 
-| 场景 | 验收内容 |
+| Scenario | Verify |
 | --- | --- |
-| 首页 | 首屏标题、精选文章、最新文章和导航正常渲染 |
-| 文章 | 从列表进入文章，标题、正文、标签和阅读进度正常 |
-| 搜索 | 输入 `Git` 后出现 4 篇结果，结果链接可以打开 |
-| 标签 | 打开 `Git` 标签页并显示对应文章 |
-| 分类 | 打开前端分类页并显示文章及子分类 |
-| 归档 | 打开全部文章和年份归档页 |
-| 子路径 | 所有内部链接包含 `/cogita-blog/`，脚本和样式无 404 |
+| Home | The hero, featured posts, recent posts, and navigation render correctly. |
+| Post | A post opened from a list shows its title, body, tags, and reading progress. |
+| Search | Searching for `Git` returns four results and each result opens. |
+| Tags | The `Git` tag page shows the expected posts. |
+| Categories | The frontend category page shows its posts and child categories. |
+| Archive | The all-posts page and year archive pages open correctly. |
+| Subpath | Internal links include `/cogita-blog/`; scripts and styles return no 404. |
 
-每个场景完成后检查浏览器控制台，不能有运行时错误或资源加载警告。发现问题时，优先记录失败 URL、控制台消息和触发步骤，再回到构建产物和配置流定位原因。
+After each scenario, check the browser console. There should be no runtime errors or resource-loading warnings. When a check fails, record the URL, console message, and reproduction steps before tracing the build output and configuration flow.
 
-## 关联检查
+## Related checks
 
-浏览器验收前后建议执行：
+Run this before and after browser acceptance:
 
 ```bash
 pnpm run check:release
 ```
 
-该命令会先完成包构建、兼容性矩阵、包边界、最小消费者、独立博客和文档消费者验证；浏览器验收则补充真实页面运行时和交互证据。
+This command covers package builds, the compatibility matrix, package boundaries, minimal consumers, the independent blog consumer, and the docs consumer. Browser acceptance adds evidence from real page runtime and interaction.

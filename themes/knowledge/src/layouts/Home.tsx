@@ -32,28 +32,31 @@ const HomeLayout: React.FC = () => {
           <p className="knowledge-lead">{copy.lead}</p>
           <nav
             className="knowledge-actions"
-            aria-label={t('knowledge.home.navigation', '知识库导航')}
+            aria-label={t('knowledge.home.navigation', 'Knowledge base navigation')}
           >
             <a href={normalizeHrefInRuntime(getHref(base, '/search'))}>
-              {t('knowledge.home.search', '搜索知识')}
+              {t('knowledge.home.search', 'Search knowledge')}
             </a>
             <a href={normalizeHrefInRuntime(getHref(base, `/${tagsConfig.routePrefix}`))}>
-              {t('knowledge.home.tags', '浏览标签')}
+              {t('knowledge.home.tags', 'Browse tags')}
             </a>
           </nav>
         </div>
-        <div className="knowledge-stats" aria-label={t('knowledge.home.stats', '知识库统计')}>
+        <div
+          className="knowledge-stats"
+          aria-label={t('knowledge.home.stats', 'Knowledge base statistics')}
+        >
           <div>
             <strong>{searchDocuments.length}</strong>
-            <span>{t('knowledge.home.contentEntries', '内容条目')}</span>
+            <span>{t('knowledge.home.contentEntries', 'Content entries')}</span>
           </div>
           <div>
             <strong>{allTags.length}</strong>
-            <span>{t('knowledge.home.topicTags', '主题标签')}</span>
+            <span>{t('knowledge.home.topicTags', 'Topic tags')}</span>
           </div>
           <div>
             <strong>{relationCount}</strong>
-            <span>{t('knowledge.home.contentLinks', '内容连接')}</span>
+            <span>{t('knowledge.home.contentLinks', 'Content links')}</span>
           </div>
         </div>
       </section>
@@ -65,10 +68,12 @@ const HomeLayout: React.FC = () => {
               <p className="knowledge-section-label">
                 {t('knowledge.home.recentLabel', 'Recently updated')}
               </p>
-              <h2 id="knowledge-recent-title">{t('knowledge.home.recentTitle', '最近更新')}</h2>
+              <h2 id="knowledge-recent-title">
+                {t('knowledge.home.recentTitle', 'Recently updated')}
+              </h2>
             </div>
             <a href={normalizeHrefInRuntime(getHref(base, '/search'))}>
-              {t('knowledge.home.viewAll', '查看全部 →')}
+              {t('knowledge.home.viewAll', 'View all →')}
             </a>
           </div>
           <div className="knowledge-entry-list">
@@ -80,14 +85,14 @@ const HomeLayout: React.FC = () => {
               >
                 <span className="knowledge-entry-kind">
                   {entry.kind === 'document'
-                    ? t('knowledge.home.document', '文档')
-                    : t('knowledge.home.post', '文章')}
+                    ? t('knowledge.home.document', 'Document')
+                    : t('knowledge.home.post', 'Article')}
                 </span>
                 <strong>{entry.title}</strong>
                 <p>
                   {entry.description ||
                     entry.excerpt ||
-                    t('knowledge.home.openEntry', '打开条目继续阅读。')}
+                    t('knowledge.home.openEntry', 'Open entry to continue reading.')}
                 </p>
                 <small>{entry.updateDate.slice(0, 10)}</small>
               </a>
@@ -100,7 +105,7 @@ const HomeLayout: React.FC = () => {
             <div className="knowledge-section-heading compact">
               <div>
                 <p className="knowledge-section-label">Explore</p>
-                <h2>{t('knowledge.home.explore', '按主题探索')}</h2>
+                <h2>{t('knowledge.home.explore', 'Explore by topic')}</h2>
               </div>
               <span>{allTags.length}</span>
             </div>
@@ -117,14 +122,14 @@ const HomeLayout: React.FC = () => {
             <p className="knowledge-section-label">
               {t('knowledge.home.findAnything', 'Find anything')}
             </p>
-            <h2>{t('knowledge.home.findStart', '从一个关键词开始。')}</h2>
+            <h2>{t('knowledge.home.findStart', 'Start with one keyword.')}</h2>
             <p>
-              {t('knowledge.home.searchCount', '全文索引 {{count}} 个内容条目。', {
+              {t('knowledge.home.searchCount', '{{count}} content entries indexed.', {
                 count: searchDocuments.length,
               })}
             </p>
             <a href={normalizeHrefInRuntime(getHref(base, `/${searchConfig.routePrefix}`))}>
-              {t('knowledge.home.openSearch', '打开搜索 →')}
+              {t('knowledge.home.openSearch', 'Open search →')}
             </a>
           </section>
         </aside>
