@@ -1,703 +1,230 @@
-# 架构设计文档
+---
+title: Architecture design
+---
 
-本文档详细阐述了 Cogita 框架的系统架构、设计理念和技术实现细节。
+# Architecture design
 
-## 📋 目录
+Cogita is a theme-driven static site framework. Its architecture keeps site content, rendering decisions, reusable capabilities, and generated output on separate boundaries while allowing them to compose through typed contracts.
 
-- [设计原则](#-设计原则)
-- [整体架构](#-整体架构)
-- [核心模块设计](#-核心模块设计)
-- [主题系统](#-主题系统)
-- [插件系统](#-插件系统)
-- [数据流向](#-数据流向)
-- [构建流程](#-构建流程)
-- [扩展机制](#-扩展机制)
+## Design principles
 
-## 🎯 设计原则
+### Convention over configuration
 
-### 1. 约定优于配置 (Convention over Configuration)
+Cogita starts with sensible defaults:
 
-Cogita 遵循"约定优于配置"的设计哲学，通过合理的默认值和标准化的目录结构，最大化减少用户的配置负担。
+- articles live in a posts directory;
+- handbook and reference pages live under contentDir;
+- the site configuration is cogita.config.ts;
+- themes declare the capabilities they need;
+- plugins generate data and pages through public extension points.
 
-**核心约定：**
-- 文章存放在 `posts/` 目录
-- 配置文件命名为 `cogita.config.ts`
-- 主题自动加载所需插件
-- 路由基于文件系统生成
+The default path should produce a useful site. Advanced configuration should extend that path rather than replace it with framework internals.
 
-### 2. 主题驱动架构 (Theme-Driven Architecture)
+### Themes are ecosystems
 
-**传统方式：**
-```
-用户 → 选择主题 → 手动安装插件 → 手动配置
-```
+A theme is more than a visual skin. It defines page layouts, styles, navigation conventions, and the default plugin capabilities needed to make its reading experience coherent.
 
-**Cogita 方式：**
-```
-用户 → 选择主题 → 主题自动声明依赖 → 核心自动加载
-```
+~~~text
+site config → Core → theme → plugins → static output
+~~~
 
-这种设计让主题成为完整的生态系统，而不仅仅是视觉样式。
+### Progressive enhancement
 
-### 3. 渐进增强 (Progressive Enhancement)
+The same project can grow through three levels:
 
-- **基础级别**：零配置启动，基本功能可用
-- **进阶级别**：通过配置启用更多功能
-- **专家级别**：完全访问底层 Rspress 能力
+1. zero-configuration startup with a basic page;
+2. configured plugins, content sources, and theme options;
+3. direct access to the underlying Rspress configuration when a site needs it.
 
-### 4. 类型安全优先 (Type-First)
+### Public contracts first
 
-所有公共 API 都有完整的 TypeScript 类型定义，确保开发时的类型安全和 IDE 支持。
+Core, themes, and plugins communicate through public types, the shared ContentIndex, capability identifiers, and versioned virtual modules. A consumer should not need to import private files from another package.
 
-## 🏗️ 整体架构
+## System boundaries
 
-```mermaid
+~~~mermaid
 graph TB
-    subgraph "用户层"
-        A[cogita.config.ts]
-        B[posts/ 目录]
-        C[自定义组件]
-    end
-    
-    subgraph "框架层"
-        D[@cogita/core<br/>核心引擎]
-        E[@cogita/cli<br/>命令行工具]
-    end
-    
-    subgraph "主题层"
-        F[@cogita/theme-lucid<br/>默认主题]
-        G[社区主题]
-    end
-    
-    subgraph "插件层"
-        H[posts-frontmatter<br/>文章处理]
-        I[tags<br/>标签系统]
-        J[rss<br/>RSS 订阅]
-    end
-    
-    subgraph "UI 层"
-        K[@cogita/ui<br/>通用组件]
-        L[@cogita/shared<br/>共享类型]
-    end
-    
-    subgraph "基础层"
-        M[Rspress<br/>静态站点生成器]
-        N[React<br/>UI 框架]
-    end
-    
-    A --> D
-    B --> H
-    D --> F
-    D --> G
-    F --> H
-    F --> I
-    G --> J
-    F --> K
-    K --> L
-    E --> D
-    D --> M
-    M --> N
-```
+  Site[Site repository<br/>config and content] --> Core[@cogita/core<br/>config and assembly]
+  Core --> Theme[Theme package<br/>layouts and styles]
+  Core --> Plugins[Plugin factories<br/>data and capabilities]
+  Plugins --> Index[Shared ContentIndex]
+  Plugins --> Modules[Virtual runtime modules]
+  Theme --> Modules
+  Theme --> Output[Static pages and assets]
+  Core --> Output
+~~~
 
-### 架构层次
+The site repository owns content, branding, configuration, and local extensions. Core resolves the configuration and assembles the build. Themes own the reading surface. Plugins own reusable data or behavior. The generated directory is the handoff boundary to a host such as GitHub Pages.
 
-1. **用户层**：用户提供的内容和配置
-2. **框架层**：Cogita 核心功能和 CLI 工具
-3. **主题层**：主题和布局组件
-4. **插件层**：功能扩展插件
-5. **UI 层**：可复用的 UI 组件和类型定义
-6. **基础层**：底层技术栈
+## Configuration flow
 
-## 🧩 核心模块设计
+The configuration lifecycle is:
 
-### `@cogita/core` 架构
+1. the CLI locates and loads cogita.config.ts;
+2. Core normalizes site, content, theme, plugin, and builder options;
+3. Core resolves the selected theme from the consumer project;
+4. the theme returns layouts, styles, and plugin factories;
+5. Core instantiates core, theme, and site plugins;
+6. Core validates layout and capability declarations;
+7. Rspress receives the assembled configuration and renders static output.
 
-```mermaid
-graph TD
-    subgraph "@cogita/core"
-        A[config.ts<br/>配置定义] 
-        B[node/config.ts<br/>配置加载器]
-        C[node/dev.ts<br/>开发服务器]
-        D[node/build.ts<br/>构建工具]
-        E[types.ts<br/>类型定义]
-    end
-    
-    F[用户配置] --> B
-    B --> G[主题加载器]
-    G --> H[插件注册器]
-    H --> I[Rspress 配置生成器]
-    I --> J[最终配置]
-    
-    C --> K[开发模式]
-    D --> L[生产构建]
-```
+Configuration responsibilities remain separated:
 
-### 配置加载机制
+| Boundary | Responsibility |
+| --- | --- |
+| Site config | Branding, paths, content sources, and enabled capabilities |
+| Core | Resolution, normalization, registration, validation, and assembly |
+| Theme | Layouts, styles, navigation, and reading experience |
+| Plugin | Data collection, generated pages, runtime modules, and diagnostics |
+| Rspress | Markdown processing, rendering, bundling, and output |
 
-```typescript
-// 配置加载流程
-export async function loadCogitaConfig(root: string): Promise<CogitaConfig> {
-  // 1. 查找配置文件
-  const configPath = await findUp(CONFIG_FILES, { cwd: root });
-  
-  if (!configPath) {
-    return {}; // 使用默认配置
-  }
-  
-  // 2. 动态加载配置文件
-  const _require = jiti(fileURLToPath(import.meta.url));
-  const mod = _require(configPath);
-  
-  // 3. 返回配置对象
-  return mod.default || {};
-}
-```
+## Theme resolution
 
-### 主题解析机制
+Themes are runtime dependencies of the consumer site. Core resolves the configured package from the site project, loads its theme entry point, and validates the returned CogitaTheme. A legacy shorthand may remain for compatibility, but new sites should install and name their theme package explicitly.
 
-```typescript
-async function loadTheme(themeName: string, projectRoot: string): Promise<LoadedTheme> {
-  // 1. 优先从消费方项目解析主题包
-  const url = await mlly.resolve(themeName, { url: projectRoot });
-  
-  // 2. 动态导入主题模块
-  const _require = jiti(fileURLToPath(import.meta.url));
-  const mod = _require(fileURLToPath(url));
-  
-  // 3. 验证主题接口
-  if (typeof mod.getThemeConfig !== 'function') {
-    throw new Error(`Theme '${themeName}' invalid interface`);
-  }
-  
-  // 4. 返回主题配置和主题包目录，后续布局均从同一目录解析
-  return {
-    config: mod.getThemeConfig(),
-    directory: path.dirname(fileURLToPath(url)),
-  };
-}
-```
+A theme entry point declares the rendering boundary:
 
-主题包属于站点项目的运行时依赖。Core 只保留旧版别名的兼容解析，不应随着每一个新主题增加自身依赖；站点应直接安装并声明自己使用的 `@cogita/theme-*` 包。
+~~~typescript
+import path from 'node:path';
+import type { CogitaTheme } from '@cogita/shared';
 
-## 🎨 主题系统
-
-### 主题生命周期
-
-```mermaid
-sequenceDiagram
-    participant User as 用户
-    participant Core as @cogita/core
-    participant Theme as 主题
-    participant Plugin as 插件
-    
-    User->>Core: 指定主题名称
-    Core->>Theme: 加载主题配置
-    Theme->>Core: 返回主题配置
-    Core->>Plugin: 实例化主题插件
-    Plugin->>Core: 返回插件实例
-    Core->>Theme: 创建主题专用插件
-    Theme->>Core: 返回完整配置
-```
-
-### 主题配置结构
-
-```typescript
-interface CogitaTheme {
-  name: string;           // 主题包名
-  pageLayouts: {          // 页面布局配置
-    home: string;         // 首页布局组件路径
-  };
-  globalStyles?: string[]; // 全局样式文件
-  plugins?: CogitaPluginFactory[]; // 依赖的插件工厂
-}
-```
-
-### 主题插件自动生成
-
-```typescript
-function createThemePlugin(theme: CogitaTheme): RspressPlugin {
-  return {
-    name: 'cogita-theme-plugin',
-    addPages: async () => {
-      if (!theme.pageLayouts.home) {
-        return [];
-      }
-      
-      // 解析主题首页布局路径
-      const themeDir = path.dirname(await resolveThemePath(theme.name));
-      const homeLayoutPath = path.resolve(themeDir, theme.pageLayouts.home);
-      
-      // 添加首页路由
-      return [{
-        routePath: '',
-        content: '---npageType: homen---',
-        filepath: homeLayoutPath,
-      }];
-    },
-  };
-}
-```
-
-### 布局组件设计
-
-主题的布局组件接收标准化的 Props：
-
-```typescript
-interface LayoutProps {
-  routePath: string;              // 当前路由
-  config: UserConfig;             // Rspress 配置
-  pageData: Record<string, any>;  // 页面数据
-  children?: React.ReactNode;     // 子组件
-}
-```
-
-布局组件示例：
-```typescript
-const HomeLayout: React.FC<LayoutProps> = ({ config }) => {
-  return (
-    <div className="theme-container">
-      <header>
-        <h1>{config.title}</h1>
-      </header>
-      <main>
-        <PostList posts={allPosts} />
-      </main>
-    </div>
-  );
-};
-```
-
-## 🔌 插件系统
-
-### 插件架构设计
-
-```mermaid
-graph TD
-    A[插件工厂函数<br/>CogitaPluginFactory] --> B{配置验证}
-    B -->|有效| C[创建插件实例]
-    B -->|无效| D[返回 null]
-    C --> E[Rspress 插件]
-    
-    subgraph "Rspress 插件生命周期"
-        F[beforeBuild<br/>构建前准备]
-        G[addPages<br/>添加页面]
-        H[addRuntimeModules<br/>添加虚拟模块]
-        I[afterBuild<br/>构建后处理]
-    end
-    
-    E --> F
-    F --> G
-    G --> H
-    H --> I
-```
-
-### 插件工厂模式
-
-插件工厂函数的设计优势：
-
-1. **延迟实例化**：只在需要时创建插件实例
-2. **配置注入**：可以访问完整的配置上下文
-3. **条件启用**：根据配置条件性地启用插件
-4. **批量创建**：一个工厂可以返回多个相关插件
-
-### 插件注册边界
-
-Cogita 同时支持主题插件和站点插件，但两者职责不同：主题插件提供主题默认能力，站点插件通过 `CogitaConfig.plugins` 提供项目级扩展。core 负责统一实例化、确定来源顺序和去重，主题不再需要成为所有站点能力的唯一入口。来源顺序只用于注册和冲突决策，不能作为插件生命周期的串行依赖。
-
-```text
-核心插件 → 主题桥接插件 → 主题插件 → 用户插件
-```
-
-插件实例的 `name` 是全局唯一身份。严格模式下重复名称会阻断构建；非严格模式下保留首次注册并通过 `CogitaBuildContext.logger` 输出警告。构建期状态统一从 `buildContext` 读取，避免继续向插件配置顶层增加内部字段。
-
-需要主题页面的插件还可以通过返回值中的 `cogita.requiredLayouts` 声明布局能力需求。core 只负责读取并校验这些声明，不再硬编码标签、搜索、归档等具体插件名称。这样新增插件或新增主题页面时，页面契约由插件自身维护，主题只需要实现对应的 `pageLayouts` 键。
-
-在页面契约之上，主题和插件还可以通过能力标识声明数据依赖。插件使用 `cogita.providesCapabilities` 提供稳定的 `领域.能力` 标识，插件使用 `cogita.requiresCapabilities` 声明依赖，主题使用 `capabilities.required` 声明硬依赖、使用 `capabilities.optional` 声明可降级能力。core 会在构建前统一校验这些声明，严格模式下提前阻断缺少能力的配置，避免站点生成成功后才出现空页面或不完整交互。
-
-插件注册由 core 的独立注册器负责。它统一管理核心插件、主题插件和用户插件的来源顺序，并在边界处校验插件实例、处理工厂异常、保护页面路由与运行时模块冲突，以及保留错误 `cause`，配置加载器只负责组装最终配置。构建钩子可能并行执行，因此插件应复用 `contentIndex`，不要通过插件数组顺序协调扫描结果。
-
-```typescript
-export const pluginContentFeatures: CogitaPluginFactory = (config) => {
-  const plugins: RspressPlugin[] = [];
-  
-  // 文章处理能力由主题或站点按需注册
-  plugins.push(pluginPosts(config));
-  
-  // 每个插件读取自己的结构化配置命名空间
-  if (config.tags?.enabled) {
-    plugins.push(pluginTags(config));
-  }
-  
-  if (config.rss?.enabled) {
-    plugins.push(pluginRss(config));
-  }
-  
-  return plugins;
-};
-```
-
-### 虚拟模块系统
-
-Cogita 通过虚拟模块在构建时和运行时之间传递数据：
-
-```mermaid
-graph LR
-    A[构建时<br/>插件处理] --> B[虚拟模块<br/>生成数据]
-    B --> C[运行时<br/>前端组件]
-    
-    subgraph "虚拟模块"
-        D["'virtual-posts-data'<br/>contentDataVersion + allPosts"]
-        E["'virtual-site-config'<br/>export const siteConfig = {...}"]
-    end
-```
-
-虚拟模块生成示例：
-```typescript
-addRuntimeModules() {
-  return {
-    'virtual-posts-data': `
-      export const contentDataVersion = 1;
-      export const allPosts = ${JSON.stringify(allPostsData)};
-      export const postsByTag = ${JSON.stringify(postsByTag)};
-      
-      export function getPostBySlug(slug) {
-        return allPosts.find(post => post.slug === slug);
-      }
-    `,
-  };
-}
-```
-
-### 插件通信机制
-
-插件间可以通过配置对象和虚拟模块进行通信：
-
-```typescript
-// 插件 A 生成数据
-export const pluginA: CogitaPluginFactory = (config) => {
-  return {
-    name: 'plugin-a',
-    addRuntimeModules() {
-      return {
-        'virtual-plugin-a-data': `export const dataA = ${JSON.stringify(data)};`,
-      };
-    },
-  };
-};
-
-// 插件 B 消费数据
-export const pluginB: CogitaPluginFactory = (config) => {
-  return {
-    name: 'plugin-b',
-    addRuntimeModules() {
-      return {
-        'virtual-plugin-b-enhanced': `
-          import { dataA } from 'virtual-plugin-a-data';
-          export const enhancedData = processData(dataA);
-        `,
-      };
-    },
-  };
-};
-```
-
-## 📊 数据流向
-
-### 配置到构建的数据流
-
-```mermaid
-graph TD
-    A[用户配置<br/>cogita.config.ts] --> B[配置加载器]
-    B --> C[主题配置合并]
-    C --> D[插件工厂实例化]
-    D --> E[Rspress 配置生成]
-    
-    subgraph "构建阶段"
-        F[beforeBuild<br/>数据收集]
-        G[addPages<br/>页面生成]
-        H[addRuntimeModules<br/>虚拟模块]
-        I[静态文件生成]
-    end
-    
-    E --> F
-    F --> G
-    G --> H
-    H --> I
-    
-    subgraph "运行时"
-        J[虚拟模块导入]
-        K[React 组件渲染]
-        L[最终页面]
-    end
-    
-    H --> J
-    J --> K
-    K --> L
-```
-
-### 文件系统到页面的转换
-
-```mermaid
-graph LR
-    A[posts/*.md] --> B[glob 扫描]
-    B --> C[frontmatter 提取]
-    C --> D[PostFrontmatter 对象]
-    D --> E[虚拟模块 allPosts]
-    E --> F[React 组件]
-    F --> G[渲染页面]
-    
-    H[Markdown 内容] --> I[Rspress 处理]
-    I --> J[React 页面组件]
-    J --> G
-```
-
-### 数据处理管道
-
-```typescript
-// 数据处理流水线
-const dataProcessingPipeline = [
-  // 1. 数据收集阶段
-  async (config) => {
-    const files = await glob(`${config.postsDir}/**/*.{md,mdx}`);
-    return files;
-  },
-  
-  // 2. 数据解析阶段
-  (files) => {
-    return files.map(file => getFrontmatterFromFile(file));
-  },
-  
-  // 3. 数据转换阶段
-  (rawData) => {
-    return rawData.filter(Boolean).sort((a, b) => 
-      new Date(b.createDate).getTime() - new Date(a.createDate).getTime()
-    );
-  },
-  
-  // 4. 数据序列化阶段
-  (processedData) => {
-    return JSON.stringify(processedData);
-  },
-];
-```
-
-## ⚙️ 构建流程
-
-### 完整构建流程
-
-```mermaid
-sequenceDiagram
-    participant CLI as Cogita CLI
-    participant Core as Core Engine
-    participant Theme as Theme System
-    participant Plugin as Plugin System
-    participant Rspress as Rspress
-    
-    CLI->>Core: 启动构建
-    Core->>Core: 加载 cogita.config.ts
-    Core->>Theme: 解析主题配置
-    Theme->>Plugin: 声明插件依赖
-    Core->>Plugin: 实例化插件工厂
-    Plugin->>Core: 返回插件实例
-    Core->>Rspress: 生成 Rspress 配置
-    
-    Rspress->>Plugin: 调用 beforeBuild
-    Plugin->>Plugin: 数据收集和预处理
-    Rspress->>Plugin: 调用 addPages
-    Plugin->>Rspress: 返回动态页面
-    Rspress->>Plugin: 调用 addRuntimeModules
-    Plugin->>Rspress: 返回虚拟模块
-    
-    Rspress->>Rspress: 构建静态文件
-    Rspress->>Plugin: 调用 afterBuild
-    Plugin->>CLI: 构建完成
-```
-
-### 开发模式流程
-
-```typescript
-// 开发服务器启动流程
-export async function dev(options: DevOptions) {
-  // 1. 加载配置
-  const cogitaConfig = await loadCogitaConfig(options.root);
-  
-  // 2. 生成 Rspress 配置
-  const rspressConfig = await createRspressConfig(cogitaConfig, options.root);
-  
-  // 3. 启动开发服务器
-  const { createDevServer } = await import('@rspress/core');
-  const server = await createDevServer({
-    config: rspressConfig,
-    ...options,
-  });
-  
-  // 4. 监听文件变化
-  server.listen();
-}
-```
-
-### 生产构建流程
-
-```typescript
-// 生产构建流程
-export async function build(options: BuildOptions) {
-  // 1. 加载和验证配置
-  const cogitaConfig = await loadCogitaConfig(options.root);
-  const rspressConfig = await createRspressConfig(cogitaConfig, options.root);
-  
-  // 2. 执行构建
-  const { build } = await import('@rspress/core');
-  await build({
-    config: rspressConfig,
-    ...options,
-  });
-  
-  // 3. 后处理（如果需要）
-  await postBuildOptimizations(rspressConfig);
-}
-```
-
-## 🔧 扩展机制
-
-### 插件扩展点
-
-Cogita 通过 Rspress 的插件系统提供了多个扩展点：
-
-```typescript
-interface ExtensionPoints {
-  // 配置阶段
-  modifyConfig?: (config: UserConfig) => UserConfig;
-  
-  // 构建阶段
-  beforeBuild?: () => void | Promise<void>;
-  afterBuild?: () => void | Promise<void>;
-  
-  // 页面生成
-  addPages?: () => AdditionalPage[];
-  addRoutes?: () => Route[];
-  
-  // 运行时
-  addRuntimeModules?: () => Record<string, string>;
-  addGlobalComponents?: () => Record<string, string>;
-  
-  // 开发阶段
-  onDevServerStart?: (server: DevServer) => void;
-  onFileChange?: (filePath: string) => void;
-}
-```
-
-### 主题扩展模式
-
-主题可以通过多种方式扩展功能：
-
-1. **插件依赖**：声明必需的插件
-2. **可选插件**：根据配置条件性加载插件
-3. **自定义组件**：提供可覆盖的组件
-4. **样式扩展**：支持样式自定义
-
-```typescript
-// 主题扩展示例
 export function getThemeConfig(): CogitaTheme {
   return {
-    name: '@cogita/theme-advanced',
+    name: '@cogita/theme-example',
     pageLayouts: {
       home: './layouts/Home.js',
     },
-    plugins: [
-      // 必需插件
-      pluginPostsFrontmatter,
-      
-      // 条件插件工厂
-      (config) => {
-        const plugins = [];
-        
-        if (config.theme?.enableSearch) {
-          plugins.push(pluginSearch(config));
-        }
-        
-        if (config.theme?.enableComments) {
-          plugins.push(pluginComments(config));
-        }
-        
-        return plugins;
-      },
-    ],
+    globalStyles: [path.resolve(__dirname, './theme.css')],
+    plugins: [],
   };
 }
-```
+~~~
 
-### 组件覆盖机制
+Core resolves layout paths relative to the theme package that returned them. This keeps a theme portable and prevents the consumer from depending on a repository-specific directory.
 
-用户可以通过配置覆盖主题提供的组件：
+## Plugin registration
 
-```typescript
-// 在 cogita.config.ts 中
+Themes provide default plugin factories. Sites can add project-specific factories through the plugins option. The registry records each plugin's name and source, flattens factory results, validates the plugin shape, and detects conflicts.
+
+~~~text
+core plugins → theme bridge plugins → theme plugins → site plugins
+~~~
+
+This order resolves identity and conflicts; it is not a serial lifecycle dependency. Hooks may run concurrently, so plugins must not use array order to coordinate scanning or data preparation.
+
+The registry validates:
+
+- a non-empty unique plugin name;
+- factory errors with the original cause preserved;
+- required theme layouts;
+- required and optional capabilities;
+- duplicate page routes;
+- duplicate virtual runtime module identifiers.
+
+Strict mode stops the build for invalid or ambiguous contracts. Non-strict mode preserves the first registration where possible and emits a stable diagnostic through the shared logger.
+
+## Layout and capability contracts
+
+A plugin that creates a theme page declares the layout key it needs. Core validates this after all plugins are instantiated, so a missing page layout fails before deployment.
+
+~~~typescript
+export const pluginExample: CogitaPluginFactory = () => ({
+  name: '@cogita/plugin-example',
+  cogita: {
+    requiredLayouts: [
+      { layout: 'example', label: 'Example page' },
+    ],
+    providesCapabilities: ['content.example'],
+    requiresCapabilities: ['content.posts'],
+  },
+});
+~~~
+
+Capabilities use stable domain.capability identifiers. A plugin can provide or require a capability, while a theme can classify it as required or optional. Built-in identifiers should come from COGITA_CAPABILITIES in @cogita/shared.
+
+An optional capability must have a safe visual fallback. A required capability should fail early when no provider exists. Multiple providers for one capability are ambiguous and fail in strict mode.
+
+## Shared content index
+
+Content plugins collect and normalize source data into the shared ContentIndex. Themes and other plugins can consume the same index without rescanning the file system.
+
+~~~text
+posts/*.md        → frontmatter parser → post records
+content/**/*.md   → document parser   → document records
+external sources  → source adapter    → document records
+                                         ↓
+                                  shared ContentIndex
+                                         ↓
+                         search, tags, relations, themes
+~~~
+
+The index is the stable handoff between collection and presentation. A plugin should read the index through CogitaBuildContext and should only read full document bodies when its feature needs them.
+
+## Virtual runtime modules
+
+Some build-time data must reach browser-side theme components. Plugins expose that data through virtual modules:
+
+~~~text
+build-time plugin → serialized virtual module → theme component
+~~~
+
+Every public module identifier must be unique during one build and should carry its contract version. Use the shared module helpers and identifiers instead of inventing a second spelling for an existing contract.
+
+Fallback modules may expose empty arrays or a disabled state for optional features. They must never expose machine paths, credentials, private configuration, or unneeded source content.
+
+## Build lifecycle
+
+The build is organized around explicit phases:
+
+1. configuration loading and normalization;
+2. theme resolution and plugin instantiation;
+3. contract validation;
+4. beforeBuild preparation;
+5. page and virtual module registration;
+6. Rspress rendering and asset bundling;
+7. afterBuild reports and artifact checks.
+
+Plugins should assign one responsibility to each hook:
+
+- beforeBuild: validate configuration and prepare shared data;
+- addPages: add generated routes without rescanning sources;
+- addRuntimeModules: expose serialized runtime data;
+- afterBuild: write reports or inspect output.
+
+## Development and production paths
+
+Development mode loads the same configuration and theme contracts as production, then starts the Rspress server with file watching. Production mode renders the static output and runs the configured artifact checks.
+
+Keeping these paths aligned matters for adoption: a site author should be able to reproduce a deployment failure locally using the same base path, content sources, theme, and plugins.
+
+For a project hosted under a repository path, keep site.base and builderConfig.output.assetPrefix aligned:
+
+~~~typescript
 export default defineConfig({
-  theme: '@cogita/theme-lucid',
-  themeConfig: {
-    // 覆盖默认组件
-    components: {
-      PostList: './components/MyCustomPostList.tsx',
-      Header: './components/MyCustomHeader.tsx',
+  site: {
+    base: '/cogita/',
+  },
+  builderConfig: {
+    output: {
+      assetPrefix: '/cogita/',
     },
   },
 });
-```
+~~~
 
-## 🚀 性能优化
+## Extension boundary
 
-### 构建性能优化
+Use a plugin when a capability can serve more than one theme or site. Use a theme extension when the feature changes page composition or visual hierarchy. Keep product-specific rules and content in the consumer repository.
 
-1. **增量构建**：只重新处理变更的文件
-2. **并行处理**：使用 Worker 线程并行处理文件
-3. **智能缓存**：缓存昂贵的计算结果
-4. **按需加载**：只加载必要的插件和主题
+This division lets Core remain stable while the ecosystem grows:
 
-```typescript
-// 缓存机制示例
-class BuildCache {
-  private cache = new Map<string, any>();
-  
-  async getOrCompute<T>(
-    key: string, 
-    computeFn: () => Promise<T>
-  ): Promise<T> {
-    if (this.cache.has(key)) {
-      return this.cache.get(key);
-    }
-    
-    const result = await computeFn();
-    this.cache.set(key, result);
-    return result;
-  }
-}
-```
+- new content sources become adapters or plugins;
+- new discovery features consume the shared index;
+- new visual experiences become themes;
+- new deployment hosts consume the same static output.
 
-### 运行时性能优化
+## Contract evolution
 
-1. **代码分割**：按路由分割代码包
-2. **懒加载**：延迟加载非关键组件
-3. **Tree Shaking**：移除未使用的代码
-4. **资源优化**：压缩和优化静态资源
+Build context, content index, and virtual modules carry explicit version information where the contract is shared. Additive fields are preferred. When a breaking change is unavoidable, update the public types, design document, consumer examples, and Changeset together.
 
-## 🔮 未来架构演进
-
-### 计划中的架构改进
-
-1. **微前端支持**：支持多个独立的博客模块
-2. **服务端渲染**：可选的 SSR 支持
-3. **边缘计算**：在边缘节点上运行部分逻辑
-4. **WebAssembly 插件**：支持 WASM 插件以提高性能
-
-### 扩展性考虑
-
-当前架构设计考虑了未来的扩展需求：
-
-- **模块化设计**：核心功能拆分为独立模块
-- **标准化接口**：定义清晰的插件和主题接口
-- **配置抽象**：配置层与实现层分离
-- **类型安全**：完整的 TypeScript 支持
-
----
-
-这份架构设计文档展示了 Cogita 框架的内部工作原理和设计决策。理解这些架构细节有助于开发者更好地使用和扩展 Cogita。
+The architecture is successful when a theme can evolve its presentation, a plugin can evolve its capability, and a site can upgrade packages without copying framework internals or rewriting its content model.
