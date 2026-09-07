@@ -19,6 +19,9 @@ const docsHome = readPagesFile('index.html');
 const launchGuide = readPagesFile('guides/launch.html');
 const demosLanding = readPagesFile('demos/index.html');
 const socialCard = readPagesFile('demos/social-card.svg');
+const knowledgeCard = readPagesFile(
+  'demos/knowledge/external-content/field-notes-git-m14rlf/assets/knowledge-card.svg'
+);
 
 for (const phrase of ['Get started', 'Themes', 'Knowledge theme']) {
   if (!docsHome.includes(phrase)) {
@@ -41,11 +44,20 @@ for (const slug of demoSlugs) {
 }
 
 if (
-  !socialCard.includes('One framework for blogs,') ||
-  !socialCard.includes('docs, and knowledge bases.') ||
+  !socialCard.includes('One framework.') ||
+  !socialCard.includes('Four site shapes.') ||
   /[㐀-鿿]/.test(socialCard)
 ) {
   throw new Error('Pages 社交分享卡片未通过英文优先校验。');
+}
+
+if (
+  !knowledgeCard.includes('Connect content.') ||
+  !knowledgeCard.includes('Keep the trail.') ||
+  !knowledgeCard.includes('ContentIndex') ||
+  /[㐀-鿿]/.test(knowledgeCard)
+) {
+  throw new Error('Pages Knowledge 推广卡片未通过英文优先校验。');
 }
 
 console.log('Pages 发布产物校验通过：文档入口、Launch kit、四个主题 Demo 和社交卡片完整。');

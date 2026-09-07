@@ -101,6 +101,7 @@ The [Get started guide](../getting-started.md) explains the smallest configurati
 - [Online handbook](https://wu9o.github.io/cogita/) — configuration, architecture, and extension guidance.
 - [GitHub repository](https://github.com/wu9o/cogita) — source, templates, and contribution path.
 - [Social card source](https://github.com/wu9o/cogita/blob/main/demos/landing/social-card.svg) — the English preview image used by the showcase.
+- [Knowledge promo card](https://github.com/wu9o/cogita/blob/main/demos/knowledge/git-content/assets/knowledge-card.svg) — a share-ready visual for the searchable content-index story.
 - [Knowledge source diagram](https://github.com/wu9o/cogita/blob/main/demos/knowledge/git-content/assets/content-source.svg) — the Git → ContentIndex → Theme story in one image.
 
 Only publish the links after the Pages workflow has deployed the same commit. Local builds prove the package and page contracts; they do not prove that the public URLs have updated.

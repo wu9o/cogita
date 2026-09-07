@@ -90,6 +90,7 @@ pnpm dev
 - [在线工作手册](https://wu9o.github.io/cogita/)：配置、架构和扩展说明。
 - [GitHub 仓库](https://github.com/wu9o/cogita)：源码、模板和贡献入口。
 - [社交卡片源码](https://github.com/wu9o/cogita/blob/main/demos/landing/social-card.svg)：主题总览使用的英文预览图。
+- [Knowledge 推广卡片](https://github.com/wu9o/cogita/blob/main/demos/knowledge/git-content/assets/knowledge-card.svg)：用于展示可搜索内容索引故事的英文配图。
 - [Knowledge 来源关系图](https://github.com/wu9o/cogita/blob/main/demos/knowledge/git-content/assets/content-source.svg)：用一张图展示 Git → ContentIndex → Theme 的连接。
 
 只有在 Pages 工作流已经部署同一个提交后，才发布这些线上链接。本地构建只能证明包和页面契约通过，不能证明公网地址已经更新。
