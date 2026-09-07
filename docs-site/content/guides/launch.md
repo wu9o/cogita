@@ -50,6 +50,34 @@ The [Get started guide](../getting-started.md) explains the smallest configurati
 > Explore the demos: https://wu9o.github.io/cogita/demos/
 > GitHub: https://github.com/wu9o/cogita
 
+## X post variants
+
+### Short post
+
+> Cogita is a theme-driven static site framework for blogs, docs, and knowledge bases.
+>
+> Choose a site shape, compose capabilities through plugins, and keep your content independent.
+>
+> Explore four live demos: https://wu9o.github.io/cogita/demos/
+
+### Thread outline
+
+1. Start with the problem: a blog, handbook, and knowledge base should not need three unrelated stacks.
+2. Show the model: a theme owns the reading experience, plugins add capabilities, and the site owns its content.
+3. Open the Knowledge demo to show posts, documents, JSON, Git sources, search, and backlinks in one site shape.
+4. Open the Docs, Lucid, and Editorial demos to show the same framework adapting to different publishing modes.
+5. End with the Quick Start command and invite feedback about the first real site shape or content source to support.
+
+## Shareable assets
+
+- [Theme showcase](https://wu9o.github.io/cogita/demos/) — the primary link for social posts.
+- [Knowledge demo](https://wu9o.github.io/cogita/demos/knowledge/) — the flagship capability demo.
+- [Online handbook](https://wu9o.github.io/cogita/) — configuration, architecture, and extension guidance.
+- [GitHub repository](https://github.com/wu9o/cogita) — source, templates, and contribution path.
+- [Social card source](https://github.com/wu9o/cogita/blob/main/demos/landing/social-card.svg) — the English preview image used by the showcase.
+
+Only publish the links after the Pages workflow has deployed the same commit. Local builds prove the package and page contracts; they do not prove that the public URLs have updated.
+
 ## Launch checklist
 
 - [ ] The public homepage and theme showcase load successfully.

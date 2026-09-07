@@ -39,6 +39,34 @@ pnpm dev
 >
 > Explore the demos: https://wu9o.github.io/cogita/demos/
 
+## X 推文版本
+
+### 短版推文
+
+> Cogita is a theme-driven static site framework for blogs, docs, and knowledge bases.
+>
+> Choose a site shape, compose capabilities through plugins, and keep your content independent.
+>
+> Explore four live demos: https://wu9o.github.io/cogita/demos/
+
+### 串文展开顺序
+
+1. 先提出问题：博客、项目手册和知识库不应该分别依赖三套互不相关的技术栈。
+2. 再展示模型：主题负责阅读体验，插件提供能力，站点自己拥有内容。
+3. 打开 Knowledge Demo，展示文章、文档、JSON、Git 内容源、搜索和反向链接如何放在一个站点中。
+4. 再展示 Docs、Lucid 和 Editorial，说明同一框架如何适配不同的发布形态。
+5. 最后给出 Quick Start 命令，并邀请大家反馈最需要的站点形态或内容源。
+
+## 可分享素材
+
+- [主题总览](https://wu9o.github.io/cogita/demos/)：社交推广的主入口。
+- [Knowledge Demo](https://wu9o.github.io/cogita/demos/knowledge/)：核心能力展示入口。
+- [在线工作手册](https://wu9o.github.io/cogita/)：配置、架构和扩展说明。
+- [GitHub 仓库](https://github.com/wu9o/cogita)：源码、模板和贡献入口。
+- [社交卡片源码](https://github.com/wu9o/cogita/blob/main/demos/landing/social-card.svg)：主题总览使用的英文预览图。
+
+只有在 Pages 工作流已经部署同一个提交后，才发布这些线上链接。本地构建只能证明包和页面契约通过，不能证明公网地址已经更新。
+
 ## 发布检查
 
 - [ ] 首页和主题总览可以正常打开。
