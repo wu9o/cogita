@@ -1,13 +1,12 @@
 ---
-title: JSON 内容源适配器
+title: JSON content source adapter
 ---
 
-# JSON 内容源适配器
+# JSON content source adapter
 
-`@cogita/plugin-content-source-json` 是一个构建期内容源适配器示例。它读取本地或远程 JSON 快照，
-将文章或普通文档转换为统一 `ContentIndex` 条目，并在记录包含 `content` 时提供正文读取能力。
+`@cogita/plugin-content-source-json` is a build-time content source example. It reads a local or remote JSON snapshot, converts posts and documents into shared `ContentIndex` entries, and provides body access when a record contains `content`.
 
-## 配置
+## Configuration
 
 ```ts
 import { defineConfig } from '@cogita/core';
@@ -23,13 +22,11 @@ export default defineConfig({
 });
 ```
 
-JSON 可以是记录数组，也可以是 `{ "entries": [] }`。记录至少需要 `kind`、`title`、`route` 和
-`updateDate`；`post` 还需要 `createDate`。`id` 用于生成缺省的稳定 `source://` 标识，`content` 用于
-提供 Markdown 正文。
+JSON can be an array of records or `{ "entries": [] }`. Each record needs `kind`, `title`, `route`, and `updateDate`; a `post` also needs `createDate`. `id` creates a stable `source://` identifier and `content` supplies the Markdown body.
 
-## 远程 JSON
+## Remote JSON and demo
 
-将 `file` 替换为 `url` 即可从 GitHub Raw、对象存储或知识库导出 API 读取同一格式的 JSON：
+Replace `file` with `url` to read the same snapshot format from GitHub Raw, object storage, or an export API:
 
 ~~~ts
 createJsonContentSource({
@@ -39,13 +36,6 @@ createJsonContentSource({
 });
 ~~~
 
-请求发生在构建期，支持自定义请求头和超时，不会在浏览器运行时暴露认证信息。适配器只处理单次快照；分页、增量同步、重试和复杂认证应由站点自定义 `ContentSource` 实现。
+Requests happen at build time, so authentication data is never exposed to the browser. The Knowledge demo uses `demos/knowledge/content/field-notes.json` to show how external entries flow into the home page, search, tags, and content relations. Pagination, incremental sync, retries, and complex authentication belong in a site-specific `ContentSource`.
 
-## Demo
-
-Knowledge Demo 使用 `demos/knowledge/content/field-notes.json` 展示外部条目如何进入首页、搜索、标签和
-内容关系。构建后访问 `/demos/knowledge/`，搜索“外部来源”或打开“从外部来源回到现场”，可以看到它和
-现有文章共享同一套知识入口。
-
-这个适配器读取的是提交到仓库的静态快照，不会在浏览器请求 JSON。要接入 Git、CMS 或 API 时，可以
-沿用 `ContentSource` 契约实现自己的构建期同步逻辑。
+For the Chinese version, see [JSON 内容源适配器](../zh-CN/plugins/plugin-content-source-json-design.html).
