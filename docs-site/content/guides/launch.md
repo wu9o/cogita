@@ -60,6 +60,32 @@ The [Get started guide](../getting-started.md) explains the smallest configurati
 >
 > Explore four live demos: https://wu9o.github.io/cogita/demos/
 
+### Recommended first thread
+
+#### Post 1
+
+> One framework. Four site shapes.
+>
+> Cogita is a theme-driven static site framework for blogs, docs, editorial publishing, and knowledge bases.
+>
+> Themes shape the experience. Plugins add capabilities. Your content stays yours.
+>
+> Explore the demos: https://wu9o.github.io/cogita/demos/
+
+#### Post 2
+
+> The Knowledge theme is the interesting one: it brings posts, ordinary documents, JSON exports, and Git checkouts into one searchable content index—with topics, backlinks, and traceable routes.
+>
+> https://wu9o.github.io/cogita/demos/knowledge/
+
+#### Post 3
+
+> Docs for handbooks. Lucid for notes. Editorial for feature writing. Knowledge for connected research.
+>
+> Each is an independent site consumer with its own configuration and sample content.
+>
+> Start here: https://wu9o.github.io/cogita/demos/
+
 ### Thread outline
 
 1. Start with the problem: a blog, handbook, and knowledge base should not need three unrelated stacks.
@@ -75,6 +101,7 @@ The [Get started guide](../getting-started.md) explains the smallest configurati
 - [Online handbook](https://wu9o.github.io/cogita/) — configuration, architecture, and extension guidance.
 - [GitHub repository](https://github.com/wu9o/cogita) — source, templates, and contribution path.
 - [Social card source](https://github.com/wu9o/cogita/blob/main/demos/landing/social-card.svg) — the English preview image used by the showcase.
+- [Knowledge source diagram](https://github.com/wu9o/cogita/blob/main/demos/knowledge/git-content/assets/content-source.svg) — the Git → ContentIndex → Theme story in one image.
 
 Only publish the links after the Pages workflow has deployed the same commit. Local builds prove the package and page contracts; they do not prove that the public URLs have updated.
 
