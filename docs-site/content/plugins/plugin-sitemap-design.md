@@ -1,12 +1,12 @@
-# 站点地图插件架构设计
+# Sitemap plugin architecture
 
-## 目标
+## Goal
 
-`@cogita/plugin-sitemap` 在静态构建阶段生成标准的 `sitemap.xml`，帮助搜索引擎发现站点首页、文章页面和用户配置的其他公开路由。
+`@cogita/plugin-sitemap` generates a standard `sitemap.xml` during a static build so search engines can discover the home page, posts, and other public routes configured by the site.
 
-插件只负责构建期数据收集和 XML 输出，不引入运行时虚拟模块，也不修改主题页面渲染。站点地图的绝对地址由 `site.url` 与 `site.base` 共同决定。
+The plugin only collects build-time data and writes XML. It adds no runtime virtual module and does not change theme rendering. Absolute URLs are derived from `site.url` and `site.base`.
 
-## 配置
+## Configuration
 
 ```ts
 export default defineConfig({
@@ -26,40 +26,42 @@ export default defineConfig({
 });
 ```
 
-没有 `sitemap` 配置时插件返回 `null`，不改变现有零配置行为。配置启用后，如果没有 `site.url`，默认跟随 `strict` 让构建失败；非严格模式下只警告并跳过生成。
+Without `sitemap`, the plugin returns `null` and preserves the zero-config behavior. When enabled without `site.url`, strict mode fails the build; non-strict mode warns and skips generation.
 
-## 构建流程
+## Build flow
 
 ```text
-Cogita 配置
+Cogita config
     ↓
-core 归一化 sitemap 配置
+Core normalizes the sitemap config
     ↓
-beforeBuild：扫描文章 frontmatter，生成绝对 URL 和 lastmod
+beforeBuild scans post frontmatter and creates absolute URLs and lastmod
     ↓
-Rspress 构建 HTML
+Rspress builds HTML
     ↓
-afterBuild：写入 doc_build/sitemap.xml
+afterBuild writes doc_build/sitemap.xml
 ```
 
-站点地图优先读取 core 注入的 `ContentIndex`，并复用共享的文章列表路由契约。由于 Rspress 插件的 `beforeBuild` 生命周期并行执行，站点地图不读取 `virtual-posts-data`，避免隐式依赖另一个插件的执行顺序。没有共享索引时仍保留独立扫描兜底。
+The sitemap reads Core's `ContentIndex` first and reuses the shared post-list route contract. Because Rspress plugin `beforeBuild` hooks run in parallel, it does not read `virtual-posts-data` or rely on another plugin's execution order. An independent scan remains as a fallback when no shared index is available.
 
-## URL 规则
+## URL rules
 
-- `site.url` 提供域名和可能已有的部署路径。
-- `site.base` 在 `site.url` 未包含部署路径时补充到 URL 中。
-- 文章路由来自 `posts.routePrefix` 和文章文件路径。
-- 自定义地址既支持 `/about` 这类站点路由，也支持完整的 HTTP(S) 地址。
-- 所有地址按 `loc` 去重并稳定排序。
+- `site.url` provides the domain and any deployment path already present.
+- `site.base` fills in the deployment path when it is absent from `site.url`.
+- Post routes come from `posts.routePrefix` and the post file path.
+- Custom URLs support both site routes such as `/about` and complete HTTP(S) URLs.
+- Entries are deduplicated by `loc` and sorted deterministically.
 
-## 输出和安全边界
+## Output and safety
 
-- 输出路径默认是构建目录下的 `sitemap.xml`。
-- 禁止通过 `path` 跳出构建输出目录。
-- XML 文本使用统一转义，防止 URL 查询参数或自定义地址破坏 XML。
-- `lastmod` 只输出可解析的日期。
-- `priority` 会限制在 0 到 1 之间。
+- The default output is `sitemap.xml` inside the build directory.
+- `path` cannot escape the build output directory.
+- XML text is escaped consistently so query parameters and custom URLs cannot corrupt the document.
+- `lastmod` only contains parseable dates.
+- `priority` is clamped to 0 through 1.
 
-## 后续演进
+## Future work
 
-第一期不包含图片站点地图、多语言索引和 sitemap index。后续 SEO 插件可以复用站点地图的规范化 URL 工具；路由是否写入站点地图还会受主题布局能力约束，避免生成主题实际没有页面的 404 地址。
+The first release does not include image sitemaps, multilingual indexes, or a sitemap index. The SEO plugin can later reuse the sitemap's normalized URL helper. Route inclusion should also respect theme layout capability so the sitemap never advertises a route that would render a 404.
+
+For the Chinese version, see [站点地图插件架构设计](../zh-CN/plugins/plugin-sitemap-design.html).
