@@ -1,5 +1,11 @@
 # @cogita/core
 
+## 0.15.0
+
+### Minor Changes
+
+- 1849b8f: Add native Rspress locale configuration and default-language fallback routes for partially translated content sites.
+
 ## 0.14.0
 
 ### Minor Changes

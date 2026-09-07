@@ -1,5 +1,13 @@
 # @cogita/theme-docs
 
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [b67d73a]
+- Updated dependencies [1849b8f]
+  - @cogita/plugin-i18n@0.3.0
+
 ## 0.3.0
 
 ### Minor Changes
