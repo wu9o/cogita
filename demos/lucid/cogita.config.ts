@@ -41,8 +41,8 @@ export default defineConfig({
     ],
     lucid: {
       heroEyebrow: 'FIELD NOTES · LUCID DEMO',
-      heroCopy: '一个不追赶热点的独立写作空间，记录值得反复回看的实践。',
-      postsTitle: '最近记录',
+      heroCopy: 'An independent writing space for practices worth returning to.',
+      postsTitle: 'Recent notes',
       showSidebar: true,
       featuredPost: '/posts/slow-software',
     },

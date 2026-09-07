@@ -1,22 +1,22 @@
 ---
-title: 慢一点的软件，为什么更容易留下来
+title: Why slower software is easier to keep
 date: 2026-08-28
-description: 从一次小型工具重构出发，记录如何为长期使用保留呼吸感。
+description: A small tool refactor becomes a note on leaving room for long-term use.
 author: Mira
 tags:
-  - 产品思考
-  - 工具
+  - product thinking
+  - tools
 categories:
-  - 设计
-  - 长期主义
+  - design
+  - long-term thinking
 ---
 
-# 慢一点的软件，为什么更容易留下来
+# Why slower software is easier to keep
 
-当一个工具不再每天催促我们，它反而更容易成为工作的一部分。Field Notes 记录这些不显眼、但会改变使用习惯的小选择。
+When a tool stops asking for attention every day, it becomes easier to make it part of the work. Field Notes records the small, quiet choices that change habits.
 
-## 给下一次打开留一点空间
+## Leave room for the next opening
 
-好的工具不需要每次都证明自己。它只要在需要时快速出现，在不需要时安静退后。
+Good tools do not need to prove themselves every time. They only need to appear quickly when needed and step back quietly when they are not.
 
-这也是这个 Demo 选择 Lucid 主题的原因：文章、标签和归档是主角，界面只负责让阅读自然发生。
+That is why this Demo uses the Lucid theme: posts, topics, and archives are the protagonists while the interface lets reading happen naturally.

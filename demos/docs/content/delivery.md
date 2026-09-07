@@ -1,17 +1,17 @@
 ---
-title: 交付流程
-description: 从一个小变更到可回滚发布的四个步骤。
+title: Delivery workflow
+description: Four steps from a small change to a reversible release.
 ---
 
-# 交付流程
+# Delivery workflow
 
-Northstar 的每个变更都经过四个阶段：提出、验证、发布和回看。
+Every Northstar change passes through four stages: propose, verify, release, and review.
 
-1. 在[工程原则](./principles.md)中确认变更的边界；
-2. 在本地构建并运行检查；
-3. 使用小批量发布，保留清晰的回滚点；
-4. 将上线后的发现补充回手册。
+1. Confirm the change boundary in [Engineering principles](./principles.md).
+2. Build locally and run the checks.
+3. Release in small batches with a clear rollback point.
+4. Add post-release findings back to the handbook.
 
-## 为什么需要手册主题
+## Why use a handbook theme?
 
-这类内容的重点是查找速度和上下文连续性。Docs 主题用章节导航、页面目录和代码阅读区承载这类知识，而不是把所有内容堆在首页。
+This kind of content depends on fast discovery and continuity. The Docs theme provides section navigation, page outlines, and focused code reading instead of putting everything on the homepage.

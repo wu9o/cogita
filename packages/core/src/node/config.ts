@@ -780,6 +780,8 @@ export async function createRspressConfig(
     base: cogitaConfig.site?.base,
     markdown: cogitaConfig.markdown,
     mediumZoom: cogitaConfig.mediumZoom,
+    locales: cogitaConfig.locales,
+    languageParity: cogitaConfig.languageParity,
     themeConfig: cogitaConfig.themeConfig,
     builderConfig: {
       ...cogitaConfig.builderConfig,

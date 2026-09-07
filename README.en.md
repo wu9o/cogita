@@ -1,6 +1,6 @@
 # Cogita
 
-[中文文档](./README.md) • **English Documentation**
+[中文文档](https://wu9o.github.io/cogita/zh-CN/) • **English Documentation**
 
 📖 [Online User Manual](https://wu9o.github.io/cogita/)
 
@@ -9,6 +9,8 @@ A theme-driven static site framework based on Rspress, designed for developers w
 All official themes and demos are English-first by default. Configure `@cogita/plugin-i18n` when a site needs localized UI copy; your Markdown content remains in the language you choose.
 
 See it in action: [Theme demos](https://wu9o.github.io/cogita/demos/) · [Online documentation](https://wu9o.github.io/cogita/)
+
+Choose a site shape first: [Docs](https://wu9o.github.io/cogita/demos/docs/) for handbooks, [Lucid](https://wu9o.github.io/cogita/demos/lucid/) for blogs, [Editorial](https://wu9o.github.io/cogita/demos/editorial/) for feature writing, or [Knowledge](https://wu9o.github.io/cogita/demos/knowledge/) for connected content from posts, JSON, and Git sources.
 
 [![npm version](https://badge.fury.io/js/@cogita%2Fcore.svg)](https://badge.fury.io/js/@cogita%2Fcore)
 [![GitHub](https://img.shields.io/github/license/wu9o/cogita)](https://github.com/wu9o/cogita/blob/main/LICENSE)
@@ -277,21 +279,23 @@ pnpm run test
 - [x] **Default Theme**: Complete lucid theme implementation ✅
 - [x] **Plugin System Optimization**: Unified API and type safety ✅
 
-### 🚧 Current Focus: Productization and Long-term Adoption
-- [x] **Official Plugin Library**: Tags, categories, search, comment systems
-- [x] **Theme Diversity**: Blog, editorial, and documentation themes
-- [x] **Documentation Website**: Complete documentation and example site
-- [x] **Template Repository**: Quick start template collection
+### 🚀 Current Focus: Promotion and Long-term Adoption
+- [x] **Official Plugin Library**: Tags, categories, search, comments, SEO, RSS, and content sources
+- [x] **Theme Diversity**: Blog, editorial, documentation, and knowledge-base themes
+- [x] **Independent Theme Demos**: Four custom-content consumers that can be built and previewed locally
+- [x] **English-first Public Surfaces**: Landing page, demos, CLI templates, and core onboarding
+- [x] **Adoption Checks**: Registry consumer, external blog, docs-site, knowledge-site, starter, and package-boundary validation
+- [ ] **Community Feedback Loop**: Use real user feedback to choose the next flagship theme or plugin
 
-The current focus is productization and long-term adoption: stable public contracts,
-upgrade diagnostics, independent-site deployment checks, and a predictable extension
-boundary for third-party themes and plugins.
+The current release is ready for public evaluation. The next work should improve the
+first-run path, starter templates, examples, and feedback loop before expanding the
+extension library based on real adoption signals.
 
-### 🔮 Phase 3: Advanced Features (Planned)
-- [ ] **Full-text Search**: Algolia/local search based search functionality
-- [ ] **SEO Optimization**: Auto sitemap, meta tags, structured data
-- [ ] **Social Integration**: Auto sharing, comment systems, social login
-- [x] **Internationalization foundation**: Locale-aware UI copy through `@cogita/plugin-i18n`
+### 🔮 Post-release Exploration
+- [x] **Local Search**: Search index generation for posts and unified content sources
+- [x] **SEO and Sitemaps**: Metadata, Open Graph, Twitter Cards, and sitemap generation
+- [x] **Internationalization Foundation**: Locale-aware UI copy through `@cogita/plugin-i18n`
+- [ ] **Additional Content Sources**: Prioritize new adapters after users validate the current model
 
 ## 📊 Project Stats
 

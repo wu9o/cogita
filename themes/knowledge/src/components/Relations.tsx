@@ -28,8 +28,8 @@ function RelationList({
             <a href={normalizeHrefInRuntime(getHref(base, item.route))}>{item.title}</a>
             <span>
               {item.kind === 'document'
-                ? t('knowledge.relations.document', '文档')
-                : t('knowledge.relations.post', '文章')}
+                ? t('knowledge.relations.document', 'Document')
+                : t('knowledge.relations.post', 'Article')}
             </span>
           </li>
         ))}
@@ -52,20 +52,20 @@ const Relations: React.FC = () => {
   return (
     <aside
       className="knowledge-relations"
-      aria-label={t('knowledge.relations.ariaLabel', '内容关系')}
+      aria-label={t('knowledge.relations.ariaLabel', 'Content relations')}
     >
       <div className="knowledge-relations-heading">
         <span>Knowledge graph</span>
-        <strong>{t('knowledge.relations.continue', '继续探索')}</strong>
+        <strong>{t('knowledge.relations.continue', 'Continue exploring')}</strong>
       </div>
       <div className="knowledge-relations-groups">
         <RelationList
-          title={t('knowledge.relations.outbound', '本文链接到')}
+          title={t('knowledge.relations.outbound', 'Links from this page')}
           items={outbound}
           base={base}
         />
         <RelationList
-          title={t('knowledge.relations.inbound', '反向链接')}
+          title={t('knowledge.relations.inbound', 'Backlinks')}
           items={inbound}
           base={base}
         />

@@ -59,6 +59,9 @@ jobs:
       - name: 合并主题 Demo 到 Pages 产物
         run: node scripts/stage-pages.mjs
 
+      - name: 校验 Pages 发布产物
+        run: pnpm run check:pages-artifact
+
       - name: 配置 GitHub Pages
         uses: actions/configure-pages@v5
         with:

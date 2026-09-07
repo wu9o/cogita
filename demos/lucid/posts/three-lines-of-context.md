@@ -1,17 +1,17 @@
 ---
-title: 每个决定都应该带着三行上下文
+title: Every decision should carry three lines of context
 date: 2026-08-13
-description: 把背景、取舍和下一步写在一起，协作就不必反复猜测。
+description: Put the background, trade-offs, and next step together so collaboration does not depend on guesses.
 author: Mira
 tags:
-  - 协作
-  - 工程
+  - collaboration
+  - engineering
 categories:
-  - 工作方法
+  - working methods
 ---
 
-# 每个决定都应该带着三行上下文
+# Every decision should carry three lines of context
 
-一条没有上下文的结论，很快就会变成新的疑问。我们在每次记录里保留三件事：为什么现在做、放弃了什么、下一步如何验证。
+A conclusion without context quickly becomes a new question. Every note keeps three things together: why we are doing it now, what we gave up, and how we will verify the next step.
 
-文章列表和搜索只是入口，真正的价值来自这些内容能被未来的自己重新找到。
+Lists and search are only entry points. The real value is being able to find these notes again in the future.

@@ -36,7 +36,7 @@ export default defineConfig({
     ],
     editorial: {
       heroEyebrow: 'THE SMALL SYSTEMS REVIEW',
-      heroCopy: '用专题和叙事，把工程实践中的小问题写成值得保存的长文。',
+      heroCopy: 'A journal about turning small engineering questions into essays worth keeping.',
       featuredPost: '/posts/quiet-tools',
       relatedPosts: { enabled: true, limit: 3 },
     },

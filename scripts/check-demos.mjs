@@ -81,6 +81,19 @@ if (!existsSync(path.join(demosRoot, 'landing', 'social-card.svg'))) {
 if (!landing.includes('og:image') || !landing.includes('twitter:card')) {
   throw new Error('主题 Demo 落地页缺少社交分享元数据。');
 }
+if (!landing.includes('data-copy-text') || !landing.includes('Copy commands')) {
+  throw new Error('主题 Demo 落地页缺少可复制的 Quick Start 命令。');
+}
+const socialCard = readFileSync(path.join(demosRoot, 'landing', 'social-card.svg'), 'utf8');
+if (
+  !socialCard.includes('One framework for blogs,') ||
+  !socialCard.includes('docs, and knowledge bases.')
+) {
+  throw new Error('主题 Demo 社交分享卡片未包含英文产品定位。');
+}
+if (/[㐀-鿿]/.test(socialCard)) {
+  throw new Error('主题 Demo 社交分享卡片不应混入中文文案。');
+}
 for (const slug of expectedSlugs) {
   if (!landing.includes(`/demos/${slug}/`)) {
     throw new Error(`主题 Demo 落地页缺少 ${slug} 链接。`);

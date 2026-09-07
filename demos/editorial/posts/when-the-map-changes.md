@@ -1,15 +1,15 @@
 ---
-title: 当地图发生变化时，先确认坐标系
+title: When the map changes, check the coordinate system
 date: 2026-08-11
-description: 架构调整最容易被忽略的不是代码，而是大家对系统的共同地图。
+description: During an architecture change, the shared map of the system is easier to overlook than the code.
 author: Lin
 tags:
-  - 架构
-  - 协作
+  - architecture
+  - collaboration
 categories:
-  - 方法
+  - method
 ---
 
-# 当地图发生变化时，先确认坐标系
+# When the map changes, check the coordinate system
 
-团队争论“应该怎么改”之前，通常需要先确认“现在是什么”。Editorial 的内容优先布局适合承载这种需要完整叙事、对比和观点的文章。
+Before a team debates how to change a system, it usually needs to agree on what the system is today. Editorial's content-first layout suits essays that need narrative, comparison, and a point of view.

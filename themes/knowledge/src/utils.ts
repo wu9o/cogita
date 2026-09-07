@@ -37,10 +37,11 @@ export function getKnowledgeCopy(pageData: KnowledgePageData | undefined) {
   return {
     title: pageData?.siteData?.title || 'Cogita Knowledge Base',
     description:
-      pageData?.siteData?.description || '把文章、文档和它们之间的连接组织成可探索的知识空间。',
+      pageData?.siteData?.description ||
+      'Organize articles, documents, and their connections into an explorable knowledge space.',
     lead: t(
       'knowledge.home.lead',
-      '用统一内容索引连接文章与文档，让每一次阅读都能自然抵达下一条相关知识。'
+      'Use one content index to connect articles and documents, so every reading can lead to the next relevant idea.'
     ),
   };
 }

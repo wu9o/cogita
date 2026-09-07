@@ -20,15 +20,20 @@ const TagLayout: React.FC = () => {
           <p className="knowledge-eyebrow">
             {copy.title} · {t('knowledge.tag.eyebrow', 'TOPICS')}
           </p>
-          <h1>{t('knowledge.tag.title', '按主题探索')}</h1>
-          <p>{t('knowledge.tag.description', '标签把分散的文章和文档聚合成可复用的知识入口。')}</p>
+          <h1>{t('knowledge.tag.title', 'Explore by topic')}</h1>
+          <p>
+            {t(
+              'knowledge.tag.description',
+              'Tags gather scattered articles and documents into reusable knowledge entry points.'
+            )}
+          </p>
         </header>
         <div className="knowledge-all-tags">
           {allTags.map((item) => (
             <a key={item.slug} href={normalizeHrefInRuntime(getHref(base, item.route))}>
               <strong>{item.name}</strong>
               <span>
-                {t('knowledge.tag.contentCount', '{{count}} 条内容', { count: item.count })}
+                {t('knowledge.tag.contentCount', '{{count}} content items', { count: item.count })}
               </span>
             </a>
           ))}
@@ -41,9 +46,9 @@ const TagLayout: React.FC = () => {
     return (
       <main className="knowledge-tag-page">
         <a href={normalizeHrefInRuntime(getHref(base, `/${prefix}`))}>
-          {t('knowledge.tag.back', '← 返回全部主题')}
+          {t('knowledge.tag.back', '← Back to all topics')}
         </a>
-        <h1>{t('knowledge.tag.notFound', '主题不存在')}</h1>
+        <h1>{t('knowledge.tag.notFound', 'Topic not found')}</h1>
       </main>
     );
   }
@@ -53,12 +58,12 @@ const TagLayout: React.FC = () => {
     <main className="knowledge-tag-page">
       <header className="knowledge-page-header">
         <a href={normalizeHrefInRuntime(getHref(base, `/${prefix}`))}>
-          {t('knowledge.tag.back', '← 返回全部主题')}
+          {t('knowledge.tag.back', '← Back to all topics')}
         </a>
         <p className="knowledge-eyebrow">{t('knowledge.tag.topic', 'TOPIC')}</p>
         <h1>#{tag.name}</h1>
         <p>
-          {t('knowledge.tag.around', '{{count}} 条内容围绕这个主题展开。', {
+          {t('knowledge.tag.around', '{{count}} content items revolve around this topic.', {
             count: tag.count,
           })}
         </p>
@@ -67,13 +72,15 @@ const TagLayout: React.FC = () => {
         {tag.posts.map((entry) => (
           <a key={entry.route} href={normalizeHrefInRuntime(getHref(base, entry.route))}>
             <strong>{entry.title}</strong>
-            <span>{entry.description || t('knowledge.tag.open', '打开条目继续阅读。')}</span>
+            <span>
+              {entry.description || t('knowledge.tag.open', 'Open entry to continue reading.')}
+            </span>
           </a>
         ))}
       </div>
       {relatedTags.length > 0 && (
         <section className="knowledge-related-tags">
-          <h2>{t('knowledge.tag.related', '相关主题')}</h2>
+          <h2>{t('knowledge.tag.related', 'Related topics')}</h2>
           <div>
             {relatedTags.map((item) => (
               <a key={item.slug} href={normalizeHrefInRuntime(getHref(base, item.route))}>

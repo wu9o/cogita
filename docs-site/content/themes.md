@@ -17,6 +17,19 @@ Cogita themes are more than colors and typography. A theme owns page layouts, vi
 
 Each theme has an independent consumer under [`demos/`](https://github.com/wu9o/cogita/tree/main/demos). Run `pnpm run demo` to build and preview all four.
 
+## Theme demos
+
+Try each theme with an independent site and custom sample content:
+
+| Demo | What to look for | Link |
+| --- | --- | --- |
+| **Docs** | Handbook navigation, focused reading, and reference pages | [Open the Docs demo](https://wu9o.github.io/cogita/demos/docs/) |
+| **Lucid** | A lightweight publishing flow for notes and archives | [Open the Lucid demo](https://wu9o.github.io/cogita/demos/lucid/) |
+| **Editorial** | Feature-led storytelling and curated series | [Open the Editorial demo](https://wu9o.github.io/cogita/demos/editorial/) |
+| **Knowledge** | Posts, documents, JSON, Git sources, and backlinks in one space | [Open the Knowledge demo](https://wu9o.github.io/cogita/demos/knowledge/) |
+
+The [full demo showcase](https://wu9o.github.io/cogita/demos/) is the fastest way to compare the four content experiences. Each demo is also included in this repository so you can inspect its configuration and sample content.
+
 ## Docs
 
 Docs is designed for lookup and understanding. It provides chapter navigation, a focused reading area, and a page outline for handbooks, architecture notes, API references, and plugin documentation.

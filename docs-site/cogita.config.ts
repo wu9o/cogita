@@ -1,5 +1,69 @@
 import { defineConfig } from '@cogita/core';
 
+const siteLocales = [
+  { lang: 'en-US', label: 'English' },
+  { lang: 'zh-CN', label: '中文' },
+];
+
+const chineseSidebar = {
+  '/': [
+    {
+      text: '开始使用',
+      items: [
+        { text: '快速开始', link: '/zh-CN/getting-started' },
+        { text: '配置', link: '/zh-CN/configuration' },
+        { text: '主题总览', link: '/zh-CN/themes' },
+        { text: '知识主题', link: '/zh-CN/themes/theme-knowledge-design' },
+        { text: '包与能力地图', link: '/zh-CN/package-map' },
+        { text: '第三方起步模板', link: '/zh-CN/starters' },
+      ],
+    },
+    {
+      text: '指南',
+      items: [
+        { text: '指南总览', link: '/zh-CN/guides/' },
+        { text: '最佳实践', link: '/zh-CN/guides/best-practices' },
+        { text: '开发指南', link: '/zh-CN/guides/development' },
+        { text: '部署指南', link: '/zh-CN/guides/deployment' },
+        { text: '站点升级与诊断', link: '/zh-CN/guides/site-doctor' },
+        { text: '内容仓库迁移', link: '/zh-CN/guides/migration' },
+        { text: '发布准备', link: '/zh-CN/guides/launch' },
+        { text: '主题使用与扩展', link: '/zh-CN/theme-customization' },
+      ],
+    },
+    {
+      text: '架构与 API',
+      items: [
+        { text: 'API 总览', link: '/zh-CN/api/' },
+        { text: '架构设计', link: '/zh-CN/api/architecture-design' },
+        { text: '内容索引设计', link: '/zh-CN/api/content-index-design' },
+        { text: 'API 参考', link: '/zh-CN/api/api-reference' },
+        { text: '主题开发指南', link: '/zh-CN/theme-development' },
+      ],
+    },
+    {
+      text: '插件开发',
+      items: [
+        { text: '插件总览', link: '/zh-CN/plugins/' },
+        { text: '插件开发指南', link: '/zh-CN/plugins/plugin-development' },
+        { text: '插件 API 规范', link: '/zh-CN/plugins/plugin-api-specification' },
+        { text: '文章元数据', link: '/zh-CN/plugins/plugin-posts-frontmatter-design' },
+        { text: 'RSS', link: '/zh-CN/plugins/plugin-rss-design' },
+        { text: '图片', link: '/zh-CN/plugins/plugin-images-design' },
+        { text: '站点地图', link: '/zh-CN/plugins/plugin-sitemap-design' },
+        { text: 'SEO', link: '/zh-CN/plugins/plugin-seo-design' },
+        { text: '文章列表', link: '/zh-CN/plugins/plugin-blog-list-design' },
+        { text: '搜索', link: '/zh-CN/plugins/plugin-search-design' },
+        { text: '分类', link: '/zh-CN/plugins/plugin-categories-design' },
+        { text: '阅读进度', link: '/zh-CN/plugins/plugin-reading-progress-design' },
+        { text: '代码复制', link: '/zh-CN/plugins/plugin-code-copy-design' },
+        { text: '评论', link: '/zh-CN/plugins/plugin-comments-design' },
+        { text: '内容检查', link: '/zh-CN/plugins/plugin-content-check-design' },
+      ],
+    },
+  ],
+};
+
 export default defineConfig({
   site: {
     title: 'Cogita Documentation',
@@ -10,11 +74,72 @@ export default defineConfig({
   },
   contentDir: 'content',
   theme: '@cogita/theme-docs',
+  locales: siteLocales,
   i18n: {
     locale: 'en-US',
     fallbackLocale: 'en-US',
+    showSwitcher: false,
+    contentFallback: true,
+    messages: {
+      'en-US': {
+        'i18n.switcher.label': 'Language',
+        'docs.home.eyebrow': 'Documentation',
+        'docs.home.lead':
+          'Learn how to build maintainable static sites with conventions across configuration, themes, and plugins.',
+        'docs.home.getStarted': 'Get started',
+        'docs.home.architecture': 'Explore the architecture',
+        'docs.home.entryPoints': 'Documentation entry points',
+        'docs.home.system.label': 'Framework model',
+        'docs.home.boundaries.label': 'Clear boundaries',
+        'docs.home.flow.label': 'Build flow',
+        'docs.home.flow.config': 'Config',
+        'docs.home.flow.theme': 'Theme',
+        'docs.home.flow.plugin': 'Plugin',
+        'docs.home.flow.output': 'Static output',
+        'docs.home.themes.label': 'Theme showcase',
+        'docs.home.themes.eyebrow': 'Choose a theme',
+        'docs.home.themes.title': 'One framework for many content shapes.',
+        'docs.home.themes.viewAll': 'View all themes →',
+      },
+      'zh-CN': {
+        'i18n.switcher.label': '语言',
+        'docs.home.eyebrow': '文档',
+        'docs.home.lead': '通过配置、主题和插件之间的约定，构建更易维护的静态站点。',
+        'docs.home.getStarted': '开始使用',
+        'docs.home.architecture': '了解架构',
+        'docs.home.entryPoints': '文档入口',
+        'docs.home.system.label': '框架模型',
+        'docs.home.boundaries.label': '清晰的边界',
+        'docs.home.flow.label': '构建流程',
+        'docs.home.flow.config': '配置',
+        'docs.home.flow.theme': '主题',
+        'docs.home.flow.plugin': '插件',
+        'docs.home.flow.output': '静态产物',
+        'docs.home.themes.label': '主题展示',
+        'docs.home.themes.eyebrow': '选择主题',
+        'docs.home.themes.title': '一套框架，适配多种内容形态。',
+        'docs.home.themes.viewAll': '查看全部主题 →',
+      },
+    },
   },
   themeConfig: {
+    locales: [
+      siteLocales[0],
+      {
+        lang: 'zh-CN',
+        label: '中文',
+        sidebar: chineseSidebar,
+        nav: [
+          { text: '首页', link: '/' },
+          { text: '开始使用', link: '/getting-started' },
+          { text: '主题', link: '/themes' },
+          { text: '知识主题', link: '/themes/theme-knowledge-design' },
+          { text: '指南', link: '/guides/' },
+          { text: '架构与 API', link: '/api/' },
+          { text: '插件', link: '/plugins/' },
+        ],
+      },
+    ],
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Get started', link: '/getting-started' },
@@ -46,6 +171,7 @@ export default defineConfig({
             { text: 'Deployment guide', link: '/guides/deployment' },
             { text: 'Site upgrade and doctor', link: '/guides/site-doctor' },
             { text: 'Content repository migration', link: '/guides/migration' },
+            { text: 'Launch kit', link: '/guides/launch' },
             { text: 'Theme usage and extension', link: '/theme-customization' },
           ],
         },

@@ -29,6 +29,8 @@ export type ThemeConfig = UserConfig['themeConfig'];
 export type BuilderConfig = UserConfig['builderConfig'];
 export type MarkdownConfig = UserConfig['markdown'];
 export type MediumZoomConfig = UserConfig['mediumZoom'];
+export type SiteLocale = NonNullable<UserConfig['locales']>[number];
+export type LanguageParityConfig = UserConfig['languageParity'];
 
 export interface SiteConfig {
   title?: string;
@@ -563,6 +565,12 @@ export interface CogitaConfig {
 
   /** Rspress 原生图片放大配置。 */
   mediumZoom?: MediumZoomConfig;
+
+  /** Rspress 原生站点语言配置；默认语言由 `site.lang` 决定。 */
+  locales?: SiteLocale[];
+
+  /** Rspress 原生多语言内容对齐检查。 */
+  languageParity?: LanguageParityConfig;
 
   /**
    * Rspress theme config

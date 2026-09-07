@@ -1,17 +1,17 @@
-# 阅读进度插件设计
+# Reading progress plugin design
 
-## 目标
+## Goal
 
-`@cogita/plugin-reading-progress` 为文章页提供阅读体验能力：
+`@cogita/plugin-reading-progress` provides article reading support:
 
-1. 构建期估算每篇文章的阅读时间。
-2. 运行时在文章页显示阅读进度条和实时百分比。
-3. 由主题根据滚动位置联动高亮目录。
-4. 可选地在本地浏览器记忆并恢复文章阅读位置。
+1. Estimate reading time at build time.
+2. Show a progress bar and live percentage on article pages.
+3. Let the theme highlight the active table-of-contents entry as the reader scrolls.
+4. Optionally remember and restore the reading position in the local browser.
 
-插件不引入第三方分析，也不把阅读进度逻辑写入 Markdown 页面文件。阅读位置记忆默认关闭，开启后只写入当前浏览器的 `localStorage`。
+The plugin does not add third-party analytics or modify Markdown files. Position memory is off by default and, when enabled, writes only to the current browser's `localStorage`.
 
-## 配置
+## Configuration
 
 ```ts
 readingProgress: {
@@ -25,19 +25,19 @@ readingProgress: {
 }
 ```
 
-- `enabled`：关闭后插件仍提供空运行时模块，主题会跳过阅读增强 UI，确保关闭配置不会造成构建失败。
-- `showBar`：控制文章顶部的固定进度条。
-- `showReadingTime`：控制右下角预计阅读时长和实时百分比。
-- `showTocProgress`：控制目录当前章节高亮，并同步设置 `aria-current="location"`。
-- `rememberPosition`：按文章 route 记忆滚动位置，再次打开文章时恢复；默认关闭。
-- `wordsPerMinute`：每分钟阅读单位数，中文按字符、英文按单词估算。
-- `includeCode`：是否把 fenced code block 纳入估算。
+- `enabled`: when off, the plugin still provides an empty runtime module; the theme skips the enhancement UI without a build failure.
+- `showBar`: controls the fixed article-top progress bar.
+- `showReadingTime`: controls the estimated reading time and live percentage.
+- `showTocProgress`: highlights the current heading and sets `aria-current="location"`.
+- `rememberPosition`: restores the scroll position by article route; off by default.
+- `wordsPerMinute`: the reading unit per minute; Chinese is estimated by characters and English by words.
+- `includeCode`: includes fenced code blocks in the estimate when enabled.
 
-核心层提供默认配置，保证默认主题可以安全消费虚拟模块；自定义主题仍可通过配置关闭插件。显式关闭时，插件不扫描文章，只生成空统计数据和关闭状态，兼顾按需关闭与主题静态导入的稳定性。
+Core supplies defaults so the default theme can safely consume the virtual module. A custom theme can disable the plugin explicitly. When disabled, the plugin does not scan posts and emits empty statistics plus a closed state, preserving both opt-out behavior and safe static imports.
 
-## 构建期数据
+## Build-time data
 
-插件扫描 `posts.dir` 下的 Markdown/MDX 文件，生成：
+The plugin scans Markdown and MDX files under `posts.dir` and produces:
 
 ```ts
 interface ReadingStats {
@@ -50,30 +50,32 @@ interface ReadingStats {
 }
 ```
 
-正文处理会移除 frontmatter、链接地址、HTML 标签、标题标记和代码块（除非显式开启 `includeCode`）。统计结果至少为 1 分钟，避免短文显示为 0 分钟。
+It removes frontmatter, link URLs, HTML tags, heading markers, and code blocks unless `includeCode` is enabled. The result is at least one minute so short posts never display zero minutes.
 
-## 虚拟模块
+## Virtual module
 
-`virtual-reading-progress-data` 提供：
+`virtual-reading-progress-data` exposes:
 
-- `readingProgressConfig`
-- `readingStatsByRoute`
-- `getReadingStats(route)`
+- `readingProgressConfig`;
+- `readingStatsByRoute`;
+- `getReadingStats(route)`.
 
-虚拟模块只暴露运行时需要的数据，不泄露文章的本地绝对路径和正文内容。
+The module contains only runtime data. It does not expose local absolute paths or article bodies.
 
-## 主题边界
+## Theme boundary
 
-Lucid 通过全局 UI 组件读取当前 URL 对应的文章统计：
+Lucid's global UI reads the statistics for the current article URL:
 
-- 文章页显示进度条和阅读时间。
-- 文章滚动时，根据当前可见标题高亮桌面右侧目录和移动端目录项，并为当前目录项设置 `aria-current="location"`。
-- 开启位置记忆后，在文章再次打开时恢复滚动位置，并提供返回顶部操作。
-- 首页、标签页、分类页、归档页等非文章路由不显示阅读增强 UI。
-- 进度基于当前文档滚动高度计算，不发送任何网络请求。
+- article pages show the progress bar and reading time;
+- scrolling highlights the visible heading in desktop and mobile tables of contents and sets `aria-current="location"`;
+- position memory restores the scroll location when enabled and provides a back-to-top action;
+- home, tag, category, and archive routes do not show reading enhancements;
+- progress uses the current document's scroll height and makes no network requests.
 
-## 后续建设
+## Future work
 
-- 文章头部的静态阅读时间元信息。
-- 章节级进度。
-- 与隐私友好的阅读行为分析插件协作。
+- static reading-time metadata in the article header;
+- section-level progress;
+- cooperation with a privacy-friendly reading analytics plugin.
+
+For the Chinese version, see [阅读进度插件设计](../zh-CN/plugins/plugin-reading-progress-design.html).

@@ -1,16 +1,16 @@
 ---
-title: 检索与回溯
-description: 从搜索、标签和关系三个入口回到相关上下文。
+title: Retrieval and backtracking
+description: Return to relevant context through search, topics, and relations.
 ---
 
-# 检索与回溯
+# Retrieval and backtracking
 
-知识库的入口不应该只有一个：
+A knowledge base should have more than one entrance:
 
-- 搜索适合从一个词开始；
-- 标签适合沿着主题移动；
-- 出链与反向链接适合回到上下文。
+- Search is a good place to start with one word.
+- Topics let readers move along a subject.
+- Outbound links and backlinks bring readers back to context.
 
-这就是 Knowledge 主题与普通文档主题的边界：它不替内容决定结构，而是把内容之间已有的连接显式展示出来。
+This is the boundary between a Knowledge theme and an ordinary Docs theme: it does not decide the structure for the content, but makes existing connections explicit.
 
-相关实践见[统一内容入口](./content-model.md)和[决策记录](/posts/decision-records)。
+See [One content model](./content-model.md) and [Decision records](/posts/decision-records) for related examples.

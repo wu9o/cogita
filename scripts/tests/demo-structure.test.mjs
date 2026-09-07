@@ -21,10 +21,28 @@ test('每个内置主题都有独立 Demo 消费者', () => {
 
 test('主题 Demo 落地页链接到所有内置主题', () => {
   const landing = readFileSync(path.join(demosRoot, 'landing', 'index.html'), 'utf8');
-  assert.ok(existsSync(path.join(demosRoot, 'landing', 'social-card.svg')));
+  const socialCardPath = path.join(demosRoot, 'landing', 'social-card.svg');
+  assert.ok(existsSync(socialCardPath));
   assert.match(landing, /property="og:image"/);
   assert.match(landing, /name="twitter:card"/);
+  assert.match(landing, /data-copy-text/);
+  assert.match(landing, /Copy commands/);
+  const socialCard = readFileSync(socialCardPath, 'utf8');
+  assert.match(socialCard, /One framework for blogs,/);
+  assert.match(socialCard, /docs, and knowledge bases\./);
+  assert.doesNotMatch(socialCard, /[㐀-鿿]/);
   for (const slug of expectedSlugs) {
     assert.match(landing, new RegExp(`/demos/${slug}/`));
   }
+});
+
+test('Pages 发布校验脚本存在并接入工作流', () => {
+  const packageJson = JSON.parse(readFileSync(path.join(repositoryRoot, 'package.json'), 'utf8'));
+  const workflow = readFileSync(path.join(repositoryRoot, '.github/workflows/deploy.yml'), 'utf8');
+  assert.ok(existsSync(path.join(repositoryRoot, 'scripts/check-pages-artifact.mjs')));
+  assert.equal(
+    packageJson.scripts['check:pages-artifact'],
+    'node scripts/check-pages-artifact.mjs'
+  );
+  assert.match(workflow, /pnpm run check:pages-artifact/);
 });

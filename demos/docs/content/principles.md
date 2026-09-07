@@ -1,16 +1,16 @@
 ---
-title: 工程原则
-description: Northstar 团队如何在复杂度增长之前保持清晰。
+title: Engineering principles
+description: How the Northstar team stays clear before complexity grows.
 ---
 
-# 工程原则
+# Engineering principles
 
-Northstar 不追求一次性设计出完美系统，而是把每一次交付都变成下一次决策的可靠输入。
+Northstar does not try to design a perfect system in one pass. Each delivery should become reliable input for the next decision.
 
-## 三个默认选择
+## Three default choices
 
-- 先让边界清楚，再让实现变快；
-- 先让失败可见，再让流程自动化；
-- 先保留可替换性，再追求抽象的完整度。
+- Make the boundary clear before making the implementation fast.
+- Make failure visible before automating the workflow.
+- Preserve replaceability before completing the abstraction.
 
-这些原则适合放在 Docs 主题中，因为团队成员需要快速定位规则、示例和相关页面。
+These principles belong in a Docs theme because team members need to find rules, examples, and related pages quickly.

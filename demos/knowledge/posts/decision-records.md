@@ -1,15 +1,15 @@
 ---
-title: 决策记录应该为未来的自己保留入口
+title: Decision records should leave an entrance for the future
 date: 2026-08-18
-description: 记录选择本身，也记录当时没有选择的方向。
+description: Record the choice itself, along with the direction you did not choose at the time.
 author: Atlas
 tags:
-  - 决策
-  - 知识系统
+  - decisions
+  - knowledge systems
 ---
 
-# 决策记录应该为未来的自己保留入口
+# Decision records should leave an entrance for the future
 
-决策不是孤立的结论。它通常与一份背景说明、一条约束和一次验证结果相连。
+A decision is not an isolated conclusion. It is usually connected to background, a constraint, and a verification result.
 
-Knowledge 主题的首页会同时展示文章与普通文档；打开一条内容后，页面底部的出链和反向链接会继续提供上下文。
+The Knowledge theme homepage shows articles and ordinary documents together. Once an entry is open, outbound links and backlinks at the bottom continue to provide context.
