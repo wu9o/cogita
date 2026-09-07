@@ -6,8 +6,8 @@ This document describes the current Cogita package lanes, upgrade boundaries, an
 | Package | Current version | Compatibility lane | Role |
 | --- | --- | --- | --- |
 | `@cogita/shared` | 0.13.0 | Core platform | Shared types, capabilities, and version contracts |
-| `@cogita/core` | 0.14.0 | Core platform | Configuration, plugin registration, and build lifecycle |
-| `@cogita/cli` | 0.3.0 | Core platform | Site initialization, development, and build entry points |
+| `@cogita/core` | 0.15.0 | Core platform | Configuration, plugin registration, and build lifecycle |
+| `@cogita/cli` | 0.3.1 | Core platform | Site initialization, development, and build entry points |
 | `@cogita/ui` | 0.1.2 | Theme ecosystem | Shared theme UI components |
 | `@cogita/plugin-blog-list` | 0.3.5 | Blog theme plugin | Lists, filters, pagination, and archives |
 | `@cogita/plugin-categories` | 0.2.7 | Blog theme plugin | Category aggregation and pages |
@@ -26,10 +26,10 @@ This document describes the current Cogita package lanes, upgrade boundaries, an
 | `@cogita/plugin-seo` | 1.3.7 | Blog theme plugin | Page SEO metadata and audits |
 | `@cogita/plugin-sitemap` | 1.3.7 | Blog theme plugin | Sitemap generation |
 | `@cogita/plugin-tags` | 1.0.7 | Blog theme plugin | Tag aggregation and pages |
-| `@cogita/theme-lucid` | 0.12.0 | Blog theme | Default blog theme and full plugin integration |
-| `@cogita/theme-editorial` | 0.3.0 | Blog theme | Editorial-style blog theme |
-| `@cogita/theme-docs` | 0.3.0 | Docs theme | Technical handbook and documentation sites |
-| `@cogita/theme-knowledge` | 0.3.0 | Knowledge theme | Unified content, search, tags, and backlinks |
+| `@cogita/theme-lucid` | 0.12.1 | Blog theme | Default blog theme and full plugin integration |
+| `@cogita/theme-editorial` | 0.3.1 | Blog theme | Editorial-style blog theme |
+| `@cogita/theme-docs` | 0.3.1 | Docs theme | Technical handbook and documentation sites |
+| `@cogita/theme-knowledge` | 0.3.1 | Knowledge theme | Unified content, search, tags, and backlinks |
 <!-- compatibility-matrix:end -->
 
 ## Compatibility lanes

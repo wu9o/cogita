@@ -1,5 +1,13 @@
 # @cogita/theme-lucid
 
+## 0.12.1
+
+### Patch Changes
+
+- Updated dependencies [b67d73a]
+- Updated dependencies [1849b8f]
+  - @cogita/plugin-i18n@0.3.0
+
 ## 0.12.0
 
 ### Minor Changes

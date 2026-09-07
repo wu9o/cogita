@@ -1,5 +1,12 @@
 # @cogita/plugin-i18n
 
+## 0.3.0
+
+### Minor Changes
+
+- b67d73a: Add a reusable runtime locale switcher and browser-persisted locale resolution for sites with multiple i18n dictionaries.
+- 1849b8f: Add native Rspress locale configuration and default-language fallback routes for partially translated content sites.
+
 ## 0.2.0
 
 ### Minor Changes
