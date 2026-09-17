@@ -39,6 +39,32 @@ pnpm dev
 >
 > Explore the demos: https://wu9o.github.io/cogita/demos/
 
+### 推荐首发串文
+
+#### 第 1 条
+
+> One framework. Four site shapes.
+>
+> Cogita is a theme-driven static site framework for blogs, docs, editorial publishing, and knowledge bases.
+>
+> Themes shape the experience. Plugins add capabilities. Your content stays yours.
+>
+> Explore the demos: https://wu9o.github.io/cogita/demos/
+
+#### 第 2 条
+
+> The Knowledge theme is the interesting one: it brings posts, ordinary documents, JSON exports, and Git checkouts into one searchable content index—with topics, backlinks, and traceable routes.
+>
+> https://wu9o.github.io/cogita/demos/knowledge/
+
+#### 第 3 条
+
+> Docs for handbooks. Lucid for notes. Editorial for feature writing. Knowledge for connected research.
+>
+> Each is an independent site consumer with its own configuration and sample content.
+>
+> Start here: https://wu9o.github.io/cogita/demos/
+
 ## X 推文版本
 
 ### 短版推文
@@ -64,6 +90,8 @@ pnpm dev
 - [在线工作手册](https://wu9o.github.io/cogita/)：配置、架构和扩展说明。
 - [GitHub 仓库](https://github.com/wu9o/cogita)：源码、模板和贡献入口。
 - [社交卡片源码](https://github.com/wu9o/cogita/blob/main/demos/landing/social-card.svg)：主题总览使用的英文预览图。
+- [Knowledge 推广卡片](https://github.com/wu9o/cogita/blob/main/demos/knowledge/git-content/assets/knowledge-card.svg)：用于展示可搜索内容索引故事的英文配图。
+- [Knowledge 来源关系图](https://github.com/wu9o/cogita/blob/main/demos/knowledge/git-content/assets/content-source.svg)：用一张图展示 Git → ContentIndex → Theme 的连接。
 
 只有在 Pages 工作流已经部署同一个提交后，才发布这些线上链接。本地构建只能证明包和页面契约通过，不能证明公网地址已经更新。
 

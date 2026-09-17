@@ -1,7 +1,7 @@
 {
   "name": "cogita",
   "version": "0.0.0",
-  "description": "A theme-driven static site framework based on Rspress",
+  "description": "A theme-driven static site framework for blogs, docs, editorial sites, and knowledge bases.",
   "private": true,
   "keywords": ["rspress", "static-site", "documentation", "markdown", "react", "plugins", "themes"],
   "author": "wu9o",
@@ -9,6 +9,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wu9o/cogita.git"
+  },
+  "homepage": "https://wu9o.github.io/cogita/",
+  "bugs": {
+    "url": "https://github.com/wu9o/cogita/issues"
   },
   "scripts": {
     "dev": "pnpm --filter docs-site dev",

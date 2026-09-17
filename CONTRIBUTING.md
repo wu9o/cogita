@@ -1,17 +1,19 @@
 # Contributing to Cogita
 
-Thank you for your interest in contributing to Cogita! This guide will help you get started.
+Thank you for helping make Cogita a better open-source framework. Contributions can improve the core contracts, themes, plugins, documentation, demos, templates, or the developer experience around them.
 
-## 🚀 Getting Started
+Before starting a larger change, open an issue or discussion so the scope and public API can be aligned early.
+
+## Getting started
 
 ### Prerequisites
 
 - Node.js >= 18.0.0
-- pnpm >= 8.0.0
+- pnpm >= 9.0.0
 
 ### Setup
 
-1. Fork the repository
+1. Fork the repository and create a branch from `main`.
 2. Clone your fork:
    ```bash
    git clone https://github.com/your-username/cogita.git
@@ -21,22 +23,29 @@ Thank you for your interest in contributing to Cogita! This guide will help you 
    ```bash
    pnpm install
    ```
-4. Start development:
+4. Build the workspace packages before changing package consumers:
+   ```bash
+   pnpm run build:packages
+   ```
+5. Start development:
    ```bash
    pnpm run dev
    ```
 
-## 📦 Project Structure
+## Project structure
 
 ```
 cogita/
-├── packages/           # Core packages and plugins
-├── docs-site/          # Framework usage manual site
-├── examples/           # Usage examples
-└── scripts/           # Build and utility scripts
+├── packages/           # Core, CLI, shared types, UI, and CLI templates
+├── plugins/            # Optional capabilities such as search, RSS, SEO, and content sources
+├── themes/             # Official Docs, Lucid, Editorial, and Knowledge themes
+├── demos/              # Independent consumers used by the live theme showcase
+├── docs-site/          # Framework handbook source and generated site
+├── examples/           # Deployment and external-content examples
+└── scripts/            # Build, release, compatibility, and consumer checks
 ```
 
-## 🛠️ Development Workflow
+## Development workflow
 
 For detailed development guidelines, see our [Development Guide](./docs-site/content/guides/development.md).
 
@@ -78,12 +87,12 @@ pnpm run test
 pnpm --filter @cogita/plugin-name test
 ```
 
-## 📝 Creating a New Plugin
+## Creating a plugin
 
-1. Create a new directory in `packages/`:
+1. Create a new directory in `plugins/`:
    ```bash
-   mkdir packages/plugin-your-feature
-   cd packages/plugin-your-feature
+   mkdir plugins/your-feature
+   cd plugins/your-feature
    ```
 
 2. Initialize the package:
@@ -105,34 +114,49 @@ pnpm --filter @cogita/plugin-name test
    └── README.md
    ```
 
-4. Use the existing plugins as reference, especially `plugin-posts-frontmatter`
+4. Use an existing plugin as a reference, especially [`plugins/posts-frontmatter`](./plugins/posts-frontmatter).
+5. Keep the factory contract, configuration namespace, capability declarations, and README aligned with the implementation.
 
-## 🎨 Creating a New Theme
+## Creating a theme
 
-1. Create a new directory in `packages/`:
+1. Create a new directory in `themes/`:
    ```bash
-   mkdir packages/theme-your-theme
+   mkdir themes/your-theme
    ```
 
-2. Follow the theme structure (to be defined)
+2. Use an existing official theme as a reference. A theme should expose a `getThemeConfig()` entry point, own its layouts and styles, and declare the plugins it needs.
+3. Add an independent consumer under `demos/` so the theme can be evaluated with real content.
+4. Add the theme to the package map, documentation, and demo showcase when it becomes an official theme.
 
-## 📋 Pull Request Guidelines
+## Documentation and demos
 
-1. **Fork & Branch**: Create a feature branch from `main`
-2. **Commit Messages**: Use conventional commits format:
+Public-facing changes should update the closest documentation path and, when relevant, an independent demo. Prefer showing a working configuration and rendered result over describing a capability only in abstract terms.
+
+When changing a public contract, check:
+
+- the package README and API reference;
+- the English and Chinese handbook pages when both exist;
+- at least one real demo or CLI template consumer;
+- generated output, links, and the relevant package boundary check.
+
+## Pull request guidelines
+
+1. **Branch**: Create a focused branch from `main`.
+2. **Commit messages**: Use conventional commits format:
    - `feat: add new plugin`
    - `fix: resolve issue with plugin`
    - `docs: update README`
    - `chore: update dependencies`
 
-3. **Testing**: Ensure all tests pass
-4. **Documentation**: Update relevant documentation
-5. **Changeset**: Add a changeset for your changes:
+3. **Scope**: Keep implementation, documentation, and generated examples consistent.
+4. **Validation**: Run the checks relevant to the change and include the results in the pull request.
+5. **Documentation**: Update the README, handbook, package docs, or demo when the public behavior changes.
+6. **Changeset**: Add a changeset for published package changes:
    ```bash
    pnpm changeset
    ```
 
-## 🐛 Reporting Issues
+## Reporting issues
 
 When reporting issues, please include:
 
@@ -142,7 +166,7 @@ When reporting issues, please include:
 - Expected vs actual behavior
 - Relevant code snippets or error messages
 
-## 💡 Feature Requests
+## Feature requests
 
 We welcome feature requests! Please:
 
@@ -151,13 +175,13 @@ We welcome feature requests! Please:
 3. Explain the expected behavior
 4. Consider if it fits the project scope
 
-## 📚 Documentation
+## Documentation
 
 - Update README files for any new features
 - Add JSDoc comments to public APIs
-- Update the main documentation in `/docs`
+- Update the handbook under `docs-site/content/`
 
-## 🔄 Release Process
+## Release process
 
 We use [Changesets](https://github.com/changesets/changesets) for version management:
 
@@ -165,11 +189,11 @@ We use [Changesets](https://github.com/changesets/changesets) for version manage
 2. Version packages: `pnpm version-packages`
 3. Release: `pnpm release`
 
-## 🤝 Code of Conduct
+## Code of conduct
 
 Please be respectful and constructive in all interactions. We're building this together!
 
-## ❓ Questions
+## Questions
 
 If you have questions, feel free to:
 

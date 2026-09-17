@@ -13,23 +13,18 @@
 
 ## Installation
 
-### Global Installation (Recommended)
+### Recommended: use the CLI directly
 
 ```bash
-# Using pnpm
-pnpm add -g @cogita/cli
-
-# Using npm
-npm install -g @cogita/cli
-
-# Using yarn
-yarn global add @cogita/cli
+# No global installation required
+pnpm dlx @cogita/cli create my-site --template knowledge
 ```
 
-### Use without Installation
+### Optional global installation
 
 ```bash
-npx @cogita/cli --help
+pnpm add --global @cogita/cli
+cogita --help
 ```
 
 ## Quick Start
@@ -96,7 +91,7 @@ Create a new Cogita blog, documentation, or knowledge project.
 
 **Options:**
 - `-t, --template <name>` - Template to use (`blog`, `docs`, `knowledge`, or `knowledge-external`; default: `blog`)
-- `-p, --package-manager <pm>` - Package manager (npm|yarn|pnpm)
+- `-p, --package-manager <pm>` - Package manager (pnpm by default; npm and yarn are also supported explicitly)
 - `--no-git` - Skip Git initialization
 - `--no-install` - Skip dependency installation
 - `-f, --force` - Overwrite existing directory

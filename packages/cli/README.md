@@ -13,23 +13,18 @@
 
 ## 安装
 
-### 全局安装（推荐）
+### 推荐：直接使用 CLI
 
 ```bash
-# 使用 pnpm
-pnpm add -g @cogita/cli
-
-# 使用 npm
-npm install -g @cogita/cli
-
-# 使用 yarn
-yarn global add @cogita/cli
+# 无需全局安装，直接创建站点
+pnpm dlx @cogita/cli create my-site --template knowledge
 ```
 
-### 无需安装直接使用
+### 全局安装（可选）
 
 ```bash
-npx @cogita/cli --help
+pnpm add --global @cogita/cli
+cogita --help
 ```
 
 ## 快速开始
@@ -98,7 +93,7 @@ cogita doctor --strict --json
 
 **选项：**
 - `-t, --template <name>` - 使用的模板（`blog`、`docs`、`knowledge` 或 `knowledge-external`，默认：`blog`）
-- `-p, --package-manager <pm>` - 包管理器（npm|yarn|pnpm）
+- `-p, --package-manager <pm>` - 包管理器（pnpm，或显式选择 npm/yarn）
 - `--no-git` - 跳过 Git 初始化
 - `--no-install` - 跳过依赖安装
 - `-f, --force` - 覆盖现有目录

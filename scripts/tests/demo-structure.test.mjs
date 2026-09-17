@@ -28,8 +28,8 @@ test('主题 Demo 落地页链接到所有内置主题', () => {
   assert.match(landing, /data-copy-text/);
   assert.match(landing, /Copy commands/);
   const socialCard = readFileSync(socialCardPath, 'utf8');
-  assert.match(socialCard, /One framework for blogs,/);
-  assert.match(socialCard, /docs, and knowledge bases\./);
+  assert.match(socialCard, /One framework\./);
+  assert.match(socialCard, /Four site shapes\./);
   assert.doesNotMatch(socialCard, /[㐀-鿿]/);
   for (const slug of expectedSlugs) {
     assert.match(landing, new RegExp(`/demos/${slug}/`));

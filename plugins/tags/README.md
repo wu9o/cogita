@@ -258,7 +258,7 @@ import type {
 
 ## 示例
 
-查看 [插件设计文档](../../docs/plugins/plugin-tags-design.md) 获取详细架构和更多示例。
+查看 [插件设计文档](../../docs-site/content/plugins/plugin-tags-design.md) 获取详细架构和更多示例。
 
 ## 许可证
 

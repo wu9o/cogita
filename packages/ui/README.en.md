@@ -14,14 +14,7 @@
 ## Installation
 
 ```bash
-# Using pnpm
 pnpm add @cogita/ui
-
-# Using npm  
-npm install @cogita/ui
-
-# Using yarn
-yarn add @cogita/ui
 ```
 
 **Peer Dependencies:**

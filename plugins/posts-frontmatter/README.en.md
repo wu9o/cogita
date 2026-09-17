@@ -289,10 +289,10 @@ pnpm test
 
 ## Learn More
 
-- 📖 [Plugin Development Guide](../../docs/plugin-development.md)
-- 🔧 [API Reference](../../docs/api-reference.md)
-- 💡 [Best Practices](../../docs/best-practices.md)
-- 🏗️ [Architecture Guide](../../docs/architecture-design.md)
+- 📖 [Plugin Development Guide](../../docs-site/content/plugins/plugin-development.md)
+- 🔧 [API Reference](../../docs-site/content/api/api-reference.md)
+- 💡 [Best Practices](../../docs-site/content/guides/best-practices.md)
+- 🏗️ [Architecture Guide](../../docs-site/content/api/architecture-design.md)
 
 ## Related Packages
 
