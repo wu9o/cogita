@@ -231,7 +231,7 @@ import type { RSSConfig, FeedMeta } from '@cogita/plugin-rss';
 
 ## Examples
 
-See the [plugin design document](../../docs/plugins/plugin-rss-design.md) for detailed architecture and more examples.
+See the [plugin design document](../../docs-site/content/plugins/plugin-rss-design.md) for detailed architecture and more examples.
 
 ## License
 

@@ -289,10 +289,10 @@ pnpm test
 
 ## 了解更多
 
-- 📖 [插件开发指南](../../docs/plugin-development.md)
-- 🔧 [API 参考](../../docs/api-reference.md)
-- 💡 [最佳实践](../../docs/best-practices.md)
-- 🏗️ [架构指南](../../docs/architecture-design.md)
+- 📖 [插件开发指南](../../docs-site/content/plugins/plugin-development.md)
+- 🔧 [API 参考](../../docs-site/content/api/api-reference.md)
+- 💡 [最佳实践](../../docs-site/content/guides/best-practices.md)
+- 🏗️ [架构指南](../../docs-site/content/api/architecture-design.md)
 
 ## 相关包
 
